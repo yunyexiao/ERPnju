@@ -12,6 +12,7 @@
 >>>SequenceDiagrams-系统顺序图   
 >>>ConceptClassDiagrams-概念类图   
 >>>StateDiagrams-状态图  
+>>>UI-界面设计图  
 
 >>md-用户文档  
 >>>![用例文档_v1.1.md](doc/md/用例文档_v1.1.md )    
