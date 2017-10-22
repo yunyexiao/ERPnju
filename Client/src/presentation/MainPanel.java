@@ -15,11 +15,11 @@ public class MainPanel extends JPanel implements PanelInterface {
 
 	@Override
 	public void init(UserVO user) {
-		// TODO Auto-generated method stub
+		
 
 	}
 
-	public MainPanel(UserVO user) {
+	public MainPanel() {
 		setVisible(true);
 		add(new JButton());
 	}

@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import layout.TableLayout;
 import vo.UserVO;
 
 public class MainWindow {
@@ -38,20 +39,21 @@ public class MainWindow {
 		mainWindow.setLayout(new BorderLayout());
 		
 		buttonPanel.setPreferredSize(new Dimension((int) (0.15 * mainWindow.getWidth()), 0));
-		buttonPanel.setLayout(new GridLayout(11,1,25,5));
+		buttonPanel.setLayout(new GridLayout(11, 1, 5, 5));
 		buttonPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
 		JLabel topLabel = new JLabel("±êÌâ");
 		topLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		topLabel.setPreferredSize(new Dimension(0, (int) (0.13 * mainWindow.getHeight())));
 		
-		innerPanel = new MainPanel(user);
+		MainPanel mainPanel = new MainPanel();
 		
 		//add components
 		setButtonPanel();
 		mainWindow.add(topLabel, BorderLayout.NORTH);
 		mainWindow.add(buttonPanel, BorderLayout.WEST);
-		mainWindow.add((Component) innerPanel, BorderLayout.CENTER);
+		//mainWindow.add((Component) innerPanel, BorderLayout.CENTER);
+		mainWindow.add(mainPanel, BorderLayout.CENTER);
 		mainWindow.add(infoLabel, BorderLayout.SOUTH);
 		mainWindow.setVisible(true);
 	}
@@ -66,12 +68,17 @@ public class MainWindow {
 			buttonArray.add(new JButton(name[i]));
 		}
 		buttonArray.add(new JButton("ÍË³ö"));
-		for (JButton button : buttonArray) {
-			buttonPanel.add(button);
+		for (int i = 0; i < buttonArray.size(); i++) {
+			buttonPanel.add(buttonArray.get(i));
 		}
 	}
 	
 	private void changePanel(PanelInterface panelImpl) {
+		if (innerPanel == null) {
+			innerPanel = panelImpl;
+			innerPanel.init(user);
+			return;
+		}
 		if (innerPanel.close()) {
 			innerPanel = panelImpl;
 			innerPanel.init(user);
