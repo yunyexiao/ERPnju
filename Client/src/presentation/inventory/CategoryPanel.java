@@ -29,7 +29,20 @@ public class CategoryPanel extends JPanel implements PanelInterface{
     private static CategoryPanel instance;
 
     /* The prompt label should be got from the main panel to send prompt info to users */
-    private static JLabel prompt;
+    private JLabel prompt;
+
+    /* Components in the north. */
+    private JButton newButton, editButton, deleteButton, findButton, closeButton;
+    private JTextField keyTextField;
+    private JToolBar editToolBar, findToolBar;
+    private JPanel toolsPanel;
+    
+    /* Components in the center. */
+    private JScrollPane contentScrollPane;
+    // TODO The tree needs initialization in the method initCenter().
+    private JTree categoryTree;
+    private DefaultTreeModel treeModel;
+
 
     // TODO It needs a param of a bussiness service and a prompt.
     private CategoryPanel() {
@@ -55,12 +68,7 @@ public class CategoryPanel extends JPanel implements PanelInterface{
         // TODO Auto-generated method stub
         
     }
-
-    private JButton newButton, editButton, deleteButton, findButton, closeButton;
-    private JTextField keyTextField;
-    private JToolBar editToolBar, findToolBar;
-    private JPanel toolsPanel;
-  
+ 
     private void initNorth(){
         newButton = UiHelper.initButton("新建分类", false);
         editButton = UiHelper.initButton("修改分类", false);
@@ -77,12 +85,6 @@ public class CategoryPanel extends JPanel implements PanelInterface{
         this.add(toolsPanel, BorderLayout.PAGE_START);
     }
     
-    private JScrollPane contentScrollPane;
-    
-    // TODO The tree needs initialization in the method initCenter().
-    private JTree categoryTree;
-    private DefaultTreeModel treeModel;
-
     private void initCenter(){
         contentScrollPane = new JScrollPane();
         categoryTree = new JTree();

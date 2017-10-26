@@ -6,7 +6,10 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-
+/**
+ * 给库存管理人员界面测试用的frame
+ * @author 恽叶霄
+ */
 public class TestFrame extends JFrame {
 
     /**
@@ -27,7 +30,7 @@ public class TestFrame extends JFrame {
     }
     
     private void init(){
-        panel = InventoryViewPanel.getInstance();
+        panel = CommodityPanel.getInstance();
         this.setSize(800, 600);
         this.setResizable(true);
         this.setContentPane(panel);
