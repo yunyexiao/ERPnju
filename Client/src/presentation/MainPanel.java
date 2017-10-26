@@ -1,16 +1,16 @@
 package presentation;
 
-import java.awt.Color;
-
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import vo.UserVO;
 
-public class MainPanel extends JPanel implements PanelInterface {
+public class MainPanel implements PanelInterface {
+	private JPanel panel= new JPanel(); 
+	
 	@Override
 	public boolean close() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -20,7 +20,12 @@ public class MainPanel extends JPanel implements PanelInterface {
 	}
 
 	public MainPanel() {
-		setVisible(true);
-		add(new JButton());
+		panel.setVisible(true);
+		panel.add(new JButton());
+	}
+
+	@Override
+	public JPanel getPanel() {
+		return panel;
 	}
 }

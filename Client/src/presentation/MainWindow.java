@@ -2,10 +2,11 @@ package presentation;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -13,13 +14,15 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
-import layout.TableLayout;
+import presentation.inventory.*;
 import vo.UserVO;
 
 public class MainWindow {
 	private UserVO user;
-	private PanelInterface innerPanel;
+	private PanelInterface innerPanel = new MainPanel();
 	
 	private JFrame mainWindow = new JFrame("灯具进销存管理系统-主界面");
 	private JPanel buttonPanel = new JPanel();
@@ -29,6 +32,13 @@ public class MainWindow {
 	public MainWindow(UserVO user) {
 		this.user = user;
 		
+		try {
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        
 		//set size of form according to screen's size
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		mainWindow.setSize(screenSize.width, screenSize.height-50);
@@ -46,14 +56,12 @@ public class MainWindow {
 		topLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		topLabel.setPreferredSize(new Dimension(0, (int) (0.13 * mainWindow.getHeight())));
 		
-		MainPanel mainPanel = new MainPanel();
-		
 		//add components
 		setButtonPanel();
+		innerPanel.init(user);
 		mainWindow.add(topLabel, BorderLayout.NORTH);
 		mainWindow.add(buttonPanel, BorderLayout.WEST);
-		//mainWindow.add((Component) innerPanel, BorderLayout.CENTER);
-		mainWindow.add(mainPanel, BorderLayout.CENTER);
+		mainWindow.add(innerPanel.getPanel(), BorderLayout.CENTER);
 		mainWindow.add(infoLabel, BorderLayout.SOUTH);
 		mainWindow.setVisible(true);
 	}
@@ -65,23 +73,64 @@ public class MainWindow {
 			,{}};
 		String[] name = nameData[user.getType().getNum()];
 		for (int i = 0; i < name.length; i++) {
-			buttonArray.add(new JButton(name[i]));
+			JButton button = new JButton(name[i]);
+			button.addActionListener(reChangeListener(name[i],this));
+			buttonArray.add(button);
 		}
 		buttonArray.add(new JButton("退出"));
-		for (int i = 0; i < buttonArray.size(); i++) {
-			buttonPanel.add(buttonArray.get(i));
+		for (JButton button : buttonArray) {
+			buttonPanel.add(button);
 		}
 	}
 	
+	private ActionListener reChangeListener(String className, MainWindow mw) {
+		switch (className) {
+		case "商品分类管理" :
+			return new ActionListener() {
+				public void actionPerformed(ActionEvent e) {changePanel(new InitPanel(mw));	}
+			};
+		case "商品管理" :
+			return new ActionListener() {
+				public void actionPerformed(ActionEvent e) {}
+			};
+		case "库存查看" :
+			return new ActionListener() {
+				public void actionPerformed(ActionEvent e) {}
+			};
+		case "库存盘点" :
+			return new ActionListener() {
+				public void actionPerformed(ActionEvent e) {}
+			};
+		case "报溢/报损" :
+			return new ActionListener() {
+				public void actionPerformed(ActionEvent e) {}
+			};
+		default:
+			System.out.println("无效的字符串");
+			return null;
+		}
+		
+	}
+	
+	/**
+	 * 将innerPanel改为另一个PanelInterface
+	 * @author 钱美缘
+	 */
 	private void changePanel(PanelInterface panelImpl) {
-		if (innerPanel == null) {
-			innerPanel = panelImpl;
-			innerPanel.init(user);
-			return;
-		}
 		if (innerPanel.close()) {
+			mainWindow.remove(innerPanel.getPanel());
 			innerPanel = panelImpl;
 			innerPanel.init(user);
+			mainWindow.add(innerPanel.getPanel(), BorderLayout.CENTER);
+			SwingUtilities.updateComponentTreeUI(mainWindow);
 		}
+	}
+
+	/**
+	 * 不含参数的changePanel方法将innerPanel改为MainPanel
+	 * @author 钱美缘
+	 */
+	public void changePanel() {
+		changePanel(new MainPanel());
 	}
 }

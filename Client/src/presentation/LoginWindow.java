@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 import layout.TableLayout;
 import vo.UserType;
@@ -22,6 +23,13 @@ public class LoginWindow {
 	private JButton buttonB = new JButton("µÇÂ¼");
 	
 	public LoginWindow() {
+    	try {
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        
 		//set size of form according to screen's size
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		loginWindow.setSize((int) (screenSize.width * 0.3), (int) (screenSize.height * 0.27));
@@ -52,6 +60,7 @@ public class LoginWindow {
 			}
 		});
 		buttonB.addActionListener(new ActionListener() {
+			@SuppressWarnings("unused")
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MainWindow mainwindow = new MainWindow(new UserVO("Ëû", UserType.KEEPER));
