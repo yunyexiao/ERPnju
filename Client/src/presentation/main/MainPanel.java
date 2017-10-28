@@ -1,8 +1,9 @@
-package presentation;
+package presentation.main;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import presentation.PanelInterface;
 import vo.UserVO;
 
 public class MainPanel implements PanelInterface {

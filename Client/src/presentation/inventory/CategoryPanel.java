@@ -15,7 +15,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-import presentation.MainWindow;
+import presentation.main.MainWindow;
 import presentation.PanelInterface;
 import vo.UserVO;
 

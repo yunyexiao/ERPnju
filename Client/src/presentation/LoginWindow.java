@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import layout.TableLayout;
+import presentation.main.MainWindow;
 import vo.UserType;
 import vo.UserVO;
 
@@ -63,7 +64,7 @@ public class LoginWindow {
 			@SuppressWarnings("unused")
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainWindow mainwindow = new MainWindow(new UserVO("Ëû", UserType.KEEPER));
+				MainWindow mainwindow = new MainWindow(new UserVO("Ëû", UserType.SALESMAN));
 				loginWindow.dispose();
 			}
 		});

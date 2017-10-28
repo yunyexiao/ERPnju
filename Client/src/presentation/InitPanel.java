@@ -15,6 +15,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import presentation.main.MainWindow;
 import vo.UserVO;
 
 public class InitPanel implements PanelInterface {
