@@ -33,6 +33,20 @@ public class InventoryAdjustPanel extends JPanel {
     /* From the main panel, in order to send prompt info to users. */
     private JLabel prompt;
     
+    /* Components in the north. */
+    private JButton newButton, saveButton, closeButton;
+    private JRadioButton overflowRadioButton, underflowRadioButton;
+    private JToolBar newToolBar;
+    private JPanel toolPanel;
+    private JLabel label;
+
+    /* Components in the center. */
+    private JLabel idLabel, nameLabel, systemAmountLabel, actualAmountLabel, differenceLabel;
+    private JTextField idTextField, nameTextField, systemAmountTextField, actualAmountTextField, differenceTextField;
+    private JButton selectButton, submitButton;
+    private JPanel centerPanel;
+
+  
     // TODO It needs a param of a bussiness service and a prompt.
     private InventoryAdjustPanel(){
         super(new BorderLayout());
@@ -46,12 +60,6 @@ public class InventoryAdjustPanel extends JPanel {
         return instance;
     }
     
-    private JButton newButton, saveButton, closeButton;
-    private JRadioButton overflowRadioButton, underflowRadioButton;
-    private JToolBar newToolBar;
-    private JPanel toolPanel;
-    private JLabel label;
-
     private void initNorth(){
         newButton = UiHelper.initButton("新建单据", false);
         saveButton = UiHelper.initButton("保存单据", false);
@@ -94,11 +102,6 @@ public class InventoryAdjustPanel extends JPanel {
         this.add(toolPanel, BorderLayout.NORTH);
     }
     
-    private JLabel idLabel, nameLabel, systemAmountLabel, actualAmountLabel, differenceLabel;
-    private JTextField idTextField, nameTextField, systemAmountTextField, actualAmountTextField, differenceTextField;
-    private JButton selectButton, submitButton;
-    private JPanel centerPanel;
-
     private void initCenter(){
         idLabel = new JLabel("商品编号");
         nameLabel = new JLabel("商品名称");

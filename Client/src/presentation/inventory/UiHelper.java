@@ -4,7 +4,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
 
 import layout.TableLayout;
 
@@ -27,8 +26,6 @@ public class UiHelper {
     public static JButton initButton(String text, boolean focusable){
         JButton btn = new JButton(text);
         btn.setFocusable(focusable);
-        btn.setHorizontalTextPosition(SwingConstants.CENTER);
-        btn.setVerticalTextPosition(SwingConstants.BOTTOM);
         return btn;
     }
 
@@ -40,8 +37,6 @@ public class UiHelper {
     public static JToolBar initToolBar(JComponent[] components){
         JToolBar toolBar = new JToolBar();
         toolBar.setRollover(true);
-        toolBar.setMaximumSize(toolBar.getPreferredSize());
-        toolBar.setMinimumSize(toolBar.getPreferredSize());
         toolBar.setFloatable(false);
         for (JComponent component: components){
             toolBar.add(component);
@@ -62,15 +57,15 @@ public class UiHelper {
         double[] columns = new double[2 * (leftSize + rightSize) + 1];
         columns[0] = border;
         for (int i = 1; i < leftSize * 2; i++){
-            columns[i] = i % 2 == 0 ? interval : left[i / 2].getPreferredSize().getWidth();
+            columns[i] = i % 2 == 0 ? interval : TableLayout.PREFERRED;
         }
         columns[2 * leftSize] = TableLayout.FILL;
         for (int i = 2 * leftSize + 1; i < columns.length - 1; i++){
-            columns[i] = i % 2 == 0 ? interval : right[(i - 2 * leftSize) / 2].getPreferredSize().getWidth();
+            columns[i] = i % 2 == 0 ? interval : TableLayout.PREFERRED;
         }
         columns[columns.length - 1] = border;
         
-        JPanel panel = new JPanel(new TableLayout(new double[][]{columns, {10.0D, TableLayout.FILL, 10.0D}}));
+        JPanel panel = new JPanel(new TableLayout(new double[][]{columns, {10.0D, TableLayout.PREFERRED, 10.0D}}));
         for (int i = 0; i < leftSize; i++){
             panel.add(left[i], (i * 2 + 1) + " 1");
         }

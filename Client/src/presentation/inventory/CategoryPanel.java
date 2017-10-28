@@ -1,8 +1,6 @@
 package presentation.inventory;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -15,7 +13,6 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-import presentation.main.MainWindow;
 import presentation.PanelInterface;
 import vo.UserVO;
 
@@ -23,7 +20,7 @@ import vo.UserVO;
  * 商品分类的展示面板。<br>
  * @author 192 恽叶霄
  */
-public class CategoryPanel implements PanelInterface{
+public class CategoryPanel extends JPanel implements PanelInterface{
 
     /**
      * auto generated UID 
@@ -32,20 +29,38 @@ public class CategoryPanel implements PanelInterface{
     private static CategoryPanel instance;
 
     /* The prompt label should be got from the main panel to send prompt info to users */
-    private static JLabel prompt;
-    private static JPanel panel = new JPanel(new BorderLayout());
-    private static MainWindow mw;
+    private JLabel prompt;
+
+    /* Components in the north. */
+    private JButton newButton, editButton, deleteButton, findButton, closeButton;
+    private JTextField keyTextField;
+    private JToolBar editToolBar, findToolBar;
+    private JPanel toolsPanel;
+    
+    /* Components in the center. */
+    private JScrollPane contentScrollPane;
+    // TODO The tree needs initialization in the method initCenter().
+    private JTree categoryTree;
+    private DefaultTreeModel treeModel;
+
 
     // TODO It needs a param of a bussiness service and a prompt.
-    public CategoryPanel(MainWindow mw) {
-    	this.mw = mw;
+    private CategoryPanel() {
+        super(new BorderLayout());
         initNorth();
         initCenter();
     }
     
+    // TODO It should be modified like the constructor.
+    public static CategoryPanel getInstance(){
+        instance = new CategoryPanel();
+        return instance;
+    }
+ 
     @Override
     public boolean close() {
-        return true;
+        // TODO Auto-generated method stub
+        return false;
     }
 
     @Override
@@ -53,12 +68,7 @@ public class CategoryPanel implements PanelInterface{
         // TODO Auto-generated method stub
         
     }
-
-    private JButton newButton, editButton, deleteButton, findButton, closeButton;
-    private JTextField keyTextField;
-    private JToolBar editToolBar, findToolBar;
-    private JPanel toolsPanel;
-  
+ 
     private void initNorth(){
         newButton = UiHelper.initButton("新建分类", false);
         editButton = UiHelper.initButton("修改分类", false);
@@ -68,25 +78,13 @@ public class CategoryPanel implements PanelInterface{
         findButton = UiHelper.initButton("查找分类", false);
         findToolBar = UiHelper.initToolBar(new JComponent[]{keyTextField, findButton});
         closeButton = UiHelper.initButton("关闭", false);
-        closeButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (close()) mw.changePanel();
-			}  	
-        });
         
         toolsPanel = UiHelper.initBarlikePanel(10, 20
             , new JComponent[]{editToolBar, findToolBar}, new JComponent[]{closeButton});
 
-        panel.add(toolsPanel, BorderLayout.PAGE_START);
+        this.add(toolsPanel, BorderLayout.PAGE_START);
     }
     
-    private JScrollPane contentScrollPane;
-    
-    // TODO The tree needs initialization in the method initCenter().
-    private JTree categoryTree;
-    private DefaultTreeModel treeModel;
-
     private void initCenter(){
         contentScrollPane = new JScrollPane();
         categoryTree = new JTree();
@@ -94,13 +92,8 @@ public class CategoryPanel implements PanelInterface{
         categoryTree.setModel(treeModel);
         contentScrollPane.setViewportView(categoryTree);
 
-        panel.add(contentScrollPane, BorderLayout.CENTER);
+        this.add(contentScrollPane, BorderLayout.CENTER);
     }
-
-	@Override
-	public JPanel getPanel() {
-		return panel;
-	}
 
 
 }

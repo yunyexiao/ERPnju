@@ -25,6 +25,25 @@ public class InventoryViewPanel extends JPanel {
     /* From the main panel, in order to send prompt info to users. */
     private JLabel prompt;
     
+    /* Components in the north. */
+    private JTextField keyTextField;
+    private JButton findButton, closeButton;
+    private JToolBar findToolBar;
+    private JPanel northPanel;
+
+    /* Components in the center. */
+    private JScrollPane scrollPane;
+    private JTable table;
+    private String[] columnNames = {"商品编号", "商品名称", "出入库方向", "库存数量", "进货/销售", "进货/销售数量"};
+    // TODO It needs to be initialized by the serviceImpl in the method initCenter().
+    private Object[][] rowData = {{"0001", "名称1", "出库", 100, "销售", 100}
+        , {"0002", "名称2", "入库", 100, "进货", 100}};
+
+    /* Components in the south. */
+    private JLabel nameLabel, totalInLabel, totalOutLabel;
+    private JPanel southPanel;
+
+ 
     // TODO It needs a param of a bussiness service and a prompt.
     private InventoryViewPanel(){
         super(new BorderLayout());
@@ -39,11 +58,6 @@ public class InventoryViewPanel extends JPanel {
         return instance;
     }
     
-    private JTextField keyTextField;
-    private JButton findButton, closeButton;
-    private JToolBar findToolBar;
-    private JPanel northPanel;
-
     private void initNorth(){
         keyTextField = new JTextField(10);
         findButton = UiHelper.initButton("查询", false);
@@ -54,14 +68,6 @@ public class InventoryViewPanel extends JPanel {
         this.add(northPanel, BorderLayout.NORTH);
     }
     
-    private JScrollPane scrollPane;
-    private JTable table;
-    private String[] columnNames = {"商品编号", "商品名称", "出入库方向", "库存数量", "进货/销售", "进货/销售数量"};
-    
-    // It needs to be initialized by the serviceImpl in the method initCenter().
-    private Object[][] rowData = {{"0001", "名称1", "出库", 100, "销售", 100}
-        , {"0002", "名称2", "入库", 100, "进货", 100}};
-
     private void initCenter(){
         scrollPane = new JScrollPane(table = new JTable(rowData, columnNames));
         table.setFillsViewportHeight(true);
@@ -70,9 +76,6 @@ public class InventoryViewPanel extends JPanel {
         this.add(scrollPane, BorderLayout.CENTER);
     }
     
-    private JLabel nameLabel, totalInLabel, totalOutLabel;
-    private JPanel southPanel;
-
     private void initSouth(){
         nameLabel = new JLabel("商品名称：×××");
         totalInLabel = new JLabel("合计入库：×××");
