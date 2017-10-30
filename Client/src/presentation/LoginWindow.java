@@ -1,10 +1,12 @@
 package presentation;
 
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -39,6 +41,7 @@ public class LoginWindow {
 		//other setting
 		loginWindow.setResizable(false);
 		loginWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		loginWindow.setIconImage(new ImageIcon("resource/LoginIcon.png").getImage());
 		int border = 15;
 		double[][] size = {{0.15,0.15,TableLayout.FILL,0.15,0.15},
 				{0.2,0.2,border,0.2,border,0.2,0.2}};

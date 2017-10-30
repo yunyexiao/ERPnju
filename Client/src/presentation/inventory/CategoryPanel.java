@@ -95,5 +95,11 @@ public class CategoryPanel extends JPanel implements PanelInterface{
         this.add(contentScrollPane, BorderLayout.CENTER);
     }
 
+	@Override
+	public JPanel getPanel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

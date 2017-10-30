@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import layout.TableLayout;
 import presentation.bill.BillPanel;
 import presentation.bill.CentrePanel;
+import presentation.data.DataPanel;
 import vo.UserType;
 
 /**
@@ -42,10 +43,11 @@ class LeftButtonPanel extends JPanel{
 		UserType type = mainWindow.getUser().getType();
 		//TODO 修改按钮处------------------------------
 		if (type == UserType.KEEPER) {
-			addButton("商品分类管理", new Listener(mw, new BillPanel(mw, mainWindow.getUser(), CentrePanel.PURCHASE, true)));
+			addButton("商品分类管理", new Listener(mw, new BillPanel(mw, CentrePanel.PURCHASE, true)));
 		}
 		else if (type == UserType.SALESMAN) {
-			addButton("制定进货单", new Listener(mw, new BillPanel(mw, mainWindow.getUser(), CentrePanel.PURCHASE, true)));
+			addButton("客户管理", new Listener(mw, new DataPanel(mw)));
+			addButton("制定进货单", new Listener(mw, new BillPanel(mw, CentrePanel.PURCHASE, true)));
 		}
 		//-----------------------------------------
 		double[][] size = {{TableLayout.FILL, 0.8, TableLayout.FILL},{TableLayout.FILL}};

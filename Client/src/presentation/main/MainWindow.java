@@ -3,25 +3,16 @@ package presentation.main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import presentation.PanelInterface;
-import presentation.bill.BillPanel;
-import presentation.bill.CentrePanel;
-import presentation.inventory.*;
 import vo.UserVO;
 
 public class MainWindow {
@@ -97,5 +88,12 @@ public class MainWindow {
 	 */
 	public UserVO getUser() {
 		return user;
+	}
+	/**
+	 * 设置窗体是否可用
+	 * @param flag 想要设置的状态
+	 */
+	public void setEnable(boolean flag) {
+		mainWindow.setEnabled(flag);
 	}
 }

@@ -22,9 +22,9 @@ public class BillPanel implements PanelInterface {
 	private TopButtonPanel buttonPanel = new TopButtonPanel();
 	private CentrePanel mainPanel;
 
-	public BillPanel(MainWindow mainwindow, UserVO user, int type, boolean editable){
+	public BillPanel(MainWindow mainwindow, int type, boolean editable){
 		this.mainWindow = mainwindow;
-		this.user = user;
+		this.user = this.mainWindow.getUser();
 		billBL = new BillBL_stub(user);
 		mainPanel = new CentrePanel(CentrePanel.PURCHASE, editable);
 		mainPanel.setPanel(billBL.getTableModel());
