@@ -40,8 +40,8 @@ public class DataPanel implements PanelInterface {
 		
 		if (user.getType() == UserType.SALESMAN) {
 			dataBL = new CustomerBL_stub();
-			table.setModel(dataBL.update());
 		}
+		table.setModel(dataBL.update());
 		
 		double[][] size = {{TableLayout.FILL},{0.1,TableLayout.FILL}};
 		panel.setLayout(new TableLayout(size));
@@ -52,6 +52,7 @@ public class DataPanel implements PanelInterface {
 			public void actionPerformed(ActionEvent arg0) {
 				mainWindow.setEnable(false);
 				new AddWindow(mainWindow, dataBL);
+				table.setModel(dataBL.update());
 			}
 		}
 		class DeleteListener implements ActionListener {
@@ -60,6 +61,7 @@ public class DataPanel implements PanelInterface {
 				int response = JOptionPane.showConfirmDialog(null, "确认要删除此条信息？", "提示", JOptionPane.YES_NO_OPTION);
 				if (response == 0) {
 					if (dataBL.delete("1")) JOptionPane.showMessageDialog(null, "信息已成功删除", "系统", JOptionPane.INFORMATION_MESSAGE); 
+					table.setModel(dataBL.update());
 				}
 			}			
 		}
@@ -83,11 +85,6 @@ public class DataPanel implements PanelInterface {
 	@Override
 	public boolean close() {
 		return true;
-	}
-
-	@Override
-	public void init(UserVO user) {
-
 	}
 
 	@Override

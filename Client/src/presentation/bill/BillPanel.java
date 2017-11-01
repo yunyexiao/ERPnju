@@ -53,12 +53,6 @@ public class BillPanel implements PanelInterface {
 	}
 
 	@Override
-	public void init(UserVO user) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public JPanel getPanel() {
 		return panel;
 	}

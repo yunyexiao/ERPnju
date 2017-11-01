@@ -36,6 +36,7 @@ public class AddWindow {
 		frame.setSize(screenSize.width/2, screenSize.height/2);
 		frame.setLocation(screenSize.width/4, screenSize.height/4);
 		
+		//设置界面布局
 		frame.setLayout(new BorderLayout());
 		FlowLayout f = new FlowLayout();
 		f.setAlignment(FlowLayout.RIGHT);
