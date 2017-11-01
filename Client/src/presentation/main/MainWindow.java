@@ -17,7 +17,7 @@ import vo.UserVO;
 
 public class MainWindow {
 	private UserVO user;
-	private PanelInterface innerPanel = new MainPanel();
+	private PanelInterface innerPanel;
 	
 	private JFrame mainWindow = new JFrame("灯具进销存管理系统-主界面");
 	private LeftButtonPanel buttonPanel;
@@ -25,7 +25,8 @@ public class MainWindow {
 
 	public MainWindow(UserVO user) {
 		this.user = user;
-		innerPanel.init(user);
+		innerPanel = new MainPanel();
+		
 		buttonPanel = new LeftButtonPanel(this);
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -68,7 +69,6 @@ public class MainWindow {
 		if (innerPanel.close()) {
 			mainWindow.remove(innerPanel.getPanel());
 			innerPanel = panelImpl;
-			innerPanel.init(user);
 			mainWindow.add(innerPanel.getPanel(), BorderLayout.CENTER);
 			SwingUtilities.updateComponentTreeUI(mainWindow);
 		}

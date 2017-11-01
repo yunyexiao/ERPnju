@@ -4,7 +4,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import presentation.PanelInterface;
-import vo.UserVO;
 
 public class MainPanel implements PanelInterface {
 	private JPanel panel= new JPanel(); 
@@ -12,12 +11,6 @@ public class MainPanel implements PanelInterface {
 	@Override
 	public boolean close() {
 		return true;
-	}
-
-	@Override
-	public void init(UserVO user) {
-		
-
 	}
 
 	public MainPanel() {

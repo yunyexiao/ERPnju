@@ -39,15 +39,23 @@ class LeftButtonPanel extends JPanel{
      */
 	public LeftButtonPanel(MainWindow mw) {
 		this.mainWindow = mw;
-		
 		UserType type = mainWindow.getUser().getType();
+		
 		//TODO 修改按钮处------------------------------
 		if (type == UserType.KEEPER) {
 			addButton("商品分类管理", new Listener(mw, new BillPanel(mw, CentrePanel.PURCHASE, true)));
+			addButton("商品管理", new Listener_stub());
+			addButton("库存查看", new Listener_stub());
+			addButton("库存盘点", new Listener_stub());
+			addButton("报溢/报损", new Listener_stub());
+			
 		}
 		else if (type == UserType.SALESMAN) {
 			addButton("客户管理", new Listener(mw, new DataPanel(mw)));
 			addButton("制定进货单", new Listener(mw, new BillPanel(mw, CentrePanel.PURCHASE, true)));
+			addButton("制定进货退货单", new Listener_stub());
+			addButton("制定销售单", new Listener_stub());
+			addButton("制定销售退货单", new Listener_stub());
 		}
 		//-----------------------------------------
 		double[][] size = {{TableLayout.FILL, 0.8, TableLayout.FILL},{TableLayout.FILL}};
