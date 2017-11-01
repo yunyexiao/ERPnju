@@ -17,7 +17,6 @@ import blservice.LoginBLService;
 import businesslogic.UserBL_stub;
 import layout.TableLayout;
 import presentation.main.MainWindow;
-import vo.UserType;
 import vo.UserVO;
 
 public class LoginWindow {
