@@ -96,4 +96,10 @@ public class MainWindow {
 	public void setEnable(boolean flag) {
 		mainWindow.setEnabled(flag);
 	}
+	/**
+	 * ¹Ø±Õ´°¿Ú
+	 */
+	protected void close() {
+		mainWindow.dispose();
+	}
 }
