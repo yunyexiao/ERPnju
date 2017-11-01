@@ -1,7 +1,6 @@
 package presentation;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,9 +9,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import blservice.LoginBLService;
+import businesslogic.UserBL_stub;
 import layout.TableLayout;
 import presentation.main.MainWindow;
 import vo.UserType;
@@ -24,6 +26,7 @@ public class LoginWindow {
 	private JTextField keyField = new JTextField();
 	private JButton buttonA = new JButton("取消");
 	private JButton buttonB = new JButton("登录");
+	private LoginBLService loginBL = new UserBL_stub();
 	
 	public LoginWindow() {
     	try {
@@ -67,8 +70,15 @@ public class LoginWindow {
 			@SuppressWarnings("unused")
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainWindow mainwindow = new MainWindow(new UserVO("他", UserType.SALESMAN));
-				loginWindow.dispose();
+				UserVO user = loginBL.getUser(nameField.getText(), keyField.getText());
+				if (user == null) {
+					nameField.setText("");
+					keyField.setText("");
+					JOptionPane.showMessageDialog(null, "用户名或密码不正确，请重新输入", "系统消息", JOptionPane.ERROR_MESSAGE);
+				} else {
+					MainWindow mainWindow = new MainWindow(user);
+					loginWindow.dispose();
+				}
 			}
 		});
 	}
