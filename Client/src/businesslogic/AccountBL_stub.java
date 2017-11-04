@@ -1,6 +1,6 @@
 package businesslogic;
 
-import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
 
 import blservice.AccountBLService;
 import vo.AccountVO;
@@ -8,33 +8,33 @@ import vo.AccountVO;
 public class AccountBL_stub implements AccountBLService {
 
 	@Override
-	public boolean addAccount(String name, String number, int money) {
+	public boolean delete(String id) {
 		// TODO Auto-generated method stub
-		return true;
+		return false;
 	}
 
 	@Override
-	public ArrayList<AccountVO> getAccountInfo(String name) {
+	public DefaultTableModel search(String type, String key) {
 		// TODO Auto-generated method stub
-		return new ArrayList<AccountVO>(){{add(new AccountVO(name, "", 100));}};
+		return null;
 	}
 
 	@Override
-	public ArrayList<AccountVO> getAccountInfo() {
+	public DefaultTableModel update() {
 		// TODO Auto-generated method stub
-		return new ArrayList<AccountVO>(){{add(new AccountVO("ICBC", "", 100));add(new AccountVO("Bank", "", 200));}};
+		return null;
 	}
 
 	@Override
-	public boolean updateAccount() {
+	public boolean add(AccountVO account) {
 		// TODO Auto-generated method stub
-		return true;
+		return false;
 	}
 
 	@Override
-	public boolean deleteAccount(AccountVO account) {
+	public boolean change(AccountVO account) {
 		// TODO Auto-generated method stub
-		return true;
+		return false;
 	}
 
 }
