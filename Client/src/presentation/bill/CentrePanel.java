@@ -9,8 +9,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 import layout.TableLayout;
+import vo.BillType;
 import vo.BillVO;
 
 /**
@@ -18,12 +20,9 @@ import vo.BillVO;
  * @author 钱美缘
  */
 public class CentrePanel {
-	public static int PURCHASE = 0;
-	public static int SALE = 1;
-	
 	private JPanel panel = new JPanel();
 	private JPanel firstPanel, secondPanel, thirdPanel,centerPanel,scrollPanel,forthPanel,fifthPanel;
-	private JScrollPane goodsListPane;
+	private JScrollPane listPane;
 	private JLabel chooseLabel, listNameLabel, sumLabel, remarkLabel;
 	private JButton chooseButton = new JButton();
 	private JButton tableAddButton = new JButton(new ImageIcon("resource/AddButton.png"));
@@ -35,9 +34,8 @@ public class CentrePanel {
 	private JTextField chooseFieldB = new JTextField(10); 
 	private JTextField sumField = new JTextField(5);
 	private JTextField remarkField = new JTextField(30);
-	private JTable listTable;
-	private String[] goodsListAttributes={"商品编号","名称","型号","数量","仓库","单价","金额","备注"};
-	private String[][] goodsInfo={{"001","xx","yy","20","3","3","40","xx"}};
+	private JTable listTable = new JTable();
+	private String[] attributes = {};
 	
 	private JLabel createLabel(String s) {
 		JLabel label = new JLabel(s);
@@ -45,8 +43,8 @@ public class CentrePanel {
 		return label;
 	}
 	
-	private void setPanel(int type, boolean editable) {
-		if (type == PURCHASE) {
+	private void setPanel(BillType type, boolean editable) {
+		if (type == BillType.PURCHASE) {
 			chooseLabel = createLabel("供应商");
 			chooseFieldA.setText("编号");
 			chooseFieldB.setText("名称");
@@ -57,7 +55,8 @@ public class CentrePanel {
 			tableSumButton.setText("总额合计");
 			sumLabel.setText("单据总额");
 			remarkLabel.setText("备注");
-		} else if (type == SALE) {
+			attributes = new String[]{"商品编号","名称","型号","数量","仓库","单价","金额","备注"};
+		} else if (type == BillType.SALES) {
 			chooseLabel = createLabel("客户");
 			chooseFieldA.setText("编号");
 			chooseFieldB.setText("姓名");
@@ -68,6 +67,7 @@ public class CentrePanel {
 			tableSumButton.setText("总额合计");
 			sumLabel.setText("折让前总额");
 			remarkLabel.setText("备注");
+			attributes = new String[]{"商品编号","名称","型号","数量","仓库","单价","金额","备注"};
 		}
 		//setEnable()
 		chooseButton.setEnabled(editable);
@@ -80,7 +80,7 @@ public class CentrePanel {
 	 * @param type 显示的单据类型标识
 	 * @param editable 是否可修改（true为可以修改）
 	 */
-	public CentrePanel(int type, boolean editable) {
+	public CentrePanel(BillType type, boolean editable) {
 		//first panel
 		JLabel billIdLabel = createLabel("单据编号");
 		JLabel operatorLabel = createLabel("操作人");
@@ -125,8 +125,7 @@ public class CentrePanel {
 		thirdPanel=new JPanel();
 		double thirdPanelSize[][]={
 				{20,110,TableLayout.FILL},
-				{TableLayout.FILL,0.65,TableLayout.FILL}
-		};
+				{TableLayout.FILL,0.65,TableLayout.FILL}};
 		thirdPanel.setLayout(new TableLayout(thirdPanelSize));
 		thirdPanel.add(listNameLabel,"1,1");
 		
@@ -136,9 +135,8 @@ public class CentrePanel {
 				{TableLayout.FILL},
 		};
 		scrollPanel.setLayout(new TableLayout(scrollPanelSize));
-		listTable=new JTable(goodsInfo,goodsListAttributes);
-		goodsListPane=new JScrollPane(listTable);
-		scrollPanel.add(goodsListPane, "1,0");
+		listPane = new JScrollPane(listTable);
+		scrollPanel.add(listPane, "1,0");
 		
 		forthPanel=new JPanel();
 		double forthPanelSize[][]={
@@ -184,7 +182,8 @@ public class CentrePanel {
 	public void setPanel(BillVO bill) {
 		billIdField.setText(bill.getId());
 		operaterField.setText(bill.getOperator());
-		listTable.setModel(bill.getModel());
+		DefaultTableModel model = new DefaultTableModel(bill.getTable(), attributes);
+		listTable.setModel(model);
 	}
 	
 	public JPanel getPanel() {
