@@ -10,6 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -26,11 +27,13 @@ import vo.UserType;
  *
  */
 public class AddWindow {
-	private JFrame frame = new JFrame();
+	private JDialog frame = new JDialog();
 	private JButton yesButton = new JButton("确定");
 	private JButton quitButton = new JButton("取消");
 	
-	public AddWindow(MainWindow mainWindow, DataBLService dataBL) {
+	public AddWindow(MainWindow mainWindow, DataBLService dataBL, DataType type) {
+		frame.setModal(true);
+		
 		//设置窗体大小及位置
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setSize(screenSize.width/2, screenSize.height/2);
@@ -53,20 +56,26 @@ public class AddWindow {
 			}			
 		});
 		
-		//TODO 根据不同用户设置不同的标题
-		if (mainWindow.getUser().getType() == UserType.SALESMAN) {
+		//TODO 根据不同用户设置不同的标题和按钮监听器-------------------------------
+		if (type == DataType.CUSTOMER) {
 			frame.setTitle("增加客户");
 			yesButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					//TODO CustomerVO的创建
 					if (((CustomerBLService) dataBL).add(new CustomerVO())) {
 						frame.dispose();
-						JOptionPane.showMessageDialog(null, "添加信息成功", "系统", JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null, "添加客户信息成功", "系统", JOptionPane.INFORMATION_MESSAGE);
 						mainWindow.setEnable(true);
 					}	
 				}
 			});
 		}
+		else if (type == DataType.USER) {
+			frame.setTitle("增加用户");
+			
+		}
+		//-----------------------------------------------------
 		
 		//关闭窗体的适配器方法
 		class WindowCloseListener extends WindowAdapter {

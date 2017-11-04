@@ -10,9 +10,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import blservice.DataBLService;
+import businesslogic.AccountBL_stub;
 import businesslogic.CustomerBL_stub;
+import businesslogic.UserBL_stub;
 import layout.TableLayout;
 import presentation.PanelInterface;
+import presentation.component.CloseListener;
+import presentation.component.Listener_stub;
 import presentation.component.TopButtonPanel;
 import presentation.main.MainWindow;
 import vo.UserType;
@@ -26,7 +30,6 @@ import vo.UserVO;
  */
 public class DataPanel implements PanelInterface {
 	private MainWindow mainWindow;
-	private UserVO user;
 	private DataBLService dataBL;
 	private TopButtonPanel buttonPanel = new TopButtonPanel();
 	private JPanel panel = new JPanel();
@@ -34,13 +37,13 @@ public class DataPanel implements PanelInterface {
 	private JScrollPane srcollpane;
 	
 
-	public DataPanel(MainWindow mw) {
+	public DataPanel(MainWindow mw, DataType type) {
 		this.mainWindow = mw;
-		this.user = mw.getUser();
 		
-		if (user.getType() == UserType.SALESMAN) {
-			dataBL = new CustomerBL_stub();
-		}
+		if (type == DataType.COMMODITY) dataBL = new CustomerBL_stub();
+		else if (type == DataType.CUSTOMER) dataBL = new CustomerBL_stub();
+		else if (type == DataType.ACCOUNT) dataBL = new AccountBL_stub();
+		else if (type == DataType.USER) dataBL = new UserBL_stub();
 		table.setModel(dataBL.update());
 		
 		double[][] size = {{TableLayout.FILL},{0.1,TableLayout.FILL}};
@@ -51,7 +54,7 @@ public class DataPanel implements PanelInterface {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				mainWindow.setEnable(false);
-				new AddWindow(mainWindow, dataBL);
+				new AddWindow(mainWindow, dataBL, type);
 				table.setModel(dataBL.update());
 			}
 		}
@@ -65,18 +68,12 @@ public class DataPanel implements PanelInterface {
 				}
 			}			
 		}
-		class CloseListener implements ActionListener {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainWindow.changePanel();
-			}
-		}
 		
 		buttonPanel.addButton("增加", new ImageIcon("resource/AddData.png"), new AddListener());
-		buttonPanel.addButton("修改", new ImageIcon("resource/ChangeData.png"), new CloseListener());
-		buttonPanel.addButton("查询", new ImageIcon("resource/SearchData.png"), new CloseListener());
+		buttonPanel.addButton("修改", new ImageIcon("resource/ChangeData.png"), new Listener_stub());
+		buttonPanel.addButton("查询", new ImageIcon("resource/SearchData.png"), new Listener_stub());
 		buttonPanel.addButton("删除", new ImageIcon("resource/DeleteData.png"), new DeleteListener());
-		buttonPanel.addButton("关闭", new ImageIcon("resource/Close.png"), new CloseListener());
+		buttonPanel.addButton("关闭", new ImageIcon("resource/Close.png"), new CloseListener(mainWindow));
 		
 		srcollpane = new JScrollPane(table);
 		panel.add(buttonPanel.getPanel(), "0,0");
