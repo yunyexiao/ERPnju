@@ -8,16 +8,16 @@ public class BillVO {
 	private String operator;
 	private String chooseA;
 	private String chooseB;
-	private DefaultTableModel model;
+	private String[][] table;
 	private String sum;
 	private String remark = "";
 	
-	public BillVO(String id, String operator, String chooseA, String chooseB, DefaultTableModel model, String sum, String remark) {
+	public BillVO(String id, String operator, String chooseA, String chooseB, String[][] table, String sum, String remark) {
 		this.id = id;
 		this.operator = operator;
 		this.chooseA = chooseA;
 		this.chooseB = chooseB;
-		this.model = model;
+		this.table = table;
 		this.sum = sum;
 		this.remark = remark;
 	}
@@ -30,7 +30,7 @@ public class BillVO {
 		return operator;
 	}
 	
-	public DefaultTableModel getModel() {
-		return model;
+	public String[][] getTable() {
+		return table;
 	}
 }
