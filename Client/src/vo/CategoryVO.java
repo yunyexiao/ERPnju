@@ -1,22 +1,41 @@
 package vo;
 
-import java.util.ArrayList;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-
-import po.CategoryPO;
-
 /**
- * 储存用于初始化JTree的VO对象
+ * 商品分类的VO对象,由父分类编号、编号、名称组成
  * @author 钱美缘
  */
 public class CategoryVO {
 
-	//根节点
-	private DefaultMutableTreeNode root;
-	
-	public CategoryVO(ArrayList<CategoryPO> CategoryPOList) {
-		
+	private String fatherId;
+	private String id;
+	private String name;
+	/**
+	 * 构造函数
+	 * @param fatherId 父分类编号
+	 * @param id 编号
+	 * @param name 名称
+	 */
+	public CategoryVO(String fatherId, String id, String name) {
+		this.fatherId = fatherId;
+		this.id = id;
+		this.name = name;
 	}
-	
+	/**
+	 * @return 返回父分类编号
+	 */
+	public String getFatherId() {
+		return fatherId;
+	}
+	/**
+	 * @return 返回编号
+	 */
+	public String getId() {
+		return id;
+	}
+	/**
+	 * @return 返回名称
+	 */
+	public String getName() {
+		return name;
+	}
 }
