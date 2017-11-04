@@ -9,6 +9,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -25,7 +26,7 @@ public class MainWindow {
 
 	public MainWindow(UserVO user) {
 		this.user = user;
-		innerPanel = new MainPanel();
+		innerPanel = new MainPanel(this);
 		
 		buttonPanel = new LeftButtonPanel(this);
 		try {
@@ -79,7 +80,7 @@ public class MainWindow {
 	 * @author 钱美缘
 	 */
 	public void changePanel() {
-		changePanel(new MainPanel());
+		changePanel(new MainPanel(this));
 	}
 	
 	/**
@@ -100,6 +101,7 @@ public class MainWindow {
 	 * 关闭窗口
 	 */
 	protected void close() {
-		mainWindow.dispose();
+		int response = JOptionPane.showConfirmDialog(null, "将放弃当前未保存的工作，确认要退出？", "Warnning", JOptionPane.YES_NO_OPTION);
+		if (response == 0) mainWindow.dispose();
 	}
 }
