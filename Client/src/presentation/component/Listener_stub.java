@@ -1,4 +1,4 @@
-package presentation.main;
+package presentation.component;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
