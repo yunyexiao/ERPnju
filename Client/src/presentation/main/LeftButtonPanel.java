@@ -16,6 +16,7 @@ import presentation.bill.BillPanel;
 import presentation.categoryui.CategoryPanel;
 import presentation.data.DataPanel;
 import presentation.data.DataType;
+import presentation.logui.LogPanel;
 import vo.BillType;
 import vo.UserType;
 
@@ -79,7 +80,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("查看经营状况表", new Listener_stub());
 			addButton("查看经营历程表", new Listener_stub());
 			addButton("期初建账", new Listener_stub());
-			addButton("查看日志", new Listener_stub());		
+			addButton("查看日志", new Listener(mw, new LogPanel(mw)));		
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.GM) {
@@ -88,12 +89,12 @@ class LeftButtonPanel extends JPanel{
 			addButton("查看销售明细表", new Listener_stub());
 			addButton("查看经营状况表", new Listener_stub());
 			addButton("查看经营历程表", new Listener_stub());
-			addButton("查看日志", new Listener_stub());		
+			addButton("查看日志", new Listener(mw, new LogPanel(mw)));		
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.ADMIN) {
 			addButton("用户管理", new Listener(mw, new DataPanel(mw, DataType.USER)));
-			addButton("查看日志", new Listener_stub());		
+			addButton("查看日志", new Listener(mw, new LogPanel(mw)));		
 			addButton("退出", new CloseListener());
 		}
 		//-----------------------------------------

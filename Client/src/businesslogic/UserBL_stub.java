@@ -26,7 +26,7 @@ public class UserBL_stub implements UserBLService, LoginBLService {
 		String[] attributes={"用户编号","姓名","职务","性别","年龄","联系电话"};
 		String[][] info={{"001","Van","库存管理人员","男","34","无"},
 				{"002","Bili","总经理","男","50","无"}};
-		System.out.println("客户信息已成功更新");
+		System.out.println("用户信息已成功更新");
 		return new DefaultTableModel(info, attributes);
 	}
 

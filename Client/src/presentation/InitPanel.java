@@ -61,7 +61,7 @@ public class InitPanel implements PanelInterface {
 	public boolean close() {
 		return true;
 	}
-
+/*
 	@Override
 	public void init(UserVO user) {
 
@@ -70,7 +70,7 @@ public class InitPanel implements PanelInterface {
 		commodityModel = new DefaultTableModel(commodityData, commodityHeader);
 		commodityTable.setModel(commodityModel);
 	}
-
+*/
 	@Override
 	public JPanel getPanel() {
 		return initPanel;

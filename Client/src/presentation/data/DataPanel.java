@@ -19,8 +19,6 @@ import presentation.component.CloseListener;
 import presentation.component.Listener_stub;
 import presentation.component.TopButtonPanel;
 import presentation.main.MainWindow;
-import vo.UserType;
-import vo.UserVO;
 /**
  * 处理基础数据的通用Panel组件 </br>
  * 包括商品信息、客户信息、账户信息，正好与用户身份相对应</br>
