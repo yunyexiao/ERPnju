@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 import layout.TableLayout;
 import presentation.component.Listener_stub;
+import presentation.bill.BillExaminePanel;
 import presentation.bill.BillPanel;
 import presentation.categoryui.CategoryPanel;
 import presentation.data.DataPanel;
@@ -84,7 +85,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.GM) {
-			addButton("审批单据", new Listener_stub());
+			addButton("审批单据", new Listener(mw, new BillExaminePanel(mw)));
 			addButton("制定促销策略", new Listener_stub());
 			addButton("查看销售明细表", new Listener_stub());
 			addButton("查看经营状况表", new Listener_stub());

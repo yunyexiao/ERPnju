@@ -17,6 +17,14 @@ import layout.TableLayout;
 import presentation.PanelInterface;
 import vo.UserVO;
 
+/**
+ * 主界面（单据管理）界面类，分两种情况<br/>
+ * 对于单据制定人员，显示未完成的单据……<br/>
+ * 对于总经理，显示等待审批的单据（仅能显示）<br/>
+ * 对于系统管理员。。。待定
+ * @author 钱美缘
+ *
+ */
 public class MainPanel implements PanelInterface {
 	//private MainWindow mainWindow;
 	private final double[][] size = {{0.88,0.12},{0.4, 0.6}};
@@ -38,8 +46,8 @@ public class MainPanel implements PanelInterface {
 		infoPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		infoPanel.add(infoLabel);
 		
-		MainPanelTable model = new MainPanelTable(billBL.getBillInfo(), new String[]{"制定时间","单据编号","单据类型","状态"});
-		table = new JTable(model);
+		//MainPanelTable model = new MainPanelTable(billBL.getBillInfo());
+		table = new JTable(billBL.getBillInfo());
 		JScrollPane scrollPane = new JScrollPane(table);
 		
 		JPanel buttonPanel=new JPanel();

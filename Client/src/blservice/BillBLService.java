@@ -1,15 +1,18 @@
 package blservice;
 
+import javax.swing.table.DefaultTableModel;
+
 import vo.BillVO;
 
 public interface BillBLService {
 	
 	/**
 	 * 单据管理（即主界面）获取当前用户编辑的单据信息<br/>
+	 * 审批单据界面也使用此
 	 * 排序方式：（审批未通过）-草稿-提交（待审批）-审批通过，每类中按制定时间排序
 	 * @return 用于表格显示的二维数组{制定时间，单据编号，单据类型，状态}
 	 */
-	public String[][] getBillInfo();
+	public DefaultTableModel getBillInfo();
 	/**
 	 * 单据制定者删除一个未完成的单据</br>
 	 * 只能删除草稿（未审核通过）的单据，已提交的和审核通过的不能删除

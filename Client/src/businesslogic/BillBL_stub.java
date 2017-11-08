@@ -1,7 +1,10 @@
 package businesslogic;
 
+import javax.swing.table.DefaultTableModel;
+
 import blservice.BillBLService;
 import vo.BillVO;
+import vo.UserType;
 import vo.UserVO;
 
 public class BillBL_stub implements BillBLService {
@@ -28,12 +31,21 @@ public class BillBL_stub implements BillBLService {
 	}
 
 	@Override
-	public String[][] getBillInfo() {
-		String[][] info={
-				{"2017-11-03 15:34:22","JHXSD-201710270001","进货销售单","草稿"},
-				{"2017-11-03 16:19:31","JHTHD-201710270001","进货退货单","待审批"},
-				{"2017-11-03 19:51:42","JHXSD-201710270002","进货销售单","已审批"}};
-		return info;
+	public DefaultTableModel getBillInfo() {
+		String[] attributes;
+		String[][] info;
+		if (user.getType() == UserType.GM) {
+			attributes = new String[]{"制定时间","单据编号","制定者", "单据类型"};
+			info = new String[][]{
+					{"2017-11-03 16:19:31","JHTHD-201710270001","蛤","进货退货单"}};
+		} else {
+			attributes = new String[]{"制定时间","单据编号","单据类型","状态"};
+			info = new String[][]{
+					{"2017-11-03 15:34:22","JHXSD-201710270001","进货销售单","草稿"},
+					{"2017-11-03 16:19:31","JHTHD-201710270001","进货退货单","待审批"},
+					{"2017-11-03 19:51:42","JHXSD-201710270002","进货销售单","已审批"}};
+		}
+		return new DefaultTableModel(info, attributes);
 	}
 
 	@Override
