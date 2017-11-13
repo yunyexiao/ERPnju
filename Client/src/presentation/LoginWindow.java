@@ -5,13 +5,18 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 
+import blservice.LoginBLService;
+import businesslogic.UserBL_stub;
 import layout.TableLayout;
-import vo.UserType;
+import presentation.main.MainWindow;
 import vo.UserVO;
 
 public class LoginWindow {
@@ -20,8 +25,16 @@ public class LoginWindow {
 	private JTextField keyField = new JTextField();
 	private JButton buttonA = new JButton("取消");
 	private JButton buttonB = new JButton("登录");
+	private LoginBLService loginBL = new UserBL_stub();
 	
 	public LoginWindow() {
+    	try {
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        
 		//set size of form according to screen's size
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		loginWindow.setSize((int) (screenSize.width * 0.3), (int) (screenSize.height * 0.27));
@@ -30,6 +43,7 @@ public class LoginWindow {
 		//other setting
 		loginWindow.setResizable(false);
 		loginWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		loginWindow.setIconImage(new ImageIcon("resource/LoginIcon.png").getImage());
 		int border = 15;
 		double[][] size = {{0.15,0.15,TableLayout.FILL,0.15,0.15},
 				{0.2,0.2,border,0.2,border,0.2,0.2}};
@@ -52,10 +66,18 @@ public class LoginWindow {
 			}
 		});
 		buttonB.addActionListener(new ActionListener() {
+			@SuppressWarnings("unused")
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainWindow mainwindow = new MainWindow(new UserVO("他", UserType.KEEPER));
-				loginWindow.dispose();
+				UserVO user = loginBL.getUser(nameField.getText(), keyField.getText());
+				if (user == null) {
+					nameField.setText("");
+					keyField.setText("");
+					JOptionPane.showMessageDialog(null, "用户名或密码不正确，请重新输入", "系统消息", JOptionPane.ERROR_MESSAGE);
+				} else {
+					MainWindow mainWindow = new MainWindow(user);
+					loginWindow.dispose();
+				}
 			}
 		});
 	}

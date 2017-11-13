@@ -1,7 +1,7 @@
 package vo;
 
 public enum UserType {
-	ADMINISTRATOR("系统管理员", 4),KEEPER("库存管理员", 0);
+	ADMIN("系统管理员", 4),KEEPER("库存管理员", 0),SALESMAN("进货销售人员",1),ACCOUNTANT("财务人员",2),GM("总经理",3);
 	private String name;
 	private int num;
 	
@@ -12,5 +12,9 @@ public enum UserType {
 	
 	public int getNum() {
 		return this.num;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 }

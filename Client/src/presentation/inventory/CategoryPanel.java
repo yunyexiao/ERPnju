@@ -62,12 +62,6 @@ public class CategoryPanel extends JPanel implements PanelInterface{
         // TODO Auto-generated method stub
         return false;
     }
-
-    @Override
-    public void init(UserVO user) {
-        // TODO Auto-generated method stub
-        
-    }
  
     private void initNorth(){
         newButton = UiHelper.initButton("新建分类", false);
@@ -94,6 +88,12 @@ public class CategoryPanel extends JPanel implements PanelInterface{
 
         this.add(contentScrollPane, BorderLayout.CENTER);
     }
+
+	@Override
+	public JPanel getPanel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 }
