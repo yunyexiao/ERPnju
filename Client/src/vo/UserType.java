@@ -17,4 +17,19 @@ public enum UserType {
 	public String getName() {
 		return this.name;
 	}
+	/**
+	 * 将int转化为UserType
+	 * @param n 数据库里存储的类型标识
+	 * @return UserType枚举类对象
+	 */
+	public static UserType getType(int n) {
+		switch (n) {
+		case 0 : return KEEPER;
+		case 1 : return SALESMAN;
+		case 2 : return ACCOUNTANT;
+		case 3 : return GM;
+		case 4 : return ADMIN;
+		default : return null;
+		}
+	}
 }

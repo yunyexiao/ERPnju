@@ -15,6 +15,7 @@ import blservice.BillBLService;
 import businesslogic.BillBL_stub;
 import layout.TableLayout;
 import presentation.PanelInterface;
+import presentation.component.MyTableModel;
 import vo.UserVO;
 
 /**
@@ -47,7 +48,9 @@ public class MainPanel implements PanelInterface {
 		infoPanel.add(infoLabel);
 		
 		//MainPanelTable model = new MainPanelTable(billBL.getBillInfo());
-		table = new JTable(billBL.getBillInfo());
+		MyTableModel model = billBL.getBillInfo();
+		model.setEditable(new int[]{0,1});
+		table = new JTable(model);
 		JScrollPane scrollPane = new JScrollPane(table);
 		
 		JPanel buttonPanel=new JPanel();

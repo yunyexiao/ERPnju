@@ -1,8 +1,7 @@
 package businesslogic;
 
-import javax.swing.table.DefaultTableModel;
-
 import blservice.BillBLService;
+import presentation.component.MyTableModel;
 import vo.BillVO;
 import vo.UserType;
 import vo.UserVO;
@@ -31,7 +30,7 @@ public class BillBL_stub implements BillBLService {
 	}
 
 	@Override
-	public DefaultTableModel getBillInfo() {
+	public MyTableModel getBillInfo() {
 		String[] attributes;
 		String[][] info;
 		if (user.getType() == UserType.GM) {
@@ -45,7 +44,7 @@ public class BillBL_stub implements BillBLService {
 					{"2017-11-03 16:19:31","JHTHD-201710270001","进货退货单","待审批"},
 					{"2017-11-03 19:51:42","JHXSD-201710270002","进货销售单","已审批"}};
 		}
-		return new DefaultTableModel(info, attributes);
+		return new MyTableModel(info, attributes);
 	}
 
 	@Override
