@@ -3,6 +3,7 @@ package businesslogic;
 import javax.swing.table.DefaultTableModel;
 
 import blservice.AccountBLService;
+import presentation.component.MyTableModel;
 import vo.AccountVO;
 
 public class AccountBL_stub implements AccountBLService {
@@ -14,13 +15,13 @@ public class AccountBL_stub implements AccountBLService {
 	}
 
 	@Override
-	public DefaultTableModel search(String type, String key) {
+	public MyTableModel search(String type, String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public DefaultTableModel update() {
+	public MyTableModel update() {
 		// TODO Auto-generated method stub
 		return null;
 	}

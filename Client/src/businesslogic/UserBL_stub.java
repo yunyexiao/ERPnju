@@ -1,9 +1,8 @@
 package businesslogic;
 
-import javax.swing.table.DefaultTableModel;
-
 import blservice.LoginBLService;
 import blservice.UserBLService;
+import presentation.component.MyTableModel;
 import vo.UserType;
 import vo.UserVO;
 
@@ -16,18 +15,18 @@ public class UserBL_stub implements UserBLService, LoginBLService {
 	}
 
 	@Override
-	public DefaultTableModel search(String type, String key) {
+	public MyTableModel search(String type, String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public DefaultTableModel update() {
+	public MyTableModel update() {
 		String[] attributes={"用户编号","姓名","职务","性别","年龄","联系电话"};
 		String[][] info={{"001","Van","库存管理人员","男","34","无"},
 				{"002","Bili","总经理","男","50","无"}};
 		System.out.println("用户信息已成功更新");
-		return new DefaultTableModel(info, attributes);
+		return new MyTableModel(info, attributes);
 	}
 
 	/**
