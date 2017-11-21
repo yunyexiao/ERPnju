@@ -10,13 +10,15 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import businesslogic.AccountBL_stub;
+import businesslogic.CustomerBL_stub;
+import businesslogic.UserBL_stub;
 import layout.TableLayout;
-import presentation.component.Listener_stub;
 import presentation.bill.BillExaminePanel;
 import presentation.bill.BillPanel;
 import presentation.categoryui.CategoryPanel;
+import presentation.component.Listener_stub;
 import presentation.data.DataPanel;
-import presentation.data.DataType;
 import presentation.logui.LogPanel;
 import vo.BillType;
 import vo.UserType;
@@ -55,7 +57,7 @@ class LeftButtonPanel extends JPanel{
 			}	
 		}
 		
-		//TODO 修改按钮处------------------------------
+		// 修改按钮处------------------------------
 		if (type == UserType.KEEPER) {
 			addButton("商品分类管理", new Listener(mw, new CategoryPanel(mw)));
 			addButton("商品管理", new Listener_stub());
@@ -66,7 +68,7 @@ class LeftButtonPanel extends JPanel{
 			
 		}
 		else if (type == UserType.SALESMAN) {
-			addButton("客户管理", new Listener(mw, new DataPanel(mw, DataType.CUSTOMER)));
+			addButton("客户管理", new Listener(mw, new DataPanel(mw, new CustomerBL_stub())));
 			addButton("制定进货单", new Listener(mw, new BillPanel(mw, BillType.PURCHASE, true)));
 			addButton("制定进货退货单", new Listener_stub());
 			addButton("制定销售单", new Listener_stub());
@@ -74,7 +76,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.ACCOUNTANT) {
-			addButton("账户管理", new Listener_stub());
+			addButton("账户管理", new Listener(mw, new DataPanel(mw, new AccountBL_stub())));
 			addButton("制定收付款单", new Listener_stub());
 			addButton("制定现金费用单", new Listener_stub());
 			addButton("查看销售明细表", new Listener_stub());
@@ -94,7 +96,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.ADMIN) {
-			addButton("用户管理", new Listener(mw, new DataPanel(mw, DataType.USER)));
+			addButton("用户管理", new Listener(mw, new DataPanel(mw, new UserBL_stub())));
 			addButton("查看日志", new Listener(mw, new LogPanel(mw)));		
 			addButton("退出", new CloseListener());
 		}
