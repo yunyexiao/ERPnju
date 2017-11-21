@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import po.UserPO;
 
-public interface userDataService {
+public interface UserDataService {
 
 	/**
 	 * 新增用户时，获取用户应当持有的唯一id
