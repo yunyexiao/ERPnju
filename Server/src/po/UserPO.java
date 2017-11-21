@@ -14,16 +14,17 @@ public class UserPO implements Serializable{
      * auto-generated UID
      */
     private static final long serialVersionUID = 6831754628172855841L;
-    private String userId, userName, userPwd, userSex, userTelNumber;
+    private String userId, userName, userPwd,userDept ,userSex, userTelNumber;
     private int userAge, usertype;
     
     public UserPO(){}
 
-    public UserPO(String userId, String userName, String userPwd, String userSex, 
+    public UserPO(String userId, String userName, String userPwd, String userDept, String userSex, 
         String userTelNumber, int usertype, int userAge){
         this.userId = userId;
         this.userName = userName;
         this.userPwd = userPwd;
+        this.userDept=userDept;
         this.userSex = userSex;
         this.userTelNumber = userTelNumber;
         this.usertype = usertype;
@@ -48,6 +49,10 @@ public class UserPO implements Serializable{
 
     public String getUserPwd() {
         return userPwd;
+    }
+    
+    public String getUserDept() {
+        return userDept;
     }
 
     public void setUserPwd(String userPwd) {
@@ -76,6 +81,10 @@ public class UserPO implements Serializable{
 
     public void setUsertype(int usertype) {
         this.usertype = usertype;
+    }
+    
+    public void setUserDept(String userdept) {
+        this.userDept = userdept;
     }
 
     public int getUserAge() {
