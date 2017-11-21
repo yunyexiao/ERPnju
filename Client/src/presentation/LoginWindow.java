@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import blservice.LoginBLService;
-import businesslogic.LoginBL;
+import businesslogic.UserBL_stub;
 import layout.TableLayout;
 import presentation.main.MainWindow;
 import vo.UserVO;
@@ -25,7 +25,7 @@ public class LoginWindow {
 	private JTextField keyField = new JTextField();
 	private JButton buttonA = new JButton("È¡Ïû");
 	private JButton buttonB = new JButton("µÇÂ¼");
-	private LoginBLService loginBL = new LoginBL();
+	private LoginBLService loginBL = new UserBL_stub();
 	
 	public LoginWindow() {
     	try {
@@ -56,7 +56,6 @@ public class LoginWindow {
 		loginWindow.add(keyField,"2, 3, 3, 3");
 		loginWindow.add(buttonA, "1, 5");
 		loginWindow.add(buttonB, "3, 5");
-		nameField.setText("CK-001");
 		loginWindow.setVisible(true);
 		
 		//add listener
