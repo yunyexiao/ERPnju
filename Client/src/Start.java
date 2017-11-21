@@ -12,7 +12,7 @@ public class Start {
 	private void linkToServer() {
 		try {
 			remoteHelper = RemoteHelper.getInstance();
-			remoteHelper.setRemote(Naming.lookup("rmi://127.0.0.1:8887/DataRemoteObject"));
+			remoteHelper.setRemote(Naming.lookup("rmi://172.25.181.218:8887/DataRemoteObject"));
 			System.out.println("linked");
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
