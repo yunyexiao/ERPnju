@@ -10,52 +10,71 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import blservice.DataBLService;
-import businesslogic.AccountBL_stub;
-import businesslogic.CustomerBL_stub;
-import businesslogic.UserBL_stub;
+import businesslogic.DataBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
 import presentation.component.CloseListener;
-import presentation.component.Listener_stub;
+import presentation.component.MyTableModel;
 import presentation.component.TopButtonPanel;
 import presentation.main.MainWindow;
 /**
  * 处理基础数据的通用Panel组件 </br>
- * 包括商品信息、客户信息、账户信息，正好与用户身份相对应</br>
- * 如果为了方便扩展则建议拆分出单独的枚举类标识。
+ * 包括商品信息、客户信息、账户信息、用户信息</br>
  * @author 钱美缘
  *
  */
 public class DataPanel implements PanelInterface {
 	private MainWindow mainWindow;
-	private DataBLService dataBL;
+	private DataBL dataBL;
 	private TopButtonPanel buttonPanel = new TopButtonPanel();
 	private JPanel panel = new JPanel();
 	private JTable table = new JTable();
 	private JScrollPane srcollpane;
 	
 
-	public DataPanel(MainWindow mw, DataType type) {
+	public DataPanel(MainWindow mw, DataBLService dataBLService) {
 		this.mainWindow = mw;
-		
-		if (type == DataType.COMMODITY) dataBL = new CustomerBL_stub();
-		else if (type == DataType.CUSTOMER) dataBL = new CustomerBL_stub();
+		this.dataBL = new DataBL(dataBLService);
+		/*
+		if (type == DataType.COMMODITY) dataBL = new DataBL(new CustomerBL_stub());
+		else if (type == DataType.CUSTOMER) dataBL = new DataBL(new CustomerBL_stub());
 		else if (type == DataType.ACCOUNT) dataBL = new AccountBL_stub();
 		else if (type == DataType.USER) dataBL = new UserBL_stub();
-		table.setModel(dataBL.update());
+		*/
+		MyTableModel tableModel = dataBL.update();
+		table.setModel(tableModel);
 		
 		double[][] size = {{TableLayout.FILL},{0.1,TableLayout.FILL}};
 		panel.setLayout(new TableLayout(size));
-		
-		//TODO 按钮的监听器内部类inner class
+
 		class AddListener implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				mainWindow.setEnable(false);
-				new AddWindow(mainWindow, dataBL, type);
+				new AddWindow(mainWindow, dataBL);
 				table.setModel(dataBL.update());
 			}
 		}
+		
+		class UpdateListener implements ActionListener {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (table.getSelectedRow() != -1) {
+					mainWindow.setEnable(false);
+					//FIXME table更新之后不知道model会不会变
+					new UpdateWindow(mainWindow, dataBL, tableModel.getValueAtRow(table.getSelectedRow()));
+					table.setModel(dataBL.update());
+				}
+			}
+		}
+		
+		class SearchListener implements ActionListener {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO 实现弹出搜索条件输入的对话框
+			}
+		}
+		
 		class DeleteListener implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -68,8 +87,8 @@ public class DataPanel implements PanelInterface {
 		}
 		
 		buttonPanel.addButton("增加", new ImageIcon("resource/AddData.png"), new AddListener());
-		buttonPanel.addButton("修改", new ImageIcon("resource/ChangeData.png"), new Listener_stub());
-		buttonPanel.addButton("查询", new ImageIcon("resource/SearchData.png"), new Listener_stub());
+		buttonPanel.addButton("修改", new ImageIcon("resource/ChangeData.png"), new UpdateListener());
+		buttonPanel.addButton("查询", new ImageIcon("resource/SearchData.png"), new SearchListener());
 		buttonPanel.addButton("删除", new ImageIcon("resource/DeleteData.png"), new DeleteListener());
 		buttonPanel.addButton("关闭", new ImageIcon("resource/Close.png"), new CloseListener(mainWindow));
 		
