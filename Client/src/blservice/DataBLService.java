@@ -4,6 +4,11 @@ import presentation.component.MyTableModel;
 
 public interface DataBLService {
 
+    /**
+     * 生成一条新的对应数据的id
+     * @return 新id
+     */
+    public String getNewId();
 	/**
 	 * 根据唯一的id编号删除一条信息
 	 * @param id 能唯一确定的id编号
