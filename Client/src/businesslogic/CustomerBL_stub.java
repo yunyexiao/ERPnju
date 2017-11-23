@@ -39,5 +39,9 @@ public class CustomerBL_stub implements CustomerBLService {
 		return true;
 	}
 
+	@Override
+	public String getNewId() {
+		return "0003";
+	}
 	
 }

@@ -77,4 +77,8 @@ public class DataBL implements DataBLService, UserBLService, CustomerBLService, 
 		return ((AccountBLService) dataBL).change(account);
 	}
 
+	@Override
+	public String getNewId() {
+		return "0003";
+	}
 }

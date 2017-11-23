@@ -16,8 +16,10 @@ public class UserBL_stub implements UserBLService, LoginBLService {
 
 	@Override
 	public MyTableModel search(String type, String key) {
-		// TODO Auto-generated method stub
-		return null;
+		String[] attributes={"用户编号","姓名","职务","性别","年龄","联系电话"};
+		String[][] info={{"001","Van","库存管理人员","男","34","无"}};
+		System.out.println("显示搜索的用户信息");
+		return new MyTableModel(info, attributes);
 	}
 
 	@Override
@@ -52,6 +54,11 @@ public class UserBL_stub implements UserBLService, LoginBLService {
 	public boolean change(UserVO user) {
 		System.out.println("用户信息已更改");
 		return true;
+	}
+
+	@Override
+	public String getNewId() {
+		return "0002";
 	}
 
 }

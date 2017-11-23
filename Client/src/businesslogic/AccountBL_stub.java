@@ -38,4 +38,9 @@ public class AccountBL_stub implements AccountBLService {
 		return false;
 	}
 
+	@Override
+	public String getNewId() {
+		return "0003";
+	}
+
 }
