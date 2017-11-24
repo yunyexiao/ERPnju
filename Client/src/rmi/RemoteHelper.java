@@ -2,7 +2,13 @@ package rmi;
 
 import java.rmi.Remote;
 
+import dataservice.AccountDataService;
+import dataservice.CategoryDataService;
+import dataservice.CommodityDataService;
+import dataservice.CustomerDataService;
+import dataservice.LogDataService;
 import dataservice.LoginDataService;
+import dataservice.UserDataService;
 
 public class RemoteHelper {
 
@@ -21,5 +27,29 @@ public class RemoteHelper {
 	
 	public LoginDataService getLoginDataService() {
 		return (LoginDataService) remote;
+	}
+	
+	public UserDataService getUserDataService() {
+		return (UserDataService) remote;
+	}
+	
+	public AccountDataService getAccountDataService() {
+		return (AccountDataService) remote;
+	}
+	
+	public CategoryDataService getCategoryDataService() {
+		return (CategoryDataService) remote;
+	}
+	
+	public CommodityDataService getCommodityDataService() {
+		return (CommodityDataService) remote;
+	}
+
+	public CustomerDataService getCustomerDataService() {
+		return (CustomerDataService) remote;
+	}
+	
+	public LogDataService getLogDataService() {
+		return (LogDataService) remote;
 	}
 }
