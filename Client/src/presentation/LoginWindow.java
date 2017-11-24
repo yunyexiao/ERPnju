@@ -13,8 +13,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import bl_stub.UserBL_stub;
 import blservice.LoginBLService;
-import businesslogic.UserBL_stub;
 import layout.TableLayout;
 import presentation.main.MainWindow;
 import vo.UserVO;

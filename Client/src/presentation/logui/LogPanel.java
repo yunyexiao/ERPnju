@@ -8,8 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import bl_stub.LogBL_stub;
 import blservice.LogBLService;
-import businesslogic.LogBL_stub;
 import layout.TableLayout;
 import presentation.PanelInterface;
 import presentation.component.CloseListener;

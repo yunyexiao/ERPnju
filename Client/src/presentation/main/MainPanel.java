@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import bl_stub.BillBL_stub;
 import blservice.BillBLService;
-import businesslogic.BillBL_stub;
 import layout.TableLayout;
 import presentation.PanelInterface;
 import presentation.component.MyTableModel;

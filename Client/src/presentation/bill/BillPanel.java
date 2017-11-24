@@ -3,14 +3,14 @@ package presentation.bill;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import bl_stub.BillBL_stub;
 import blservice.BillBLService;
-import businesslogic.BillBL_stub;
 import layout.TableLayout;
-import presentation.main.MainWindow;
 import presentation.PanelInterface;
 import presentation.component.CloseListener;
 import presentation.component.Listener_stub;
 import presentation.component.TopButtonPanel;
+import presentation.main.MainWindow;
 import vo.BillType;
 import vo.UserVO;
 

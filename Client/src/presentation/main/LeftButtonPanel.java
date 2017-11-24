@@ -10,9 +10,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import businesslogic.AccountBL_stub;
-import businesslogic.CustomerBL_stub;
-import businesslogic.UserBL_stub;
+import bl_stub.AccountBL_stub;
+import bl_stub.CustomerBL_stub;
+import bl_stub.UserBL_stub;
 import layout.TableLayout;
 import presentation.bill.BillExaminePanel;
 import presentation.bill.BillPanel;
