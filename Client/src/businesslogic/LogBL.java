@@ -3,12 +3,13 @@ package businesslogic;
 import java.util.ArrayList;
 
 import blservice.LogBLService;
+import businesslogic.inter.AddLogInterface;
 import dataservice.LogDataService;
 import po.LogInfoPO;
 import presentation.component.MyTableModel;
 import rmi.RemoteHelper;
 
-public class LogBL implements LogBLService {
+public class LogBL implements LogBLService, AddLogInterface {
 
 	private LogDataService logData = RemoteHelper.getInstance().getLogDataService();
 	
@@ -44,5 +45,10 @@ public class LogBL implements LogBLService {
 			info[i][3] = logInfo.getDetail();		
 		}
 		return new MyTableModel(info, attributes);
+	}
+
+	@Override
+	public boolean add(String time, String operatorId, String operation, String detail) {
+		return logData.add(new LogInfoPO(time, operatorId, operation, detail));
 	}
 }
