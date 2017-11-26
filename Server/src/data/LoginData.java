@@ -1,12 +1,17 @@
 package data;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
 import dataservice.LoginDataService;
 import po.UserPO;
 
-public class LoginData implements LoginDataService {
+public class LoginData extends UnicastRemoteObject implements LoginDataService {
+
+	public LoginData() throws RemoteException {
+		super();
+	}
 
 	@Override
 	public UserPO findById(String id) throws RemoteException {
