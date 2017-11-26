@@ -11,7 +11,7 @@ public class DataRemoteObject implements Remote, LoginDataService {
 
 	private LoginDataService loginDataService;
 	
-	protected DataRemoteObject() {
+	protected DataRemoteObject() throws RemoteException {
 		loginDataService = new LoginData();
 	}
 	

@@ -1,25 +1,44 @@
 package rmi;
 
-import java.net.MalformedURLException;
-import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+
+import data.LoginData;
 
 public class RemoteHelper {
 
 	public RemoteHelper() {
-		DataRemoteObject dataRemoteObject;
+		//bind("data.LoginData");
 		try {
-			dataRemoteObject = new DataRemoteObject();
-			LocateRegistry.createRegistry(8887);
-			Naming.bind("rmi://localhost:8887/DataRemoteObject", dataRemoteObject);
+			bind(new LoginData());
 		} catch (RemoteException e) {
 			e.printStackTrace();
-		} catch (MalformedURLException e) {
+		}
+	}
+	/*
+	private boolean bind(String className) {
+		try {
+			Class<?> c = Class.forName(className);
+			Object t = c.newInstance();
+			LocateRegistry.createRegistry(8080);
+			System.out.println(c.getInterfaces()[0].getName());
+			Naming.bind("rmi://localhost:8080/" + c.getInterfaces()[0].getName(), (Remote) t);
+			return true;
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (AlreadyBoundException e) {
-			e.printStackTrace();
+			return false;
+		}
+	}
+	*/
+	private void bind(Remote remote) {
+		try {
+			LocateRegistry.createRegistry(8887);
+			System.out.println(remote.getClass().getName());
+			Naming.bind("rmi://localhost:8887/" + remote.getClass().getName(), remote);
+		} catch (Exception e) {
+			System.out.println("绑定" + remote.getClass().getName() + "出现问题");
 		}
 	}
 }
