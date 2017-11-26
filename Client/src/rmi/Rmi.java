@@ -21,7 +21,7 @@ public class Rmi {
 			System.out.println(c.getName());
             @SuppressWarnings("unchecked")
 			//XXX 修改服务器地址处
-            T r =(T) Naming.lookup("rmi://localhost:8887/" + c.getName());
+            T r =(T) Naming.lookup("rmi://172.25.187.3:8887/" + c.getName());
             return r;
         } catch (NotBoundException e) {
             e.printStackTrace();
