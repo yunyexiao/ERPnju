@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import po.LogInfoPO;
 
-public interface LogDataService  extends Remote{
+public interface LogDataService extends Remote{
 
 	/**
 	 * 新增一条操作记录
