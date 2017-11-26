@@ -1,11 +1,12 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import po.CommodityPO;
 
-public interface CommodityDataService {
+public interface CommodityDataService extends Remote {
 	/**
 	 * 新增商品时，获取商品应当持有的唯一id
 	 * @return 下一个商品应当持有的id [id格式：]

@@ -1,10 +1,11 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.util.ArrayList;
 
 import po.LogInfoPO;
 
-public interface LogDataService {
+public interface LogDataService  extends Remote{
 
 	/**
 	 * 新增一条操作记录
