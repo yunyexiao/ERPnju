@@ -1,11 +1,12 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import po.AccountPO;
 
-public interface AccountDataService {
+public interface AccountDataService extends Remote {
 
 	/**
 	 * 新增账户时，获取账户应当持有的唯一id

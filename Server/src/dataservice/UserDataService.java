@@ -1,11 +1,12 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import po.UserPO;
 
-public interface UserDataService {
+public interface UserDataService extends Remote {
 
 	/**
 	 * 新增用户时，获取用户应当持有的唯一id

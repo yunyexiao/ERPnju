@@ -1,11 +1,12 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import po.CategoryPO;
 
-public interface CategoryDataService {
+public interface CategoryDataService extends Remote {
 
 	/**
 	 * 新增商品分类时，获取商品应当持有的唯一id

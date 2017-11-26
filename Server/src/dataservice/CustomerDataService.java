@@ -1,11 +1,12 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import po.CustomerPO;
 
-public interface CustomerDataService {
+public interface CustomerDataService extends Remote{
 
 	/**
 	 * 新增客户时，获取客户应当持有的唯一id
