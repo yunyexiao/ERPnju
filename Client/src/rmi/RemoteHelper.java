@@ -7,7 +7,6 @@ import dataservice.CategoryDataService;
 import dataservice.CommodityDataService;
 import dataservice.CustomerDataService;
 import dataservice.LogDataService;
-import dataservice.LoginDataService;
 import dataservice.UserDataService;
 
 public class RemoteHelper {
@@ -23,10 +22,6 @@ public class RemoteHelper {
 	
 	public void setRemote(Remote remote) {
 		this.remote = remote;
-	}
-	
-	public LoginDataService getLoginDataService() {
-		return (LoginDataService) remote;
 	}
 	
 	public UserDataService getUserDataService() {
