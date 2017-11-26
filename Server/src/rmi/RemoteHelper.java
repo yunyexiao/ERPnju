@@ -5,13 +5,13 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-import data.LoginData;
+import data.UserData;
 
 public class RemoteHelper {
 
 	public RemoteHelper() {
 		try {
-			bind(new LoginData());
+			bind(new UserData());
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
