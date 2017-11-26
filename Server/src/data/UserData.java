@@ -1,6 +1,7 @@
 package data;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -9,10 +10,15 @@ import java.util.Calendar;
 import dataservice.UserDataService;
 import po.UserPO;
 
-public class UserData implements UserDataService {
+public class UserData extends UnicastRemoteObject implements UserDataService {
+
+	public UserData() throws RemoteException {
+		super();
+	}
 
 	@Override
 	public String getNewId() throws RemoteException {
+		// TODO Auto-generated method stub
 		int max=0,res=0;
 		String newId;
 		try{
@@ -35,6 +41,7 @@ public class UserData implements UserDataService {
 
 	@Override
 	public UserPO findById(String id) throws RemoteException {
+		// TODO Auto-generated method stub
 		UserPO upo = new UserPO();
 		upo.setUserId(id);
 		String userName = null,userPwd = null,userDept = null,userSex = null,userBirth = null,userTel = null;
@@ -76,6 +83,7 @@ public class UserData implements UserDataService {
 
 	@Override
 	public boolean add(UserPO user) throws RemoteException {
+		// TODO Auto-generated method stub
 		String userId=null,userName = null,userPwd = null,userDept = null,userSex = null,userTel = null;
 		int userRank = -1,userAge,birthYear,userBirth = 0;
 		userId=user.getUserId();
@@ -92,18 +100,19 @@ public class UserData implements UserDataService {
 		
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
-			int r =s.executeUpdate("INSERT INTO SystemUser VALUES"
+			int r=s.executeUpdate("INSERT INTO SystemUser VALUES"
 					+ "('"+userId+"','"+userName+"','"+userPwd+"','"+userDept+"','"+userRank+"','"+userSex+"','"+userBirth+"','"+userTel+"')");
-			
+			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
 			   return false;
 		}
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean delete(String id) throws RemoteException {
+		// TODO Auto-generated method stub
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
 			int r=s.executeUpdate("DELETE FROM SystemUser WHERE SUID="+id+";");
@@ -117,8 +126,9 @@ public class UserData implements UserDataService {
 
 	@Override
 	public boolean update(UserPO user) throws RemoteException {
+		// TODO Auto-generated method stub
 		String userId=null,userName = null,userPwd = null,userDept = null,userSex = null,userTel = null;
-		int userRank = -1,userAge,birthYear,userBirth = 0;
+		int userRank = -1,userAge,userBirth = 0;
 		userId=user.getUserId();
 		userName=user.getUserName();
 		userPwd=user.getUserPwd();
@@ -147,6 +157,7 @@ public class UserData implements UserDataService {
 
 	@Override
 	public ArrayList<UserPO> getAllUser() throws RemoteException {
+		// TODO Auto-generated method stub
 		ArrayList<UserPO> upos=new ArrayList<UserPO>();
 		
 		try {
