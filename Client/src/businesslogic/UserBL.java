@@ -7,12 +7,12 @@ import blservice.UserBLService;
 import dataservice.UserDataService;
 import po.UserPO;
 import presentation.component.MyTableModel;
-import rmi.RemoteHelper;
+import rmi.Rmi;
 import vo.UserVO;
 
 public class UserBL implements UserBLService{
 	
-	private UserDataService userDataService = RemoteHelper.getInstance().getUserDataService();
+	private UserDataService userDataService = Rmi.getRemote(UserDataService.class);
 
 	@Override
 	public boolean delete(String id) {

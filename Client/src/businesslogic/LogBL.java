@@ -7,11 +7,11 @@ import businesslogic.inter.AddLogInterface;
 import dataservice.LogDataService;
 import po.LogInfoPO;
 import presentation.component.MyTableModel;
-import rmi.RemoteHelper;
+import rmi.Rmi;
 
 public class LogBL implements LogBLService, AddLogInterface {
 
-	private LogDataService logData = RemoteHelper.getInstance().getLogDataService();
+	private LogDataService logData = Rmi.getRemote(LogDataService.class);
 	
 	@Override
 	public MyTableModel getLogInfo() {
