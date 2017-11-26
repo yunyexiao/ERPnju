@@ -15,11 +15,12 @@ public class AccountPO implements Serializable {
      */
     private static final long serialVersionUID = -1081165244939370285L;
     
-    private String id, name, money;
+    private String id, name;
+    double money;
 
     public AccountPO() {}
     
-    public AccountPO(String id, String name, String money) {
+    public AccountPO(String id, String name, double money) {
         this.id = id;
         this.name = name;
         this.money = money;
@@ -41,11 +42,11 @@ public class AccountPO implements Serializable {
         this.name = name;
     }
 
-    public String getMoney() {
+    public double getMoney() {
         return money;
     }
 
-    public void setMoney(String money) {
+    public void setMoney(double money) {
         this.money = money;
     }
 
