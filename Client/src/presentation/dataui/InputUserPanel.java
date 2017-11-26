@@ -21,7 +21,7 @@ import vo.UserVO;
 @SuppressWarnings("serial")
 class InputUserPanel extends JPanel {
 
-    private JTextField userNameTextField, userIdTextField, userAgeTextField, userTelTextField;
+    private JTextField userNameTextField, userIdTextField, userPwdField, userAgeTextField, userTelTextField;
     private ButtonGroup sexButtonGroup, typeButtonGroup;
 
 	/**
@@ -32,18 +32,20 @@ class InputUserPanel extends JPanel {
 		super();
         double[][] size = {{40.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 40.0}
 		, {40.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED
-			, 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 40.0}};
+			, 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 40.0}};
 		this.setLayout(new TableLayout(size));
 	
 		JLabel userNameLabel = new JLabel("用户名"),
                userTypeLabel = new JLabel("用户种类"),
 			   userIdLabel = new JLabel("用户编号"),
+			   userPwdLabel = new JLabel("设置密码"),
 			   userSexLabel = new JLabel("用户性别"),
 			   userAgeLabel = new JLabel("用户年龄"),
 			   userTelLabel = new JLabel("用户电话号码");
 
 		userNameTextField = new JTextField();
         userIdTextField = new JTextField();
+        userPwdField = new JTextField();
         userAgeTextField = new JTextField();
         userTelTextField = new JTextField();
         
@@ -102,16 +104,18 @@ class InputUserPanel extends JPanel {
 	
 		add(userIdLabel, "1 1");
 		add(userNameLabel, "1 3");
-		add(userTypeLabel, "1 5");
-		add(userSexLabel, "1 7");
-		add(userAgeLabel, "1 9");
-		add(userTelLabel, "1 11");
+		add(userPwdLabel, "1 5");
+		add(userTypeLabel, "1 7");
+		add(userSexLabel, "1 9");
+		add(userAgeLabel, "1 11");
+		add(userTelLabel, "1 13");
 		add(userIdTextField, "3 1");
 		add(userNameTextField, "3 3");
-		add(typePanel, "3 5");
-		add(sexPanel, "3 7");
-		add(userAgeTextField, "3 9");
-		add(userTelTextField, "3 11");
+		add(userPwdField, "3 5");
+		add(typePanel, "3 7");
+		add(sexPanel, "3 9");
+		add(userAgeTextField, "3 11");
+		add(userTelTextField, "3 13");
 	}
 
 	/**
@@ -120,12 +124,13 @@ class InputUserPanel extends JPanel {
 	 */
 	public UserVO getUserVO() {
 	    String name = userNameTextField.getText()
+	    	, key = userPwdField.getText()
 	        , id = userIdTextField.getText()
 	        , sex = getSelectedText(sexButtonGroup)
 	        , telNumber = userTelTextField.getText();
 	    UserType type = getSelectedType();
         int age = Integer.parseInt(userAgeTextField.getText());
-	    return new UserVO(name, type, id, sex, telNumber, age);
+	    return new UserVO(name, key, type, id, sex, telNumber, age);
 	}
 	
 	private String getSelectedText(ButtonGroup group){
