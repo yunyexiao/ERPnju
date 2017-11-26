@@ -1,7 +1,7 @@
 package businesslogic;
 
 import blservice.LoginBLService;
-import dataservice.LoginDataService;
+import dataservice.UserDataService;
 import po.UserPO;
 import rmi.RemoteHelper;
 import vo.UserType;
@@ -12,12 +12,13 @@ public class LoginBL implements LoginBLService {
 	@Override
 	public UserVO getUser(String id, String password){
 		System.out.println(id + "	" + password);
-		LoginDataService userDataService = RemoteHelper.getInstance().getLoginDataService();
+		UserDataService userDataService = RemoteHelper.getInstance().getUserDataService();
 		try {
 			UserPO user = userDataService.findById(id);
 			if (password.equals(user.getUserPwd())) {
 				return new UserVO(
 						user.getUserName(), 
+						user.getUserPwd(),
 						UserType.getType(user.getUsertype()),
 						user.getUserId(),
 						user.getUserSex(),
