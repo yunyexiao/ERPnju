@@ -20,6 +20,7 @@ public class LoginBL implements LoginBLService {
 						user.getUserName(), 
 						user.getUserPwd(),
 						UserType.getType(user.getUsertype()),
+						user.getUserRank(),
 						user.getUserId(),
 						user.getUserSex(),
 						user.getUserTelNumber(),

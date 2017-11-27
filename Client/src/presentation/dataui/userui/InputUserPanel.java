@@ -118,7 +118,8 @@ class InputUserPanel extends JPanel {
 	        , telNumber = userTelTextField.getText();
 	    UserType type = getSelectedType();
         int age = Integer.parseInt(userAgeTextField.getText());
-	    return new UserVO(name, key, type, id, sex, telNumber, age);
+        //TODO ¸ü¸Ärank
+	    return new UserVO(name, key, type, 0, id, sex, telNumber, age);
 	}
 	
 	private UserType getSelectedType(){

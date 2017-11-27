@@ -10,6 +10,7 @@ public class UserVO {
 	private int age;
 	private String key;
 	private UserType type;
+	private int rank;
 	private String dept;
 	/**
 	 * 构造函数……
@@ -21,10 +22,11 @@ public class UserVO {
 	 * @param telNumber 电话
 	 * @param age 年龄
 	 */
-	public UserVO(String name, String key, UserType type, String id, String sex, String telNumber, int age) {
+	public UserVO(String name, String key, UserType type, int rank, String id, String sex, String telNumber, int age) {
 		this.name = name;
 		this.key = key;
 		this.type = type;
+		this.rank = rank;
 		this.id = id;
 		this.sex = sex;
 		this.telNumber = telNumber;
@@ -64,7 +66,7 @@ public class UserVO {
 	}
 	
 	public UserPO toPO() {
-		UserPO userPO = new UserPO(id, name, " ", " ", sex, telNumber, type.getNum(), age);
+		UserPO userPO = new UserPO(id, name, " ", sex, telNumber, type.getNum(), rank, age);
 		return userPO;
 	}
 }

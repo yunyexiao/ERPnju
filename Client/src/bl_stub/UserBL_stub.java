@@ -36,11 +36,11 @@ public class UserBL_stub implements UserBLService, LoginBLService {
 	 */
 	@Override
 	public UserVO getUser(String id, String password) {
-		if ("1".equals(id)) return new UserVO("他", "", UserType.KEEPER, id, "男", "", 91);
-		else if ("2".equals(id)) return new UserVO("蛤", "", UserType.SALESMAN, id, "男", "", 91);
-		else if ("3".equals(id)) return new UserVO("长者", "", UserType.ACCOUNTANT, id, "男", "", 91);
-		else if ("4".equals(id)) return new UserVO("香港记者", "", UserType.GM, id, "男", "", 91);
-		else if ("5".equals(id)) return new UserVO("用户不存在", "", UserType.ADMIN, id, "男", "", 91);
+		if ("1".equals(id)) return new UserVO("他", "", UserType.KEEPER, 0, id, "男", "", 91);
+		else if ("2".equals(id)) return new UserVO("蛤", "", UserType.SALESMAN, 0, id, "男", "", 91);
+		else if ("3".equals(id)) return new UserVO("长者", "", UserType.ACCOUNTANT, 0, id, "男", "", 91);
+		else if ("4".equals(id)) return new UserVO("香港记者", "", UserType.GM, 0, id, "男", "", 91);
+		else if ("5".equals(id)) return new UserVO("用户不存在", "", UserType.ADMIN, 0, id, "男", "", 91);
 		else return null;
 	}
 
