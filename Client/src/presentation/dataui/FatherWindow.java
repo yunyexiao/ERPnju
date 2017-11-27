@@ -65,7 +65,7 @@ public abstract class FatherWindow {
 		frame.addWindowListener(new WindowCloseListener());
 	}
 	
-	abstract boolean taskFinished();
+	abstract protected boolean taskFinished();
 	
-	abstract String getSuccessMsg();
+	abstract protected String getSuccessMsg();
 }
