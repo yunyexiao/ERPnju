@@ -11,15 +11,18 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import bl_stub.AccountBL_stub;
+import bl_stub.CategoryBL_stub;
+import bl_stub.CommodityBL_stub;
 import bl_stub.CustomerBL_stub;
 import bl_stub.UserBL_stub;
 import layout.TableLayout;
 import presentation.bill.BillExaminePanel;
 import presentation.bill.BillPanel;
-import presentation.categoryui.CategoryPanel;
 import presentation.component.Listener_stub;
 import presentation.dataui.MockDataPanel;
-import presentation.dataui.UserDataPanel;
+import presentation.dataui.categoryui.CategoryDataPanel;
+import presentation.dataui.commodityui.CommodityDataPanel;
+import presentation.dataui.userui.UserDataPanel;
 import presentation.logui.LogPanel;
 import vo.BillType;
 import vo.UserType;
@@ -69,8 +72,8 @@ class LeftButtonPanel extends JPanel{
 		
 		// 修改按钮处------------------------------
 		if (type == UserType.KEEPER) {
-			addButton("商品分类管理", new Listener(mw, new CategoryPanel(mw)));
-			addButton("商品管理", new Listener_stub());
+			addButton("商品分类管理", new Listener(mw, new CategoryDataPanel(new CategoryBL_stub(), closeListener)));
+			addButton("商品管理", new Listener(mw, new CommodityDataPanel(new CommodityBL_stub(), closeListener)));
 			addButton("库存查看", new Listener_stub());
 			addButton("库存盘点", new Listener_stub());
 			addButton("报溢/报损", new Listener_stub());

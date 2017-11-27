@@ -102,6 +102,6 @@ public class MainWindow {
 	 */
 	protected void close() {
 		int response = JOptionPane.showConfirmDialog(null, "将放弃当前未保存的工作，确认要退出？", "Warnning", JOptionPane.YES_NO_OPTION);
-		if (response == 0) mainWindow.dispose();
+		if (response == 0) System.exit(1);
 	}
 }
