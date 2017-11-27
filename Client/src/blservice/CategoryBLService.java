@@ -11,6 +11,11 @@ import vo.CategoryVO;
 public interface CategoryBLService {
 
 	/**
+     * 生成一个新的商品编号
+     * @return 新商品编号
+     */
+    public String getNewId();
+	/**
 	 * 根据数据层的PO对象生成树供展示层显示
 	 * @return 用于显示的TreeModel
 	 */
@@ -29,7 +34,7 @@ public interface CategoryBLService {
 	 * @param category 界面层传递的VO对象
 	 * @return 是否删除成功
 	 */
-	public boolean delete(CategoryVO category);
+	public boolean delete(String id);
 	/**
 	 * 修改一个商品分类的信息（只能改名称。。。）
 	 * @param category 界面层传递的VO对象
