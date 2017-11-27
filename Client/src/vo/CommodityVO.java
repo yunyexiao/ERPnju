@@ -1,5 +1,7 @@
 package vo;
 
+import po.CommodityPO;
+
 public class CommodityVO {
 
 	private String id, name, type, store, categoryId, categoryName;
@@ -25,6 +27,11 @@ public class CommodityVO {
         this.recentSalePrice = recentSalePrice;
     }
 
+    public CommodityPO toPO(){
+        return new CommodityPO(id, name, type, store, categoryId, categoryName, amount
+            , alarmNum, inPrice, salePrice, recentInPrice, recentSalePrice);
+    }
+    
     public String getId() {
         return id;
     }

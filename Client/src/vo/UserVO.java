@@ -10,6 +10,7 @@ public class UserVO {
 	private int age;
 	private String key;
 	private UserType type;
+	private String dept;
 	/**
 	 * 构造函数……
 	 * @param name 姓名
@@ -38,6 +39,14 @@ public class UserVO {
 		return this.name;
 	}
 	
+	public String getPwd() {
+		return this.key;
+	}
+	
+	public String getDept() {
+		return this.dept;
+	}
+	
 	public String getId() {
 		return this.id;
 	}
@@ -55,7 +64,7 @@ public class UserVO {
 	}
 	
 	public UserPO toPO() {
-		UserPO userPO = new UserPO(id, name, " ", sex, telNumber, type.getNum(), age);
+		UserPO userPO = new UserPO(id, name, " ", " ", sex, telNumber, type.getNum(), age);
 		return userPO;
 	}
 }
