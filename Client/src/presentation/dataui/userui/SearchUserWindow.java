@@ -10,6 +10,9 @@ public class SearchUserWindow extends SearchWindow{
     
     public SearchUserWindow(UserBLService userBl) {
         super(userBl);
+        frame.setTitle("≤È—Ø”√ªß");
+        frame.setSize(300, 200);
+        frame.setVisible(true);
     }
 
     @Override

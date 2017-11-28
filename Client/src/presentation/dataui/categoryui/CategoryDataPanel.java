@@ -36,6 +36,7 @@ public class CategoryDataPanel implements PanelInterface{
 		buttonPanel.addButton("修改", new ImageIcon("resource/ChangeData.png"), new ActionListener(){
 		    @Override
 		    public void actionPerformed(ActionEvent e){
+		        if(tree.isSelectionEmpty())return;
 		        DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
 		        new UpdateCategoryWindow(categoryBl, (CategoryVO)node.getUserObject());
 		        tree.setModel(categoryBl.getModel());
@@ -44,6 +45,7 @@ public class CategoryDataPanel implements PanelInterface{
 		buttonPanel.addButton("删除", new ImageIcon("resource/DeleteData.png"), new ActionListener(){
 		    @Override
 		    public void actionPerformed(ActionEvent e){
+		        if(tree.isSelectionEmpty()) return;
 				int response = JOptionPane.showConfirmDialog(null, "确认要删除此条信息？", "提示", JOptionPane.YES_NO_OPTION);
 				if(response == 0){
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();

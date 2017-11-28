@@ -11,7 +11,7 @@ import presentation.component.MyTableModel;
 import vo.CommodityVO;
 
 
-public class CommodityBL implements CommodityBLService {
+public class CommodityBL implements CommodityBLService{
     
     private CommodityDataService commodityDs;
     private static final String[] columnNames = {"商品编号", "名称", "型号", "库存", "数量", "警戒值"
@@ -45,17 +45,38 @@ public class CommodityBL implements CommodityBLService {
     @Override
     public MyTableModel search(String type, String key) {
         try{
-            // TODO find by id only...
-            CommodityPO c = commodityDs.findById(key);
-            String[][] data = {{c.getId(), c.getName(), c.getType(), c.getStore(), c.getAmount() + ""
-                , c.getAlarmNum() + "", c.getCategoryId(), c.getCategoryName(), c.getInPrice() + ""
-                , c.getSalePrice() + "", c.getRecentInPrice() + "", c.getRecentSalePrice() + ""}};
-            MyTableModel model = new MyTableModel(data, columnNames);
+            MyTableModel model = new MyTableModel(null, columnNames);
+            if(type.contains("分类编号")){
+                System.out.println(1);
+                ArrayList<CommodityPO> commodities = commodityDs.getAllCommodity();
+                for(CommodityPO commodity: commodities){
+                    if(commodity.getCategoryId().equals(key))
+                        addIntoModel(model, commodity);
+                }
+            }else if(type.contains("编号")){
+                System.out.println(2);
+                CommodityPO c = commodityDs.findById(key);
+                addIntoModel(model, c);
+            }else if(type.contains("分类名称")){
+                System.out.println(3);
+                ArrayList<CommodityPO> commodities = commodityDs.getAllCommodity();
+                for(CommodityPO commodity: commodities){
+                    if(commodity.getCategoryName().contains(key))
+                        addIntoModel(model, commodity);
+                }
+            }else if(type.contains("名称")){
+                System.out.println(4);
+                ArrayList<CommodityPO> commodities = commodityDs.getAllCommodity();
+                for(CommodityPO commodity: commodities){
+                    if(commodity.getName().contains(key))
+                        addIntoModel(model, commodity);
+                }
+            }
             return model;
         }catch(RemoteException e){
             e.printStackTrace();
-            return null;
         }
+        return null;
     }
 
     @Override
@@ -102,6 +123,23 @@ public class CommodityBL implements CommodityBLService {
             e.printStackTrace();
             return false;
         }
+    }
+
+
+
+    public ArrayList<CommodityPO> getAllCommodities() {
+        try {
+            return commodityDs.getAllCommodity();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    private void addIntoModel(MyTableModel model, CommodityPO c){
+        model.addRow(new String[]{c.getId(), c.getName(), c.getType(), c.getStore(), c.getAmount() + ""
+                , c.getAlarmNum() + "", c.getCategoryId(), c.getCategoryName(), c.getInPrice() + ""
+                , c.getSalePrice() + "", c.getRecentInPrice() + "", c.getRecentSalePrice() + ""});
     }
 
 }
