@@ -18,6 +18,7 @@ public class SearchUserWindow extends SearchWindow{
     @Override
     protected ButtonGroup initTypeGroup() {
         JRadioButton idRadioButton = new JRadioButton("°´±àºÅËÑË÷");
+        idRadioButton.setSelected(true);
         JRadioButton nameRadioButton = new JRadioButton("°´Ãû³ÆËÑË÷");
         ButtonGroup typeGroup = new ButtonGroup();
         typeGroup.add(idRadioButton);
