@@ -1,5 +1,7 @@
 package vo;
 
+import po.AccountPO;
+
 public class AccountVO {
 
 	private String name;
@@ -16,4 +18,8 @@ public class AccountVO {
 	public String getNumber() {return number;}
 	public int getMoney() {return money;}
 	
+	public AccountPO toPO() {
+		AccountPO accountPO = new AccountPO (number, name, money);
+		return accountPO;
+	}
 }
