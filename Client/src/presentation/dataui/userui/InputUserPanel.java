@@ -4,6 +4,7 @@ import java.util.Enumeration;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -24,6 +25,7 @@ class InputUserPanel extends JPanel {
 
     private JTextField userIdTextField, userNameTextField, userKeyTextField, userAgeTextField, userTelTextField;
     private ButtonGroup sexButtonGroup, typeButtonGroup;
+    private JComboBox<String> rankComboBox;
 
 	/**
 	 * 根据已有数据初始化界面
@@ -32,11 +34,12 @@ class InputUserPanel extends JPanel {
 	protected InputUserPanel(String[] user) {
 		super();
         double[][] size = {{40.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 40.0}
-		, {40.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED
-			, 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 40.0}};
+            , {40.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED
+                , 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 10.0
+                , TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 40.0,}};
 		this.setLayout(new TableLayout(size));
 		
-		String[] texts = {"用户编号", "用户名", "用户密码", "用户性别", "用户年龄", "用户电话号码", "用户种类"};
+		String[] texts = {"用户编号", "用户名", "用户密码", "用户级别", "用户性别", "用户年龄", "用户电话号码", "用户种类"};
 		JLabel[] labels = new JLabel[texts.length];
 		for(int i = 0; i < labels.length; i++){
 		    labels[i] = new JLabel(texts[i]);
@@ -46,10 +49,13 @@ class InputUserPanel extends JPanel {
         userIdTextField = new JTextField(user[0]);
 		userNameTextField = new JTextField(user[1]);
 		userKeyTextField = new JTextField(user[2]);
-        userAgeTextField = new JTextField(user[4]);
-        userTelTextField = new JTextField(user[5]);
+        userAgeTextField = new JTextField(user[5]);
+        userTelTextField = new JTextField(user[6]);
         
         userIdTextField.setEditable(false);
+        
+        rankComboBox = new JComboBox<>();
+        rankComboBox.addItem("默认");
 
 		JRadioButton manRadioButton = new JRadioButton("男"),
 			    	 womanRadioButton = new JRadioButton("女");
@@ -66,6 +72,11 @@ class InputUserPanel extends JPanel {
 					 typeSalesmanRadioButton = new JRadioButton(UserType.SALESMAN.getName()),
 					 typeAccountantRadioButton = new JRadioButton(UserType.ACCOUNTANT.getName()),
 					 typeGmRadioButton = new JRadioButton(UserType.GM.getName());
+		typeKeeperRadioButton.addActionListener(e -> defaultType());
+		typeSalesmanRadioButton.addActionListener(e -> salesType());
+		typeAccountantRadioButton.addActionListener(e -> defaultType());
+		typeGmRadioButton.addActionListener(e -> defaultType());
+		typeAdminRadioButton.addActionListener(e -> defaultType());
 		
 		typeKeeperRadioButton.setSelected(true);
 		JPanel typePanel = new JPanel();
@@ -82,28 +93,30 @@ class InputUserPanel extends JPanel {
 		typeButtonGroup.add(typeGmRadioButton);
 		
 		int length = user.length;
-		if(length > 6 && user[6] != null){
+		if(length > 7 && user[7] != null){
 		    Enumeration<AbstractButton> eb = typeButtonGroup.getElements();
 		    while(eb.hasMoreElements()){
 		        AbstractButton b = eb.nextElement(); 
-		        if(b.getText().equals(user[6])){
+		        if(b.getText().equals(user[7])){
 		            b.setSelected(true);
 		            break;
 		        }
 		    }
 		}
-		if(length > 3 && user[3] != null){
-		    if(user[3].equals(manRadioButton.getText()))
+		if(length > 4 && user[4] != null){
+		    if(user[4].equals(manRadioButton.getText()))
 		        manRadioButton.setSelected(true);
 		    else womanRadioButton.setSelected(true);
 		}
 	
 		add(userIdTextField, "3 1");
 		add(userNameTextField, "3 3");
-		add(typePanel, "3 5");
-		add(sexPanel, "3 7");
-		add(userAgeTextField, "3 9");
-		add(userTelTextField, "3 11");
+		add(userKeyTextField, "3 5");
+		add(rankComboBox, "3 7");
+		add(sexPanel, "3 9");
+		add(userAgeTextField, "3 11");
+		add(userTelTextField, "3 13");
+		add(typePanel, "3 15");
 	}
 
 	/**
@@ -117,9 +130,9 @@ class InputUserPanel extends JPanel {
 	        , sex = Tools.getSelectedText(sexButtonGroup)
 	        , telNumber = userTelTextField.getText();
 	    UserType type = getSelectedType();
+	    int rank = rankComboBox.getSelectedIndex();
         int age = Integer.parseInt(userAgeTextField.getText());
-        //TODO 更改rank
-	    return new UserVO(name, key, type, 0, id, sex, telNumber, age);
+	    return new UserVO(name, key, type, rank, id, sex, telNumber, age);
 	}
 	
 	private UserType getSelectedType(){
@@ -135,6 +148,17 @@ class InputUserPanel extends JPanel {
 	    if(type.equals(UserType.GM.getName()))
 	        return UserType.GM;
 	    return null;
+	}
+	
+	private void defaultType(){
+	    rankComboBox.removeAllItems();
+	    rankComboBox.addItem("默认");
+	}
+	
+	private void salesType(){
+	    rankComboBox.removeAllItems();
+	    rankComboBox.addItem("销售员");
+	    rankComboBox.addItem("销售经理");
 	}
 
 }

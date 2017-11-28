@@ -10,6 +10,9 @@ public class SearchCommodityWindow extends SearchWindow{
     
     public SearchCommodityWindow(CommodityBLService commodityBl) {
         super(commodityBl);
+        frame.setTitle("≤È—Ø…Ã∆∑");
+        frame.setSize(600, 200);
+        frame.setVisible(true);
     }
 
     @Override

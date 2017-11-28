@@ -25,8 +25,8 @@ public abstract class SearchWindow extends FatherWindow {
         super();
         this.dataBl = dataBl;
         
-        JLabel keyLabel = new JLabel(""),
-               typeLabel = new JLabel("");
+        JLabel keyLabel = new JLabel("¹Ø¼ü´Ê"),
+               typeLabel = new JLabel("ËÑË÷ÖÖÀà");
         keyTextField = new JTextField();
         typeGroup = initTypeGroup();
         JPanel typePanel = new JPanel();
@@ -45,7 +45,7 @@ public abstract class SearchWindow extends FatherWindow {
         centerPanel.add(typePanel, "3 3");
         
         frame.add(centerPanel, BorderLayout.CENTER);
-        frame.setVisible(true);
+        //frame.setVisible(true);
     }
     
     abstract protected ButtonGroup initTypeGroup();
