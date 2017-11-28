@@ -18,6 +18,7 @@ import bl_stub.UserBL_stub;
 import layout.TableLayout;
 import presentation.bill.BillExaminePanel;
 import presentation.bill.BillPanel;
+import presentation.billui.SaleBillPanel;
 import presentation.component.Listener_stub;
 import presentation.dataui.MockDataPanel;
 import presentation.dataui.categoryui.CategoryDataPanel;
@@ -84,7 +85,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("客户管理", new Listener(mw, new MockDataPanel(new CustomerBL_stub(), closeListener)));
 			addButton("制定进货单", new Listener(mw, new BillPanel(mw, BillType.PURCHASE, true)));
 			addButton("制定进货退货单", new Listener_stub());
-			addButton("制定销售单", new Listener_stub());
+			addButton("制定销售单", new Listener(mw, new SaleBillPanel(mainWindow.getUser(), closeListener)));
 			addButton("制定销售退货单", new Listener_stub());
 			addButton("退出", new CloseListener());
 		}
