@@ -12,6 +12,7 @@ import javax.swing.JTable;
 import blservice.DataBLService;
 import layout.TableLayout;
 import presentation.PanelInterface;
+import presentation.component.MyTableModel;
 import presentation.component.TopButtonPanel;
 /**
  * 处理基础数据的通用Panel组件 </br>
@@ -34,10 +35,12 @@ public abstract class DataPanel implements PanelInterface {
 		class DeleteListener implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+			    int index = table.getSelectedRow();
+			    if(index < 0) return;
 				int response = JOptionPane.showConfirmDialog(null, "确认要删除此条信息？", "提示", JOptionPane.YES_NO_OPTION);
 				if (response == 0) {
-					//TODO 将1替换为选中的id
-					if (dataBL.delete("1")) JOptionPane.showMessageDialog(null, "信息已成功删除", "系统", JOptionPane.INFORMATION_MESSAGE); 
+				    String id = (String)((MyTableModel)table.getModel()).getValueAt(index, 0);
+					if (dataBL.delete(id)) JOptionPane.showMessageDialog(null, "信息已成功删除", "系统", JOptionPane.INFORMATION_MESSAGE); 
 					table.setModel(dataBL.update());
 				}
 			}			
@@ -48,6 +51,7 @@ public abstract class DataPanel implements PanelInterface {
 		buttonPanel.addButton("修改", new ImageIcon("resource/ChangeData.png"), getUpdateListener());
 		buttonPanel.addButton("查询", new ImageIcon("resource/SearchData.png"), getSearchListener());
 		buttonPanel.addButton("删除", new ImageIcon("resource/DeleteData.png"), new DeleteListener());
+		buttonPanel.addButton("刷新", new ImageIcon("resource/Refresh.png"), e -> table.setModel(dataBL.update()));
 		buttonPanel.addButton("关闭", new ImageIcon("resource/Close.png"), closeListener);
 		
 		JScrollPane srcollpane = new JScrollPane(table);

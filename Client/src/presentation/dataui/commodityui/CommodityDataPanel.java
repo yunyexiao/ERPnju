@@ -36,8 +36,10 @@ public class CommodityDataPanel extends DataPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                int index = table.getSelectedRow();
+                if(index < 0)return;
                 MyTableModel model = (MyTableModel)table.getModel();
-                new UpdateCommodityWindow(commodityBl, model.getValueAtRow(table.getSelectedRow()));
+                new UpdateCommodityWindow(commodityBl, model.getValueAtRow(index));
                 updateTable();
             }
             
