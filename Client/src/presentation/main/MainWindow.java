@@ -59,6 +59,7 @@ public class MainWindow {
 		mainWindow.add(innerPanel.getPanel(), BorderLayout.CENTER);
 		mainWindow.add(infoLabel, BorderLayout.SOUTH);
 		mainWindow.setVisible(true);
+		buttonPanel.setBackground();
 		
 		SwingUtilities.updateComponentTreeUI(mainWindow);
 	}

@@ -3,11 +3,14 @@ package presentation.main;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import bl_stub.AccountBL_stub;
@@ -43,7 +46,7 @@ class LeftButtonPanel extends JPanel{
      */
     private void addButton(String text, ActionListener listener) {
     	JButton button = new JButton(text);
-		button.setFont(new Font("ÀŒÃÂ",Font.BOLD,14));
+		button.setFont(new Font("µ»œﬂ",Font.BOLD,18));
 		button.addActionListener(listener);
 		innerPanel.add(button);
     }
@@ -54,6 +57,7 @@ class LeftButtonPanel extends JPanel{
 	public LeftButtonPanel(MainWindow mw) {
 		this.mainWindow = mw;
 		UserType type = mainWindow.getUser().getType();
+		innerPanel.setOpaque(false);
 		
 		class CloseListener implements ActionListener {
 			@Override
@@ -120,5 +124,13 @@ class LeftButtonPanel extends JPanel{
 		this.setLayout(new TableLayout(size));
 		this.add(innerPanel, "1,0");
 		this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+	}
+	
+	public void setBackground() {
+		ImageIcon image = new ImageIcon("resource/LeftButtonPanel.png");   
+        Image img = image.getImage();  
+        img = img.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT);  
+        image.setImage(img);
+		this.add(new JLabel(image), "0, 0, 2, 0");
 	}
 }
