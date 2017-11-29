@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import blservice.UserBLService;
+import businesslogic.inter.GetUserInterface;
 import dataservice.UserDataService;
 import po.UserPO;
 import presentation.component.MyTableModel;
@@ -11,7 +12,7 @@ import rmi.Rmi;
 import vo.UserType;
 import vo.UserVO;
 
-public class UserBL implements UserBLService{
+public class UserBL implements UserBLService, GetUserInterface{
 	
 	private UserDataService userDataService = Rmi.getRemote(UserDataService.class);
 	private String[] tableHeader = {"用户ID", "用户名", "用户类别", "用户权限", "用户密码", "性别", "年龄", "电话号码"};
@@ -38,22 +39,15 @@ public class UserBL implements UserBLService{
 		}
 	}
 
-	@Override//暂时只实现按ID查找功能
-	public MyTableModel search(String type, String key) {
-		try {
-			UserPO userPO = userDataService.findById(key);
-			String[][] data = {getLine(userPO)};
-			MyTableModel searchTable = new MyTableModel (data, tableHeader);
-			return searchTable;
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
 	@Override
-	public MyTableModel update() {
+	public MyTableModel search(String type, String key) {
+		ArrayList<UserPO> list = null;
 		try {
-			ArrayList<UserPO> list=userDataService.getAllUser();
+			if ("按编号搜索".equals(type)) {
+				list = userDataService.getUsersBy("SUID", key, true);
+			} else if ("按名称搜索".equals(type)) {
+				list = userDataService.getUsersBy("SUName", key, true);
+			}
 			String[][] data = new String [list.size()][tableHeader.length];
 			for (int i = 0; i < list.size(); i++) {
 				data[i] = getLine(list.get(i));
@@ -61,7 +55,22 @@ public class UserBL implements UserBLService{
 			MyTableModel searchTable = new MyTableModel (data, tableHeader);
 			return searchTable;
 		} catch (Exception e) {
-			return null;
+			return new MyTableModel (new String[][]{{}}, tableHeader);
+		}
+	}
+
+	@Override
+	public MyTableModel update() {
+		try {
+			ArrayList<UserPO> list = userDataService.getAllUser();
+			String[][] data = new String [list.size()][tableHeader.length];
+			for (int i = 0; i < list.size(); i++) {
+				data[i] = getLine(list.get(i));
+			}
+			MyTableModel searchTable = new MyTableModel (data, tableHeader);
+			return searchTable;
+		} catch (Exception e) {
+			return new MyTableModel (new String[][]{{}}, tableHeader);
 		}
 	}
 
@@ -93,6 +102,28 @@ public class UserBL implements UserBLService{
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public UserVO getUser(String id) {
+		UserPO user = null;
+		try {
+			user = userDataService.findById(id);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		if (user != null) {
+			return new UserVO(
+					user.getUserName(),
+					user.getUserPwd(),
+					UserType.getType(user.getUsertype()),
+					user.getUserRank(),
+					user.getUserId(),
+					user.getUserSex(),
+					user.getUserTelNumber(),
+					user.getUserAge()); 
+		}
+		return null;
 	}
 
 }
