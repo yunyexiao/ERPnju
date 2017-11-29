@@ -17,7 +17,7 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 
 	@Override
 	public String getNewId() throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		int max=0,res=0;
 		String newId;
 		try{
@@ -39,7 +39,7 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 
 	@Override
 	public CustomerPO findById(String id) throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		CustomerPO cpo=new CustomerPO();
 		cpo.setId(id);
 		String cusName=null,cusTel=null,cusAddress=null,cusCode=null,cusMail=null,cusSalesman=null;
@@ -85,7 +85,7 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 
 	@Override
 	public boolean add(CustomerPO customer) throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		String cusId=null,cusName=null,cusTel=null,cusAddress=null,cusCode=null,cusMail=null,cusSalesman=null;
 		int cusRank=-1,cusType=-1;
 		double cusReceiRange=0.0,cusReceivable=0.0,cusPayment=0.0;
@@ -119,7 +119,7 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 
 	@Override
 	public boolean delete(String id) throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
 			int r=s.executeUpdate("DELETE FROM CustomerInfo WHERE CusID="+id+";");
@@ -133,7 +133,7 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 
 	@Override
 	public boolean update(CustomerPO customer) throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		String cusId=null,cusName=null,cusTel=null,cusAddress=null,cusCode=null,cusMail=null,cusSalesman=null;
 		int cusRank=-1,cusType=-1;
 		double cusReceiRange=0.0,cusReceivable=0.0,cusPayment=0.0;
@@ -166,7 +166,7 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 
 	@Override
 	public ArrayList<CustomerPO> getAllCustomer() throws RemoteException {
-		// TODO Auto-generated method stub
+		
      ArrayList<CustomerPO> cpos=new ArrayList<CustomerPO>();
 		
 		try {
@@ -210,6 +210,12 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 		   return null;
 		 }
 		return cpos;
+	}
+
+	@Override
+	public ArrayList<CustomerPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+		
+		return null;
 	}
 
 }

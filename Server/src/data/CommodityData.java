@@ -16,7 +16,7 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 
 	@Override
 	public String getNewId() throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		int max=0,res=0;
 		String newId;
 		try{
@@ -39,7 +39,7 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 
 	@Override
 	public CommodityPO findById(String id) throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		CommodityPO cpo=new CommodityPO();
 		cpo.setId(id);
 		String comName=null,comCateID=null,comCateName=null,comType=null,comStore=null;
@@ -92,7 +92,7 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 
 	@Override
 	public boolean add(CommodityPO commodity) throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		String comID=null,comName=null,comCateID=null,comCateName=null,comType=null,comStore=null;
 		long comAlarmQuantity=0,comQuantity=0;
 		double comInPrice=0.0,comSalePrice=0.0,comRecInPrice=0.0,comRecSalePrice=0.0;
@@ -126,7 +126,7 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 
 	@Override
 	public boolean delete(String id) throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
 			int r=s.executeUpdate("DELETE FROM CommodityInfo WHERE ComID="+id+";");
@@ -141,7 +141,7 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 
 	@Override
 	public boolean update(CommodityPO commodity) throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		String comID=null,comName=null,comCateID=null,comCateName=null,comType=null,comStore=null;
 		long comAlarmQuantity=0,comQuantity=0;
 		double comInPrice=0.0,comSalePrice=0.0,comRecInPrice=0.0,comRecSalePrice=0.0;
@@ -173,7 +173,7 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 
 	@Override
 	public ArrayList<CommodityPO> getAllCommodity() throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		ArrayList<CommodityPO> cpos=new ArrayList<CommodityPO>();
 		try{
 			Statement s1 = DataHelper.getInstance().createStatement();
@@ -226,6 +226,12 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 			}
 		}
 		return cpos;
+	}
+
+	@Override
+	public ArrayList<CommodityPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+		
+		return null;
 	}
 
 }
