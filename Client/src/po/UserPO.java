@@ -16,6 +16,7 @@ public class UserPO implements Serializable{
     private static final long serialVersionUID = 6831754628172855841L;
     private String userId, userName, userPwd ,userSex, userTelNumber;
     private int userAge, userRank, usertype;
+    private boolean isExist;
     
     public UserPO(){}
 
@@ -93,6 +94,14 @@ public class UserPO implements Serializable{
 
     public void setUserAge(int userAge) {
         this.userAge = userAge;
+    }
+    
+    public void setExistFlag(boolean flag) {
+    	this.isExist = flag;
+    }
+    
+    public boolean getExistFlag() {
+    	return this.isExist;
     }
     
     public class UserType{

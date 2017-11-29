@@ -19,6 +19,8 @@ public class CommodityPO implements Serializable {
     private long amount, alarmNum;
     private double inPrice, salePrice, recentInPrice, recentSalePrice;
 
+	private boolean isExist;
+
     public CommodityPO() {}
     
     public CommodityPO(String id, String name, String type, String store, String categoryId
@@ -132,6 +134,14 @@ public class CommodityPO implements Serializable {
 
     public void setRecentSalePrice(double recentSalePrice) {
         this.recentSalePrice = recentSalePrice;
+    }
+    
+    public void setExistFlag(boolean flag) {
+    	this.isExist = flag;
+    }
+    
+    public boolean getExistFlag() {
+    	return this.isExist;
     }
 
 }
