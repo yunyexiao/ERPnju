@@ -103,4 +103,16 @@ public class UserPO implements Serializable{
         public static final int ADMIN = 4;
     }
 
+    public String getRankName() {
+    	if (usertype == UserType.SALESMAN) {
+    		if (userRank == 0) return "普通销售员";
+    		if (userRank == 1) return "销售经理";
+    	}
+    	else if (usertype == UserType.ACCOUNTANT) {
+    		if (userRank == 0) return "普通财务人员";
+    		if (userRank == 1) return "最高权限财务人员";
+    	}
+    	return "默认";
+    }
+    
 }

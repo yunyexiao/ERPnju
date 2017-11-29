@@ -74,7 +74,7 @@ class InputUserPanel extends JPanel {
 					 typeGmRadioButton = new JRadioButton(UserType.GM.getName());
 		typeKeeperRadioButton.addActionListener(e -> defaultType());
 		typeSalesmanRadioButton.addActionListener(e -> salesType());
-		typeAccountantRadioButton.addActionListener(e -> defaultType());
+		typeAccountantRadioButton.addActionListener(e -> accountantType());
 		typeGmRadioButton.addActionListener(e -> defaultType());
 		typeAdminRadioButton.addActionListener(e -> defaultType());
 		
@@ -157,8 +157,13 @@ class InputUserPanel extends JPanel {
 	
 	private void salesType(){
 	    rankComboBox.removeAllItems();
-	    rankComboBox.addItem("销售员");
+	    rankComboBox.addItem("普通销售员");
 	    rankComboBox.addItem("销售经理");
 	}
 
+	private void accountantType(){
+	    rankComboBox.removeAllItems();
+	    rankComboBox.addItem("普通财务人员");
+	    rankComboBox.addItem("最高权限财务人员");
+	}
 }
