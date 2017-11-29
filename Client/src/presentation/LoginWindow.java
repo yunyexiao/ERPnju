@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
@@ -25,7 +26,7 @@ import vo.UserVO;
 public class LoginWindow {
 	private JFrame loginWindow = new JFrame("灯具进销存管理系统-登录界面");
 	private JTextField nameField = new JTextField();
-	private JTextField keyField = new JTextField();
+	private JPasswordField keyField = new JPasswordField();
 	private JButton buttonA = getButton("取消");
 	private JButton buttonB = getButton("登录");
 	private LoginBLService loginBL = new UserBL_stub();
@@ -82,7 +83,7 @@ public class LoginWindow {
 			@SuppressWarnings("unused")
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				UserVO user = loginBL.getUser(nameField.getText(), keyField.getText());
+				UserVO user = loginBL.getUser(nameField.getText(), new String(keyField.getPassword()));
 				if (user == null) {
 					nameField.setText("");
 					keyField.setText("");
