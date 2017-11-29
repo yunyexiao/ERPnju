@@ -49,8 +49,8 @@ class InputUserPanel extends JPanel {
         userIdTextField = new JTextField(user[0]);
 		userNameTextField = new JTextField(user[1]);
 		userKeyTextField = new JTextField(user[4]);
-        userAgeTextField = new JTextField(user[5]);
-        userTelTextField = new JTextField(user[6]);
+        userAgeTextField = new JTextField(user[6]);
+        userTelTextField = new JTextField(user[7]);
         
         userIdTextField.setEditable(false);
         
