@@ -73,7 +73,7 @@ class LeftButtonPanel extends JPanel{
 		
 		// 修改按钮处------------------------------
 		if (type == UserType.KEEPER) {
-			addButton("商品分类管理", new Listener(mw, new CategoryDataPanel(new CategoryBL_stub(), closeListener)));
+			addButton("商品分类管理", e -> mw.changePanel(new CategoryDataPanel(new CategoryBL_stub(), closeListener)));
 			addButton("商品管理", new Listener(mw, new CommodityDataPanel(new CommodityBL_stub(), closeListener)));
 			addButton("库存查看", new Listener_stub());
 			addButton("库存盘点", new Listener_stub());

@@ -34,9 +34,9 @@ class InputUserPanel extends JPanel {
 	protected InputUserPanel(String[] user) {
 		super();
         double[][] size = {{40.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 40.0}
-            , {40.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED
-                , 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 10.0
-                , TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 40.0,}};
+            , {20.0, TableLayout.FILL, 10.0, TableLayout.FILL, 10.0, TableLayout.FILL
+                , 10.0, TableLayout.FILL, 10.0, TableLayout.FILL, 10.0, TableLayout.FILL, 10.0
+                , TableLayout.FILL, 10.0, TableLayout.FILL, 20.0,}};
 		this.setLayout(new TableLayout(size));
 		
 		String[] texts = {"用户编号", "用户名", "用户密码", "用户级别", "用户性别", "用户年龄", "用户电话号码", "用户种类"};

@@ -21,6 +21,7 @@ public class CategoryDataPanel implements PanelInterface{
     private JTree tree;
 
     public CategoryDataPanel(CategoryBLService categoryBl, ActionListener closeListener) {
+        System.out.println("testestetstsgdjfsalkghfsjghsf");
         tree = new JTree(categoryBl.getModel());
         double[][] size = {{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}};
         panel = new JPanel(new TableLayout(size));
