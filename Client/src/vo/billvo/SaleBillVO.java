@@ -16,6 +16,10 @@ public class SaleBillVO extends BillVO {
 		return customerId;
 	}
 	
+	public void setTableModel(MyTableModel tableModel) {
+		this.tableModel = tableModel;
+	}
+	
 	public MyTableModel getTableModel() {
 		return tableModel;
 	}
