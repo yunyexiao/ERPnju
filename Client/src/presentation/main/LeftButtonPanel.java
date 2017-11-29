@@ -6,6 +6,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -48,6 +50,18 @@ class LeftButtonPanel extends JPanel{
     	JButton button = new JButton(text);
 		button.setFont(new Font("等线",Font.BOLD,18));
 		button.addActionListener(listener);
+		button.addMouseListener(new MouseAdapter() {
+			@Override  
+		    public void mouseEntered(MouseEvent e) {
+		        if ("退出".equals(text)) mainWindow.setInfo("退出系统");
+		        else mainWindow.setInfo("进入<" + text + ">界面");  
+		    }  
+		  
+		    @Override  
+		    public void mouseExited(MouseEvent e) {
+		    	mainWindow.setInfo();  
+		    }  
+		});
 		innerPanel.add(button);
     }
     /**
