@@ -48,7 +48,7 @@ class InputUserPanel extends JPanel {
 	
         userIdTextField = new JTextField(user[0]);
 		userNameTextField = new JTextField(user[1]);
-		userKeyTextField = new JTextField(user[2]);
+		userKeyTextField = new JTextField(user[4]);
         userAgeTextField = new JTextField(user[5]);
         userTelTextField = new JTextField(user[6]);
         
@@ -93,20 +93,26 @@ class InputUserPanel extends JPanel {
 		typeButtonGroup.add(typeGmRadioButton);
 		
 		int length = user.length;
-		if(length > 7 && user[7] != null){
+		if(length > 2 && user[2] != null) {
 		    Enumeration<AbstractButton> eb = typeButtonGroup.getElements();
 		    while(eb.hasMoreElements()){
 		        AbstractButton b = eb.nextElement(); 
-		        if(b.getText().equals(user[7])){
+		        if(b.getText().equals(user[2])) {
 		            b.setSelected(true);
 		            break;
 		        }
 		    }
 		}
-		if(length > 4 && user[4] != null){
-		    if(user[4].equals(manRadioButton.getText()))
+		
+		if(length > 5 && user[5] != null) {
+		    if(user[5].equals(manRadioButton.getText()))
 		        manRadioButton.setSelected(true);
 		    else womanRadioButton.setSelected(true);
+		}
+		
+		if(length > 3 && user[3] != null) {
+			if (rankComboBox.getItemAt(0).equals(user[3])) rankComboBox.setSelectedIndex(0);
+			else rankComboBox.setSelectedIndex(1);
 		}
 	
 		add(userIdTextField, "3 1");

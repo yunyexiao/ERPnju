@@ -8,12 +8,27 @@ import dataservice.UserDataService;
 import po.UserPO;
 import presentation.component.MyTableModel;
 import rmi.Rmi;
+import vo.UserType;
 import vo.UserVO;
 
 public class UserBL implements UserBLService{
 	
 	private UserDataService userDataService = Rmi.getRemote(UserDataService.class);
+	private String[] tableHeader = {"用户ID", "用户名", "用户类别", "用户权限", "用户密码", "性别", "年龄", "电话号码"};
 
+	private String[] getLine(UserPO user) {
+		return new String[]{
+			  user.getUserId()
+			, user.getUserName()
+			, UserType.getType(user.getUsertype()).getName()
+			, user.getRankName()
+			, user.getUserPwd()
+			, user.getUserSex()
+			, Integer.toString(user.getUserAge())
+			, user.getUserTelNumber()
+		};
+	}
+	
 	@Override
 	public boolean delete(String id) {
 		try {
@@ -26,11 +41,9 @@ public class UserBL implements UserBLService{
 	@Override//暂时只实现按ID查找功能
 	public MyTableModel search(String type, String key) {
 		try {
-			String[] columnNames = {"用户ID", "用户名", "性别", "年龄", "电话号码", "用户类别"};
 			UserPO userPO = userDataService.findById(key);
-			String[][] data = {{userPO.getUserId(), userPO.getUserName(), userPO.getUserSex(),
-				Integer.toString(userPO.getUserAge()), userPO.getUserTelNumber(), Integer.toString(userPO.getUsertype())}};
-			MyTableModel searchTable = new MyTableModel (data, columnNames);
+			String[][] data = {getLine(userPO)};
+			MyTableModel searchTable = new MyTableModel (data, tableHeader);
 			return searchTable;
 		} catch (Exception e) {
 			return null;
@@ -41,17 +54,11 @@ public class UserBL implements UserBLService{
 	public MyTableModel update() {
 		try {
 			ArrayList<UserPO> list=userDataService.getAllUser();
-			String[] columnNames = {"用户ID", "用户名", "性别", "年龄", "电话号码", "用户类别"};
-			String[][] data = new String [list.size()][6];
-			for (int i=0; i<list.size(); i++) {
-				data[i][0] = list.get(i).getUserId();
-				data[i][1] = list.get(i).getUserName();
-				data[i][2] = list.get(i).getUserSex();
-				data[i][3] = Integer.toString(list.get(i).getUserAge());
-				data[i][4] = list.get(i).getUserTelNumber();
-				data[i][5] = Integer.toString(list.get(i).getUsertype());
+			String[][] data = new String [list.size()][tableHeader.length];
+			for (int i = 0; i < list.size(); i++) {
+				data[i] = getLine(list.get(i));
 			}
-			MyTableModel searchTable = new MyTableModel (data, columnNames);
+			MyTableModel searchTable = new MyTableModel (data, tableHeader);
 			return searchTable;
 		} catch (Exception e) {
 			return null;
