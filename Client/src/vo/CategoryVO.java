@@ -54,6 +54,6 @@ public class CategoryVO {
 	}
 
 	public CategoryPO toPO(){
-	    return new CategoryPO(id, name, fatherId, fatherName);
+	    return new CategoryPO(id, name, fatherId, fatherName, true);
 	}
 }

@@ -20,7 +20,7 @@ public class CommodityDs_stub implements CommodityDataService {
     public CommodityPO findById(String id) throws RemoteException {
         System.out.println("commodity found in database: " + id);
         return new CommodityPO("002-20171127-00001", "交通信号灯", "TBD", "A", "特殊用途灯具", "001-20171127-00021"
-            , 2000L, 200L, 120.0, 340.0, 120.0, 320.0);
+            , 2000L, 200L, 120.0, 340.0, 120.0, 320.0, true);
     }
 
     @Override
@@ -46,9 +46,9 @@ public class CommodityDs_stub implements CommodityDataService {
         System.out.println("all commodities in database returned");
         ArrayList<CommodityPO> result = new ArrayList<>();
         result.add(new CommodityPO("002-20171127-00001", "交通信号灯", "TBD", "A", "001-20171127-00021", "特殊用途灯具"
-            , 2000L, 200L, 120.0, 340.0, 120.0, 320.0));
+            , 2000L, 200L, 120.0, 340.0, 120.0, 320.0, true));
         result.add(new CommodityPO("002-20171127-00002", "de-light", "TDD", "A", "001-20171127-00539", "inspectional"
-            , 1000L, 100L, 200.0, 350.0, 200.0, 380.0));
+            , 1000L, 100L, 200.0, 350.0, 200.0, 380.0, true));
         return result;
     }
 

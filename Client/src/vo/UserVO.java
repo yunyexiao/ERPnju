@@ -61,7 +61,7 @@ public class UserVO {
 	}
 	
 	public UserPO toPO() {
-		UserPO userPO = new UserPO(id, name, key, sex, telNumber, type.getNum(), rank, age);
+		UserPO userPO = new UserPO(id, name, key, sex, telNumber, type.getNum(), rank, age, true);
 		return userPO;
 	}
 }

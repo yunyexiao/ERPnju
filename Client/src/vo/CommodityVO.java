@@ -29,7 +29,7 @@ public class CommodityVO {
 
     public CommodityPO toPO(){
         return new CommodityPO(id, name, type, store, categoryId, categoryName, amount
-            , alarmNum, inPrice, salePrice, recentInPrice, recentSalePrice);
+            , alarmNum, inPrice, salePrice, recentInPrice, recentSalePrice, true);
     }
     
     public String getId() {
