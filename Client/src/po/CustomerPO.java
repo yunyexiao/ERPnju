@@ -35,7 +35,7 @@ public class CustomerPO implements Serializable {
     
     public CustomerPO(String id, String name, String telNumber, String address
         , String mail, String code,String salesman, int rank, int type, double recRange
-        , double receivable, double payment) {
+        , double receivable, double payment, boolean isExist) {
         this.setId(id);
         this.setName(name);
         this.setTelNumber(telNumber);
@@ -48,6 +48,8 @@ public class CustomerPO implements Serializable {
         this.setRecRange(recRange);
         this.setReceivable(receivable);
         this.setPayment(payment);
+        
+        this.isExist = isExist;
     }
 
     public String getId() {

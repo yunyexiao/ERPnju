@@ -25,7 +25,7 @@ public class CommodityPO implements Serializable {
     
     public CommodityPO(String id, String name, String type, String store, String categoryId
         , String categoryName, long amount, long alarmNum, double inPrice, double salePrice
-        , double recentInPrice, double recentSalePrice) {
+        , double recentInPrice, double recentSalePrice, boolean isExist) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -38,6 +38,7 @@ public class CommodityPO implements Serializable {
         this.salePrice = salePrice;
         this.recentInPrice = recentInPrice;
         this.recentSalePrice = recentSalePrice;
+        this.isExist = isExist;
     }
 
     public String getId() {

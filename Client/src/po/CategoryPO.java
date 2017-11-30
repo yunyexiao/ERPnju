@@ -21,11 +21,12 @@ public class CategoryPO implements Serializable {
 
     public CategoryPO() {}
     
-    public CategoryPO(String id, String name, String fatherId, String fatherName) {
+    public CategoryPO(String id, String name, String fatherId, String fatherName, boolean isExist) {
         this.id = id;
         this.name = name;
         this.fatherId = fatherId;
         this.fatherName = fatherName;
+        this.isExist = isExist;
     }
 
     public String getId() {

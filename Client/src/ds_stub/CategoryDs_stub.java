@@ -19,7 +19,7 @@ public class CategoryDs_stub implements CategoryDataService {
     @Override
     public CategoryPO findById(String id) throws RemoteException {
         System.out.println("category found in database: " + id);
-        return new CategoryPO("001-201771127-00001", "some", "001-20171127-00002", "solar");
+        return new CategoryPO("001-201771127-00001", "some", "001-20171127-00002", "solar", true);
     }
 
     @Override
@@ -44,11 +44,11 @@ public class CategoryDs_stub implements CategoryDataService {
     public ArrayList<CategoryPO> getAllCategory() throws RemoteException {
         System.out.println("all categories in database returned");
         ArrayList<CategoryPO> result = new ArrayList<>();
-        result.add(new CategoryPO("001-20171127-00000", "category-root", "", ""));
-        result.add(new CategoryPO("001-20171127-00001", "some", "001-20171127-00000", "category-root"));
-        result.add(new CategoryPO("001-20171127-00003", "same", "001-20171127-00000", "category-root"));
-        result.add(new CategoryPO("001-20171127-00002", "come", "001-20171127-00001", "some"));
-        result.add(new CategoryPO("001-20171127-00004", "sane", "001-20171127-00003", "same"));
+        result.add(new CategoryPO("001-20171127-00000", "category-root", "", "", true));
+        result.add(new CategoryPO("001-20171127-00001", "some", "001-20171127-00000", "category-root", true));
+        result.add(new CategoryPO("001-20171127-00003", "same", "001-20171127-00000", "category-root", true));
+        result.add(new CategoryPO("001-20171127-00002", "come", "001-20171127-00001", "some", true));
+        result.add(new CategoryPO("001-20171127-00004", "sane", "001-20171127-00003", "same", true));
         return result;
     }
 

@@ -22,10 +22,11 @@ public class AccountPO implements Serializable {
 
     public AccountPO() {}
     
-    public AccountPO(String id, String name, double money) {
+    public AccountPO(String id, String name, double money, boolean isExist) {
         this.id = id;
         this.name = name;
         this.money = money;
+        this.isExist = isExist;
     }
 
     public String getId() {
