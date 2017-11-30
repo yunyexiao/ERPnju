@@ -3,6 +3,7 @@ package presentation.main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
@@ -48,8 +49,6 @@ public class MainWindow {
 		buttonPanel.setPreferredSize(new Dimension((int) (0.15 * mainWindow.getWidth()), 0));
 		
 		JLabel topLabel = new JLabel("БъЬт");
-		ImageIcon icon = new ImageIcon("resource/Caption.png");
-		topLabel.setIcon(icon);
 		topLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		topLabel.setPreferredSize(new Dimension(0, (int) (0.13 * mainWindow.getHeight())));
 		
@@ -59,6 +58,11 @@ public class MainWindow {
 		mainWindow.add(innerPanel.getPanel(), BorderLayout.CENTER);
 		mainWindow.add(infoLabel, BorderLayout.SOUTH);
 		mainWindow.setVisible(true);
+		ImageIcon image = new ImageIcon("resource/Caption.png");
+        Image img = image.getImage();  
+        img = img.getScaledInstance(topLabel.getWidth(), topLabel.getHeight(), Image.SCALE_DEFAULT);  
+        image.setImage(img);
+		topLabel.setIcon(image);
 		buttonPanel.setBackground();
 		
 		SwingUtilities.updateComponentTreeUI(mainWindow);
