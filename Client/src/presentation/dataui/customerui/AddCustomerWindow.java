@@ -16,7 +16,7 @@ public class AddCustomerWindow extends FatherWindow{
         this.customerBL = customerBl;
         
         frame.setTitle("增加客户");
-        centerPanel = new InputCustomerPanel(new String[]{customerBl.getNewId(), null, null, null, null, null, null, null, null, null, null});
+        centerPanel = new InputCustomerPanel(new String[]{customerBl.getNewId(), null, null, null, null, null, null, null, null, null, null, null});
         frame.add(centerPanel, BorderLayout.CENTER);
 
         frame.setVisible(true);
