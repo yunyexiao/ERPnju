@@ -1,9 +1,12 @@
 package businesslogic;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import blservice.LogBLService;
 import businesslogic.inter.AddLogInterface;
+import businesslogic.inter.GetUserInterface;
 import dataservice.LogDataService;
 import po.LogInfoPO;
 import presentation.component.MyTableModel;
@@ -12,6 +15,7 @@ import rmi.Rmi;
 public class LogBL implements LogBLService, AddLogInterface {
 
 	private LogDataService logData = Rmi.getRemote(LogDataService.class);
+	private GetUserInterface getUserInfo = new UserBL();
 	
 	@Override
 	public MyTableModel getLogInfo() {
@@ -39,8 +43,7 @@ public class LogBL implements LogBLService, AddLogInterface {
 		for (int i = 0; i < list.size(); i++) {
 			LogInfoPO logInfo= list.get(i);
 			info[i][0] = logInfo.getTime();
-			//TODO 根据Id获取真实用户名
-			info[i][1] = logInfo.getOperatorId();
+			info[i][1] = getUserInfo.getUser(logInfo.getOperatorId()).getName();
 			info[i][2] = logInfo.getOperation();
 			info[i][3] = logInfo.getDetail();		
 		}
@@ -48,7 +51,10 @@ public class LogBL implements LogBLService, AddLogInterface {
 	}
 
 	@Override
-	public boolean add(String time, String operatorId, String operation, String detail) {
+	public boolean add(String operatorId, String operation, String detail) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date dt = new Date();
+		String time = sdf.format(dt);
 		return logData.add(new LogInfoPO(time, operatorId, operation, detail));
 	}
 }
