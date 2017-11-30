@@ -3,11 +3,16 @@ package presentation.main;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import bl_stub.AccountBL_stub;
@@ -43,8 +48,20 @@ class LeftButtonPanel extends JPanel{
      */
     private void addButton(String text, ActionListener listener) {
     	JButton button = new JButton(text);
-		button.setFont(new Font("宋体",Font.BOLD,14));
+		button.setFont(new Font("等线",Font.BOLD,18));
 		button.addActionListener(listener);
+		button.addMouseListener(new MouseAdapter() {
+			@Override  
+		    public void mouseEntered(MouseEvent e) {
+		        if ("退出".equals(text)) mainWindow.setInfo("退出系统");
+		        else mainWindow.setInfo("进入<" + text + ">界面");  
+		    }  
+		  
+		    @Override  
+		    public void mouseExited(MouseEvent e) {
+		    	mainWindow.setInfo();  
+		    }  
+		});
 		innerPanel.add(button);
     }
     /**
@@ -54,6 +71,7 @@ class LeftButtonPanel extends JPanel{
 	public LeftButtonPanel(MainWindow mw) {
 		this.mainWindow = mw;
 		UserType type = mainWindow.getUser().getType();
+		innerPanel.setOpaque(false);
 		
 		class CloseListener implements ActionListener {
 			@Override
@@ -74,7 +92,7 @@ class LeftButtonPanel extends JPanel{
 		// 修改按钮处------------------------------
 		if (type == UserType.KEEPER) {
 			addButton("商品分类管理", e -> mw.changePanel(new CategoryDataPanel(new CategoryBL_stub(), closeListener)));
-			addButton("商品管理", new Listener(mw, new CommodityDataPanel(new CommodityBL_stub(), closeListener)));
+			addButton("商品管理", e -> mw.changePanel(new CommodityDataPanel(new CommodityBL_stub(), closeListener)));
 			addButton("库存查看", new Listener_stub());
 			addButton("库存盘点", new Listener_stub());
 			addButton("报溢/报损", new Listener_stub());
@@ -82,36 +100,36 @@ class LeftButtonPanel extends JPanel{
 			
 		}
 		else if (type == UserType.SALESMAN) {
-			addButton("客户管理", new Listener(mw, new MockDataPanel(new CustomerBL_stub(), closeListener)));
-			addButton("制定进货单", new Listener(mw, new BillPanel(mw, BillType.PURCHASE, true)));
+			addButton("客户管理", e -> mw.changePanel(new MockDataPanel(new CustomerBL_stub(), closeListener)));
+			addButton("制定进货单", e -> mw.changePanel(new BillPanel(mw, BillType.PURCHASE, true)));
 			addButton("制定进货退货单", new Listener_stub());
-			addButton("制定销售单", new Listener(mw, new SaleBillPanel(mainWindow.getUser(), closeListener)));
+			addButton("制定销售单", e -> mw.changePanel(new SaleBillPanel(mainWindow.getUser(), closeListener)));
 			addButton("制定销售退货单", new Listener_stub());
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.ACCOUNTANT) {
-			addButton("账户管理", new Listener(mw, new MockDataPanel(new AccountBL_stub(), closeListener)));
+			addButton("账户管理", e -> mw.changePanel(new MockDataPanel(new AccountBL_stub(), closeListener)));
 			addButton("制定收付款单", new Listener_stub());
 			addButton("制定现金费用单", new Listener_stub());
 			addButton("查看销售明细表", new Listener_stub());
 			addButton("查看经营状况表", new Listener_stub());
 			addButton("查看经营历程表", new Listener_stub());
 			addButton("期初建账", new Listener_stub());
-			addButton("查看日志", new Listener(mw, new LogPanel(mw)));		
+			addButton("查看日志", e -> mw.changePanel(new LogPanel(mw)));		
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.GM) {
-			addButton("审批单据", new Listener(mw, new BillExaminePanel(mw)));
+			addButton("审批单据", e -> mw.changePanel(new BillExaminePanel(mw)));
 			addButton("制定促销策略", new Listener_stub());
 			addButton("查看销售明细表", new Listener_stub());
 			addButton("查看经营状况表", new Listener_stub());
 			addButton("查看经营历程表", new Listener_stub());
-			addButton("查看日志", new Listener(mw, new LogPanel(mw)));		
+			addButton("查看日志", e -> mw.changePanel(new LogPanel(mw)));		
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.ADMIN) {
-			addButton("用户管理", new Listener(mw, new UserDataPanel(new UserBL_stub(), closeListener)));
-			addButton("查看日志", new Listener(mw, new LogPanel(mw)));		
+			addButton("用户管理", e -> mw.changePanel(new UserDataPanel(new UserBL_stub(), closeListener)));
+			addButton("查看日志", e -> mw.changePanel(new LogPanel(mw)));		
 			addButton("退出", new CloseListener());
 		}
 		//-----------------------------------------
@@ -120,5 +138,13 @@ class LeftButtonPanel extends JPanel{
 		this.setLayout(new TableLayout(size));
 		this.add(innerPanel, "1,0");
 		this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+	}
+	
+	public void setBackground() {
+		ImageIcon image = new ImageIcon("resource/LeftButtonPanel.png");   
+        Image img = image.getImage();  
+        img = img.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT);  
+        image.setImage(img);
+		this.add(new JLabel(image), "0, 0, 2, 0");
 	}
 }

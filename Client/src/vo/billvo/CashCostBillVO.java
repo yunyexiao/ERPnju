@@ -2,18 +2,18 @@ package vo.billvo;
 
 import presentation.component.MyTableModel;
 
-public class SaleBillVO extends BillVO {
+public class CashCostBillVO extends BillVO {
 
-	private String customerId;
+	private String accountId;
 	private MyTableModel tableModel;
 	
-	public SaleBillVO(String date, String time, String id, String operator, int state, String customerId) {
+	public CashCostBillVO(String date, String time, String id, String operator, int state, String accountId) {
 		super(date, time, id, operator, state);
-		this.customerId = customerId;
+		this.accountId  = accountId;
 	}
-
-	public String getCustomerId() {
-		return customerId;
+	
+	public String getAccountId() {
+		return accountId;
 	}
 	
 	public void setTableModel(MyTableModel tableModel) {
@@ -26,7 +26,7 @@ public class SaleBillVO extends BillVO {
 	
 	@Override
 	public String getAllId() {
-		return "XSD-" + this.getDate() + "-" + this.getId();
+		return "XJFYD-" + this.getDate() + "-" + this.getId();
 	}
 
 }

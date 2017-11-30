@@ -10,12 +10,13 @@ import java.io.Serializable;
  */
 public class UserPO implements Serializable{
     
-	/**
+    /**
      * auto-generated UID
      */
     private static final long serialVersionUID = 6831754628172855841L;
     private String userId, userName, userPwd ,userSex, userTelNumber;
     private int userAge, userRank, usertype;
+    private boolean isExist;
     
     public UserPO(){}
 
@@ -95,6 +96,14 @@ public class UserPO implements Serializable{
         this.userAge = userAge;
     }
     
+    public void setExistFlag(boolean flag) {
+    	this.isExist = flag;
+    }
+    
+    public boolean getExistFlag() {
+    	return this.isExist;
+    }
+    
     public class UserType{
         public static final int STORE_KEEPER = 0;
         public static final int SALESMAN = 1;
@@ -103,4 +112,16 @@ public class UserPO implements Serializable{
         public static final int ADMIN = 4;
     }
 
+    public String getRankName() {
+    	if (usertype == UserType.SALESMAN) {
+    		if (userRank == 0) return "普通销售员";
+    		if (userRank == 1) return "销售经理";
+    	}
+    	else if (usertype == UserType.ACCOUNTANT) {
+    		if (userRank == 0) return "普通财务人员";
+    		if (userRank == 1) return "最高权限财务人员";
+    	}
+    	return "默认";
+    }
+    
 }

@@ -15,7 +15,7 @@ public interface AccountDataService extends Remote {
 	 */
 	public String getNewId() throws RemoteException;
 	/**
-	 * 根据账户的ID返回一个AccountPO对象<br/>
+	 * 根据账户的完整ID返回一个AccountPO对象，不论这个账户是否被删除<br/>
 	 * 找不到就返回一个null...
 	 * @param id 账户的id [id格式：四位数字字符串，如0001]
 	 * @return 查找到的AccountPO对象
@@ -49,4 +49,13 @@ public interface AccountDataService extends Remote {
 	 * @throws RemoteException
 	 */
 	public ArrayList<AccountPO> getAllAccount() throws RemoteException;
+	/**
+	 * 查询符合条件的AccountPO记录
+	 * @param field 查询的字段名，需要和数据库保持一致！
+	 * @param content 查询的内容，非法字符由客户端过滤！
+	 * @param isfuzzy 是否资磁模糊查找，true表示资磁（这是最吼的！）
+	 * @return
+	 * @throws RemoteException
+	 */
+	public ArrayList<AccountPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException;
 }

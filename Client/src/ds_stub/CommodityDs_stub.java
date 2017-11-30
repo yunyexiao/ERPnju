@@ -52,4 +52,10 @@ public class CommodityDs_stub implements CommodityDataService {
         return result;
     }
 
+	@Override
+	public ArrayList<CommodityPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

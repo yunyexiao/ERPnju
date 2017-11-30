@@ -31,14 +31,14 @@ public class UserDataPanel extends DataPanel {
     @Override
     protected ActionListener getUpdateListener() {
         return new ActionListener(){
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 MyTableModel tableModel = (MyTableModel)table.getModel();
-                new UpdateUserWindow(userBL, tableModel.getValueAtRow(table.getSelectedRow()));
-                updateTable();
+                if (table.getSelectedRow() != -1) {
+                	new UpdateUserWindow(userBL, tableModel.getValueAtRow(table.getSelectedRow()));
+                	updateTable();
+                }
             }
-            
         };
     }
     
@@ -50,7 +50,6 @@ public class UserDataPanel extends DataPanel {
             	MyTableModel model = new SearchUserWindow(userBL).getModel();
             	if(model != null)table.setModel(model);
             }
-            
         };
     }
 }

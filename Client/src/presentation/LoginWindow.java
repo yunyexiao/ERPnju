@@ -1,6 +1,8 @@
 package presentation;
 
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
@@ -22,9 +26,9 @@ import vo.UserVO;
 public class LoginWindow {
 	private JFrame loginWindow = new JFrame("灯具进销存管理系统-登录界面");
 	private JTextField nameField = new JTextField();
-	private JTextField keyField = new JTextField();
-	private JButton buttonA = new JButton("取消");
-	private JButton buttonB = new JButton("登录");
+	private JPasswordField keyField = new JPasswordField();
+	private JButton buttonA = getButton("取消");
+	private JButton buttonB = getButton("登录");
 	private LoginBLService loginBL = new UserBL_stub();
 	
 	public LoginWindow() {
@@ -45,17 +49,27 @@ public class LoginWindow {
 		loginWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		loginWindow.setIconImage(new ImageIcon("resource/LoginIcon.png").getImage());
 		int border = 15;
-		double[][] size = {{0.15,0.15,TableLayout.FILL,0.15,0.15},
-				{0.2,0.2,border,0.2,border,0.2,0.2}};
-		loginWindow.setLayout(new TableLayout(size));
+		double[][] size = {{0.15,0.15,0.05,TableLayout.FILL,0.05,0.15,0.15},
+				{0.2,0.2,border,0.2,border,0.23,0.17}};
 		
 		//add components
-		loginWindow.add(new JLabel("用户名："), "1, 1, r");
-		loginWindow.add(nameField, "2, 1,3,1");
-		loginWindow.add(new JLabel("密码： "), "1, 3, r");
-		loginWindow.add(keyField,"2, 3, 3, 3");
-		loginWindow.add(buttonA, "1, 5");
-		loginWindow.add(buttonB, "3, 5");
+		JPanel panel = (JPanel)loginWindow.getContentPane();
+		panel.setLayout(new TableLayout(size));
+		panel.setOpaque(false);
+        panel.add(getLabel("用户："), "1, 1, r");
+        panel.add(nameField, "2, 1, 5, 1");
+        panel.add(getLabel("密码："), "1, 3, r");
+        panel.add(keyField,"2, 3, 5, 3");
+        panel.add(buttonA, "1, 5, 2, 5");
+        panel.add(buttonB, "4, 5, 5, 5");
+        
+        ImageIcon image = new ImageIcon("resource/LoginBG" + (int)(Math.random() * 5) + ".jpg");   
+        Image img = image.getImage();  
+        img = img.getScaledInstance(loginWindow.getWidth(), loginWindow.getHeight(), Image.SCALE_DEFAULT);  
+        image.setImage(img); 
+		JLabel label = new JLabel(image);
+		label.setBounds(0,0,loginWindow.getWidth(),loginWindow.getHeight());
+		loginWindow.getLayeredPane().add(label ,new Integer(Integer.MIN_VALUE)); 
 		loginWindow.setVisible(true);
 		
 		//add listener
@@ -69,7 +83,7 @@ public class LoginWindow {
 			@SuppressWarnings("unused")
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				UserVO user = loginBL.getUser(nameField.getText(), keyField.getText());
+				UserVO user = loginBL.getUser(nameField.getText(), new String(keyField.getPassword()));
 				if (user == null) {
 					nameField.setText("");
 					keyField.setText("");
@@ -80,5 +94,18 @@ public class LoginWindow {
 				}
 			}
 		});
+	}
+	
+
+	private JButton getButton(String text) {
+		JButton button = new JButton(text);
+		button.setFont(new Font("华文行楷", Font.PLAIN, 20));
+		return button;
+	}
+	
+	private JLabel getLabel(String text) {
+		JLabel label = new JLabel(text);
+		label.setFont(new Font("华文行楷", Font.PLAIN, 18));
+		return label;
 	}
 }

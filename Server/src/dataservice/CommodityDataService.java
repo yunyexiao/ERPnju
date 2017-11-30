@@ -14,9 +14,9 @@ public interface CommodityDataService extends Remote {
 	 */
 	public String getNewId() throws RemoteException;
 	/**
-	 * 根据商品的ID返回一个CommodityPO对象<br/>
+	 * 根据商品的完整ID返回一个CommodityPO对象，不论这个商品是否被删除<br/>
 	 * 找不到就返回一个null...
-	 * @param id 商品的id [id格式：]
+	 * @param id 商品的id [id格式：6位数字]
 	 * @return 查找到的CommodityPO对象
 	 * @throws RemoteException
 	 */
@@ -48,4 +48,13 @@ public interface CommodityDataService extends Remote {
 	 * @throws RemoteException
 	 */
 	public ArrayList<CommodityPO> getAllCommodity() throws RemoteException;
+	/**
+	 * 查询符合条件的CommodityPO记录
+	 * @param field 查询的字段名，需要和数据库保持一致！
+	 * @param content 查询的内容，非法字符由客户端过滤！
+	 * @param isfuzzy 是否资磁模糊查找，true表示资磁（这是最吼的！）
+	 * @return
+	 * @throws RemoteException
+	 */
+	public ArrayList<CommodityPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException;
 }

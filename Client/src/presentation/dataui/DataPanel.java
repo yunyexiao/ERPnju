@@ -28,6 +28,7 @@ public abstract class DataPanel implements PanelInterface {
 	public DataPanel(DataBLService dataBL, ActionListener closeListener) {
 		this.dataBL = dataBL;
 		table.setModel(dataBL.update());
+		table.getTableHeader().setReorderingAllowed(false);
 		
 		double[][] size = {{TableLayout.FILL},{TableLayout.PREFERRED,TableLayout.FILL}};
 		panel = new JPanel(new TableLayout(size));

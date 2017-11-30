@@ -18,6 +18,8 @@ public class AccountPO implements Serializable {
     private String id, name;
     double money;
 
+	private boolean isExist;
+
     public AccountPO() {}
     
     public AccountPO(String id, String name, double money) {
@@ -48,6 +50,14 @@ public class AccountPO implements Serializable {
 
     public void setMoney(double money) {
         this.money = money;
+    }
+    
+    public void setExistFlag(boolean flag) {
+    	this.isExist = flag;
+    }
+    
+    public boolean getExistFlag() {
+    	return this.isExist;
     }
 
 }

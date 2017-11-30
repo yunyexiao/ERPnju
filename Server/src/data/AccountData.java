@@ -17,39 +17,38 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 
 	@Override
 	public String getNewId() throws RemoteException {
-		int max=0,res=0;
+		int max = 0,res = 0;
 		String newId;
 		try{
-			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery("SELECT AccountID FROM AccountInfo;");
+			Statement s = DataHelper.getInstance().createStatement();
+			ResultSet r = s.executeQuery("SELECT AccountID FROM AccountInfo;");
 			while(r.next()){
-				int temp=0;
-				temp=Integer.valueOf(r.getString("AccountID"));
-				if(temp>max)max=temp;
+				int temp = 0;
+				temp = Integer.valueOf(r.getString("AccountID"));
+				if(temp>max)max = temp;
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		res=max+1;
-		newId=String.format("%06d", res);
+		res = max+1;
+		newId = String.format("%06d", res);
 		return newId;
 	}
 
 	@Override
 	public AccountPO findById(String id) throws RemoteException {
-		// TODO Auto-generated method stub
-		AccountPO apo=new AccountPO();
+		AccountPO apo = new AccountPO();
 		apo.setId(id);
-		String accountName=null;
-		double accountMoney=0.0;
+		String accountName = null;
+		double accountMoney = 0.0;
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
 			 ResultSet r = s.executeQuery("SELECT AccountName,AccountMoney FROM AccountInfo "
-			 		+ "WHERE AccountID=" + id +";");
+			 		+ "WHERE AccountID = " + id +";");
 			 while(r.next()){
-				 accountName=r.getString("AccountName");
-				 accountMoney=Double.valueOf(r.getString("AccountMoney"));
+				 accountName = r.getString("AccountName");
+				 accountMoney = Double.valueOf(r.getString("AccountMoney"));
 			 }
 			 
 		}catch(Exception e){
@@ -63,16 +62,15 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 
 	@Override
 	public boolean add(AccountPO account) throws RemoteException {
-		// TODO Auto-generated method stub
-		String accountId=null,accountName=null;
-		double accountMoney=0.0;
-		accountId=account.getId();
-		accountName=account.getName();
-		accountMoney=account.getMoney();
+		String accountId = null,accountName = null;
+		double accountMoney = 0.0;
+		accountId = account.getId();
+		accountName = account.getName();
+		accountMoney = account.getMoney();
 		
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("INSERT INTO AccountInfo VALUES"
+			int r = s.executeUpdate("INSERT INTO AccountInfo VALUES"
 					+ "('"+accountId+"','"+accountName+"','"+accountMoney+"')");
 			if(r>0)return true;
 		}catch(Exception e){
@@ -84,10 +82,9 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 
 	@Override
 	public boolean delete(String id) throws RemoteException {
-		// TODO Auto-generated method stub
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("DELETE FROM AccountInfo WHERE AccountID="+id+";");
+			int r = s.executeUpdate("DELETE FROM AccountInfo WHERE AccountID = "+id+";");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -98,16 +95,15 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 
 	@Override
 	public boolean update(AccountPO account) throws RemoteException {
-		// TODO Auto-generated method stub
-		String accountId=null,accountName=null;
-		double accountMoney=0.0;
-		accountId=account.getId();
-		accountName=account.getName();
-		accountMoney=account.getMoney();
+		String accountId = null,accountName = null;
+		double accountMoney = 0.0;
+		accountId = account.getId();
+		accountName = account.getName();
+		accountMoney = account.getMoney();
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("UPDATE CustomerInfo SET "
-					+ "AccountName="+accountName+", AccountMoney="+accountMoney+"WHERE CusID="+accountId+";");
+			int r = s.executeUpdate("UPDATE CustomerInfo SET "
+					+ "AccountName = "+accountName+", AccountMoney = "+accountMoney+"WHERE CusID = "+accountId+";");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -118,18 +114,17 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 
 	@Override
 	public ArrayList<AccountPO> getAllAccount() throws RemoteException {
-		// TODO Auto-generated method stub
-		ArrayList<AccountPO> apos=new ArrayList<AccountPO>();
+		ArrayList<AccountPO> apos = new ArrayList<AccountPO>();
 		try{
 			 Statement s = DataHelper.getInstance().createStatement();
 			 ResultSet r = s.executeQuery("SELECT * FROM AccountInfo");
 			 while(r.next()){
-				 String accountId=null,accountName=null;
-				 double accountMoney=0.0;
-				 AccountPO apo=new AccountPO();
-				 accountId=r.getString("AccountID");
-				 accountName=r.getString("AccountName");
-				 accountMoney=Double.valueOf(r.getString("AccountMoney"));
+				 String accountId = null,accountName = null;
+				 double accountMoney = 0.0;
+				 AccountPO apo = new AccountPO();
+				 accountId = r.getString("AccountID");
+				 accountName = r.getString("AccountName");
+				 accountMoney = Double.valueOf(r.getString("AccountMoney"));
 				 apo.setId(accountId);
 				 apo.setName(accountName);
 				 apo.setMoney(accountMoney);
@@ -140,6 +135,11 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 			return null;
 		}
 		return apos;
+	}
+
+	@Override
+	public ArrayList<AccountPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+		return null;
 	}
 
 }

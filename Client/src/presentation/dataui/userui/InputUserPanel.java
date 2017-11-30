@@ -48,9 +48,9 @@ class InputUserPanel extends JPanel {
 	
         userIdTextField = new JTextField(user[0]);
 		userNameTextField = new JTextField(user[1]);
-		userKeyTextField = new JTextField(user[2]);
-        userAgeTextField = new JTextField(user[5]);
-        userTelTextField = new JTextField(user[6]);
+		userKeyTextField = new JTextField(user[4]);
+        userAgeTextField = new JTextField(user[6]);
+        userTelTextField = new JTextField(user[7]);
         
         userIdTextField.setEditable(false);
         
@@ -74,7 +74,7 @@ class InputUserPanel extends JPanel {
 					 typeGmRadioButton = new JRadioButton(UserType.GM.getName());
 		typeKeeperRadioButton.addActionListener(e -> defaultType());
 		typeSalesmanRadioButton.addActionListener(e -> salesType());
-		typeAccountantRadioButton.addActionListener(e -> defaultType());
+		typeAccountantRadioButton.addActionListener(e -> accountantType());
 		typeGmRadioButton.addActionListener(e -> defaultType());
 		typeAdminRadioButton.addActionListener(e -> defaultType());
 		
@@ -93,20 +93,26 @@ class InputUserPanel extends JPanel {
 		typeButtonGroup.add(typeGmRadioButton);
 		
 		int length = user.length;
-		if(length > 7 && user[7] != null){
+		if(length > 2 && user[2] != null) {
 		    Enumeration<AbstractButton> eb = typeButtonGroup.getElements();
 		    while(eb.hasMoreElements()){
 		        AbstractButton b = eb.nextElement(); 
-		        if(b.getText().equals(user[7])){
+		        if(b.getText().equals(user[2])) {
 		            b.setSelected(true);
 		            break;
 		        }
 		    }
 		}
-		if(length > 4 && user[4] != null){
-		    if(user[4].equals(manRadioButton.getText()))
+		
+		if(length > 5 && user[5] != null) {
+		    if(user[5].equals(manRadioButton.getText()))
 		        manRadioButton.setSelected(true);
 		    else womanRadioButton.setSelected(true);
+		}
+		
+		if(length > 3 && user[3] != null) {
+			if (rankComboBox.getItemAt(0).equals(user[3])) rankComboBox.setSelectedIndex(0);
+			else rankComboBox.setSelectedIndex(1);
 		}
 	
 		add(userIdTextField, "3 1");
@@ -157,8 +163,13 @@ class InputUserPanel extends JPanel {
 	
 	private void salesType(){
 	    rankComboBox.removeAllItems();
-	    rankComboBox.addItem("销售员");
+	    rankComboBox.addItem("普通销售员");
 	    rankComboBox.addItem("销售经理");
 	}
 
+	private void accountantType(){
+	    rankComboBox.removeAllItems();
+	    rankComboBox.addItem("普通财务人员");
+	    rankComboBox.addItem("最高权限财务人员");
+	}
 }

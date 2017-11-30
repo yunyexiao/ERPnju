@@ -29,6 +29,8 @@ public class CustomerPO implements Serializable {
     /** Ó¦¸¶ */
     private double payment;
 
+	private boolean isExist;
+
     public CustomerPO() {}
     
     public CustomerPO(String id, String name, String telNumber, String address
@@ -144,6 +146,14 @@ public class CustomerPO implements Serializable {
         this.payment = payment;
     }
 
+    public void setExistFlag(boolean flag) {
+    	this.isExist = flag;
+    }
+    
+    public boolean getExistFlag() {
+    	return this.isExist;
+    }
+    
     public class CustomerType{
         public static final int SUPPLIER = 1;
         public static final int VENDER = 2;
