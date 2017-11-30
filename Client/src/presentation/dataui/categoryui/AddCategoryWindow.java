@@ -18,6 +18,7 @@ public class AddCategoryWindow extends FatherWindow {
         centerPanel = new InputCategoryPanel(new String[]{categoryBl.getNewId(), "", "", ""});
         frame.add(centerPanel, BorderLayout.CENTER);
         
+        frame.setTitle("增加商品分类");
         frame.setSize(400, 300);
         frame.setVisible(true);
     }

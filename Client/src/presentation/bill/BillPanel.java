@@ -36,8 +36,8 @@ public class BillPanel implements PanelInterface {
 		buttonPanel.addButton("保存", new ImageIcon("resource/Save.png"), new Listener_stub());
 		buttonPanel.addButton("提交", new ImageIcon("resource/Commit.png"), new Listener_stub());
 		buttonPanel.addButton("关闭", new ImageIcon("resource/Close.png"), new CloseListener(mainWindow));
-		panel.add(buttonPanel.getPanel(), "0, 0");
-		panel.add(mainPanel.getPanel(), "0, 1");
+		panel.add(buttonPanel.getPanel(), "0 0");
+		panel.add(mainPanel.getPanel(), "0 1");
 	}
 	@Override
 	public boolean close() {

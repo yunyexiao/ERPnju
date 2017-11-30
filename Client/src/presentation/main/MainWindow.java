@@ -59,6 +59,7 @@ public class MainWindow {
 		mainWindow.add(innerPanel.getPanel(), BorderLayout.CENTER);
 		mainWindow.add(infoLabel, BorderLayout.SOUTH);
 		mainWindow.setVisible(true);
+		buttonPanel.setBackground();
 		
 		SwingUtilities.updateComponentTreeUI(mainWindow);
 	}
@@ -96,6 +97,14 @@ public class MainWindow {
 	 */
 	public void setEnable(boolean flag) {
 		mainWindow.setEnabled(flag);
+	}
+	
+	public void setInfo(String text) {
+		infoLabel.setText(text);
+	}
+	
+	public void setInfo() {
+		infoLabel.setText("¾ÍÐ÷");
 	}
 	/**
 	 * ¹Ø±Õ´°¿Ú

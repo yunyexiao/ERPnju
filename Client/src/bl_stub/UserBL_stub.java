@@ -16,17 +16,17 @@ public class UserBL_stub implements UserBLService, LoginBLService {
 
 	@Override
 	public MyTableModel search(String type, String key) {
-		String[] attributes={"用户编号","姓名","职务","性别","年龄","联系电话"};
-		String[][] info={{"001","Van","库存管理人员","男","34","无"}};
+		String[] attributes={"用户ID", "用户名", "用户类别", "用户权限", "用户密码", "性别", "年龄", "电话号码"};
+		String[][] info={{"0001","Van","库存管理人员", "默认", "123", "男","34","无"}};
 		System.out.println("显示搜索的用户信息");
 		return new MyTableModel(info, attributes);
 	}
 
 	@Override
 	public MyTableModel update() {
-		String[] attributes={"用户编号","姓名","职务","性别","年龄","联系电话"};
-		String[][] info={{"001","Van","库存管理人员","男","34","无"},
-				{"002","Bili","总经理","男","50","无"}};
+		String[] attributes={"用户ID", "用户名", "用户类别", "用户权限", "用户密码", "性别", "年龄", "电话号码"};
+		String[][] info={{"0001","Van","库存管理人员", "默认", "123", "男","34","无"},
+				{"0002","Bili","总经理", "默认", "321", "男","50","无"}};
 		System.out.println("用户信息已成功更新");
 		return new MyTableModel(info, attributes);
 	}

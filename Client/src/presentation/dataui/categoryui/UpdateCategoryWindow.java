@@ -17,6 +17,7 @@ public class UpdateCategoryWindow extends FatherWindow{
         centerPanel = new InputCategoryPanel(new String[]{category.getId(), category.getName()
                 , category.getFatherId(), category.getFatherName()});
         frame.add(centerPanel, BorderLayout.CENTER);
+        frame.setTitle("修改商品分类属性");
         frame.setSize(400, 300);
         frame.setVisible(true);
     }

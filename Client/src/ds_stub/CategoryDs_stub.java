@@ -52,4 +52,10 @@ public class CategoryDs_stub implements CategoryDataService {
         return result;
     }
 
+	@Override
+	public ArrayList<CategoryPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -14,10 +14,10 @@ public class AddCommodityWindow extends FatherWindow {
     public AddCommodityWindow(CommodityBLService commodityBl) {
         super();
         this.commodityBl = commodityBl;
-        frame.setTitle("增加商品");
         centerPanel = new InputCommodityPanel(new String[]{commodityBl.getNewId(), null, null, null, null, null});
         frame.add(centerPanel, BorderLayout.CENTER);
         
+        frame.setTitle("增加商品");
         frame.setSize(400, 500);
         frame.setVisible(true);
     }

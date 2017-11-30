@@ -10,6 +10,7 @@ import blservice.CategoryBLService;
 import dataservice.CategoryDataService;
 import ds_stub.CategoryDs_stub;
 import po.CategoryPO;
+import po.CommodityPO;
 import vo.CategoryVO;
 
 
@@ -57,7 +58,7 @@ public class CategoryBL implements CategoryBLService {
     @Override
     public boolean add(CategoryVO category) {
         try{
-            // TODO 判断该分类下有无商品(数据层没有给接口。。。)
+            if(hasCommodity(category.getId())) return false;
             return categoryDs.add(category.toPO());
         }catch(RemoteException e){
             e.printStackTrace();
@@ -68,7 +69,7 @@ public class CategoryBL implements CategoryBLService {
     @Override
     public boolean delete(String id) {
         try{
-            // TODO 判断给分类下有无商品（数据层未给接口）
+            if(hasContent(id)) return false;
             return categoryDs.delete(id);
         }catch(RemoteException e){
             e.printStackTrace();
@@ -100,6 +101,29 @@ public class CategoryBL implements CategoryBLService {
         for(int i = 0; i < count; i++){
             addChildren(list, (DefaultMutableTreeNode)fatherNode.getChildAt(i));
         }
+    }
+
+    private boolean hasCommodity(String categoryId){
+        ArrayList<CommodityPO> commodities = new CommodityBL().getAllCommodities();
+        for(CommodityPO commodity: commodities){
+            if(commodity.getCategoryId().equals(categoryId))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean hasContent(String id){
+        if(hasCommodity(id)) return true;
+        try {
+            ArrayList<CategoryPO> categories = categoryDs.getAllCategory();
+            for(CategoryPO category: categories){
+                if(category.getFatherId().equals(id))
+                    return true;
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

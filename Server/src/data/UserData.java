@@ -18,7 +18,7 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 
 	@Override
 	public String getNewId() throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		int max=0,res=0;
 		String newId;
 		try{
@@ -41,7 +41,7 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 
 	@Override
 	public UserPO findById(String id) throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		UserPO upo = new UserPO();
 		upo.setUserId(id);
 		String userName = null,userPwd = null,userDept = null,userSex = null,userBirth = null,userTel = null;
@@ -70,7 +70,6 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 		userAge=now.get(Calendar.YEAR)-birthYear;
 		
 		upo.setUserAge(userAge);
-		upo.setUserDept(userDept);
 		upo.setUserName(userName);
 		upo.setUserPwd(userPwd);
 		upo.setUserSex(userSex);
@@ -83,13 +82,12 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 
 	@Override
 	public boolean add(UserPO user) throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		String userId=null,userName = null,userPwd = null,userDept = null,userSex = null,userTel = null;
 		int userRank = -1,userAge,birthYear,userBirth = 0;
 		userId=user.getUserId();
 		userName=user.getUserName();
 		userPwd=user.getUserPwd();
-		userDept=user.getUserDept();
 		userSex=user.getUserSex();
 		userAge=user.getUserAge();
 		userTel=user.getUserTelNumber();
@@ -112,7 +110,7 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 
 	@Override
 	public boolean delete(String id) throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
 			int r=s.executeUpdate("DELETE FROM SystemUser WHERE SUID="+id+";");
@@ -126,13 +124,12 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 
 	@Override
 	public boolean update(UserPO user) throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		String userId=null,userName = null,userPwd = null,userDept = null,userSex = null,userTel = null;
 		int userRank = -1,userAge,userBirth = 0;
 		userId=user.getUserId();
 		userName=user.getUserName();
 		userPwd=user.getUserPwd();
-		userDept=user.getUserDept();
 		userSex=user.getUserSex();
 		userAge=user.getUserAge();
 		userTel=user.getUserTelNumber();
@@ -157,7 +154,7 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 
 	@Override
 	public ArrayList<UserPO> getAllUser() throws RemoteException {
-		// TODO Auto-generated method stub
+		
 		ArrayList<UserPO> upos=new ArrayList<UserPO>();
 		
 		try {
@@ -182,7 +179,6 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 				
 				upo.setUserId(userId);
 				upo.setUserAge(userAge);
-				upo.setUserDept(userDept);
 				upo.setUserName(userName);
 				upo.setUserPwd(userPwd);
 				upo.setUserSex(userSex);
@@ -196,6 +192,12 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 		   return null;
 		 }
 		return upos;
+	}
+
+	@Override
+	public ArrayList<UserPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+		
+		return null;
 	}
 
 }

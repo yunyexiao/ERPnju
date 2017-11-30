@@ -17,6 +17,8 @@ public class CategoryPO implements Serializable {
     
     private String id, name, fatherId, fatherName;
 
+	private boolean isExist;
+
     public CategoryPO() {}
     
     public CategoryPO(String id, String name, String fatherId, String fatherName) {
@@ -56,6 +58,14 @@ public class CategoryPO implements Serializable {
 
     public void setFatherName(String fatherName) {
         this.fatherName = fatherName;
+    }
+    
+    public void setExistFlag(boolean flag) {
+    	this.isExist = flag;
+    }
+    
+    public boolean getExistFlag() {
+    	return this.isExist;
     }
 
 }

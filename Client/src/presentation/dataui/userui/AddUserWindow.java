@@ -21,7 +21,7 @@ public class AddUserWindow extends FatherWindow{
 		this.userBL = userBl;
 
         frame.setTitle("增加用户");
-        centerPanel = new InputUserPanel(new String[]{userBl.getNewId(), null, null, null, null, null});
+        centerPanel = new InputUserPanel(new String[]{userBl.getNewId(), null, null, null, null, null, null});
         frame.add(centerPanel, BorderLayout.CENTER);
         
 		frame.setVisible(true);
