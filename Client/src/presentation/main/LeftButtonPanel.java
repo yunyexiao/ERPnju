@@ -23,6 +23,7 @@ import bl_stub.UserBL_stub;
 import layout.TableLayout;
 import presentation.bill.BillExaminePanel;
 import presentation.bill.BillPanel;
+import presentation.billui.ChangeBillPanel;
 import presentation.billui.SaleBillPanel;
 import presentation.component.Listener_stub;
 import presentation.dataui.MockDataPanel;
@@ -95,7 +96,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("商品管理", e -> mw.changePanel(new CommodityDataPanel(new CommodityBL_stub(), closeListener)));
 			addButton("库存查看", new Listener_stub());
 			addButton("库存盘点", new Listener_stub());
-			addButton("报溢/报损", new Listener_stub());
+			addButton("报溢/报损", e -> mw.changePanel(new ChangeBillPanel(mainWindow.getUser(), closeListener)));
 			addButton("退出", new CloseListener());
 			
 		}
