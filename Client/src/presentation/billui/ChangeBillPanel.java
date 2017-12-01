@@ -14,10 +14,10 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-import bl_stub.CommodityBL_stub;
 import layout.TableLayout;
 import presentation.billui.choosewindow.CommodityChooseWin;
 import presentation.component.MyTableModel;
+import vo.CommodityVO;
 import vo.UserVO;
 
 public class ChangeBillPanel extends BillPanel {
@@ -76,7 +76,9 @@ public class ChangeBillPanel extends BillPanel {
 		chooseGroup.add(lostButton);
 		
 		String[] headers = {"商品id", "商品名称", "库存数量", "实际数量"};
-		table = new JTable(new MyTableModel(null, headers));
+		MyTableModel tableModel = new MyTableModel(null, headers);
+		tableModel.setEditable(new int[]{3});
+		table = new JTable(tableModel);
 		table.getTableHeader().setReorderingAllowed(false);
 		JScrollPane tablePane = new JScrollPane(table);
 		
@@ -105,7 +107,21 @@ public class ChangeBillPanel extends BillPanel {
 		billPanel.add(choosePanel, "0,1");
 		billPanel.add(tablePanel, "0,2");
 
-		addButton.addActionListener(e -> new CommodityChooseWin(new CommodityBL_stub()));
+		addButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				CommodityVO commodity = new CommodityChooseWin().getCommodity();
+				if (commodity != null)
+				((MyTableModel) table.getModel()).addRow(new String[]{commodity.getId(),commodity.getName(),""+commodity.getAmount(),""+commodity.getAmount()});
+			}
+		});
+		
+		deleteButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (table.getSelectedRow() != -1) ((MyTableModel) table.getModel()).removeRow(table.getSelectedRow());
+			}
+		});
 	}
 
 	@Override

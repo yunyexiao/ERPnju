@@ -56,5 +56,5 @@ public interface CommodityDataService extends Remote {
 	 * @return
 	 * @throws RemoteException
 	 */
-	public ArrayList<CommodityPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException;
+	public ArrayList<CommodityPO> getCommoditysBy(String field, String content, boolean isfuzzy) throws RemoteException;
 }

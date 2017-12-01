@@ -213,7 +213,7 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 	}
 
 	@Override
-	public ArrayList<CustomerPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+	public ArrayList<CustomerPO> getCustomersBy(String field, String content, boolean isfuzzy) throws RemoteException {
 		
 		return null;
 	}

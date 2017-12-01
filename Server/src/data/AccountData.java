@@ -138,7 +138,7 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 	}
 
 	@Override
-	public ArrayList<AccountPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+	public ArrayList<AccountPO> getAccountsBy(String field, String content, boolean isfuzzy) throws RemoteException {
 		return null;
 	}
 

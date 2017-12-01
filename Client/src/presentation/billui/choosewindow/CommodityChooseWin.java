@@ -1,25 +1,38 @@
 package presentation.billui.choosewindow;
 
+import bl_stub.CommodityBL_stub;
 import blservice.CommodityBLService;
-import blservice.DataBLService;
+import blservice.infoservice.GetCommodityInterface;
+import vo.CommodityVO;
 
 public class CommodityChooseWin extends ChooseWindow {
+	
+	private CommodityVO data;
 
-	public CommodityChooseWin(CommodityBLService commodityBL) {
-		super(commodityBL);
+	public CommodityChooseWin() {
+		super();
 	}
 
 	@Override
-	public void init(DataBLService dataBL) {
+	public void init() {
+		CommodityBLService commodityBL = new CommodityBL_stub();
 		setTypes(new String[]{"按编号搜索", "按名称搜索"});
-		setTableModel(((CommodityBLService) dataBL).update());
-		setTitle("选择商品");
+		table.setModel(commodityBL.update());
+		FitTableColumns();
+		frame.setTitle("选择商品");
+		frame.setVisible(true);
 	}
 
 	@Override
 	protected void yesAction() {
-		// TODO Auto-generated method stub
-
+		GetCommodityInterface commodityInfo = new CommodityBL_stub();
+		if (table.getSelectedRow() != -1) {
+			data = commodityInfo.getCommodity((String) table.getValueAt(table.getSelectedRow(), 0));
+			frame.dispose();
+		}
 	}
 
+	public CommodityVO getCommodity() {
+		return data;
+	}
 }

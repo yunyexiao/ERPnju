@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import blservice.UserBLService;
-import businesslogic.inter.GetUserInterface;
+import blservice.infoservice.GetUserInterface;
 import dataservice.UserDataService;
 import po.UserPO;
 import presentation.component.MyTableModel;

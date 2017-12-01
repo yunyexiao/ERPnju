@@ -1,11 +1,12 @@
 package bl_stub;
 
 import blservice.CommodityBLService;
+import blservice.infoservice.GetCommodityInterface;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
 
 
-public class CommodityBL_stub implements CommodityBLService {
+public class CommodityBL_stub implements CommodityBLService, GetCommodityInterface {
 
     public CommodityBL_stub() {}
 
@@ -47,5 +48,10 @@ public class CommodityBL_stub implements CommodityBLService {
         System.out.println("commodity changed: " + commodity.getId());
         return true;
     }
+
+	@Override
+	public CommodityVO getCommodity(String id) {
+		return new CommodityVO("002-20171126-00001", "装B神灯", "TBD", "A", "001-20171126-00001", "特殊灯具", 100, 20, 80, 240, 80, 240);
+	}
 
 }

@@ -53,7 +53,7 @@ public class CategoryDs_stub implements CategoryDataService {
     }
 
 	@Override
-	public ArrayList<CategoryPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+	public ArrayList<CategoryPO> getCategorysBy(String field, String content, boolean isfuzzy) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}

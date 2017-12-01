@@ -163,7 +163,7 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 	}
 
 	@Override
-	public ArrayList<CategoryPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+	public ArrayList<CategoryPO> getCategorysBy(String field, String content, boolean isfuzzy) throws RemoteException {
 		
 		return null;
 	}
