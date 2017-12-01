@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
 import blservice.CustomerBLService;
+import businesslogic.inter.GetCustomerInterface;
 import dataservice.CustomerDataService;
 import dataservice.UserDataService;
 import po.CustomerPO;
@@ -13,11 +14,32 @@ import po.UserPO;
 import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.CustomerVO;
+import vo.UserType;
+import vo.UserVO;
 
-public class CustomerBL implements CustomerBLService{
+public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 	
 	private CustomerDataService customerDataService = Rmi.getRemote(CustomerDataService.class);
-
+	private String[] tableHeader = {"客户编号", "客户姓名", "分类", "级别", "电话", "地址", 
+			"邮编", "电子邮箱", "应收额度", "应收", "应付", "默认业务员"};
+	
+	private String[] getLine(CustomerPO customer) {
+		return new String[] {
+				customer.getId(),
+				customer.getName(),
+				Integer.toString(customer.getType()),
+				Integer.toString(customer.getRank()),
+				customer.getTelNumber(),
+				customer.getAddress(),
+				customer.getCode(),
+				customer.getMail(),
+				Double.toString(customer.getRecRange()),
+				Double.toString(customer.getReceivable()),
+				Double.toString(customer.getPayment()), 
+				customer.getSalesman()
+		};
+	}
+	
 	@Override
 	public String getNewId() {
 		try {
@@ -40,14 +62,13 @@ public class CustomerBL implements CustomerBLService{
 	@Override//暂时只实现按ID查找功能
 	public MyTableModel search(String type, String key) {
 		try {
-			String[] columnNames = {"客户编号", "客户姓名", "分类", "级别", "电话", "地址", 
-					"邮编", "电子邮箱", "应收额度", "应收", "应付", "默认业务员"};
+			ArrayList<CustomerPO> list = null;
 			CustomerPO customerPO = customerDataService.findById(key);
-			String[][] data = {{customerPO.getId(), customerPO.getName(), Integer.toString(customerPO.getType()),
-				Integer.toString(customerPO.getRank()), customerPO.getTelNumber(), customerPO.getAddress(), 
-				customerPO.getCode(), customerPO.getMail(), Double.toString(customerPO.getRecRange()), 
-				Double.toString(customerPO.getReceivable()), Double.toString(customerPO.getPayment()), customerPO.getSalesman()}};
-			MyTableModel searchTable = new MyTableModel (data, columnNames);
+			String[][] data = new String [list.size()][tableHeader.length];
+			for (int i = 0; i < list.size(); i++) {
+				data[i] = getLine(list.get(i));
+			}
+			MyTableModel searchTable = new MyTableModel (data, tableHeader);
 			return searchTable;
 		} catch (Exception e) {
 			return null;
@@ -58,24 +79,11 @@ public class CustomerBL implements CustomerBLService{
 	public MyTableModel update() {
 		try {
 			ArrayList<CustomerPO> list = customerDataService.getAllCustomer();
-			String[] columnNames = {"客户编号", "客户姓名", "分类", "级别", "电话", "地址", 
-					"邮编", "电子邮箱", "应收额度", "应收", "应付", "默认业务员"};
-			String[][] data = new String [list.size()][12];
-			for (int i=0; i<list.size(); i++) {
-				data[i][0] = list.get(i).getId();
-				data[i][1] = list.get(i).getName();
-				data[i][2] = Integer.toString(list.get(i).getType());
-				data[i][3] = Integer.toString(list.get(i).getRank());
-				data[i][4] = list.get(i).getTelNumber();
-				data[i][5] = list.get(i).getAddress();
-				data[i][6] = list.get(i).getCode();
-				data[i][7] = list.get(i).getMail();
-				data[i][8] = Double.toString(list.get(i).getRecRange());
-				data[i][9] = Double.toString(list.get(i).getReceivable());
-				data[i][10] = Double.toString(list.get(i).getPayment());
-				data[i][11] = list.get(i).getSalesman();
+			String[][] data = new String [list.size()][tableHeader.length];
+			for (int i = 0; i < list.size(); i++) {
+				data[i] = getLine(list.get(i));
 			}
-			MyTableModel updateTable = new MyTableModel (data, columnNames);
+			MyTableModel updateTable = new MyTableModel (data, tableHeader);
 			return updateTable;
 		} catch (Exception e) {
 			return null;
@@ -100,6 +108,32 @@ public class CustomerBL implements CustomerBLService{
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	
+	@Override
+	public CustomerVO getCustomer(String id) {
+		CustomerPO customer = null;
+		try {
+			customer = customerDataService.findById(id);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		if (customer != null) {
+			return new CustomerVO(
+					customer.getId(),
+					customer.getName(),
+					customer.getType(),
+					customer.getRank(),
+					customer.getTelNumber(),
+					customer.getAddress(),
+					customer.getCode(),
+					customer.getMail(),
+					customer.getRecRange(),
+					customer.getReceivable(),
+					customer.getPayment(),
+					customer.getSalesman()); 
+		}
+		return null;
 	}
 
 }

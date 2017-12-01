@@ -4,17 +4,30 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import blservice.AccountBLService;
+import businesslogic.inter.GetAccountInterface;
 import dataservice.AccountDataService;
 import dataservice.CustomerDataService;
 import po.AccountPO;
 import po.CustomerPO;
+import po.UserPO;
 import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.AccountVO;
+import vo.UserType;
+import vo.UserVO;
 
-public class AccountBL implements AccountBLService{
+public class AccountBL implements AccountBLService, GetAccountInterface {
 
 	private AccountDataService accountDataService = Rmi.getRemote(AccountDataService.class);
+	private String[] tableHeader = {"银行账号", "账户名称", "余额"};
+	
+	private String[] getLine(AccountPO account) {
+		return new String[] {
+				account.getId(), 
+				account.getName(),
+				Double.toString(account.getMoney())
+		};
+	}
 	
 	@Override
 	public String getNewId() {
@@ -38,10 +51,13 @@ public class AccountBL implements AccountBLService{
 	@Override
 	public MyTableModel search(String type, String key) {
 		try {
-			String[] columnNames = {"银行账号", "账户名称", "余额"};
-			AccountPO accountPO = accountDataService.findById(key);
-			String[][] data = {{accountPO.getId(), accountPO.getName(), Double.toString(accountPO.getMoney())}};
-			MyTableModel searchTable = new MyTableModel (data, columnNames);
+			ArrayList<AccountPO> list = null;
+			list = accountDataService.getUsersBy("SAID", key, true);
+			String[][] data = new String [list.size()][tableHeader.length];
+			for (int i = 0; i < list.size(); i++) {
+				data[i] = getLine(list.get(i));
+			}
+			MyTableModel searchTable = new MyTableModel (data, tableHeader);
 			return searchTable;
 		} catch (Exception e) {
 			return null;
@@ -52,14 +68,11 @@ public class AccountBL implements AccountBLService{
 	public MyTableModel update() {
 		try {
 			ArrayList<AccountPO> list = accountDataService.getAllAccount();
-			String[] columnNames = {"银行账号", "账户名称", "余额"};
-			String[][] data = new String [list.size()][3];
-			for (int i = 0; i < 3; i++) {
-				data[i][0] = list.get(i).getId();
-				data[i][1] = list.get(i).getName();
-				data[i][2] = Double.toString(list.get(i).getMoney());
+			String[][] data = new String [list.size()][tableHeader.length];
+			for (int i = 0; i < list.size(); i++) {
+				data[i] = getLine(list.get(i));
 			}
-			MyTableModel updateTable = new MyTableModel (data, columnNames);
+			MyTableModel updateTable = new MyTableModel (data, tableHeader);
 			return updateTable;
 		} catch (Exception e) {
 			return null;
@@ -85,5 +98,21 @@ public class AccountBL implements AccountBLService{
 			return false;
 		}
 	}
-
+	@Override
+	public AccountVO getAccount(String id) {
+		AccountPO account = null;
+		try {
+			account = accountDataService.findById(id);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		if (account != null) {
+			return new AccountVO(
+					account.getId(),
+					account.getName(),
+					account.getMoney()); 
+		}
+		return null;
+	}
+	
 }
