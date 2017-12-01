@@ -1,4 +1,4 @@
-package businesslogic.inter;
+package blservice.infoservice;
 
 import vo.CommodityVO;
 
