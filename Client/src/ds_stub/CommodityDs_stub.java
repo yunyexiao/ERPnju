@@ -53,7 +53,7 @@ public class CommodityDs_stub implements CommodityDataService {
     }
 
 	@Override
-	public ArrayList<CommodityPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+	public ArrayList<CommodityPO> getCommoditysBy(String field, String content, boolean isfuzzy) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}

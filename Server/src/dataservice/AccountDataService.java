@@ -57,5 +57,5 @@ public interface AccountDataService extends Remote {
 	 * @return
 	 * @throws RemoteException
 	 */
-	public ArrayList<AccountPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException;
+	public ArrayList<AccountPO> getAccountsBy(String field, String content, boolean isfuzzy) throws RemoteException;
 }

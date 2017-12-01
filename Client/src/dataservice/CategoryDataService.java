@@ -57,5 +57,5 @@ public interface CategoryDataService extends Remote {
 	 * @return
 	 * @throws RemoteException
 	 */
-	public ArrayList<CategoryPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException;
+	public ArrayList<CategoryPO> getCategorysBy(String field, String content, boolean isfuzzy) throws RemoteException;
 }

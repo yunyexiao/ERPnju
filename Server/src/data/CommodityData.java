@@ -229,7 +229,7 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 	}
 
 	@Override
-	public ArrayList<CommodityPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+	public ArrayList<CommodityPO> getCommoditysBy(String field, String content, boolean isfuzzy) throws RemoteException {
 		
 		return null;
 	}
