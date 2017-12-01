@@ -40,6 +40,10 @@ public class UserVO {
 		return this.name;
 	}
 	
+	public int getRank(){
+	    return this.rank;
+	}
+	
 	public String getPwd() {
 		return this.key;
 	}
