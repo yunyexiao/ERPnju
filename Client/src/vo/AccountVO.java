@@ -6,9 +6,9 @@ public class AccountVO {
 
 	private String name;
 	private String number;
-	private int money;
+	private double money;
 	
-	public AccountVO(String name, String number, int money) {
+	public AccountVO(String name, String number, double money) {
 		this.name = name;
 		this.number = number;
 		this.money = money;
@@ -16,7 +16,7 @@ public class AccountVO {
 	
 	public String getName() {return name;}
 	public String getNumber() {return number;}
-	public int getMoney() {return money;}
+	public double getMoney() {return money;}
 	
 	public AccountPO toPO() {
 		AccountPO accountPO = new AccountPO (number, name, money);
