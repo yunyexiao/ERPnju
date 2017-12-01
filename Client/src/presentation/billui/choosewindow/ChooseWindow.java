@@ -16,17 +16,15 @@ import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
-import blservice.DataBLService;
 import presentation.component.MyTableModel;
 
 public abstract class ChooseWindow {
 
-	private JDialog frame = new JDialog();
-	private JTable table = new JTable();
-	private String[] searchTypes;
+	protected JDialog frame = new JDialog();
+	protected JTable table = new JTable();
+	private JComboBox<String> searchTypeBox;
 	
-	public ChooseWindow(DataBLService dataBL) {
-		init(dataBL);
+	public ChooseWindow() {
 		frame.setModal(true);
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -36,12 +34,11 @@ public abstract class ChooseWindow {
 		
 		JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		searchPanel.add(new JLabel("选择搜索方式"));
-		JComboBox<String> searchTypeBox = new JComboBox<String>(searchTypes);
+		searchTypeBox = new JComboBox<String>();
 		searchPanel.add(searchTypeBox);
 		
 		table.getTableHeader().setReorderingAllowed(false);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); 
-		FitTableColumns(table);
 		JScrollPane tablePane = new JScrollPane(table);
 		//tablePane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		
@@ -58,45 +55,41 @@ public abstract class ChooseWindow {
 		
 		quitButton.addActionListener(e -> frame.dispose());
 		yesButton.addActionListener(e -> yesAction());
-		frame.setVisible(true);
+
+		init();
 	}
 	
-	private void FitTableColumns(JTable myTable){
-	    JTableHeader header = myTable.getTableHeader();
-	    int rowCount = myTable.getRowCount();
+	protected void FitTableColumns(){
+	    JTableHeader header = table.getTableHeader();
+	    int rowCount = table.getRowCount();
 	
-	    Enumeration<TableColumn> columns = myTable.getColumnModel().getColumns();
+	    Enumeration<TableColumn> columns = table.getColumnModel().getColumns();
 	    while(columns.hasMoreElements()){
 	        TableColumn column = columns.nextElement();
 	        int col = header.getColumnModel().getColumnIndex(column.getIdentifier());
-	        int width = (int)myTable.getTableHeader().getDefaultRenderer()
-	                 .getTableCellRendererComponent(myTable, column.getIdentifier()
+	        int width = (int)table.getTableHeader().getDefaultRenderer()
+	                 .getTableCellRendererComponent(table, column.getIdentifier()
 	                         , false, false, -1, col).getPreferredSize().getWidth();
 	        for(int row = 0; row < rowCount; row++){
-	        	int preferedWidth = (int)myTable.getCellRenderer(row, col).getTableCellRendererComponent(myTable,
-	               myTable.getValueAt(row, col), false, false, row, col).getPreferredSize().getWidth();
+	        	int preferedWidth = (int)table.getCellRenderer(row, col).getTableCellRendererComponent(table,
+	               table.getValueAt(row, col), false, false, row, col).getPreferredSize().getWidth();
 	             width = Math.max(width, preferedWidth);
 	        }
 	        header.setResizingColumn(column); // 此行很重要
-	        column.setWidth(width + myTable.getIntercellSpacing().width + 15);
+	        column.setWidth(width + table.getIntercellSpacing().width + 15);
 		}
 	}
 		     
 	protected void setTypes(String[] searchTypes) {
-		this.searchTypes = searchTypes;
+		for (String str : searchTypes) {
+			searchTypeBox.addItem(str);
+		}
 	}
 	
-	protected void setTableModel(MyTableModel model) {
-		table.setModel(model);
-	}
-	
-	protected void setTitle(String text) {
-		frame.setTitle(text);
-	}
 	/**
-	 * 初始化选择窗口，包括搜索方式字符串数组和表格
+	 * 初始化选择窗口，包括搜索方式字符串数组和表格，最后一行一定记得写frame.setVisible(true);
 	 */
-	abstract public void init(DataBLService dataBL);
+	abstract public void init();
 	
 	abstract protected void yesAction();
 }

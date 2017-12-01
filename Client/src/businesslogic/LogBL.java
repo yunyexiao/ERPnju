@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import blservice.LogBLService;
+import blservice.infoservice.GetUserInterface;
 import businesslogic.inter.AddLogInterface;
-import businesslogic.inter.GetUserInterface;
 import dataservice.LogDataService;
 import po.LogInfoPO;
 import presentation.component.MyTableModel;
