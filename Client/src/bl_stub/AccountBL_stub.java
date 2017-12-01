@@ -8,8 +8,8 @@ public class AccountBL_stub implements AccountBLService {
 
 	@Override
 	public boolean delete(String id) {
-		// TODO Auto-generated method stub
-		return false;
+		System.out.println("账户信息已成功删除");
+		return true;
 	}
 
 	@Override
@@ -20,20 +20,22 @@ public class AccountBL_stub implements AccountBLService {
 
 	@Override
 	public MyTableModel update() {
-		// TODO Auto-generated method stub
-		return null;
+		String[] attributes={"银行账号", "账户名称", "余额"};
+		String[][] info={{"111111111", "马云", "9999999999999"}};
+		System.out.println("账户信息已成功更新");
+		return new MyTableModel(info, attributes);
 	}
 
 	@Override
 	public boolean add(AccountVO account) {
-		// TODO Auto-generated method stub
-		return false;
+		System.out.println("账户信息已成功添加");
+		return true;
 	}
 
 	@Override
 	public boolean change(AccountVO account) {
-		// TODO Auto-generated method stub
-		return false;
+		System.out.println("账户信息已更改");
+		return true;
 	}
 
 	@Override
