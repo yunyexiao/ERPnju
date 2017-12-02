@@ -14,8 +14,10 @@ public class AccountBL_stub implements AccountBLService {
 
 	@Override
 	public MyTableModel search(String type, String key) {
-		// TODO Auto-generated method stub
-		return null;
+		String[] attributes={"银行账号", "账户名称", "余额"};
+		String[][] info={{"111111111", "马云", "9999999999999"}};
+		System.out.println("显示搜索的账户信息");
+		return new MyTableModel(info, attributes);
 	}
 
 	@Override
