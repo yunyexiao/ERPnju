@@ -10,6 +10,9 @@ public class SearchCustomerWindow extends SearchWindow{
 
 	public SearchCustomerWindow(CustomerBLService customerBl) {
 		super(customerBl);
+        frame.setTitle("²éÑ¯¿Í»§");
+        frame.setSize(300, 200);
+        frame.setVisible(true);
 	}
 
 	@Override
