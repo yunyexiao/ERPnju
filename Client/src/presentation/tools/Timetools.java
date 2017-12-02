@@ -35,6 +35,15 @@ public class Timetools {
 		String stime=simtime.format(new Date());
 		return stime;
 	}
+	/**
+	 * 获得当前日期表示yyyyMMdd
+	 * @return
+	 */
+	public static String getDate() {
+		SimpleDateFormat simdate=new SimpleDateFormat("yyyyMMdd");
+		String sdate=simdate.format(new Date());
+		return sdate;
+	}
 	
 	private static Date getNetworkTime(String url1){  
         try{  
