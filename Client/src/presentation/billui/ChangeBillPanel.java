@@ -16,13 +16,17 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import blservice.billblservice.ChangeBillBLService;
+import businesslogic.ChangeBillBL;
 import layout.TableLayout;
 import presentation.billui.choosewindow.CommodityChooseWin;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.main.MainWindow;
+import presentation.tools.Timetools;
 import vo.CommodityVO;
 import vo.UserVO;
+import vo.billvo.ChangeBillVO;
 
 public class ChangeBillPanel extends BillPanel {
 
@@ -30,6 +34,8 @@ public class ChangeBillPanel extends BillPanel {
 	private JButton addButton;
 	private JButton deleteButton;
 	private JTextField billIdField, operaterField;
+	private JRadioButton overButton, lostButton;
+	private ChangeBillBLService changeBillBL;
 	
 	public ChangeBillPanel(UserVO user, ActionListener closeListener) {
 		super(user, closeListener);
@@ -37,6 +43,7 @@ public class ChangeBillPanel extends BillPanel {
 
 	@Override
 	protected void initBillPanel() {
+		changeBillBL = new ChangeBillBL();
 		try{
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 		}catch(Exception e){
@@ -55,6 +62,7 @@ public class ChangeBillPanel extends BillPanel {
 				{12,25,TableLayout.FILL}
 		};
 		billIdField = new JTextField("");
+		setBillId(true);
 		billIdField.setEditable(false);
 		operaterField = new JTextField(getUser().getName());
 		operaterField.setEditable(false);
@@ -70,8 +78,11 @@ public class ChangeBillPanel extends BillPanel {
 				{12,25,TableLayout.FILL}
 		};
 		choosePanel.setLayout(new TableLayout(choosePanelSize));
-		JRadioButton overButton = new JRadioButton("报溢"), lostButton = new JRadioButton("报损");
+		overButton = new JRadioButton("报溢");
+		lostButton = new JRadioButton("报损");
 		overButton.setSelected(true);
+		overButton.addActionListener(e -> setBillId(true));
+		lostButton.addActionListener(e -> setBillId(false));
 		choosePanel.add(new JLabel("单据类型"), "1,1");
 		choosePanel.add(overButton, "3,1");
 		choosePanel.add(lostButton, "5,1");
@@ -164,26 +175,73 @@ public class ChangeBillPanel extends BillPanel {
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				initBillPanel();
+				setBillId(true);
+				overButton.setSelected(true);
+				String[] headers = {"商品id", "商品名称", "库存数量", "实际数量"};
+				MyTableModel tableModel = new MyTableModel(null, headers);
+				tableModel.setEditable(new int[]{3});
+				table.setModel(tableModel);
 			}
 		};
 	}
 
 	@Override
 	protected ActionListener getSaveActionListener() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				ChangeBillVO bill = getBill();
+				if (bill != null) {
+					bill.setState(ChangeBillVO.SAVED);
+					if (changeBillBL.saveBill(bill)) new InfoWindow("单据保存成功");
+					else new InfoWindow("单据保存失败");
+				}
+			}
+		};
 	}
 
 	@Override
 	protected ActionListener getCommitActionListener() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				ChangeBillVO bill = getBill();
+				if (bill != null) {
+					bill.setState(ChangeBillVO.COMMITED);
+					if (changeBillBL.saveBill(bill)) new InfoWindow("单据提交成功");
+					else new InfoWindow("单据提交失败");
+				}
+			}
+		};
 	}
 
 	@Override
 	protected boolean isCorrectable() {
-		return false;
+		if (table.getRowCount() == 0) {new InfoWindow("没有选择商品");return false;}
+		for(int i = 0; i < table.getRowCount(); i++) {
+			int a = Integer.parseInt((String)table.getValueAt(i, 2));
+			int b = Integer.parseInt((String)table.getValueAt(i, 3));
+			if (overButton.isSelected() && a >= b) {
+				new InfoWindow("与单据类型不符合");
+				return false;
+			} else if (lostButton.isSelected() && a <= b) {
+				new InfoWindow("与单据类型不符合");
+				return false;
+			}
+		}
+		return true;
 	}
 
+	private ChangeBillVO getBill() {
+		if (! isCorrectable()) {
+			return null;
+		}
+		Timetools.check();
+		return new ChangeBillVO(Timetools.getDate(), Timetools.getTime(), changeBillBL.getNewId(), operaterField.getText(), ChangeBillVO.DRAFT, overButton.isSelected(), (MyTableModel) table.getModel());
+	}
+	
+	private void setBillId(boolean isOver) {
+		ChangeBillBL.setOver(isOver);
+		billIdField.setText((isOver?"BYD-":"BSD-")+Timetools.getDate()+"-"+changeBillBL.getNewId());
+	}
 }
