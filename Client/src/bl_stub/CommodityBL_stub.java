@@ -51,7 +51,7 @@ public class CommodityBL_stub implements CommodityBLService, GetCommodityInterfa
 
 	@Override
 	public CommodityVO getCommodity(String id) {
-		return new CommodityVO("002-20171126-00001", "装B神灯", "TBD", "A", "001-20171126-00001", "特殊灯具", 100, 20, 80, 240, 80, 240);
+		return new CommodityVO("000001", "装B神灯", "TBD", "A", "001-20171126-00001", "特殊灯具", 100, 20, 80, 240, 80, 240);
 	}
 
 }
