@@ -2,6 +2,8 @@ package presentation.billui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -16,7 +18,9 @@ import javax.swing.UIManager;
 
 import layout.TableLayout;
 import presentation.billui.choosewindow.CommodityChooseWin;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
+import presentation.main.MainWindow;
 import vo.CommodityVO;
 import vo.UserVO;
 
@@ -111,16 +115,47 @@ public class ChangeBillPanel extends BillPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				CommodityVO commodity = new CommodityChooseWin().getCommodity();
-				if (commodity != null)
-				((MyTableModel) table.getModel()).addRow(new String[]{commodity.getId(),commodity.getName(),""+commodity.getAmount(),""+commodity.getAmount()});
+				if (commodity != null) {
+					for(int i = 0; i < table.getRowCount(); i++) {
+						if (commodity.getId().equals(table.getValueAt(i, 0))) {
+							new InfoWindow("表格内已有此商品");
+							return;
+						}
+					}
+					((MyTableModel) table.getModel()).addRow(new String[]{commodity.getId(),commodity.getName(),""+commodity.getAmount(),""+commodity.getAmount()});
+				}
 			}
 		});
 		
 		deleteButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (table.getSelectedRow() != -1) ((MyTableModel) table.getModel()).removeRow(table.getSelectedRow());
+				if (table.getSelectedRow() != -1) {
+					((MyTableModel) table.getModel()).removeRow(table.getSelectedRow());
+				} else new InfoWindow("请选择一行记录");
 			}
+		});
+		
+		addButton.addMouseListener(new MouseAdapter() {
+			@Override  
+		    public void mouseEntered(MouseEvent e) {
+				MainWindow.setInfo("选择需要修改的商品");  
+		    }
+		    @Override  
+		    public void mouseExited(MouseEvent e) {
+		    	MainWindow.setInfo();  
+		    }
+		});
+		
+		deleteButton.addMouseListener(new MouseAdapter() {
+			@Override  
+		    public void mouseEntered(MouseEvent e) {
+				MainWindow.setInfo("删除选中的一行");  
+		    }
+		    @Override  
+		    public void mouseExited(MouseEvent e) {
+		    	MainWindow.setInfo();  
+		    }
 		});
 	}
 
