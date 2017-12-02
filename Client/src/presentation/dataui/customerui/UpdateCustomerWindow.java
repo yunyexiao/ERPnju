@@ -16,8 +16,7 @@ public class UpdateCustomerWindow extends FatherWindow{
 		super();
 		this.customerBl = customerBl;
         frame.setTitle("ÐÞ¸Ä¿Í»§");
-        String[] customerData = {data[0], data[1], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11]};
-        centerPanel = new InputCustomerPanel(customerData);
+        centerPanel = new InputCustomerPanel(data);
         frame.add(centerPanel, BorderLayout.CENTER);
         
         frame.setVisible(true);

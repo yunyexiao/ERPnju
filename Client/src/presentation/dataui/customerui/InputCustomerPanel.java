@@ -28,11 +28,11 @@ public class InputCustomerPanel extends JPanel{
 	 */
 	protected InputCustomerPanel(String[] customer) {
 		super();
-		double[] rows = new double[25];
+		double[] rows = new double[37];
         rows[0] = TableLayout.FILL;
         for(int i = 0; i < 12; i++){
-            rows[2 * i + 1] = TableLayout.PREFERRED;
-            rows[2 * i + 2] = 10.0;
+            rows[3 * i + 1] = TableLayout.PREFERRED;
+            rows[3 * i + 2] = 10.0;
         }
         rows[rows.length - 1] = TableLayout.FILL;
         double[][] size = {{0.37, TableLayout.FILL, 10.0, TableLayout.FILL, 0.37}, rows};
@@ -43,19 +43,19 @@ public class InputCustomerPanel extends JPanel{
         JLabel[] labels = new JLabel[texts.length];
         for(int i = 0; i < labels.length; i++){
             labels[i] = new JLabel(texts[i]);
-            this.add(labels[i], "1 " + (2 * i + 1));
+            this.add(labels[i], "1 " + (3 * i + 1));
         }
 		
         customerIdTextField = new JTextField(customer[0]);
 		customerNameTextField = new JTextField(customer[1]);
-		customerTelNumberTextField = new JTextField(customer[2]);
-        customerAddressTextField = new JTextField(customer[3]);
-        customerCodeTextField = new JTextField(customer[4]);
-        customerMailTextField = new JTextField(customer[5]);
-        customerRecRangeTextField = new JTextField(customer[6]);
-        customerReceivableTextField = new JTextField(customer[7]);
-        customerPaymentTextField = new JTextField(customer[8]);
-        customerSalesmanTextField = new JTextField(customer[9]);
+		customerTelNumberTextField = new JTextField(customer[4]);
+        customerAddressTextField = new JTextField(customer[5]);
+        customerCodeTextField = new JTextField(customer[6]);
+        customerMailTextField = new JTextField(customer[7]);
+        customerRecRangeTextField = new JTextField(customer[8]);
+        customerReceivableTextField = new JTextField(customer[9]);
+        customerPaymentTextField = new JTextField(customer[10]);
+        customerSalesmanTextField = new JTextField(customer[11]);
 
 
         customerIdTextField.setEditable(false);
@@ -88,9 +88,15 @@ public class InputCustomerPanel extends JPanel{
 		rankButtonGroup.add(rank3RadioButton);
 		rankButtonGroup.add(rank4RadioButton);
 		rankButtonGroup.add(rank5RadioButton);
-		
-		
+
 		int length = customer.length;
+		
+		if(length > 2 && customer[2] != null){
+			if(customer[2].equals(purchaseRadioButton.getText()))
+		        purchaseRadioButton.setSelected(true);
+		    else saleRadioButton.setSelected(true);
+		}
+
 		if(length > 3 && customer[3] != null){
 		    Enumeration<AbstractButton> eb = typeButtonGroup.getElements();
 		    while(eb.hasMoreElements()){
@@ -102,28 +108,22 @@ public class InputCustomerPanel extends JPanel{
 		    }
 		}
 		
-		if(length > 2 && customer[2] != null){
-			if(customer[2].equals(purchaseRadioButton.getText()))
-		        purchaseRadioButton.setSelected(true);
-		    else saleRadioButton.setSelected(true);
-		}
-		
 		add(customerIdTextField, "3 1");
-		add(customerNameTextField, "3 3");
-	//	add(typePanel, "3 5");
-	//	add(rankPanel, "3 7");
-		add(customerTelNumberTextField, "3 9");
-		add(customerAddressTextField, "3 11");
-		add(customerCodeTextField, "3 13");
-		add(customerMailTextField, "3 15");
-		add(customerRecRangeTextField, "3 17");
-		add(customerReceivableTextField, "3 19");
-		add(customerPaymentTextField, "3 21");
-		add(customerSalesmanTextField, "3 23");
+		add(customerNameTextField, "3 4");
+		add(typePanel, "3 7");
+		add(rankPanel, "3 10");
+		add(customerTelNumberTextField, "3 13");
+		add(customerAddressTextField, "3 16");
+		add(customerCodeTextField, "3 19");
+		add(customerMailTextField, "3 22");
+		add(customerRecRangeTextField, "3 25");
+		add(customerReceivableTextField, "3 28");
+		add(customerPaymentTextField, "3 31");
+		add(customerSalesmanTextField, "3 34");
 	}
 	
 	/**
-	 * 得到面板输入的UserVO对象
+	 * 得到面板输入的CustomerVO对象
 	 * @return
 	 */
 	public CustomerVO getCustomerVO() {
