@@ -58,7 +58,7 @@ public class MainWindow {
 		topLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		topLabel.setPreferredSize(new Dimension(0, (int) (0.13 * mainWindow.getHeight())));
 		
-		double[][] size = {{0.1,TableLayout.FILL,0.15},{TableLayout.FILL}};
+		double[][] size = {{0.15,TableLayout.FILL,0.15},{TableLayout.FILL}};
 		JPanel infoPanel = new JPanel(new TableLayout(size));
 		JLabel noUseLabel = new JLabel();
 		JLabel timeLabel = new JLabel("", JLabel.CENTER);
@@ -90,6 +90,7 @@ public class MainWindow {
         image.setImage(img);
 		topLabel.setIcon(image);
 		buttonPanel.setBackground();
+		//((MainPanel) innerPanel).setBackground();
 		
 		SwingUtilities.updateComponentTreeUI(mainWindow);
 	}

@@ -2,6 +2,7 @@ package presentation.main;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Image;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -15,7 +16,6 @@ import bl_stub.BillBL_stub;
 import blservice.BillBLService;
 import layout.TableLayout;
 import presentation.PanelInterface;
-import presentation.component.MyTableModel;
 import vo.UserVO;
 
 /**
@@ -27,7 +27,7 @@ import vo.UserVO;
  *
  */
 public class MainPanel implements PanelInterface {
-	//private MainWindow mainWindow;
+
 	private final double[][] size = {{0.88,0.12},{0.4, 0.6}};
 	private BillBLService billBL;
 	private JPanel panel= new JPanel(new TableLayout(size)); 
@@ -46,11 +46,10 @@ public class MainPanel implements PanelInterface {
 		infoLabel = new JLabel(htmltxt);
 		infoPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		infoPanel.add(infoLabel);
+		infoPanel.setOpaque(false);
 		
-		//MainPanelTable model = new MainPanelTable(billBL.getBillInfo());
-		MyTableModel model = billBL.getBillInfo();
-		model.setEditable(new int[]{0,1});
-		table = new JTable(model);
+		table = new JTable(billBL.getBillInfo());
+		table.getTableHeader().setReorderingAllowed(false);
 		JScrollPane scrollPane = new JScrollPane(table);
 		
 		JPanel buttonPanel=new JPanel();
@@ -58,7 +57,7 @@ public class MainPanel implements PanelInterface {
 		JButton billDeleteButton = new JButton("É¾³ýµ¥¾Ý", new ImageIcon("resource/DeleteButton.png"));
 		double forthPanelSize[][]={
 				{10,TableLayout.FILL,10},
-				{10,30,10,30,TableLayout.FILL},
+				{10,30,10,30,TableLayout.FILL}
 		};
 		buttonPanel.setLayout(new TableLayout(forthPanelSize));
 		buttonPanel.add(billChangeButton, "1,1");
@@ -78,5 +77,13 @@ public class MainPanel implements PanelInterface {
 	@Override
 	public JPanel getPanel() {
 		return panel;
+	}
+	
+	public void setBackground() {
+		ImageIcon image = new ImageIcon("resource/MainBG.jpg");   
+        Image img = image.getImage();  
+        img = img.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_DEFAULT);  
+        image.setImage(img);
+		panel.add(new JLabel(image), "0,0,1,0");
 	}
 }
