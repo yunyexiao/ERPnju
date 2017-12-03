@@ -41,29 +41,36 @@ public class LoginWindow {
         
 		//set size of form according to screen's size
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		loginWindow.setSize((int) (screenSize.width * 0.3), (int) (screenSize.height * 0.27));
-		loginWindow.setLocation(screenSize.width / 2 - loginWindow.getWidth() / 2, screenSize.height / 2 - loginWindow.getHeight() / 2);
+		loginWindow.setSize(screenSize.width, screenSize.height);
+		loginWindow.setLocation(0, 0);
 		
 		//other setting
 		loginWindow.setResizable(false);
+		loginWindow.setUndecorated(true);
 		loginWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		loginWindow.setIconImage(new ImageIcon("resource/LoginIcon.png").getImage());
-		int border = 15;
-		double[][] size = {{0.15,0.15,0.05,TableLayout.FILL,0.05,0.15,0.15},
-				{0.2,0.2,border,0.2,border,0.23,0.17}};
+		//loginWindow.setIconImage(new ImageIcon("resource/LoginIcon.png").getImage());
+		//int border = 15;
+		double[][] size = {{0.39019,0.05124,0.04319,0.02853,0.09424,TableLayout.FILL},
+				{0.476,0.062,0.040,0.062,0.03,0.048,TableLayout.FILL}};
 		
+		buttonA.setOpaque(false);
+		buttonB.setOpaque(false);
+		buttonA.setBorderPainted(false);
+		buttonB.setBorderPainted(false);
+		keyField.setBorder(null);
+		nameField.setBorder(null);
 		//add components
 		JPanel panel = (JPanel)loginWindow.getContentPane();
 		panel.setLayout(new TableLayout(size));
 		panel.setOpaque(false);
-        panel.add(getLabel("用户："), "1, 1, r");
-        panel.add(nameField, "2, 1, 5, 1");
-        panel.add(getLabel("密码："), "1, 3, r");
-        panel.add(keyField,"2, 3, 5, 3");
+        //panel.add(getLabel("用户："), "1, 1, r");
+        panel.add(nameField, "2, 1, 4, 1");
+        //panel.add(getLabel("密码："), "1, 3, r");
+        panel.add(keyField,"2, 3, 4, 3");
         panel.add(buttonA, "1, 5, 2, 5");
-        panel.add(buttonB, "4, 5, 5, 5");
+        panel.add(buttonB, "4, 5");
         
-        ImageIcon image = new ImageIcon("resource/LoginBG" + (int)(Math.random() * 5) + ".jpg");   
+        ImageIcon image = new ImageIcon("resource/LoginBG.png");   
         Image img = image.getImage();  
         img = img.getScaledInstance(loginWindow.getWidth(), loginWindow.getHeight(), Image.SCALE_DEFAULT);  
         image.setImage(img); 
@@ -95,7 +102,6 @@ public class LoginWindow {
 			}
 		});
 	}
-	
 
 	private JButton getButton(String text) {
 		JButton button = new JButton(text);
@@ -103,9 +109,4 @@ public class LoginWindow {
 		return button;
 	}
 	
-	private JLabel getLabel(String text) {
-		JLabel label = new JLabel(text);
-		label.setFont(new Font("华文行楷", Font.PLAIN, 18));
-		return label;
-	}
 }

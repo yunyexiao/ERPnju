@@ -55,13 +55,13 @@ class LeftButtonPanel extends JPanel{
 		button.addMouseListener(new MouseAdapter() {
 			@Override  
 		    public void mouseEntered(MouseEvent e) {
-		        if ("退出".equals(text)) mainWindow.setInfo("退出系统");
-		        else mainWindow.setInfo("进入<" + text + ">界面");  
+		        if ("退出".equals(text)) MainWindow.setInfo("退出系统");
+		        else MainWindow.setInfo("进入<" + text + ">界面");  
 		    }  
 		  
 		    @Override  
 		    public void mouseExited(MouseEvent e) {
-		    	mainWindow.setInfo();  
+		    	MainWindow.setInfo();  
 		    }  
 		});
 		innerPanel.add(button);
