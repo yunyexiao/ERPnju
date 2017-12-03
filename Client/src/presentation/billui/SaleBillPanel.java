@@ -1,7 +1,6 @@
 package presentation.billui;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
 
@@ -19,85 +18,72 @@ import presentation.component.MyTableModel;
 import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.SaleBillVO;
+
 /**
  * 销售单的面板<br>
  * 上一级抽象父类中的sumField为这里的折扣前总额的TextField
  * @author 恽叶霄
- *
  */
 public class SaleBillPanel extends CommonSaleBillPanel {
 	
 	private SaleBillBLService saleBillBL = new SaleBillBL_stub();
 	
-	private JTextField discountField,afterDiscountSummaryField,couponField;
+	private JTextField discountField,afterDiscountField,couponField;
 	private JTextArea promotionInfoArea;
 	
 	public SaleBillPanel(UserVO user, ActionListener closeListener) {
 		super(user, closeListener);
 
 		billIdField.setText(saleBillBL.getNewId());
-		operaterField.setText(this.getUser().getName());
+		operatorField.setText(this.getUser().getId());
 	}
 
 	public SaleBillPanel(UserVO user, SaleBillVO bill, ActionListener closeListener) {
-		super(user, closeListener);
-		billIdField.setText(bill.getAllId());
-		operaterField.setText(this.getUser().getName());
-		customerIdField.setText(bill.getCustomerId());
-		// TODO customerNameField.setText(...);
-		goodsListTable.setModel(bill.getTableModel());
+		super(user, closeListener, bill);
+		if(!editable){
+		    discountField.setEditable(false);
+		    couponField.setEditable(false);
+		}
 	}
 	
 	@Override
 	protected ActionListener getNewActionListener() {
-		return new ActionListener(){
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-				int response = JOptionPane.showConfirmDialog(null, "确认要新建一张销售单吗？", "提示", JOptionPane.YES_NO_OPTION);
-				if(response == 1)return;
-				initBillPanel();
-				billIdField.setText(saleBillBL.getNewId());
-				operaterField.setText(SaleBillPanel.this.getUser().getName());
-            }
-		    
+		return e -> {
+            int response = JOptionPane.showConfirmDialog(null, "确认要新建一张销售单吗？", "提示", JOptionPane.YES_NO_OPTION);
+            if(response == 1)return;
+            clear();
+            billIdField.setText(saleBillBL.getNewId());
+            operatorField.setText(this.getUser().getName());
 		};
 	}
 
 	@Override
 	protected ActionListener getSaveActionListener() {
-		return new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-			    SaleBillVO bill = getBill(BillVO.DRAFT);
-			    if(bill == null){
-			        JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-			        return;
-			    }
-				saleBillBL.saveBill(bill);
-			}
+		return e -> {
+            SaleBillVO bill = getBill(BillVO.SAVED);
+            if(bill == null){
+                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
+                return;
+            }
+            saleBillBL.saveBill(bill);
 		};
 	}
 
 	@Override
 	protected ActionListener getCommitActionListener() {
-		return new ActionListener(){
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SaleBillVO bill = getBill(BillVO.COMMITED);
-                if(bill == null){
-                    JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-                    return;
-                }
-                saleBillBL.saveBill(bill);
+		return e -> {
+            SaleBillVO bill = getBill(BillVO.COMMITED);
+            if(bill == null){
+                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
+                return;
             }
-		    
+            saleBillBL.saveBill(bill);
 		};
 	}
 
 	@Override
 	protected boolean isCorrectable() {
+	    if(!super.isCorrectable()) return false;
 	    try{
 	        int discount = Integer.parseInt(discountField.getText());
 	        if(getUser().getRank() == 0 && discount > 1000)
@@ -111,6 +97,17 @@ public class SaleBillPanel extends CommonSaleBillPanel {
 	        return false;
 	    }
 	}
+	
+	@Override
+	protected void clear(){
+	    super.clear();
+	    discountField.setText("");
+	    discountField.setEditable(true);
+	    afterDiscountField.setText("");
+	    couponField.setText("");
+	    couponField.setEditable(true);
+	    promotionInfoArea.setText("");
+	}
 
 	/**
 	 * 获得单据VO
@@ -123,12 +120,18 @@ public class SaleBillPanel extends CommonSaleBillPanel {
 		        + c.get(Calendar.MONTH) + "" + c.get(Calendar.DATE);
 		    String time = c.get(Calendar.HOUR_OF_DAY) + "" 
 		        + c.get(Calendar.MINUTE) + "" + c.get(Calendar.SECOND);
-		    String id = billIdField.getText(),
-		           operater = operaterField.getText(),
-		           customerId = customerIdField.getText(),
-		           remark = remarkField.getText();
+		    String id = billIdField.getText()
+		         , operater = operatorField.getText()
+		         , customerId = customerIdField.getText()
+		         , customerName = customerNameField.getText()
+		         , remark = remarkField.getText();
 		    MyTableModel model = (MyTableModel)goodsListTable.getModel();
-		    return new SaleBillVO(date, time, id, operater, state, customerId, model, remark);
+		    double beforeDiscount = Double.parseDouble(sumField.getText())
+		         , sum = Double.parseDouble(afterDiscountField.getText())
+		         , discount = Double.parseDouble(discountField.getText());
+		    return new SaleBillVO(date, time, id, operater, state
+		        , customerId, customerName, model, remark, beforeDiscount
+		        , discount, sum);
 		}
 		return null;
 	}
@@ -157,9 +160,9 @@ public class SaleBillPanel extends CommonSaleBillPanel {
 		summaryButton.addActionListener(e -> sumUp());
 		
 		sumField = new JTextField(10);
-		afterDiscountSummaryField = new JTextField(10);
+		afterDiscountField = new JTextField(10);
 		sumField.setEditable(false);
-		afterDiscountSummaryField.setEditable(false);
+		afterDiscountField.setEditable(false);
 		discountField = new JTextField(10);
 		couponField = new JTextField(10);
 		remarkField = new JTextField(10);
@@ -175,7 +178,7 @@ public class SaleBillPanel extends CommonSaleBillPanel {
 		tailPanel.add(sumField,"3,1");
 		tailPanel.add(summaryButton,"9,1");
 		tailPanel.add(new JLabel("折让后总额"),"1,3");
-		tailPanel.add(afterDiscountSummaryField,"3,3");
+		tailPanel.add(afterDiscountField,"3,3");
 		tailPanel.add(new JLabel("代金券"),"5,3");
 		tailPanel.add(couponField,"7,3");
 		tailPanel.add(new JLabel("      备注"),"9,3");
@@ -191,7 +194,7 @@ public class SaleBillPanel extends CommonSaleBillPanel {
 	    super.sumUp();
 	    before = Integer.parseInt(sumField.getText());
 	    after = before - Integer.parseInt(discountField.getText()) - Integer.parseInt(couponField.getText());
-	    afterDiscountSummaryField.setText(after + "");
+	    afterDiscountField.setText(after + "");
 	}
 
     @Override

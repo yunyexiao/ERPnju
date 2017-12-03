@@ -11,7 +11,8 @@ public abstract class BillPO {
 	private String date;
 	private String time;
 	private String id;
-	private String operator;
+	private String operatorId;
+	private String operatorName;
 	private int state;
 	
 	/**
@@ -21,11 +22,12 @@ public abstract class BillPO {
 	 * @param id 每一天之内的编号
 	 * @param operator 操作人员的id
 	 */
-	public BillPO(String date, String time, String id, String operator, int state) {
+	public BillPO(String date, String time, String id, String operatorId, String operatorName, int state) {
 		this.date = date;
 		this.time = time;
 		this.id = id;
-		this.operator = operator;
+		this.operatorId = operatorId;
+		this.operatorName=operatorName;
 		this.state = state;
 	}
 	
@@ -41,11 +43,39 @@ public abstract class BillPO {
 		return id;
 	}
 	
-	public String getOperator() {
-		return operator;
+	public String getOperatorId() {
+		return operatorId;
 	}
 	
 	public int getState() {
 		return state;
+	}
+
+	public String getOperatorName() {
+		return operatorName;
+	}
+
+	public void setOperatorName(String operatorName) {
+		this.operatorName = operatorName;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setOperatorId(String operatorId) {
+		this.operatorId = operatorId;
+	}
+
+	public void setState(int state) {
+		this.state = state;
 	}
 }

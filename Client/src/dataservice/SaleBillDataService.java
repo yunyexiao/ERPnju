@@ -1,6 +1,8 @@
 package dataservice;
 
-import po.billpo.SaleBillPO;
+import java.rmi.RemoteException;
+
+import po.billpo.SalesBillPO;
 
 public interface SaleBillDataService {
 
@@ -10,18 +12,18 @@ public interface SaleBillDataService {
 	 * @param bill
 	 * @return
 	 */
-	public boolean saveBill(SaleBillPO bill);
+	public boolean saveBill(SalesBillPO bill) throws RemoteException;
 	/**
 	 * 根据编号删除一张单据
 	 * @param billid
 	 * @return
 	 */
-	public boolean deleteBill(String billid);
+	public boolean deleteBill(String billid) throws RemoteException;
 	/**
 	 * 获得销售单据的新编号
 	 * @return
 	 */
-	public String getNewId();
+	public String getNewId() throws RemoteException;
 	
-	public SaleBillPO getBillById(String id);
+	public SalesBillPO getBillById(String id) throws RemoteException;
 }

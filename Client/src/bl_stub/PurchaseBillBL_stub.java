@@ -1,10 +1,11 @@
 package bl_stub;
 
-import blservice.billblservice.SaleBillBLService;
-import vo.billvo.SaleBillVO;
+import blservice.billblservice.PurchaseBillBLService;
+import vo.billvo.MarketBillVO;
+import vo.billvo.PurchaseBillVO;
 
 
-public class PurchaseBillBL_stub implements SaleBillBLService {
+public class PurchaseBillBL_stub implements PurchaseBillBLService {
 
     public PurchaseBillBL_stub() {}
 
@@ -20,19 +21,19 @@ public class PurchaseBillBL_stub implements SaleBillBLService {
     }
 
     @Override
-    public boolean saveBill(SaleBillVO bill) {
+    public boolean saveBill(PurchaseBillVO bill) {
         System.out.println(bill.getId() + " has been saved");
         return true;
     }
 
     @Override
-    public boolean updateBill(SaleBillVO bill) {
+    public boolean updateBill(PurchaseBillVO bill) {
         System.out.println(bill.getId() + " has been updated");
         return true;
     }
 
     @Override
-    public SaleBillVO getBill(String id) {
+    public PurchaseBillVO getBill(String id) {
         // TODO Auto-generated method stub
         return null;
     }

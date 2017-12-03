@@ -52,13 +52,13 @@ public class CommodityBL implements CommodityBLService{
         try{
             ArrayList<CommodityPO> list = null;
             if(type.contains("分类编号")){
-                list = commodityDs.getUsersBy("ComCateID", key, true);
+                list = commodityDs.getCommoditysBy("ComCateID", key, true);
             }else if(type.contains("编号")){
-                list = commodityDs.getUsersBy("ComID", key, true);
+                list = commodityDs.getCommoditysBy("ComID", key, true);
             }else if(type.contains("分类名称")){
                 list = searchByCateName(key);
             }else if(type.contains("名称")){
-                list = commodityDs.getUsersBy("ComName", key, true);
+                list = commodityDs.getCommoditysBy("ComName", key, true);
             }
             String[][] data = new String[list.size()][columnNames.length];
             for(int i = 0; i < list.size(); i++){
@@ -127,7 +127,7 @@ public class CommodityBL implements CommodityBLService{
         ArrayList<CommodityPO> list = new ArrayList<>();
         for(int i = 0; i < categories.size(); i++){
             list.addAll(commodityDs
-                .getUsersBy("ComCateID", categories.get(i).getId(), true));
+                .getCommoditysBy("ComCateID", categories.get(i).getId(), true));
         }
         return list;
     }

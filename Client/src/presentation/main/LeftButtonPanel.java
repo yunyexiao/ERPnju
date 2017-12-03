@@ -28,8 +28,10 @@ import presentation.billui.PurchaseBillPanel;
 import presentation.billui.SaleBillPanel;
 import presentation.component.Listener_stub;
 import presentation.dataui.MockDataPanel;
+import presentation.dataui.accountui.AccountDataPanel;
 import presentation.dataui.categoryui.CategoryDataPanel;
 import presentation.dataui.commodityui.CommodityDataPanel;
+import presentation.dataui.customerui.CustomerDataPanel;
 import presentation.dataui.userui.UserDataPanel;
 import presentation.logui.LogPanel;
 import vo.BillType;
@@ -102,7 +104,7 @@ class LeftButtonPanel extends JPanel{
 			
 		}
 		else if (type == UserType.SALESMAN) {
-			addButton("客户管理", e -> mw.changePanel(new MockDataPanel(new CustomerBL_stub(), closeListener)));
+			addButton("客户管理", e -> mw.changePanel(new CustomerDataPanel(new CustomerBL_stub(), closeListener)));
 			addButton("制定进货单", e -> mw.changePanel(new PurchaseBillPanel(mainWindow.getUser(), closeListener)));
 			addButton("制定进货退货单", new Listener_stub());
 			addButton("制定销售单", e -> mw.changePanel(new SaleBillPanel(mainWindow.getUser(), closeListener)));
@@ -110,7 +112,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.ACCOUNTANT) {
-			addButton("账户管理", e -> mw.changePanel(new MockDataPanel(new AccountBL_stub(), closeListener)));
+			addButton("账户管理", e -> mw.changePanel(new AccountDataPanel(new AccountBL_stub(), closeListener)));
 			addButton("制定收付款单", new Listener_stub());
 			addButton("制定现金费用单", new Listener_stub());
 			addButton("查看销售明细表", new Listener_stub());

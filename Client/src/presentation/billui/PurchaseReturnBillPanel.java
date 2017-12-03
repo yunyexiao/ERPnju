@@ -5,29 +5,31 @@ import java.util.Calendar;
 
 import javax.swing.JOptionPane;
 
-import blservice.billblservice.PurchaseBillBLService;
-import businesslogic.PurchaseBillBL;
+import bl_stub.PurchaseReturnBillBL_stub;
+import blservice.billblservice.PurchaseReturnBillBLService;
 import presentation.component.MyTableModel;
 import vo.UserVO;
 import vo.billvo.BillVO;
-import vo.billvo.PurchaseBillVO;
+import vo.billvo.PurchaseReturnBillVO;
+import vo.billvo.SaleBillVO;
 
 /**
- * 进货单的面板
+ * 进货退货单面板
  * @author 恽叶霄
  */
-public class PurchaseBillPanel extends CommonSaleBillPanel {
+public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     
-    private PurchaseBillBLService purchaseBl = new PurchaseBillBL();
+    private PurchaseReturnBillBLService purchaseReturnBl = new PurchaseReturnBillBL_stub();
 
-    public PurchaseBillPanel(UserVO user, ActionListener closeListener) {
+    public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
-        this.billIdField.setText(purchaseBl.getNewId());
+        this.billIdField.setText(purchaseReturnBl.getNewId());
         this.operatorField.setText(user.getId());
     }
-    
-    public PurchaseBillPanel(UserVO user, ActionListener closeListener, PurchaseBillVO purchaseBill){
-        super(user, closeListener, purchaseBill);
+
+    public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener, SaleBillVO saleBill) {
+        super(user, closeListener, saleBill);
+        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -37,52 +39,53 @@ public class PurchaseBillPanel extends CommonSaleBillPanel {
 
     @Override
     protected String getTableTitle() {
-        return "进库商品列表";
+        return "出库商品列表";
     }
 
     @Override
     protected ActionListener getNewActionListener() {
         return e -> {
             int response = JOptionPane.showConfirmDialog(
-                null, "确认要新建一张进货单吗？", "提示", JOptionPane.YES_NO_OPTION);
-            if(response == 1)return;
+                null, "确认要新建一张进货退货单吗？", "提示", JOptionPane.YES_NO_OPTION);
+            if(response == 1) return;
             clear();
-            billIdField.setText(purchaseBl.getNewId());
-            operatorField.setText(this.getUser().getName());
+            billIdField.setText(purchaseReturnBl.getNewId());
+            operatorField.setText(getUser().getName());
         };
     }
 
     @Override
     protected ActionListener getSaveActionListener() {
-        return e ->{
+        return e -> {
             if(!editable) return;
-            PurchaseBillVO bill = getBill(BillVO.SAVED);
+            PurchaseReturnBillVO bill = getBill(BillVO.SAVED);
             if(bill == null){
                 JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
                 return;
             }
-            if(purchaseBl.saveBill(bill)){
+            if(purchaseReturnBl.saveBill(bill)){
                 JOptionPane.showMessageDialog(null, "单据已保存。");
             }
+
         };
     }
 
     @Override
     protected ActionListener getCommitActionListener() {
-        return e ->{
+        return e -> {
             if(!editable) return;
-            PurchaseBillVO bill = getBill(BillVO.COMMITED);
+            PurchaseReturnBillVO bill = getBill(BillVO.COMMITED);
             if(bill == null){
                 JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
                 return;
             }
-            if(purchaseBl.saveBill(bill)){
+            if(purchaseReturnBl.saveBill(bill)){
                 JOptionPane.showMessageDialog(null, "单据已提交。");
             }
         };
     }
 
-    private PurchaseBillVO getBill(int state){
+    private PurchaseReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
         Calendar c = Calendar.getInstance();
         String date = c.get(Calendar.YEAR) + ""
@@ -98,8 +101,9 @@ public class PurchaseBillPanel extends CommonSaleBillPanel {
              , remark = remarkField.getText();
         MyTableModel model = (MyTableModel)goodsListTable.getModel();
         double sum = Double.parseDouble(sumField.getText());
-        return new PurchaseBillVO(date, time, id, operater, state
+        return new PurchaseReturnBillVO(date, time, id, operater, state
             , customerId, customerName, model, remark, sum);
     }
+
 
 }

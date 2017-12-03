@@ -2,39 +2,32 @@ package vo.billvo;
 
 import presentation.component.MyTableModel;
 
-public class SaleBillVO extends BillVO {
+public class SaleBillVO extends MarketBillVO {
 
-	private String customerId;
-	private MyTableModel tableModel;
-	private String remark;
+	private double beforeDiscount, discount;
 	
-	public SaleBillVO(String date, String time, String id, String operator, int state
-	    , String customerId, MyTableModel tableModel, String remark) {
-		super(date, time, id, operator, state);
-		this.customerId = customerId;
-		this.tableModel = tableModel;
-		this.remark = remark;
+	public SaleBillVO(String date, String time, String id
+	    , String operator, int state, String customerId
+	    , String customerName, MyTableModel model
+	    , String remark, double beforeDiscount, double discount
+	    , double sum) {
+		super(date, time, id, operator, state, customerId
+		    , customerName, model, remark, sum);
+		this.beforeDiscount = beforeDiscount;
+		this.discount = discount;
 	}
+	
+    @Override
+    protected String getPrefix() {
+        return "XSD";
+    }
 
-	public String getCustomerId() {
-		return customerId;
-	}
-	
-	public void setTableModel(MyTableModel tableModel) {
-		this.tableModel = tableModel;
-	}
-	
-	public MyTableModel getTableModel() {
-		return tableModel;
-	}
-	
-	public String getRemark(){
-	    return remark;
-	}
-	
-	@Override
-	public String getAllId() {
-		return "XSD-" + this.getDate() + "-" + this.getId();
-	}
+    public double getBeforeDiscount() {
+        return beforeDiscount;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
 
 }

@@ -12,9 +12,12 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import layout.TableLayout;
+import presentation.billui.choosewindow.CustomerChooseWin;
 import presentation.component.MyTableModel;
+import vo.CustomerVO;
 import vo.UserVO;
-import vo.billvo.SaleBillVO;
+import vo.billvo.BillVO;
+import vo.billvo.MarketBillVO;
 
 /**
  * 用于销售类单据的基类<br>
@@ -23,16 +26,30 @@ import vo.billvo.SaleBillVO;
  */
 public abstract class CommonSaleBillPanel extends BillPanel {
 
-    protected JTextField billIdField, operaterField, customerIdField, customerNameField, remarkField, sumField;
+    protected JTextField billIdField, operatorField, customerIdField, customerNameField, remarkField, sumField;
 	protected JTable goodsListTable;
+	protected boolean editable;
 
     public CommonSaleBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
+        this.editable = true;
     }
     
-    public CommonSaleBillPanel(UserVO user, ActionListener closeListener, SaleBillVO saleBill){
+    public CommonSaleBillPanel(UserVO user, ActionListener closeListener, MarketBillVO bill){
         super(user, closeListener);
-        // TODO init those text fields
+        billIdField.setText(bill.getAllId());
+        operatorField.setText(bill.getOperator());
+        customerIdField.setText(bill.getCustomerId());
+        customerNameField.setText(bill.getCustomerName());
+        remarkField.setText(bill.getRemark());
+        sumField.setText(bill.getSum() + "");
+        goodsListTable.setModel(bill.getModel());
+        if(bill.getState() == BillVO.COMMITED || bill.getState() == BillVO.PASS){
+            editable = false;
+            remarkField.setEditable(false);
+        } else {
+            editable = true;
+        }
     }
 
     @Override
@@ -50,6 +67,17 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 		initSouth();
     }
     
+    @Override
+    protected boolean isCorrectable(){
+        if(billIdField.getText().length() == 0) return false;
+        if(operatorField.getText().length() == 0) return false;
+        if(customerIdField.getText().length() == 0) return false;
+        if(customerNameField.getText().length() == 0) return false;
+        if(sumField.getText().length() == 0) return false;
+        if(goodsListTable.getModel().getRowCount() == 0) return false;
+        return true;
+    }
+
     abstract protected String getObjectType();
     
     abstract protected String getTableTitle();
@@ -66,8 +94,8 @@ public abstract class CommonSaleBillPanel extends BillPanel {
     private JPanel getHeader(){
         billIdField = new JTextField(10);
         billIdField.setEditable(false);
-        operaterField = new JTextField(10);
-        operaterField.setEditable(false);
+        operatorField = new JTextField(10);
+        operatorField.setEditable(false);
 		double size[][]={
 				{20,55,5,150,20,40,5,150,TableLayout.FILL},
 				{12,25,TableLayout.FILL}
@@ -75,23 +103,23 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 	    JPanel headPanel = new JPanel(new TableLayout(size));
 		headPanel.add(new JLabel("单据编号"),"1,1");
 		headPanel.add(billIdField,"3,1");
-		headPanel.add(new JLabel("操作人"),"5,1");
-		headPanel.add(operaterField,"7,1");
+		headPanel.add(new JLabel("操作人编号"),"5,1");
+		headPanel.add(operatorField,"7,1");
 		return headPanel;
     }
     
     private JPanel getCustomerPanel(){
-        customerIdField = new JTextField("编号", 10);
+        customerIdField = new JTextField(10);
         customerIdField.setEditable(false);
-        customerNameField = new JTextField("姓名", 10);
+        customerNameField = new JTextField(10);
 		customerNameField.setEditable(false);
 	    double size[][]={
 				{20,45,5,70,12,100,5,60,TableLayout.FILL},
 				{8,25,TableLayout.FILL}
 		};
 		JPanel customerInfoPanel=new JPanel(new TableLayout(size));
-		// TODO add listener here
 		JButton customerChooseButton = new JButton("选择");
+		customerChooseButton.addActionListener(e -> handleChooseCustomer());
 		customerInfoPanel.add(new JLabel(getObjectType()),"1,1");
 		customerInfoPanel.add(customerIdField,"3,1");
 		customerInfoPanel.add(new JLabel("--"),"4,1");
@@ -157,23 +185,50 @@ public abstract class CommonSaleBillPanel extends BillPanel {
     }
     
     private void addItem(){
-        // TODO
+        if(!editable) return;
+        String[] newRow = new InputCommodityInfoWin().getRowData();
+        if(newRow == null) return;
+        MyTableModel model = (MyTableModel) goodsListTable.getModel();
+        model.addRow(newRow);
     }
     
     private void deleteItem(){
+        if(!editable) return;
 	    int row = goodsListTable.getSelectedRow();
 	    if(row < 0) return;
         ((MyTableModel)goodsListTable.getModel()).removeRow(goodsListTable.getSelectedRow());
     }
 
+    private void handleChooseCustomer(){
+        if(!editable) return;
+        CustomerVO c = new CustomerChooseWin().getCustomer();
+        if(c == null) return;
+        customerIdField.setText(c.getId());
+        customerNameField.setText(c.getName());
+    }
+
     protected void sumUp(){
-        if(!isCorrectable()) return;
+        if(!editable) return;
 	    MyTableModel model = (MyTableModel)this.goodsListTable.getModel();
-        int total = 0;
+        double total = 0;
 	    for(int i = 0; i < model.getRowCount(); i++){
-	        total += Integer.parseInt((String)model.getValueAt(i, 6));
+	        total += Double.parseDouble((String)model.getValueAt(i, 6));
 	    }
 	    sumField.setText(total + "");
+    }
+
+    protected void clear(){
+        billIdField.setText("");
+        operatorField.setText("");
+        customerIdField.setText("");
+        customerNameField.setText("");
+        remarkField.setText("");
+        remarkField.setEditable(true);
+        sumField.setText("");
+        MyTableModel model = (MyTableModel) goodsListTable.getModel();
+        while(model.getRowCount() > 0){
+            model.removeRow(0);
+        }
     }
 
 }

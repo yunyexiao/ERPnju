@@ -91,7 +91,7 @@ public class CategoryBL implements CategoryBLService {
     
     public ArrayList<CategoryPO> searchByName(String name){
         try {
-            return categoryDs.getUsersBy("CateName", name, true);
+            return categoryDs.getCategorysBy("CateName", name, true);
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;
