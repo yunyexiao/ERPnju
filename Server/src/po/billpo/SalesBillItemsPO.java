@@ -1,4 +1,4 @@
-package po;
+package po.billpo;
 
 import java.io.Serializable;
 
@@ -9,21 +9,20 @@ import java.io.Serializable;
  * @author Íò¼Îö©
  */
 
-public class SalesReturnBillItemsPO implements Serializable{
-/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8054870015595499405L;
-	private String comId, comName, remark;
+public class SalesBillItemsPO implements Serializable{
+	
+	private static final long serialVersionUID = -7983830700017283896L;
+	
+	private String comId, comName, comRemark;
 	private int comQuantity;
 	private double comPrice,comSum;
 	
-	public SalesReturnBillItemsPO(String comId, String comName, String remark, int comQuantity, double comPrice,
+	public SalesBillItemsPO(String comId, String comName, String comRemark, int comQuantity, double comPrice,
 			double comSum) {
 		super();
 		this.comId = comId;
 		this.comName = comName;
-		this.remark = remark;
+		this.comRemark = comRemark;
 		this.comQuantity = comQuantity;
 		this.comPrice = comPrice;
 		this.comSum = comSum;
@@ -31,40 +30,16 @@ public class SalesReturnBillItemsPO implements Serializable{
 
 	
 	
-	public SalesReturnBillItemsPO(){};
+	public SalesBillItemsPO(){};
 	
 	
 	
 	public void setComId(String id){
 		this.comId=id;
-	};
+	}
 	
 	public String getComId(){
 		return comId;
-	}
-	
-	public void setRemark(String remark){
-		this.remark=remark;
-	}
-	
-	public String getRemark(){
-		return remark;
-	}
-	
-	public void setComQuantity(int quan){
-		this.comQuantity=quan;
-	}
-	
-	public int getComQuantity(){
-		return comQuantity;
-	}
-	
-	public void setComPrice(double price){
-		this.comPrice=price;
-	}
-	
-	public double getComPrice(){
-		return comPrice;
 	}
 	
 	public void setComSum(double sum){
@@ -73,6 +48,30 @@ public class SalesReturnBillItemsPO implements Serializable{
 	
 	public double getComSum(){
 		return comSum;
+	}
+	
+	public void setComRemark(String remark){
+		this.comRemark=remark;
+	}
+	
+	public String getComRemark(){
+		return comRemark;
+	}
+	
+	public void setComQuantity(int quantity){
+		this.comQuantity=quantity;
+	}
+	
+	public int getComQuantity(){
+		return comQuantity;
+	}
+
+	public void setComPrice(double price){
+		this.comPrice=price;
+	}
+	
+	public double getComPrice(){
+		return comPrice;
 	}
 
 
@@ -86,5 +85,4 @@ public class SalesReturnBillItemsPO implements Serializable{
 	public void setComName(String comName) {
 		this.comName = comName;
 	}
-	
 }

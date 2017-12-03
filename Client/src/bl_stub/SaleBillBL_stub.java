@@ -19,13 +19,13 @@ public class SaleBillBL_stub implements SaleBillBLService {
 
 	@Override
 	public boolean saveBill(SaleBillVO bill) {
-		System.out.println(bill.getAllId() + " has been deleted");
+		System.out.println(bill.getAllId() + " has been saved");
 		return true;
 	}
 
 	@Override
 	public boolean updateBill(SaleBillVO bill) {
-		System.out.println(bill.getAllId() + " has been deleted");
+		System.out.println(bill.getAllId() + " has been updated");
 		return true;
 	}
 

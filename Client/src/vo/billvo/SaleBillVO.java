@@ -6,11 +6,14 @@ public class SaleBillVO extends BillVO {
 
 	private String customerId;
 	private MyTableModel tableModel;
+	private String remark;
 	
-	public SaleBillVO(String date, String time, String id, String operator, int state, String customerId, MyTableModel tableModel) {
+	public SaleBillVO(String date, String time, String id, String operator, int state
+	    , String customerId, MyTableModel tableModel, String remark) {
 		super(date, time, id, operator, state);
 		this.customerId = customerId;
 		this.tableModel = tableModel;
+		this.remark = remark;
 	}
 
 	public String getCustomerId() {
@@ -23,6 +26,10 @@ public class SaleBillVO extends BillVO {
 	
 	public MyTableModel getTableModel() {
 		return tableModel;
+	}
+	
+	public String getRemark(){
+	    return remark;
 	}
 	
 	@Override

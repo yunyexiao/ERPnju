@@ -6,11 +6,16 @@ import java.util.ArrayList;
 import blservice.CommodityBLService;
 import dataservice.CommodityDataService;
 import ds_stub.CommodityDs_stub;
+import po.CategoryPO;
 import po.CommodityPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
 
-
+/**
+ * 商品模块的BL<br>
+ * 与CategoryBL有直接依赖关系
+ * @author 恽叶霄
+ */
 public class CommodityBL implements CommodityBLService{
     
     private CommodityDataService commodityDs;
@@ -45,34 +50,21 @@ public class CommodityBL implements CommodityBLService{
     @Override
     public MyTableModel search(String type, String key) {
         try{
-            MyTableModel model = new MyTableModel(null, columnNames);
+            ArrayList<CommodityPO> list = null;
             if(type.contains("分类编号")){
-                System.out.println(1);
-                ArrayList<CommodityPO> commodities = commodityDs.getAllCommodity();
-                for(CommodityPO commodity: commodities){
-                    if(commodity.getCategoryId().equals(key))
-                        addIntoModel(model, commodity);
-                }
+                list = commodityDs.getUsersBy("ComCateID", key, true);
             }else if(type.contains("编号")){
-                System.out.println(2);
-                CommodityPO c = commodityDs.findById(key);
-                addIntoModel(model, c);
+                list = commodityDs.getUsersBy("ComID", key, true);
             }else if(type.contains("分类名称")){
-                System.out.println(3);
-                ArrayList<CommodityPO> commodities = commodityDs.getAllCommodity();
-                for(CommodityPO commodity: commodities){
-                    if(commodity.getCategoryName().contains(key))
-                        addIntoModel(model, commodity);
-                }
+                list = searchByCateName(key);
             }else if(type.contains("名称")){
-                System.out.println(4);
-                ArrayList<CommodityPO> commodities = commodityDs.getAllCommodity();
-                for(CommodityPO commodity: commodities){
-                    if(commodity.getName().contains(key))
-                        addIntoModel(model, commodity);
-                }
+                list = commodityDs.getUsersBy("ComName", key, true);
             }
-            return model;
+            String[][] data = new String[list.size()][columnNames.length];
+            for(int i = 0; i < list.size(); i++){
+                data[i] = getLine(list.get(i));
+            }
+            return new MyTableModel(data, columnNames);
         }catch(RemoteException e){
             e.printStackTrace();
         }
@@ -85,18 +77,7 @@ public class CommodityBL implements CommodityBLService{
             ArrayList<CommodityPO> list = commodityDs.getAllCommodity();
             String[][] data = new String[list.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
-                data[i][0] = list.get(i).getId();
-                data[i][1] = list.get(i).getName();
-                data[i][2] = list.get(i).getType();
-                data[i][3] = list.get(i).getStore();
-                data[i][4] = list.get(i).getAmount() + "";
-                data[i][5] = list.get(i).getAlarmNum() + "";
-                data[i][6] = list.get(i).getCategoryId();
-                data[i][7] = list.get(i).getCategoryName();
-                data[i][8] = list.get(i).getInPrice() + "";
-                data[i][9] = list.get(i).getSalePrice() + "";
-                data[i][10] = list.get(i).getRecentInPrice() + "";
-                data[i][11] = list.get(i).getRecentSalePrice() + "";
+                data[i] = getLine(list.get(i));
             }
             return new MyTableModel(data, columnNames);
         }catch(RemoteException e){
@@ -125,8 +106,6 @@ public class CommodityBL implements CommodityBLService{
         }
     }
 
-
-
     public ArrayList<CommodityPO> getAllCommodities() {
         try {
             return commodityDs.getAllCommodity();
@@ -136,10 +115,21 @@ public class CommodityBL implements CommodityBLService{
         }
     }
 
-    private void addIntoModel(MyTableModel model, CommodityPO c){
-        model.addRow(new String[]{c.getId(), c.getName(), c.getType(), c.getStore(), c.getAmount() + ""
+    private String[] getLine(CommodityPO c){
+        return new String[]{c.getId(), c.getName(), c.getType(), c.getStore(), c.getAmount() + ""
                 , c.getAlarmNum() + "", c.getCategoryId(), c.getCategoryName(), c.getInPrice() + ""
-                , c.getSalePrice() + "", c.getRecentInPrice() + "", c.getRecentSalePrice() + ""});
+                , c.getSalePrice() + "", c.getRecentInPrice() + "", c.getRecentSalePrice() + ""};
+    }
+    
+    private ArrayList<CommodityPO> searchByCateName(String key) throws RemoteException{
+        CategoryBL categoryBl = new CategoryBL();
+        ArrayList<CategoryPO> categories = categoryBl.searchByName(key);
+        ArrayList<CommodityPO> list = new ArrayList<>();
+        for(int i = 0; i < categories.size(); i++){
+            list.addAll(commodityDs
+                .getUsersBy("ComCateID", categories.get(i).getId(), true));
+        }
+        return list;
     }
 
 }

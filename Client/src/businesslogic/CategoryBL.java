@@ -13,7 +13,10 @@ import po.CategoryPO;
 import po.CommodityPO;
 import vo.CategoryVO;
 
-
+/**
+ * 商品分类的BL<br>
+ * 与CommodityBL有直接依赖关系
+ * @author 恽叶霄*/
 public class CategoryBL implements CategoryBLService {
     
     private CategoryDataService categoryDs;
@@ -86,6 +89,15 @@ public class CategoryBL implements CategoryBLService {
         }
     }
     
+    public ArrayList<CategoryPO> searchByName(String name){
+        try {
+            return categoryDs.getUsersBy("CateName", name, true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private void addChildren(ArrayList<CategoryPO> list, DefaultMutableTreeNode fatherNode){
         String fatherId = ((CategoryVO)fatherNode.getUserObject()).getId();
         ArrayList<CategoryPO> children = new ArrayList<>();
