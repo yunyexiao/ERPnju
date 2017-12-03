@@ -49,6 +49,12 @@ public abstract class BillVO {
 	public int getState() {
 		return state;
 	}
+	
+	public void setState(int n) {
+
+		state = n;
+
+	}
 	/**
 	 * Bill子类必须实现此方法，以获取符合需求的完整的单据id（用于显示）
 	 * @return 完整的单据id
