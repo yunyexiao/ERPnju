@@ -15,23 +15,18 @@ public class PurchaseBillItemsPO implements Serializable{
 	 */
 	private static final long serialVersionUID = 6733898597204329266L;
 	
-	private String comId, comName, comSum, remark;
+	private String comId, remark;
 	private int comQuantity;
-	private double comPrice;
+	private double comPrice, comSum;
 	
-	public PurchaseBillItemsPO(String comId, String comName, String comSum, String remark, int comQuantity,
-			double comPrice) {
+	public PurchaseBillItemsPO(String comId, String remark, int comQuantity, double comPrice, double comSum) {
 		super();
 		this.comId = comId;
-		this.comName = comName;
-		this.comSum = comSum;
 		this.remark = remark;
 		this.comQuantity = comQuantity;
 		this.comPrice = comPrice;
+		this.comSum = comSum;
 	}
-	public PurchaseBillItemsPO() {};
-	
-	
 	
 	public String getComId() {
 		return comId;
@@ -39,10 +34,10 @@ public class PurchaseBillItemsPO implements Serializable{
 	public void setComId(String comId) {
 		this.comId = comId;
 	}
-	public String getComSum() {
+	public double getComSum() {
 		return comSum;
 	}
-	public void setComSum(String comSum) {
+	public void setComSum(double comSum) {
 		this.comSum = comSum;
 	}
 	public String getRemark() {
@@ -63,11 +58,5 @@ public class PurchaseBillItemsPO implements Serializable{
 	public void setComPrice(double comPrice) {
 		this.comPrice = comPrice;
 	}
-	public String getComName() {
-		return comName;
-	}
-	public void setComName(String comName) {
-		this.comName = comName;
-	}
-		
+
 }

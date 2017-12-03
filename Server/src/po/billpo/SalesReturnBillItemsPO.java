@@ -14,27 +14,19 @@ public class SalesReturnBillItemsPO implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 8054870015595499405L;
-	private String comId, comName, remark;
+	private String comId, remark;
 	private int comQuantity;
 	private double comPrice,comSum;
 	
-	public SalesReturnBillItemsPO(String comId, String comName, String remark, int comQuantity, double comPrice,
-			double comSum) {
+	public SalesReturnBillItemsPO(String comId, String remark, int comQuantity, double comPrice, double comSum) {
 		super();
 		this.comId = comId;
-		this.comName = comName;
 		this.remark = remark;
 		this.comQuantity = comQuantity;
 		this.comPrice = comPrice;
 		this.comSum = comSum;
 	}
-
-	
-	
-	public SalesReturnBillItemsPO(){};
-	
-	
-	
+		
 	public void setComId(String id){
 		this.comId=id;
 	};
@@ -75,16 +67,5 @@ public class SalesReturnBillItemsPO implements Serializable{
 		return comSum;
 	}
 
-
-
-	public String getComName() {
-		return comName;
-	}
-
-
-
-	public void setComName(String comName) {
-		this.comName = comName;
-	}
 	
 }
