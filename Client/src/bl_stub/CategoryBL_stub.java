@@ -10,10 +10,10 @@ public class CategoryBL_stub implements CategoryBLService {
 
 	@Override
 	public DefaultTreeModel getModel() {
-		CategoryVO rootCategory = new CategoryVO("", "", "001-20171127-00001", "商品分类"),
-	               category1 = new CategoryVO("001-20171127-00001", "abc", "001-20171127-00002", "蓝灯"),
-	               category2 = new CategoryVO("001-20171127-00001", "def", "001-20171127-00003", "交通信号灯"),
-	               category3 = new CategoryVO("001-20171127-00001", "ghi", "001-20171127-00004", "阿拉丁神灯");
+		CategoryVO rootCategory = new CategoryVO("", "000001", "商品分类"),
+	               category1 = new CategoryVO("000001", "000002", "蓝灯"),
+	               category2 = new CategoryVO("000001", "000003", "交通信号灯"),
+	               category3 = new CategoryVO("000001", "000004", "阿拉丁神灯");
 
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(rootCategory);
 		root.add(new DefaultMutableTreeNode(category1));

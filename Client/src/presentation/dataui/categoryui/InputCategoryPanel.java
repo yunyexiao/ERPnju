@@ -45,8 +45,7 @@ class InputCategoryPanel extends JPanel {
     
     public CategoryVO getCategoryVO(){
     	if (! InputCheck.isLegal(fatherNameTextField.getText())) {new InfoWindow("∑«∑® ‰»Î"); return null;}
-        return new CategoryVO(fatherIdTextField.getText(), fatherNameTextField.getText()
-            , idTextField.getText(), nameTextField.getText());
+        return new CategoryVO(fatherIdTextField.getText(), idTextField.getText(), nameTextField.getText());
     }
 
 }

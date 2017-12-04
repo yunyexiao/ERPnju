@@ -8,7 +8,7 @@ import po.CategoryPO;
  */
 public class CategoryVO {
 
-	private String fatherId, fatherName;
+	private String fatherId;
 	private String id;
 	private String name;
 	/**
@@ -17,9 +17,8 @@ public class CategoryVO {
 	 * @param id 编号
 	 * @param name 名称
 	 */
-	public CategoryVO(String fatherId, String fatherName, String id, String name) {
+	public CategoryVO(String fatherId, String id, String name) {
 		this.fatherId = fatherId;
-		this.fatherName = fatherName;
 		this.id = id;
 		this.name = name;
 	}
@@ -28,12 +27,6 @@ public class CategoryVO {
 	 */
 	public String getFatherId() {
 		return fatherId;
-	}
-	/**
-	 * @return 返回父分类名称
-	 */
-	public String getFatherName(){
-	    return fatherName;
 	}
 	/**
 	 * @return 返回编号
@@ -54,6 +47,6 @@ public class CategoryVO {
 	}
 
 	public CategoryPO toPO(){
-	    return new CategoryPO(id, name, fatherId, fatherName, true);
+	    return new CategoryPO(id, name, fatherId, true);
 	}
 }

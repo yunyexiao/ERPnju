@@ -12,10 +12,10 @@ public class CategoryDs_stub implements CategoryDataService {
 	private static ArrayList<CategoryPO> result = new ArrayList<>();
 	
     public CategoryDs_stub() {
-        result.add(new CategoryPO("000001", "some", "000000", "category-root", true));
-        result.add(new CategoryPO("000003", "same", "000000", "category-root", true));
-        result.add(new CategoryPO("000002", "come", "000001", "some", true));
-        result.add(new CategoryPO("000004", "sane", "000003", "same", true));
+        result.add(new CategoryPO("000001", "some", "000000", true));
+        result.add(new CategoryPO("000003", "same", "000000", true));
+        result.add(new CategoryPO("000002", "come", "000001", true));
+        result.add(new CategoryPO("000004", "sane", "000003", true));
     }
 
     @Override

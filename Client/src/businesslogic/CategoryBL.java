@@ -38,13 +38,13 @@ public class CategoryBL implements CategoryBLService {
     @Override
     public DefaultTreeModel getModel() {
         DefaultTreeModel model = new DefaultTreeModel(null);
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(new CategoryVO("","","000000","所有分类"));
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(new CategoryVO("","000000","所有分类"));
         model.setRoot(root);
         try{
             ArrayList<CategoryPO> list = categoryDs.getAllCategory();
             ArrayList<CategoryVO> volist = new ArrayList<CategoryVO>();
             for(CategoryPO category: list) {
-            	volist.add(new CategoryVO(category.getFatherId(), category.getFatherName(), category.getId(), category.getName()));
+            	volist.add(new CategoryVO(category.getFatherId(), category.getId(), category.getName()));
             }
             ArrayList<DefaultMutableTreeNode> nodeList = new ArrayList<DefaultMutableTreeNode>();
             nodeList.add(root);
@@ -140,7 +140,7 @@ public class CategoryBL implements CategoryBLService {
 		try{
 			CategoryPO category = categoryDs.findById(id);
 			if (category == null) return null;
-            return new CategoryVO(category.getFatherId(),category.getFatherName(),category.getId(),category.getName());
+            return new CategoryVO(category.getFatherId(),category.getId(),category.getName());
         }catch(RemoteException e){
             return null;
         }
