@@ -45,5 +45,15 @@ public class CategoryBL_stub implements CategoryBLService {
     public String getNewId() {
         return "001-20171127-002";
     }
+
+	@Override
+	public boolean hasContent(String id) {
+		return false;
+	}
+
+	@Override
+	public CategoryVO findById(String id) {
+		return null;
+	}
 	
 }

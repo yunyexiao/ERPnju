@@ -1,5 +1,7 @@
 package blservice;
 
+import java.rmi.RemoteException;
+
 import javax.swing.tree.DefaultTreeModel;
 
 import vo.CategoryVO;
@@ -15,6 +17,14 @@ public interface CategoryBLService {
      * @return 新商品编号
      */
     public String getNewId();
+    /**
+	 * 根据商品分类的完整ID返回一个CategoryVO对象，不论这个商品分类是否被删除<br/>
+	 * 找不到就返回一个null...
+	 * @param id 商品分类的id [id格式：6位数字]
+	 * @return 查找到的CategoryVO对象
+	 * @throws RemoteException
+	 */
+	public CategoryVO findById(String id);
 	/**
 	 * 根据数据层的PO对象生成树供展示层显示
 	 * @return 用于显示的TreeModel
@@ -41,4 +51,10 @@ public interface CategoryBLService {
 	 * @return 是否修改成功
 	 */
 	public boolean change(CategoryVO category);
+	/**
+	 * 根据ID查找父节点下是否有子节点
+	 * @param id
+	 * @return 
+	 */
+	public boolean hasContent(String id);
 }

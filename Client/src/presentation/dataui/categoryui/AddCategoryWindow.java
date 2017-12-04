@@ -12,10 +12,10 @@ public class AddCategoryWindow extends FatherWindow {
     private CategoryBLService categoryBl;
     private InputCategoryPanel centerPanel;
 
-    public AddCategoryWindow(CategoryBLService categoryBl) {
+    public AddCategoryWindow(CategoryBLService categoryBl, CategoryVO category) {
         super();
         this.categoryBl = categoryBl;
-        centerPanel = new InputCategoryPanel(new String[]{categoryBl.getNewId(), "", "", ""});
+        centerPanel = new InputCategoryPanel(new String[]{categoryBl.getNewId(), "", category.getId(), category.getName()});
         frame.add(centerPanel, BorderLayout.CENTER);
         
         frame.setTitle("增加商品分类");

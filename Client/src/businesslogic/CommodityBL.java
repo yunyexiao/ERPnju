@@ -132,4 +132,14 @@ public class CommodityBL implements CommodityBLService{
         return list;
     }
 
+	@Override
+	public boolean hasCommodity(String categoryId) {
+		ArrayList<CommodityPO> commodities = getAllCommodities();
+        for(CommodityPO commodity: commodities){
+            if(commodity.getCategoryId().equals(categoryId))
+                return true;
+        }
+        return false;
+	}
+
 }
