@@ -1,6 +1,7 @@
 package bl_stub;
 
 import blservice.billblservice.SaleBillBLService;
+import presentation.component.MyTableModel;
 import vo.billvo.SalesBillVO;
 
 public class SaleBillBL_stub implements SaleBillBLService {
@@ -34,5 +35,11 @@ public class SaleBillBL_stub implements SaleBillBLService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+    @Override
+    public MyTableModel getFinishedBills() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

@@ -108,7 +108,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 		return headPanel;
     }
     
-    private JPanel getCustomerPanel(){
+    protected JPanel getCustomerPanel(){
         customerIdField = new JTextField(10);
         customerIdField.setEditable(false);
         customerNameField = new JTextField(10);
@@ -199,7 +199,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         ((MyTableModel)goodsListTable.getModel()).removeRow(goodsListTable.getSelectedRow());
     }
 
-    private void handleChooseCustomer(){
+    protected void handleChooseCustomer(){
         if(!editable) return;
         CustomerVO c = new CustomerChooseWin().getCustomer();
         if(c == null) return;

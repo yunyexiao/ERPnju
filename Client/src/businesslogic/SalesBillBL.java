@@ -7,6 +7,7 @@ import bl_stub.CustomerBL_stub;
 import blservice.billblservice.SaleBillBLService;
 import dataservice.SalesBillDataService;
 import ds_stub.SalesBillDs_stub;
+import po.billpo.BillPO;
 import po.billpo.SalesBillItemsPO;
 import po.billpo.SalesBillPO;
 import presentation.component.MyTableModel;
@@ -37,7 +38,8 @@ public class SalesBillBL implements SaleBillBLService {
     @Override
     public boolean deleteBill(String id) {
         try{
-            return saleBillDs.deleteBill(id);
+            // this is the complete id: "XSD-..."
+            return saleBillDs.deleteBill(id.split("-")[2]);
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -74,6 +76,25 @@ public class SalesBillBL implements SaleBillBLService {
         }
     }
     
+    @Override
+    public MyTableModel getFinishedBills(){
+        // TODO the field is unknown
+        try {
+            ArrayList<SalesBillPO> bills = saleBillDs.getBillsBy("", BillPO.PASS + "", false);
+            String[] columnNames = {"制定时间", "单据编号"};
+            String[][] data = new String[bills.size()][columnNames.length];
+            for(int i = 0; i < bills.size(); i++){
+                SalesBillPO salesBill = bills.get(i);
+                data[i][0] = salesBill.getDate() + " " + salesBill.getTime();
+                data[i][1] = "XSD-" + salesBill.getDate() + "-" + salesBill.getId();
+            }
+            return new MyTableModel(data, columnNames);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private SalesBillPO toPO(SalesBillVO bill){
         MyTableModel model = bill.getModel();
         ArrayList<SalesBillItemsPO> items = new ArrayList<>();

@@ -1,6 +1,7 @@
 package dataservice;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import po.billpo.SalesBillPO;
 
@@ -26,4 +27,6 @@ public interface SalesBillDataService {
 	public String getNewId() throws RemoteException;
 	
 	public SalesBillPO getBillById(String id) throws RemoteException;
+	
+	public ArrayList<SalesBillPO> getBillsBy(String field, String key, boolean isFuzzy) throws RemoteException;
 }

@@ -10,7 +10,7 @@ public class SaleReturnBillBL_stub implements SaleReturnBillBLService {
 
     @Override
     public String getNewId() {
-        return "XSTHD-20171203-00112";
+        return "00112";
     }
 
     @Override

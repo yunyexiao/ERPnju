@@ -1,6 +1,7 @@
 package ds_stub;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import dataservice.SalesBillDataService;
 import po.billpo.SalesBillPO;
@@ -29,6 +30,11 @@ public class SalesBillDs_stub implements SalesBillDataService {
     public SalesBillPO getBillById(String id) throws RemoteException {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public ArrayList<SalesBillPO> getBillsBy(String field, String key, boolean isFuzzy) throws RemoteException {
+        return new ArrayList<>();
     }
 
 }

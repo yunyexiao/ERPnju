@@ -1,16 +1,21 @@
 package presentation.billui;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import bl_stub.SaleReturnBillBL_stub;
 import blservice.billblservice.SaleReturnBillBLService;
+import layout.TableLayout;
 import presentation.component.MyTableModel;
 import vo.UserVO;
 import vo.billvo.BillVO;
-import vo.billvo.MarketBillVO;
 import vo.billvo.SalesReturnBillVO;
 
 /**
@@ -20,6 +25,7 @@ import vo.billvo.SalesReturnBillVO;
 public class SalesReturnBillPanel extends CommonSaleBillPanel {
     
     private SaleReturnBillBLService saleReturnBl = new SaleReturnBillBL_stub();
+    private JTextField discountRateField, originalSBIdField, finalSumField;
 
     public SalesReturnBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
@@ -27,8 +33,71 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         this.operatorField.setText(user.getId());
     }
 
-    public SalesReturnBillPanel(UserVO user, ActionListener closeListener, MarketBillVO bill) {
+    public SalesReturnBillPanel(UserVO user, ActionListener closeListener, SalesReturnBillVO bill) {
         super(user, closeListener, bill);
+        this.discountRateField.setText(bill.getDiscountRate() + "");
+        this.originalSBIdField.setText(bill.getOriginalSBId());
+        this.finalSumField.setText(bill.getSum() + "");
+    }
+    
+    @Override
+    protected JPanel getCustomerPanel(){
+        customerIdField = new JTextField(10);
+        customerIdField.setEditable(false);
+        customerNameField = new JTextField(10);
+        customerNameField.setEditable(false);
+        originalSBIdField = new JTextField(10);
+        originalSBIdField.setEditable(false);
+        discountRateField = new JTextField(5);
+        discountRateField.setEditable(false);
+        JButton salesBillChooseButton = new JButton("选择源销售单");
+        salesBillChooseButton.addActionListener(e -> handleChooseSb());
+        double[][] size = {
+                {20,45,5,70,12,100,5,60,10.0, -2.0, 10.0, -2.0
+                    , 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, -1.0}, 
+                {8, 25, -1.0}
+        };
+        JPanel customerPanel = new JPanel(new TableLayout(size));
+		JButton customerChooseButton = new JButton("选择");
+		customerChooseButton.addActionListener(e -> handleChooseCustomer());
+		customerPanel.add(new JLabel(getObjectType()),"1,1");
+		customerPanel.add(customerIdField,"3,1");
+		customerPanel.add(new JLabel("--"),"4,1");
+		customerPanel.add(customerNameField,"5,1");
+		customerPanel.add(customerChooseButton,"7,1");
+		customerPanel.add(new JLabel("源销售单"), "9 1");
+		customerPanel.add(originalSBIdField, "11 1");
+		customerPanel.add(new JLabel("折扣率"), "13 1");
+		customerPanel.add(discountRateField, "15 1");
+		customerPanel.add(salesBillChooseButton, "17 1");
+        return customerPanel;
+    }
+
+    @Override
+    protected void initSouth(){
+        remarkField = new JTextField(10);
+        sumField = new JTextField(5);
+        sumField.setEditable(false);
+        finalSumField = new JTextField(5);
+        finalSumField.setEditable(false);
+        JButton sumButton = new JButton("结算");
+        sumButton.addActionListener(e -> sumUp());
+        
+        double[][] size = {
+                {20.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0
+                    , -2.0, 10.0, -2.0, -1.0},
+                {-2.0, 10.0, -2.0}
+        };
+        JPanel southPanel = new JPanel(new TableLayout(size));
+        southPanel.add(new JLabel("备注"), "1 0");
+        southPanel.add(remarkField, "2 0 9 0");
+        southPanel.add(new JLabel("原总额"), "1 2");
+        southPanel.add(sumField, "3 2");
+        southPanel.add(new JLabel("实际总额"), "5 2");
+        southPanel.add(finalSumField, "7 2");
+        southPanel.add(sumButton, "9 2");
+        
+        billPanel.add(southPanel, BorderLayout.SOUTH);
     }
 
     @Override
@@ -85,6 +154,16 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         };
     }
 
+    @Override
+    protected void sumUp(){
+        if(!editable) return;
+        super.sumUp();
+        double discountRate = Double.parseDouble(discountRateField.getText()),
+               originalSum = Double.parseDouble(sumField.getText()),
+               finalSum = originalSum * discountRate;
+        this.finalSumField.setText(finalSum + "");
+    }
+
     private SalesReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
         Calendar c = Calendar.getInstance();
@@ -99,14 +178,20 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
              , customerId = customerIdField.getText()
              , customerName = customerNameField.getText()
              , remark = remarkField.getText()
-             , originalSBId = null;
-        // TODO original SBId and sum to be completed
+             , originalSBId = originalSBIdField.getText();
         MyTableModel model = (MyTableModel)goodsListTable.getModel();
-        double originalSum = Double.parseDouble(sumField.getText()),
-               sum = 0.0;
+        double discountRate = Double.parseDouble(discountRateField.getText()), 
+               originalSum = Double.parseDouble(sumField.getText()),
+               sum = Double.parseDouble(finalSumField.getText());
         return new SalesReturnBillVO(date, time, id, operater, state
             , customerId, customerName, model, remark, originalSBId
-            , originalSum, sum);
+            , discountRate, originalSum, sum);
+    }
+
+    private void handleChooseSb(){
+        if(!editable) return;
+        // TODO create a sales bill choosing window
+        // and then refresh the discountRateField
     }
 
 }

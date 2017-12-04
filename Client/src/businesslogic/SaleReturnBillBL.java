@@ -10,6 +10,7 @@ import po.billpo.SalesReturnBillItemsPO;
 import po.billpo.SalesReturnBillPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
+import vo.billvo.SalesBillVO;
 import vo.billvo.SalesReturnBillVO;
 
 
@@ -100,7 +101,8 @@ public class SaleReturnBillBL implements SaleReturnBillBLService {
                    .getCustomer(customerId).getName(),
                remark = bill.getRemark(),
                originalSBId = bill.getOriginalSBId();
-        double originalSum = bill.getOriginalSum(),
+        double discountRate = getDiscountRate(originalSBId),
+               originalSum = bill.getOriginalSum(),
                sum = bill.getReturnSum();
         String[] columnName = {"商品编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
         String[][] data = new String[columnName.length][];
@@ -111,7 +113,7 @@ public class SaleReturnBillBL implements SaleReturnBillBLService {
         MyTableModel model = new MyTableModel(data, columnName);
         return new SalesReturnBillVO(date, time, id, operator
             , state, customerId, customerName, model, remark
-            , originalSBId, originalSum, sum);
+            , originalSBId, discountRate, originalSum, sum);
     }
 
     private SalesReturnBillItemsPO getItem(String[] data){
@@ -137,6 +139,11 @@ public class SaleReturnBillBL implements SaleReturnBillBLService {
                 id, name, type, store, price + ""
                 , num + "", sum + "", remark
         };
+    }
+
+    private double getDiscountRate(String salesBillId){
+        SalesBillVO salesBill = new SalesBillBL().getBill(salesBillId);
+        return salesBill.getSum() / salesBill.getBeforeDiscount();
     }
 
 }

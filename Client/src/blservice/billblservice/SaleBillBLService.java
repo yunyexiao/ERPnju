@@ -1,5 +1,6 @@
 package blservice.billblservice;
 
+import presentation.component.MyTableModel;
 import vo.billvo.SalesBillVO;
 
 public interface SaleBillBLService extends BillBLService {
@@ -20,4 +21,6 @@ public interface SaleBillBLService extends BillBLService {
 	 * @return 销售单据的VO类
 	 */
 	public SalesBillVO getBill(String id);
+	
+	public MyTableModel getFinishedBills();
 }
