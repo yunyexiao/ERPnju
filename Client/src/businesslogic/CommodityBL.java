@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import blservice.CommodityBLService;
+import blservice.infoservice.GetCommodityInterface;
 import dataservice.CommodityDataService;
 import ds_stub.CommodityDs_stub;
 import po.CategoryPO;
@@ -16,7 +17,7 @@ import vo.CommodityVO;
  * 与CategoryBL有直接依赖关系
  * @author 恽叶霄
  */
-public class CommodityBL implements CommodityBLService{
+public class CommodityBL implements CommodityBLService, GetCommodityInterface{
     
     private CommodityDataService commodityDs;
     private static final String[] columnNames = {"商品编号", "名称", "型号", "库存", "数量", "警戒值"
@@ -130,6 +131,20 @@ public class CommodityBL implements CommodityBLService{
                 .getCommoditysBy("ComCateID", categories.get(i).getId(), true));
         }
         return list;
+    }
+
+    @Override
+    public CommodityVO getCommodity(String id) {
+        try{
+            CommodityPO c = commodityDs.findById(id);
+            return new CommodityVO(c.getId(), c.getName(), c.getType()
+                , c.getStore(), c.getCategoryId(), c.getCategoryName()
+                , c.getAmount(), c.getAlarmNum(), c.getInPrice()
+                , c.getSalePrice(), c.getRecentInPrice(), c.getRecentSalePrice());
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

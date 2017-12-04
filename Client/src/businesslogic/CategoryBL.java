@@ -7,6 +7,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import blservice.CategoryBLService;
+import blservice.infoservice.GetCategoryInterface;
 import dataservice.CategoryDataService;
 import ds_stub.CategoryDs_stub;
 import po.CategoryPO;
@@ -17,7 +18,7 @@ import vo.CategoryVO;
  * 商品分类的BL<br>
  * 与CommodityBL有直接依赖关系
  * @author 恽叶霄*/
-public class CategoryBL implements CategoryBLService {
+public class CategoryBL implements CategoryBLService, GetCategoryInterface{
     
     private CategoryDataService categoryDs;
 
@@ -87,6 +88,18 @@ public class CategoryBL implements CategoryBLService {
         }catch(RemoteException e){
             return false;
         }
+    }
+
+    @Override
+    public CategoryVO getCategory(String id){
+	    try{
+		    CategoryPO cat = categoryDs.findById(id);
+		    return new CategoryVO(cat.getFatherId(), cat.getFatherName()
+				    , cat.getId(), cat.getName());
+	    }catch(RemoteException e){
+		    e.printStackTrace();
+		    return null;
+	    }
     }
     
     public ArrayList<CategoryPO> searchByName(String name){

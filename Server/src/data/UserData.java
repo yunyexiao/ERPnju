@@ -188,11 +188,11 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 				userBirth=r.getString("SUBirth");
 				userIsExist=r.getBoolean("SUIsExist");
 				
-				if(userIsExist){
 				birthYear=Integer.valueOf(userBirth);
 				Calendar now = Calendar.getInstance(); 
 				userAge=now.get(Calendar.YEAR)-birthYear;
 				
+				if(userIsExist){
 				upo.setUserId(userId);
 				upo.setUserAge(userAge);
 				upo.setUserName(userName);
@@ -215,8 +215,98 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 
 	@Override
 	public ArrayList<UserPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
-		
-		return null;
+		ArrayList<UserPO> upos=new ArrayList<UserPO>();
+		if(isfuzzy){
+			try {
+			    Statement s = DataHelper.getInstance().createStatement();
+				ResultSet r = s.executeQuery("SELECT * FROM SystemUser WHERE "+field+"LIKE '%"+content+"%';");
+				while(r.next()) {
+					String userId=null,userName = null,userPwd = null,userSex = null,userBirth = null,userTel = null;
+					int userRank = -1,userAge,birthYear,userType=-1;
+					boolean userIsExist=false;
+					
+					UserPO upo = new UserPO();
+					userId=r.getString("SUID");
+					userName=r.getString("SUName");
+					userPwd=r.getString("SUPwd");
+					userType=r.getInt("SUDept");
+					userRank=r.getInt("SURank");
+					//userType=Integer.valueOf(r.getString("SUDept"));
+					//userRank=Integer.valueOf(r.getString("SURank"));
+					userSex=r.getString("SUSex");
+					userTel=r.getString("SUTel");
+					userBirth=r.getString("SUBirth");
+					userIsExist=r.getBoolean("SUIsExist");
+					
+					if(userIsExist){
+					birthYear=Integer.valueOf(userBirth);
+					Calendar now = Calendar.getInstance(); 
+					userAge=now.get(Calendar.YEAR)-birthYear;
+					
+					upo.setUserId(userId);
+					upo.setUserAge(userAge);
+					upo.setUserName(userName);
+					upo.setUserPwd(userPwd);
+					upo.setUserSex(userSex);
+					upo.setUserTelNumber(userTel);
+					upo.setUsertype(userType);
+					upo.setUserRank(userRank);
+					
+					upos.add(upo);	
+					}
+				}	
+			 }
+			 catch(Exception e) {
+			   e.printStackTrace();
+			   return null;
+			 }
+		}
+		else if(!isfuzzy){
+			try {
+			    Statement s = DataHelper.getInstance().createStatement();
+				ResultSet r = s.executeQuery("SELECT * FROM SystemUser WHERE "+field+"LIKE '"+content+"';");
+				while(r.next()) {
+					String userId=null,userName = null,userPwd = null,userSex = null,userBirth = null,userTel = null;
+					int userRank = -1,userAge,birthYear,userType=-1;
+					boolean userIsExist=false;
+					
+					UserPO upo = new UserPO();
+					userId=r.getString("SUID");
+					userName=r.getString("SUName");
+					userPwd=r.getString("SUPwd");
+					userType=r.getInt("SUDept");
+					userRank=r.getInt("SURank");
+					//userType=Integer.valueOf(r.getString("SUDept"));
+					//userRank=Integer.valueOf(r.getString("SURank"));
+					userSex=r.getString("SUSex");
+					userTel=r.getString("SUTel");
+					userBirth=r.getString("SUBirth");
+					userIsExist=r.getBoolean("SUIsExist");
+					
+					if(userIsExist){
+					birthYear=Integer.valueOf(userBirth);
+					Calendar now = Calendar.getInstance(); 
+					userAge=now.get(Calendar.YEAR)-birthYear;
+					
+					upo.setUserId(userId);
+					upo.setUserAge(userAge);
+					upo.setUserName(userName);
+					upo.setUserPwd(userPwd);
+					upo.setUserSex(userSex);
+					upo.setUserTelNumber(userTel);
+					upo.setUsertype(userType);
+					upo.setUserRank(userRank);
+					
+					upos.add(upo);	
+					}
+				}	
+			 }
+			 catch(Exception e) {
+			   e.printStackTrace();
+			   return null;
+			 }
+		}
+		return upos;
 	}
 
 }

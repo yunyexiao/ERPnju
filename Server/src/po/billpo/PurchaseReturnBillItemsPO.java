@@ -10,28 +10,23 @@ import java.io.Serializable;
  */
 
 public class PurchaseReturnBillItemsPO implements Serializable{
- /**
+/**
 	 * 
 	 */
 private static final long serialVersionUID = -313378607159900293L;
 	
-	private String comId, comName, comSum, remark;
+	private String comId, remark;
 	private int comQuantity;
-	private double comPrice;
+	private double comPrice, comSum;
 	
-	public PurchaseReturnBillItemsPO(){};
-	
-	public PurchaseReturnBillItemsPO(String comId, String comName, String comSum, String remark, int comQuantity,
-			double comPrice) {
+	public PurchaseReturnBillItemsPO(String comId, String remark, int comQuantity, double comPrice, double comSum) {
 		super();
 		this.comId = comId;
-		this.comName = comName;
-		this.comSum = comSum;
 		this.remark = remark;
 		this.comQuantity = comQuantity;
 		this.comPrice = comPrice;
-	}
-	
+		this.comSum = comSum;
+	} 
 	
 	
 	public String getComId() {
@@ -40,16 +35,11 @@ private static final long serialVersionUID = -313378607159900293L;
 	public void setComId(String comId) {
 		this.comId = comId;
 	}
-	public String getComName() {
-		return comName;
-	}
-	public void setComName(String comName) {
-		this.comName = comName;
-	}
-	public String getComSum() {
+	
+	public double getComSum() {
 		return comSum;
 	}
-	public void setComSum(String comSum) {
+	public void setComSum(double comSum) {
 		this.comSum = comSum;
 	}
 	public String getRemark() {
@@ -70,5 +60,4 @@ private static final long serialVersionUID = -313378607159900293L;
 	public void setComPrice(double comPrice) {
 		this.comPrice = comPrice;
 	}
-
 }

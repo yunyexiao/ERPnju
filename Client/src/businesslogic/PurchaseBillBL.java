@@ -91,7 +91,7 @@ public class PurchaseBillBL implements PurchaseBillBLService {
     }
 
     private PurchaseBillVO toVO(PurchaseBillPO bill){
-        String[] columnNames = {"", "", "", "", "", "", "", ""};
+        String[] columnNames = {"商品编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
         ArrayList<PurchaseBillItemsPO> items = bill.getPurchaseBillItems();
         String[][] data = new String[columnNames.length][items.size()];
         for(int i = 0; i < data.length; i++){

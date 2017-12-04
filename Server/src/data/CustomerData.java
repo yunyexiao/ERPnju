@@ -25,7 +25,8 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 			ResultSet r=s.executeQuery("SELECT CusID FROM CustomerInfo;");
 			while(r.next()){
 				int temp=0;
-				temp=Integer.valueOf(r.getString("CusID"));
+				//temp=Integer.valueOf(r.getString("CusID"));
+				temp=r.getInt("CusID");
 				if(temp>max)max=temp;
 			}
 		}catch(Exception e){
@@ -52,16 +53,21 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 			 		+ "CusType FROM CustomerInfo WHERE CusID=" + id +";");
 			 while(r.next()){
 				 cusName=r.getString("CusName");
-				 cusRank=Integer.valueOf(r.getInt("CusRank"));
+				 //cusRank=Integer.valueOf(r.getInt("CusRank"));
+				 cusRank=r.getInt("CusRank");
 				 cusTel=r.getString("CusTel");
 				 cusAddress=r.getString("CusAddress");
 				 cusCode=r.getString("CusCode");
 				 cusMail=r.getString("CusMail");
-				 cusReceiRange=Double.valueOf(r.getInt("CusReceiRange"));
-				 cusReceivable=Double.valueOf(r.getString("CusReceivable"));
-				 cusPayment=Double.valueOf(r.getString("CusPayment"));
+				 //cusReceiRange=Double.valueOf(r.getInt("CusReceiRange"));
+				 //cusReceivable=Double.valueOf(r.getString("CusReceivable"));
+				 //cusPayment=Double.valueOf(r.getString("CusPayment"));
+				 cusReceiRange=r.getDouble("CusReceiRange");
+				 cusReceivable=r.getDouble("CusReceivable");
+				 cusPayment=r.getDouble("CusPayment");
 				 cusSalesman=r.getString("CusSalesman");
-				 cusType=Integer.valueOf(r.getString("CusType"));	 
+				 //cusType=Integer.valueOf(r.getString("CusType"));	
+				 cusType=r.getInt("CusType");
 			 }
 		}catch(Exception e){
 			e.printStackTrace();
@@ -87,7 +93,7 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 	public boolean add(CustomerPO customer) throws RemoteException {
 		
 		String cusId=null,cusName=null,cusTel=null,cusAddress=null,cusCode=null,cusMail=null,cusSalesman=null;
-		int cusRank=-1,cusType=-1;
+		int cusRank=-1,cusType=-1, cusIsExist=0;
 		double cusReceiRange=0.0,cusReceivable=0.0,cusPayment=0.0;
 		cusId=customer.getId();
 		cusName=customer.getName();
@@ -101,6 +107,7 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 		cusReceiRange=customer.getRecRange();
 		cusReceivable=customer.getReceivable();
 		cusPayment=customer.getPayment();
+		if(customer.getExistFlag())cusIsExist=1;
 
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
@@ -108,7 +115,7 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 					+ "('"+cusId+"','"+cusName+"','"+cusRank+"','"+cusTel+"','"
 					+cusAddress+"','"+cusCode+"','"+cusMail+"','"+cusReceiRange
 					+"','"+cusReceivable+"','"+cusPayment+"','"+cusSalesman
-					+"','"+cusType+"')");
+					+"','"+cusType+"','"+cusIsExist+"')");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -122,7 +129,7 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 		
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("DELETE FROM CustomerInfo WHERE CusID="+id+";");
+			int r=s.executeUpdate("UPDATE CustomerInfo SET CusIsExist=0 WHERE CusID="+id+";");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -176,21 +183,28 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 				String cusId=null,cusName=null,cusTel=null,cusAddress=null,cusCode=null,cusMail=null,cusSalesman=null;
 				int cusRank=-1,cusType=-1;
 				double cusReceiRange=0.0,cusReceivable=0.0,cusPayment=0.0;
+				boolean cusIsExist=false;
 				CustomerPO cpo = new CustomerPO();
 				cusId=r.getString("CusID");
 				 cusName=r.getString("CusName");
-				 cusRank=Integer.valueOf(r.getInt("CusRank"));
+				 //cusRank=Integer.valueOf(r.getInt("CusRank"));
+				 cusRank=r.getInt("CusRank");
 				 cusTel=r.getString("CusTel");
 				 cusAddress=r.getString("CusAddress");
 				 cusCode=r.getString("CusCode");
 				 cusMail=r.getString("CusMail");
-				 cusReceiRange=Double.valueOf(r.getInt("CusReceiRange"));
-				 cusReceivable=Double.valueOf(r.getString("CusReceivable"));
-				 cusPayment=Double.valueOf(r.getString("CusPayment"));
+				 //cusReceiRange=Double.valueOf(r.getInt("CusReceiRange"));
+				 //cusReceivable=Double.valueOf(r.getString("CusReceivable"));
+				 //cusPayment=Double.valueOf(r.getString("CusPayment"));
+				 cusReceiRange=r.getDouble("CusReceiRange");
+				 cusReceivable=r.getDouble("CusReceivable");
+				 cusPayment=r.getDouble("CusPayment");
 				 cusSalesman=r.getString("CusSalesman");
-				 cusType=Integer.valueOf(r.getString("CusType"));	
+				 //cusType=Integer.valueOf(r.getString("CusType"));	
+				 cusType=r.getInt("CusType");
+				 cusIsExist=r.getBoolean("CusIsExist");
 				
-				
+				if(cusIsExist){
 				 cpo.setName(cusName);
 				 cpo.setAddress(cusAddress);
 				 cpo.setMail(cusMail);
@@ -202,7 +216,9 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 				 cpo.setSalesman(cusSalesman);
 				 cpo.setTelNumber(cusTel);
 				 cpo.setType(cusType);
+				 
 				 cpos.add(cpo);	
+				}
 			}	
 		 }
 		 catch(Exception e) {
@@ -213,9 +229,112 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 	}
 
 	@Override
-	public ArrayList<CustomerPO> getCustomersBy(String field, String content, boolean isfuzzy) throws RemoteException {
-		
-		return null;
+	public ArrayList<CustomerPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+		 ArrayList<CustomerPO> cpos=new ArrayList<CustomerPO>();
+		 
+		if(isfuzzy){
+			try {
+			    Statement s = DataHelper.getInstance().createStatement();
+				ResultSet r = s.executeQuery("SELECT * FROM CustomerInfo WHERE "+field+"LIKE '%"+content+"%';");
+				while(r.next()) {
+					String cusId=null,cusName=null,cusTel=null,cusAddress=null,cusCode=null,cusMail=null,cusSalesman=null;
+					int cusRank=-1,cusType=-1;
+					double cusReceiRange=0.0,cusReceivable=0.0,cusPayment=0.0;
+					boolean cusIsExist=false;
+					CustomerPO cpo = new CustomerPO();
+					cusId=r.getString("CusID");
+					 cusName=r.getString("CusName");
+					 //cusRank=Integer.valueOf(r.getInt("CusRank"));
+					 cusRank=r.getInt("CusRank");
+					 cusTel=r.getString("CusTel");
+					 cusAddress=r.getString("CusAddress");
+					 cusCode=r.getString("CusCode");
+					 cusMail=r.getString("CusMail");
+					 //cusReceiRange=Double.valueOf(r.getInt("CusReceiRange"));
+					 //cusReceivable=Double.valueOf(r.getString("CusReceivable"));
+					 //cusPayment=Double.valueOf(r.getString("CusPayment"));
+					 cusReceiRange=r.getDouble("CusReceiRange");
+					 cusReceivable=r.getDouble("CusReceivable");
+					 cusPayment=r.getDouble("CusPayment");
+					 cusSalesman=r.getString("CusSalesman");
+					 //cusType=Integer.valueOf(r.getString("CusType"));	
+					 cusType=r.getInt("CusType");
+					 cusIsExist=r.getBoolean("CusIsExist");
+					
+					if(cusIsExist){
+					 cpo.setName(cusName);
+					 cpo.setAddress(cusAddress);
+					 cpo.setMail(cusMail);
+					 cpo.setCode(cusCode);
+					 cpo.setPayment(cusPayment);
+					 cpo.setRank(cusRank);
+					 cpo.setReceivable(cusReceivable);
+					 cpo.setRecRange(cusReceiRange);
+					 cpo.setSalesman(cusSalesman);
+					 cpo.setTelNumber(cusTel);
+					 cpo.setType(cusType);
+					 
+					 cpos.add(cpo);	
+					}
+				}	
+			 }
+			 catch(Exception e) {
+			   e.printStackTrace();
+			   return null;
+			 }
+		}
+		else if(!isfuzzy){
+			try {
+			    Statement s = DataHelper.getInstance().createStatement();
+				ResultSet r = s.executeQuery("SELECT * FROM CustomerInfo WHERE "+field+"LIKE '"+content+"';");
+				while(r.next()) {
+					String cusId=null,cusName=null,cusTel=null,cusAddress=null,cusCode=null,cusMail=null,cusSalesman=null;
+					int cusRank=-1,cusType=-1;
+					double cusReceiRange=0.0,cusReceivable=0.0,cusPayment=0.0;
+					boolean cusIsExist=false;
+					CustomerPO cpo = new CustomerPO();
+					cusId=r.getString("CusID");
+					 cusName=r.getString("CusName");
+					 //cusRank=Integer.valueOf(r.getInt("CusRank"));
+					 cusRank=r.getInt("CusRank");
+					 cusTel=r.getString("CusTel");
+					 cusAddress=r.getString("CusAddress");
+					 cusCode=r.getString("CusCode");
+					 cusMail=r.getString("CusMail");
+					 //cusReceiRange=Double.valueOf(r.getInt("CusReceiRange"));
+					 //cusReceivable=Double.valueOf(r.getString("CusReceivable"));
+					 //cusPayment=Double.valueOf(r.getString("CusPayment"));
+					 cusReceiRange=r.getDouble("CusReceiRange");
+					 cusReceivable=r.getDouble("CusReceivable");
+					 cusPayment=r.getDouble("CusPayment");
+					 cusSalesman=r.getString("CusSalesman");
+					 //cusType=Integer.valueOf(r.getString("CusType"));	
+					 cusType=r.getInt("CusType");
+					 cusIsExist=r.getBoolean("CusIsExist");
+					
+					if(cusIsExist){
+					 cpo.setName(cusName);
+					 cpo.setAddress(cusAddress);
+					 cpo.setMail(cusMail);
+					 cpo.setCode(cusCode);
+					 cpo.setPayment(cusPayment);
+					 cpo.setRank(cusRank);
+					 cpo.setReceivable(cusReceivable);
+					 cpo.setRecRange(cusReceiRange);
+					 cpo.setSalesman(cusSalesman);
+					 cpo.setTelNumber(cusTel);
+					 cpo.setType(cusType);
+					 
+					 cpos.add(cpo);	
+					}
+				}	
+			 }
+			 catch(Exception e) {
+			   e.printStackTrace();
+			   return null;
+			 }
+		}
+		return cpos;
 	}
 
 }

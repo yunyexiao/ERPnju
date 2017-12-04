@@ -6,7 +6,7 @@ import po.billpo.SalesReturnBillPO;
 
 public interface SaleReturnBillDataService {
     
-    boolean saveBill(SalesReturnBillPO purchaseBill) throws RemoteException;
+    boolean saveBill(SalesReturnBillPO bill) throws RemoteException;
     
     boolean deleteBill(String id) throws RemoteException;
     

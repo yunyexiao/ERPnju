@@ -24,7 +24,8 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 			ResultSet r = s.executeQuery("SELECT CateID FROM CategoryInfo;");
 			while(r.next()){
 				int temp = 0;
-				temp = Integer.valueOf(r.getString("CateID"));
+				//temp = Integer.valueOf(r.getString("CateID"));
+				temp=r.getInt("CateID");
 				if(temp>max)max = temp;
 			}
 		}catch(Exception e){
@@ -80,7 +81,7 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 		try{
 			Statement s1 = DataHelper.getInstance().createStatement();
 			int r1 = s1.executeUpdate("INSERT INTO CategoryInfo VALUES"
-					+ "('"+cateId+"','"+cateName+"','"+"')");
+					+ "('"+cateId+"','"+cateName+"','"+1+"')");
 			Statement s2 = DataHelper.getInstance().createStatement();
 			int r2 = s2.executeUpdate("INSERT INTO CategoryRelation VALUES"
 					+ "('"+cateId+"','"+cateFatherId+"','"+"')");
@@ -98,11 +99,14 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 		
 		try{
 			Statement s1 = DataHelper.getInstance().createStatement();
-			int r1 = s1.executeUpdate("DELETE FROM CategoryRelation WHERE CateID = "+id+";");
+			int r1 = s1.executeUpdate("UPDATE CategoryRelation SET CateIsExist=0 WHERE CateID="+id+";");
 			
 			Statement s2 = DataHelper.getInstance().createStatement();
-			int r2 = s2.executeUpdate("DELETE FROM CategoryInfo WHERE CateID = "+id+";");
-			if(r1>0&&r2>0)return true;
+			int r2 = s2.executeUpdate("UPDATE CategoryRelation SET CateIsExist=0 WHERE CateFather="+id+";");
+			
+			Statement s3 = DataHelper.getInstance().createStatement();
+			int r3 = s3.executeUpdate("UPDATE CategoryInfo SET CateIsExist=0 WHERE CateID="+id+";");
+			if(r1>0&&(r2>0||r3>0))return true;
 		}catch(Exception e){
 			  e.printStackTrace();
 			   return false;
@@ -142,9 +146,14 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 			 ResultSet r = s.executeQuery("SELECT * FROM CategoryInfo");
 			 while(r.next()){
 				 CategoryPO cpo = new CategoryPO();
+				 boolean cateIsExist=false;
+				 cateIsExist=r.getBoolean("CateIsExist");
+				 if(cateIsExist){
 				 cpo.setId(r.getString("CateID"));
 				 cpo.setName(r.getString("CateName"));
+				 
 				 cpos.add(cpo);
+				 }
 			 }
 			 
 			 for(int i = 0;i<cpos.size();i++){
@@ -163,9 +172,67 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 	}
 
 	@Override
-	public ArrayList<CategoryPO> getCategorysBy(String field, String content, boolean isfuzzy) throws RemoteException {
-		
-		return null;
+	public ArrayList<CategoryPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+		ArrayList<CategoryPO> cpos = new ArrayList<CategoryPO>();
+		if(isfuzzy){
+			try{
+				 Statement s = DataHelper.getInstance().createStatement();
+				 ResultSet r = s.executeQuery("SELECT * FROM CategoryInfo WHERE "+field+"LIKE '%"+content+"%';");
+				 while(r.next()){
+					 CategoryPO cpo = new CategoryPO();
+					 boolean cateIsExist=false;
+					 cateIsExist=r.getBoolean("CateIsExist");
+					 if(cateIsExist){
+					 cpo.setId(r.getString("CateID"));
+					 cpo.setName(r.getString("CateName"));
+					 
+					 cpos.add(cpo);
+					 }
+				 }
+				 
+				 for(int i = 0;i<cpos.size();i++){
+					 Statement s2 = DataHelper.getInstance().createStatement();
+					 ResultSet r2 = s2.executeQuery("SELECT CateFather, CateName FROM CategoryRelation,CategoryInfo "
+						 		+ "WHERE CategoryRelation.CateFather = CategoryInfo.CateID "
+						 		+ "AND CategoryRelation.CateID = " +cpos.get(i).getId() +";");
+					 cpos.get(i).setFatherId(r2.getString("CateFather"));
+					 cpos.get(i).setFatherName(r2.getString("CateName"));
+				 }
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		else if(!isfuzzy){
+			try{
+				 Statement s = DataHelper.getInstance().createStatement();
+				 ResultSet r = s.executeQuery("SELECT * FROM CategoryInfo WHERE "+field+"LIKE '"+content+"';");
+				 while(r.next()){
+					 CategoryPO cpo = new CategoryPO();
+					 boolean cateIsExist=false;
+					 cateIsExist=r.getBoolean("CateIsExist");
+					 if(cateIsExist){
+					 cpo.setId(r.getString("CateID"));
+					 cpo.setName(r.getString("CateName"));
+					 
+					 cpos.add(cpo);
+					 }
+				 }
+				 
+				 for(int i = 0;i<cpos.size();i++){
+					 Statement s2 = DataHelper.getInstance().createStatement();
+					 ResultSet r2 = s2.executeQuery("SELECT CateFather, CateName FROM CategoryRelation,CategoryInfo "
+						 		+ "WHERE CategoryRelation.CateFather = CategoryInfo.CateID "
+						 		+ "AND CategoryRelation.CateID = " +cpos.get(i).getId() +";");
+					 cpos.get(i).setFatherId(r2.getString("CateFather"));
+					 cpos.get(i).setFatherName(r2.getString("CateName"));
+				 }
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		return cpos;
 	}
 
 }
