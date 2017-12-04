@@ -1,7 +1,6 @@
 package po.billpo;
 
 public abstract class BillPO {
-
 	public static int DRAFT = 0;
 	public static int SAVED = 1;
 	public static int COMMITED = 2;
@@ -12,7 +11,6 @@ public abstract class BillPO {
 	private String time;
 	private String id;
 	private String operatorId;
-	private String operatorName;
 	private int state;
 	
 	/**
@@ -22,12 +20,12 @@ public abstract class BillPO {
 	 * @param id 每一天之内的编号
 	 * @param operator 操作人员的id
 	 */
-	public BillPO(String date, String time, String id, String operatorId, String operatorName, int state) {
+	public BillPO(String date, String time, String id, String operatorId, int state) {
+		super();
 		this.date = date;
 		this.time = time;
 		this.id = id;
 		this.operatorId = operatorId;
-		this.operatorName=operatorName;
 		this.state = state;
 	}
 	
@@ -49,14 +47,6 @@ public abstract class BillPO {
 	
 	public int getState() {
 		return state;
-	}
-
-	public String getOperatorName() {
-		return operatorName;
-	}
-
-	public void setOperatorName(String operatorName) {
-		this.operatorName = operatorName;
 	}
 
 	public void setDate(String date) {
