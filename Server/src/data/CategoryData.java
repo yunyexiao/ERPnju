@@ -84,7 +84,7 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 					+ "('"+cateId+"','"+cateName+"','"+1+"')");
 			Statement s2 = DataHelper.getInstance().createStatement();
 			int r2 = s2.executeUpdate("INSERT INTO CategoryRelation VALUES"
-					+ "('"+cateId+"','"+cateFatherId+"','"+"')");
+					+ "('"+cateId+"','"+cateFatherId+"','"+1+"')");
 			
 			if(r1>0&&r2>0)return true;
 		}catch(Exception e){
