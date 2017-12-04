@@ -3,6 +3,7 @@ package presentation.component;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Toolkit;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,17 +17,18 @@ public class InfoWindow {
 	
 	public InfoWindow(String str) {
 		frame.setModal(true);
-		
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		frame.setSize(screenSize.width/5, screenSize.height/7);
-		frame.setLocation(screenSize.width*2/5, screenSize.height*3/7);
 		frame.setResizable(false);
 		frame.setUndecorated(true);
 		frame.getContentPane().setBackground(Color.WHITE);
 		
-		//frame.setLayout(null);
 		JLabel label = new JLabel(str, JLabel.CENTER);
-		label.setFont(new Font("等线", Font.PLAIN, 25));
+		Font f = new Font("等线", Font.PLAIN, 23);
+		label.setFont(f);
+		FontMetrics fm = sun.font.FontDesignMetrics.getMetrics(f);
+		frame.setSize(fm.stringWidth(str)+80, fm.getHeight()+50);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		frame.setLocation((screenSize.width-frame.getWidth())/2, (screenSize.height-frame.getHeight())/2);
+		
 		frame.add(label);
 		
 		Timer timer = new Timer();
