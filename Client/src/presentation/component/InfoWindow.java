@@ -10,6 +10,7 @@ import java.util.TimerTask;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.border.LineBorder;
 
 public class InfoWindow {
 
@@ -22,6 +23,7 @@ public class InfoWindow {
 		frame.getContentPane().setBackground(Color.WHITE);
 		
 		JLabel label = new JLabel(str, JLabel.CENTER);
+		label.setBorder(new LineBorder(Color.BLACK));
 		Font f = new Font("µ»œﬂ", Font.PLAIN, 23);
 		label.setFont(f);
 		FontMetrics fm = sun.font.FontDesignMetrics.getMetrics(f);
