@@ -2,7 +2,7 @@ package po.billpo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import po.PromotionPO;
+
 
 /**
  * Create time: 2017/12/01<br>
@@ -12,6 +12,7 @@ import po.PromotionPO;
  */
 
 public class SalesBillPO extends BillPO implements Serializable{
+	
 	/**
 	 * 
 	 */
@@ -20,10 +21,10 @@ public class SalesBillPO extends BillPO implements Serializable{
 	 private double beforeDiscount, discount, coupon, afterDiscount;
 	 private ArrayList<SalesBillItemsPO> salesBillItems;
 	
-	 public SalesBillPO(String date, String time, String id, String operatorId, String operatorName, int state,
-			String customerId, String salesManName, String remark, String promotionId, double beforeDiscount,
-			double discount, double coupon, double afterDiscount, ArrayList<SalesBillItemsPO> salesBillItems) {
-		super(date, time, id, operatorId, operatorName, state);
+	public SalesBillPO(String date, String time, String id, String operatorId, int state, String customerId,
+			String salesManName, String remark, String promotionId, double beforeDiscount, double discount,
+			double coupon, double afterDiscount, ArrayList<SalesBillItemsPO> salesBillItems) {
+		super(date, time, id, operatorId, state);
 		this.customerId = customerId;
 		this.salesManName = salesManName;
 		this.remark = remark;
@@ -34,6 +35,7 @@ public class SalesBillPO extends BillPO implements Serializable{
 		this.afterDiscount = afterDiscount;
 		this.salesBillItems = salesBillItems;
 	}
+
 	  
 	 public void setCustomerId(String customerId){
 		 this.customerId=customerId;

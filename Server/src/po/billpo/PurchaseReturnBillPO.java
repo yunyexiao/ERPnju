@@ -20,10 +20,9 @@ public class PurchaseReturnBillPO extends BillPO implements Serializable{
 	private double sum;
 	private ArrayList<PurchaseReturnBillItemsPO> purchaseReturnBillItems;
 	
-	public PurchaseReturnBillPO(String date, String time, String id, String operatorId, String operatorName, int state,
-			String supplierId, String remark, double sum,
-			ArrayList<PurchaseReturnBillItemsPO> purchaseReturnBillItems) {
-		super(date, time, id, operatorId, operatorName, state);
+	public PurchaseReturnBillPO(String date, String time, String id, String operatorId, int state, String supplierId,
+			String remark, double sum, ArrayList<PurchaseReturnBillItemsPO> purchaseReturnBillItems) {
+		super(date, time, id, operatorId, state);
 		this.supplierId = supplierId;
 		this.remark = remark;
 		this.sum = sum;
