@@ -11,21 +11,23 @@ import java.util.ArrayList;
  */
 
 public class SalesReturnBillPO extends BillPO implements Serializable{
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3028188485729244517L;
-	private String customerId, salesManName,remark;
+	private String customerId, salesManName,remark, originalSBId;
 	private double originalSum, returnSum;
 	private ArrayList<SalesReturnBillItemsPO> salesReturnBillItems;
 	
 	public SalesReturnBillPO(String date, String time, String id, String operatorId, int state, String customerId,
-			String salesManName, String remark, double originalSum, double returnSum,
+			String salesManName, String remark, String originalSBId, double originalSum, double returnSum,
 			ArrayList<SalesReturnBillItemsPO> salesReturnBillItems) {
 		super(date, time, id, operatorId, state);
 		this.customerId = customerId;
 		this.salesManName = salesManName;
 		this.remark = remark;
+		this.originalSBId = originalSBId;
 		this.originalSum = originalSum;
 		this.returnSum = returnSum;
 		this.salesReturnBillItems = salesReturnBillItems;
@@ -77,6 +79,14 @@ public class SalesReturnBillPO extends BillPO implements Serializable{
 
 	public void setSalesReturnBillItems(ArrayList<SalesReturnBillItemsPO> salesReturnBillItems) {
 		this.salesReturnBillItems = salesReturnBillItems;
+	}
+
+	public String getOriginalSBId() {
+		return originalSBId;
+	}
+
+	public void setOriginalSBId(String originalSBId) {
+		this.originalSBId = originalSBId;
 	}
 	
 }
