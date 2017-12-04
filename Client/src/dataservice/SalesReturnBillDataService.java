@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 
 import po.billpo.SalesReturnBillPO;
 
-public interface SaleReturnBillDataService {
+public interface SalesReturnBillDataService {
     
     boolean saveBill(SalesReturnBillPO bill) throws RemoteException;
     

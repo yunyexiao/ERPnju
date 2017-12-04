@@ -2,11 +2,11 @@ package ds_stub;
 
 import java.rmi.RemoteException;
 
-import dataservice.SaleBillDataService;
-import dataservice.SalesBillPO;
+import dataservice.SalesBillDataService;
+import po.billpo.SalesBillPO;
 
 
-public class SalesBillDs_stub implements SaleBillDataService {
+public class SalesBillDs_stub implements SalesBillDataService {
 
     @Override
     public boolean deleteBill(String billid) throws RemoteException {

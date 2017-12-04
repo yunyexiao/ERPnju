@@ -1,13 +1,13 @@
 package blservice.billblservice;
 
-import vo.billvo.SaleReturnBillVO;
+import vo.billvo.SalesReturnBillVO;
 
 public interface SaleReturnBillBLService extends BillBLService {
     
-    boolean saveBill(SaleReturnBillVO bill);
+    boolean saveBill(SalesReturnBillVO bill);
     
-    boolean updateBill(SaleReturnBillVO bill);
+    boolean updateBill(SalesReturnBillVO bill);
     
-    SaleReturnBillVO getBill(String id);
+    SalesReturnBillVO getBill(String id);
 
 }

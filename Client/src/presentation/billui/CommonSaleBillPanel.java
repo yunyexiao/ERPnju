@@ -97,7 +97,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         operatorField = new JTextField(10);
         operatorField.setEditable(false);
 		double size[][]={
-				{20,55,5,150,20,40,5,150,TableLayout.FILL},
+				{20,-2.0,5,-2.0,20,-2.0,5,-2.0,TableLayout.FILL},
 				{12,25,TableLayout.FILL}
 		};
 	    JPanel headPanel = new JPanel(new TableLayout(size));

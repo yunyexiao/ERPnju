@@ -1,7 +1,7 @@
 package bl_stub;
 
 import blservice.billblservice.SaleBillBLService;
-import vo.billvo.SaleBillVO;
+import vo.billvo.SalesBillVO;
 
 public class SaleBillBL_stub implements SaleBillBLService {
 
@@ -18,19 +18,19 @@ public class SaleBillBL_stub implements SaleBillBLService {
 	}
 
 	@Override
-	public boolean saveBill(SaleBillVO bill) {
+	public boolean saveBill(SalesBillVO bill) {
 		System.out.println(bill.getAllId() + " has been saved");
 		return true;
 	}
 
 	@Override
-	public boolean updateBill(SaleBillVO bill) {
+	public boolean updateBill(SalesBillVO bill) {
 		System.out.println(bill.getAllId() + " has been updated");
 		return true;
 	}
 
 	@Override
-	public SaleBillVO getBill(String id) {
+	public SalesBillVO getBill(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

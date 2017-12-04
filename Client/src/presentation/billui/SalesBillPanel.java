@@ -17,28 +17,28 @@ import layout.TableLayout;
 import presentation.component.MyTableModel;
 import vo.UserVO;
 import vo.billvo.BillVO;
-import vo.billvo.SaleBillVO;
+import vo.billvo.SalesBillVO;
 
 /**
  * 销售单的面板<br>
  * 上一级抽象父类中的sumField为这里的折扣前总额的TextField
  * @author 恽叶霄
  */
-public class SaleBillPanel extends CommonSaleBillPanel {
+public class SalesBillPanel extends CommonSaleBillPanel {
 	
 	private SaleBillBLService saleBillBL = new SaleBillBL_stub();
 	
 	private JTextField discountField,afterDiscountField,couponField;
 	private JTextArea promotionInfoArea;
 	
-	public SaleBillPanel(UserVO user, ActionListener closeListener) {
+	public SalesBillPanel(UserVO user, ActionListener closeListener) {
 		super(user, closeListener);
 
 		billIdField.setText(saleBillBL.getNewId());
 		operatorField.setText(this.getUser().getId());
 	}
 
-	public SaleBillPanel(UserVO user, SaleBillVO bill, ActionListener closeListener) {
+	public SalesBillPanel(UserVO user, SalesBillVO bill, ActionListener closeListener) {
 		super(user, closeListener, bill);
 		if(!editable){
 		    discountField.setEditable(false);
@@ -60,7 +60,7 @@ public class SaleBillPanel extends CommonSaleBillPanel {
 	@Override
 	protected ActionListener getSaveActionListener() {
 		return e -> {
-            SaleBillVO bill = getBill(BillVO.SAVED);
+            SalesBillVO bill = getBill(BillVO.SAVED);
             if(bill == null){
                 JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
                 return;
@@ -72,7 +72,7 @@ public class SaleBillPanel extends CommonSaleBillPanel {
 	@Override
 	protected ActionListener getCommitActionListener() {
 		return e -> {
-            SaleBillVO bill = getBill(BillVO.COMMITED);
+            SalesBillVO bill = getBill(BillVO.COMMITED);
             if(bill == null){
                 JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
                 return;
@@ -113,7 +113,7 @@ public class SaleBillPanel extends CommonSaleBillPanel {
 	 * 获得单据VO
 	 * @return
 	 */
-	private SaleBillVO getBill(int state) {
+	private SalesBillVO getBill(int state) {
 		if (isCorrectable()) {
 		    Calendar c = Calendar.getInstance();
 		    String date = c.get(Calendar.YEAR) + "" 
@@ -128,10 +128,11 @@ public class SaleBillPanel extends CommonSaleBillPanel {
 		    MyTableModel model = (MyTableModel)goodsListTable.getModel();
 		    double beforeDiscount = Double.parseDouble(sumField.getText())
 		         , sum = Double.parseDouble(afterDiscountField.getText())
-		         , discount = Double.parseDouble(discountField.getText());
-		    return new SaleBillVO(date, time, id, operater, state
+		         , discount = Double.parseDouble(discountField.getText())
+		         , coupon = Double.parseDouble(couponField.getText());
+		    return new SalesBillVO(date, time, id, operater, state
 		        , customerId, customerName, model, remark, beforeDiscount
-		        , discount, sum);
+		        , discount, coupon, sum);
 		}
 		return null;
 	}
@@ -199,7 +200,7 @@ public class SaleBillPanel extends CommonSaleBillPanel {
 
     @Override
     protected String getObjectType() {
-        return "顾客";
+        return "销售商";
     }
 
     @Override

@@ -11,7 +11,7 @@ import presentation.component.MyTableModel;
 import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.PurchaseReturnBillVO;
-import vo.billvo.SaleBillVO;
+import vo.billvo.SalesBillVO;
 
 /**
  * 进货退货单面板
@@ -27,7 +27,7 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
         this.operatorField.setText(user.getId());
     }
 
-    public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener, SaleBillVO saleBill) {
+    public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener, SalesBillVO saleBill) {
         super(user, closeListener, saleBill);
         // TODO Auto-generated constructor stub
     }

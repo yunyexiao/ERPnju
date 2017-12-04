@@ -3,13 +3,15 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import bl_stub.CustomerBL_stub;
 import blservice.billblservice.PurchaseBillBLService;
 import dataservice.PurchaseBillDataService;
 import ds_stub.PurchaseBillDs_stub;
 import po.billpo.PurchaseBillItemsPO;
 import po.billpo.PurchaseBillPO;
 import presentation.component.MyTableModel;
-import vo.UserVO;
+import vo.CommodityVO;
+import vo.CustomerVO;
 import vo.billvo.PurchaseBillVO;
 
 /**
@@ -79,36 +81,38 @@ public class PurchaseBillBL implements PurchaseBillBLService {
         for(int i = 0; i < bill.getModel().getRowCount(); i++){
             String[] row = bill.getModel().getValueAtRow(i);
             int num = Integer.parseInt(row[5]);
-            double price = Double.parseDouble(row[4]);
-            items.add(new PurchaseBillItemsPO(row[0], row[1], row[6], row[7], num, price));
+            double price = Double.parseDouble(row[4]),
+                   sum = Double.parseDouble(row[6]);
+            items.add(new PurchaseBillItemsPO(
+                row[0], row[7], num, price, sum));
         }
-
-        UserVO user = new UserBL().getUser(bill.getOperator());
         return new PurchaseBillPO(bill.getDate(), bill.getTime()
-            , bill.getId(), bill.getOperator(), user.getName()
-            , bill.getState(), bill.getCustomerId(), bill.getCustomerName()
-            , bill.getRemark(), bill.getSum(), items);
+            , bill.getId(), bill.getOperator(), bill.getState()
+            , bill.getCustomerId(), bill.getRemark()
+            , bill.getSum(), items);
     }
 
     private PurchaseBillVO toVO(PurchaseBillPO bill){
         String[] columnNames = {"商品编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
         ArrayList<PurchaseBillItemsPO> items = bill.getPurchaseBillItems();
-        String[][] data = new String[columnNames.length][items.size()];
+        String[][] data = new String[columnNames.length][];
         for(int i = 0; i < data.length; i++){
             data[i] = toArray(items.get(i));
         }
         MyTableModel model = new MyTableModel(data, columnNames);
-        return new PurchaseBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperatorId()
-            , bill.getState(), bill.getSupplierId(), bill.getSupplierName()
+        // TODO replace that stub with the real one
+        CustomerVO supplier = new CustomerBL_stub().getCustomer(bill.getSupplierId());
+        return new PurchaseBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator()
+            , bill.getState(), bill.getSupplierId(), supplier.getName()
             , model, bill.getRemark(), bill.getSum());
     }
     
     private String[] toArray(PurchaseBillItemsPO item){
-        // TODO the type and store to complete
-        return new String[]{item.getComId(), item.getComName()
-                , "", "", item.getComPrice() + ""
-                , item.getComQuantity() + "", item.getComSum()
-                , item.getRemark()};
+        CommodityVO commodity = new CommodityBL().getCommodity(item.getComId());
+        return new String[]{item.getComId(), commodity.getName()
+                , commodity.getType(), commodity.getStore()
+                , item.getComPrice() + "", item.getComQuantity() + ""
+                , item.getComSum() + "", item.getRemark()};
     }
 
 }

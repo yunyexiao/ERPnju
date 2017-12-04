@@ -4,5 +4,5 @@ import vo.CategoryVO;
 
 public interface GetCategoryInterface {
 
-	public CategoryVO getCatrgory(String id);
+	public CategoryVO getCategory(String id);
 }

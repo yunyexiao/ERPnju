@@ -11,23 +11,23 @@ import presentation.component.MyTableModel;
 import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.MarketBillVO;
-import vo.billvo.SaleReturnBillVO;
+import vo.billvo.SalesReturnBillVO;
 
 /**
  * 销售退货单面板
  * @author 恽叶霄
  */
-public class SaleReturnBillPanel extends CommonSaleBillPanel {
+public class SalesReturnBillPanel extends CommonSaleBillPanel {
     
     private SaleReturnBillBLService saleReturnBl = new SaleReturnBillBL_stub();
 
-    public SaleReturnBillPanel(UserVO user, ActionListener closeListener) {
+    public SalesReturnBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
         this.billIdField.setText(saleReturnBl.getNewId());
         this.operatorField.setText(user.getId());
     }
 
-    public SaleReturnBillPanel(UserVO user, ActionListener closeListener, MarketBillVO bill) {
+    public SalesReturnBillPanel(UserVO user, ActionListener closeListener, MarketBillVO bill) {
         super(user, closeListener, bill);
     }
 
@@ -57,7 +57,7 @@ public class SaleReturnBillPanel extends CommonSaleBillPanel {
     protected ActionListener getSaveActionListener() {
         return e -> {
             if(!editable) return;
-            SaleReturnBillVO bill = getBill(BillVO.SAVED);
+            SalesReturnBillVO bill = getBill(BillVO.SAVED);
             if(bill == null){
                 JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
                 return;
@@ -74,7 +74,7 @@ public class SaleReturnBillPanel extends CommonSaleBillPanel {
     protected ActionListener getCommitActionListener() {
         return e -> {
             if(!editable) return;
-            SaleReturnBillVO bill = getBill(BillVO.COMMITED);
+            SalesReturnBillVO bill = getBill(BillVO.COMMITED);
             if(bill == null){
                 JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
                 return;
@@ -85,7 +85,7 @@ public class SaleReturnBillPanel extends CommonSaleBillPanel {
         };
     }
 
-    private SaleReturnBillVO getBill(int state){
+    private SalesReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
         Calendar c = Calendar.getInstance();
         String date = c.get(Calendar.YEAR) + ""
@@ -98,11 +98,15 @@ public class SaleReturnBillPanel extends CommonSaleBillPanel {
              , operater = operatorField.getText()
              , customerId = customerIdField.getText()
              , customerName = customerNameField.getText()
-             , remark = remarkField.getText();
+             , remark = remarkField.getText()
+             , originalSBId = null;
+        // TODO original SBId and sum to be completed
         MyTableModel model = (MyTableModel)goodsListTable.getModel();
-        double sum = Double.parseDouble(sumField.getText());
-        return new SaleReturnBillVO(date, time, id, operater, state
-            , customerId, customerName, model, remark, sum);
+        double originalSum = Double.parseDouble(sumField.getText()),
+               sum = 0.0;
+        return new SalesReturnBillVO(date, time, id, operater, state
+            , customerId, customerName, model, remark, originalSBId
+            , originalSum, sum);
     }
 
 }

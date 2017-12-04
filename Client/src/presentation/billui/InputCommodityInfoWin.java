@@ -104,6 +104,10 @@ class InputCommodityInfoWin {
     }
     
     private void handleOk(){
+        if(fields[0].getText().length() == 0) return;
+        if(fields[6].getText().length() == 0){
+            sumUp();
+        }
         rowData = new String[fields.length];
         for(int i = 0; i < fields.length; i++){
             rowData[i] = fields[i].getText();
@@ -119,6 +123,7 @@ class InputCommodityInfoWin {
         fields[2].setText(c.getType());
         fields[3].setText(c.getStore());
         fields[4].setText(c.getSalePrice() + "");
+        if(fields[5].getText().length() > 0) sumUp();
     }
 
     private void sumUp(){

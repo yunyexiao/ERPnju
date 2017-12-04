@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 
 import po.billpo.SalesBillPO;
 
-public interface SaleBillDataService {
+public interface SalesBillDataService {
 
 	/**
 	 * 每一种单据都对应一个BillData

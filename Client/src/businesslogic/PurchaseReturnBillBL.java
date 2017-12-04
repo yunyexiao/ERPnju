@@ -3,13 +3,16 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import bl_stub.CustomerBL_stub;
 import blservice.billblservice.PurchaseReturnBillBLService;
 import blservice.infoservice.GetCommodityInterface;
 import dataservice.PurchaseReturnBillDataService;
 import ds_stub.PurchaseReturnBillDs_stub;
+import po.billpo.PurchaseReturnBillItemsPO;
+import po.billpo.PurchaseReturnBillPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
-import vo.UserVO;
+import vo.CustomerVO;
 import vo.billvo.PurchaseReturnBillVO;
 
 
@@ -77,15 +80,14 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
         for(int i = 0; i < bill.getModel().getRowCount(); i++){
             String[] row = bill.getModel().getValueAtRow(i);
             int num = Integer.parseInt(row[5]);
-            double price = Double.parseDouble(row[4]);
-            items.add(new PurchaseReturnBillItemsPO(row[0], row[1], row[6], row[7], num, price));
+            double price = Double.parseDouble(row[4]),
+                   sum = Double.parseDouble(row[6]);
+            items.add(new PurchaseReturnBillItemsPO(
+                row[0], row[7], num, price, sum));
         }
-
-        UserVO user = new UserBL().getUser(bill.getOperator());
         return new PurchaseReturnBillPO(bill.getDate(), bill.getTime()
-            , bill.getId(), bill.getOperator(), user.getName()
-            , bill.getState(), bill.getCustomerId(), bill.getCustomerName()
-            , bill.getRemark(), bill.getSum(), items);
+            , bill.getId(), bill.getOperator(), bill.getState()
+            , bill.getCustomerId(), bill.getRemark(), bill.getSum(), items);
     }
 
     private PurchaseReturnBillVO toVO(PurchaseReturnBillPO bill){
@@ -96,9 +98,11 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
             data[i] = toArray(items.get(i));
         }
         MyTableModel model = new MyTableModel(data, columnNames);
-        return new PurchaseReturnBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperatorId()
-            , bill.getState(), bill.getSupplierId(), bill.getSupplierName()
-            , model, bill.getRemark(), bill.getSum());
+        // TODO replace the stub with the real one
+        CustomerVO customer = new CustomerBL_stub().getCustomer(bill.getSupplierId());
+        return new PurchaseReturnBillVO(bill.getDate(), bill.getTime(), bill.getId()
+            , bill.getOperator(), bill.getState(), bill.getSupplierId()
+            , customer.getName(), model, bill.getRemark(), bill.getSum());
     }
     
     private String[] toArray(PurchaseReturnBillItemsPO item){

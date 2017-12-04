@@ -3,7 +3,7 @@ package ds_stub;
 import java.rmi.RemoteException;
 
 import dataservice.PurchaseReturnBillDataService;
-import dataservice.PurchaseReturnBillPO;
+import po.billpo.PurchaseReturnBillPO;
 
 
 public class PurchaseReturnBillDs_stub implements PurchaseReturnBillDataService {
