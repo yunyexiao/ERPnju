@@ -90,7 +90,7 @@ public class MainWindow {
         image.setImage(img);
 		topLabel.setIcon(image);
 		buttonPanel.setBackground();
-		//((MainPanel) innerPanel).setBackground();
+		((MainPanel) innerPanel).setBackground();
 		
 		SwingUtilities.updateComponentTreeUI(mainWindow);
 	}
@@ -98,7 +98,7 @@ public class MainWindow {
 	 * 将innerPanel改为另一个PanelInterface
 	 * @author 钱美缘
 	 */
-	protected void changePanel(PanelInterface panelImpl) {
+	public void changePanel(PanelInterface panelImpl) {
 		if (innerPanel.close()) {
 			mainWindow.remove(innerPanel.getPanel());
 			innerPanel = panelImpl;
@@ -113,6 +113,7 @@ public class MainWindow {
 	 */
 	public void changePanel() {
 		changePanel(new MainPanel(this));
+		((MainPanel) innerPanel).setBackground();
 	}
 	
 	/**

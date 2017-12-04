@@ -3,10 +3,15 @@ package presentation.main;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -82,7 +87,7 @@ public class MainPanel implements PanelInterface {
 	public void setBackground() {
 		ImageIcon image = new ImageIcon("resource/MainBG.jpg");   
         Image img = image.getImage();  
-        img = img.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_DEFAULT);  
+        img = img.getScaledInstance(infoPanel.getWidth(), infoPanel.getHeight(), Image.SCALE_DEFAULT);  
         image.setImage(img);
 		panel.add(new JLabel(image), "0,0,1,0");
 	}
