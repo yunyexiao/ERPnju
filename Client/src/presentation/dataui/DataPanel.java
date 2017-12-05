@@ -12,6 +12,7 @@ import javax.swing.JTable;
 import blservice.DataBLService;
 import layout.TableLayout;
 import presentation.PanelInterface;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.component.TopButtonPanel;
 /**
@@ -37,11 +38,11 @@ public abstract class DataPanel implements PanelInterface {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			    int index = table.getSelectedRow();
-			    if(index < 0) return;
+			    if(index < 0) {new InfoWindow("请选择需要删除的信息");return;}
 				int response = JOptionPane.showConfirmDialog(null, "确认要删除此条信息？", "提示", JOptionPane.YES_NO_OPTION);
 				if (response == 0) {
 				    String id = (String)((MyTableModel)table.getModel()).getValueAt(index, 0);
-					if (dataBL.delete(id)) JOptionPane.showMessageDialog(null, "信息已成功删除", "系统", JOptionPane.INFORMATION_MESSAGE); 
+					if (dataBL.delete(id)) new InfoWindow("信息已成功删除");
 					table.setModel(dataBL.update());
 				}
 			}			

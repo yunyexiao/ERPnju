@@ -11,8 +11,10 @@ import javax.swing.JTextField;
 
 import blservice.DataBLService;
 import layout.TableLayout;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.dataui.util.Tools;
+import presentation.tools.InputCheck;
 
 public abstract class SearchWindow extends FatherWindow {
     
@@ -45,7 +47,6 @@ public abstract class SearchWindow extends FatherWindow {
         centerPanel.add(typePanel, "3 3");
         
         frame.add(centerPanel, BorderLayout.CENTER);
-        //frame.setVisible(true);
     }
     
     abstract protected ButtonGroup initTypeGroup();
@@ -56,10 +57,15 @@ public abstract class SearchWindow extends FatherWindow {
 
     @Override
     protected boolean taskFinished() {
-        String key = keyTextField.getText(),
-               type = Tools.getSelectedText(typeGroup);
-        model = dataBl.search(type, key);
-        return true;
+    	if (InputCheck.isLegal(keyTextField.getText())) {
+    		String key = keyTextField.getText(),
+    	               type = Tools.getSelectedText(typeGroup);
+    	        model = dataBl.search(type, key);
+    	        return true;
+    	} else {
+    		new InfoWindow("请输入正确的查询关键词");
+    		return false;
+    	}
     }
 
     @Override

@@ -11,8 +11,9 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import presentation.component.InfoWindow;
 
 public abstract class FatherWindow {
 
@@ -50,7 +51,7 @@ public abstract class FatherWindow {
             public void actionPerformed(ActionEvent e) {
                 if (taskFinished()) {
                     frame.dispose();
-                    JOptionPane.showMessageDialog(null, getSuccessMsg(), "ϵͳ", JOptionPane.INFORMATION_MESSAGE);
+                    new InfoWindow(getSuccessMsg());
                 }	
             }
         });
