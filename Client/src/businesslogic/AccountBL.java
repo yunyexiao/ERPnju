@@ -26,12 +26,7 @@ public class AccountBL implements AccountBLService, GetAccountInterface {
 	
 	@Override
 	public String getNewId() {
-		try {
-			return accountDataService.getNewId();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return null;
 	}
 
 	@Override
@@ -47,7 +42,9 @@ public class AccountBL implements AccountBLService, GetAccountInterface {
 	public MyTableModel search(String type, String key) {
 		try {
 			ArrayList<AccountPO> list = null;
-			list = accountDataService.getAccountsBy("SAID", key, true);
+			if ("°´ÕËºÅËÑË÷".equals(type)) {
+				list = accountDataService.getAccountsBy("SAID", key, true);
+			}
 			String[][] data = new String [list.size()][tableHeader.length];
 			for (int i = 0; i < list.size(); i++) {
 				data[i] = getLine(list.get(i));

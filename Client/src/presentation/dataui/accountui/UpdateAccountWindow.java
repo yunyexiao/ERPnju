@@ -18,7 +18,8 @@ public class UpdateAccountWindow extends FatherWindow{
         frame.setTitle("ÐÞ¸ÄÕË»§");
         centerPanel = new InputAccountPanel(data);
         frame.add(centerPanel, BorderLayout.CENTER);
-        
+
+        frame.setSize(400, 200);
         frame.setVisible(true);
 	}
 

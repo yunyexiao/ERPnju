@@ -4,10 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import blservice.AccountBLService;
-import blservice.DataBLService;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.dataui.DataPanel;
-import presentation.dataui.userui.UpdateUserWindow;
 
 public class AccountDataPanel extends DataPanel{
 
@@ -35,8 +34,11 @@ public class AccountDataPanel extends DataPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 MyTableModel tableModel = (MyTableModel)table.getModel();
-                new UpdateAccountWindow(accountBL, tableModel.getValueAtRow(table.getSelectedRow()));
-                updateTable();
+                if (table.getSelectedRow() != -1) {
+                	new UpdateAccountWindow(accountBL, tableModel.getValueAtRow(table.getSelectedRow()));
+                    updateTable();
+                }
+                else new InfoWindow("请选择需要修改的银行账户");
             }
             
         };
