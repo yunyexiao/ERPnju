@@ -15,9 +15,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import bl_stub.AccountBL_stub;
 import bl_stub.CustomerBL_stub;
 import bl_stub.UserBL_stub;
+import businesslogic.AccountBL;
 import businesslogic.CategoryBL;
 import businesslogic.CommodityBL;
 import layout.TableLayout;
@@ -36,6 +36,7 @@ import presentation.dataui.userui.UserDataPanel;
 import presentation.logui.LogPanel;
 import vo.BillType;
 import vo.UserType;
+import vo.UserVO;
 
 /**
  * MainWindow左侧的按钮栏，此处继承了JPanel
@@ -74,7 +75,8 @@ class LeftButtonPanel extends JPanel{
      */
 	public LeftButtonPanel(MainWindow mw) {
 		this.mainWindow = mw;
-		UserType type = mainWindow.getUser().getType();
+		UserVO user = mainWindow.getUser();
+		UserType type = user.getType();
 		innerPanel.setOpaque(false);
 		
 		class CloseListener implements ActionListener {
@@ -99,7 +101,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("商品管理", e -> mw.changePanel(new CommodityDataPanel(new CommodityBL(), closeListener)));
 			addButton("库存查看", new Listener_stub());
 			addButton("库存盘点", new Listener_stub());
-			addButton("报溢/报损", e -> mw.changePanel(new ChangeBillPanel(mainWindow.getUser(), closeListener)));
+			addButton("报溢/报损", e -> mw.changePanel(new ChangeBillPanel(user, closeListener)));
 			addButton("退出", new CloseListener());
 			
 		}
@@ -107,14 +109,14 @@ class LeftButtonPanel extends JPanel{
 			addButton("客户管理", e -> mw.changePanel(new CustomerDataPanel(new CustomerBL_stub(), closeListener)));
 			addButton("制定进货单", e -> mw.changePanel(new BillPanel(mw, BillType.PURCHASE, true)));
 			addButton("制定进货退货单", new Listener_stub());
-			addButton("制定销售单", e -> mw.changePanel(new SaleBillPanel(mainWindow.getUser(), closeListener)));
+			addButton("制定销售单", e -> mw.changePanel(new SaleBillPanel(user, closeListener)));
 			addButton("制定销售退货单", new Listener_stub());
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.ACCOUNTANT) {
-			addButton("账户管理", e -> mw.changePanel(new AccountDataPanel(new AccountBL_stub(), closeListener)));
-			addButton("制定收付款单", e -> mw.changePanel(new ReceiptOrPaymentBillPanel(mainWindow.getUser(), closeListener)));
-			addButton("制定现金费用单", e -> mw.changePanel(new CashCostBillPanel(mainWindow.getUser(), closeListener)));
+			addButton("账户管理", e -> mw.changePanel(new AccountDataPanel(user, new AccountBL(user), closeListener)));
+			addButton("制定收付款单", e -> mw.changePanel(new ReceiptOrPaymentBillPanel(user, closeListener)));
+			addButton("制定现金费用单", e -> mw.changePanel(new CashCostBillPanel(user, closeListener)));
 			addButton("查看销售明细表", new Listener_stub());
 			addButton("查看经营状况表", new Listener_stub());
 			addButton("查看经营历程表", new Listener_stub());
