@@ -3,19 +3,13 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import javax.swing.table.DefaultTableModel;
-
 import blservice.CustomerBLService;
-import businesslogic.inter.GetCustomerInterface;
+import blservice.infoservice.GetCustomerInterface;
 import dataservice.CustomerDataService;
-import dataservice.UserDataService;
 import po.CustomerPO;
-import po.UserPO;
 import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.CustomerVO;
-import vo.UserType;
-import vo.UserVO;
 
 public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 	

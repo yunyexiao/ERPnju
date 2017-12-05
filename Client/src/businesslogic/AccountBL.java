@@ -4,17 +4,12 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import blservice.AccountBLService;
-import businesslogic.inter.GetAccountInterface;
+import blservice.infoservice.GetAccountInterface;
 import dataservice.AccountDataService;
-import dataservice.CustomerDataService;
 import po.AccountPO;
-import po.CustomerPO;
-import po.UserPO;
 import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.AccountVO;
-import vo.UserType;
-import vo.UserVO;
 
 public class AccountBL implements AccountBLService, GetAccountInterface {
 
@@ -52,7 +47,7 @@ public class AccountBL implements AccountBLService, GetAccountInterface {
 	public MyTableModel search(String type, String key) {
 		try {
 			ArrayList<AccountPO> list = null;
-			list = accountDataService.getUsersBy("SAID", key, true);
+			list = accountDataService.getAccountsBy("SAID", key, true);
 			String[][] data = new String [list.size()][tableHeader.length];
 			for (int i = 0; i < list.size(); i++) {
 				data[i] = getLine(list.get(i));
@@ -114,5 +109,4 @@ public class AccountBL implements AccountBLService, GetAccountInterface {
 		}
 		return null;
 	}
-	
 }

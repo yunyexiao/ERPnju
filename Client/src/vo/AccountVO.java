@@ -19,7 +19,7 @@ public class AccountVO {
 	public double getMoney() {return money;}
 	
 	public AccountPO toPO() {
-		AccountPO accountPO = new AccountPO (number, name, money);
+		AccountPO accountPO = new AccountPO (number, name, money,true);
 		return accountPO;
 	}
 }

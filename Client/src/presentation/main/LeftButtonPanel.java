@@ -16,7 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import bl_stub.AccountBL_stub;
-import bl_stub.CategoryBL_stub;
 import bl_stub.CommodityBL_stub;
 import bl_stub.CustomerBL_stub;
 import bl_stub.UserBL_stub;
@@ -24,16 +23,11 @@ import businesslogic.CategoryBL;
 import layout.TableLayout;
 import presentation.bill.BillExaminePanel;
 import presentation.bill.BillPanel;
-<<<<<<< HEAD
-import presentation.billui.ChangeBillPanel;
-import presentation.billui.PurchaseBillPanel;
-=======
 import presentation.billui.CashCostBillPanel;
+import presentation.billui.ChangeBillPanel;
 import presentation.billui.ReceiptOrPaymentBillPanel;
->>>>>>> 037develop
 import presentation.billui.SaleBillPanel;
 import presentation.component.Listener_stub;
-import presentation.dataui.MockDataPanel;
 import presentation.dataui.accountui.AccountDataPanel;
 import presentation.dataui.categoryui.CategoryDataPanel;
 import presentation.dataui.commodityui.CommodityDataPanel;
