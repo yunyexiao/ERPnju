@@ -16,10 +16,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import bl_stub.AccountBL_stub;
-import bl_stub.CommodityBL_stub;
 import bl_stub.CustomerBL_stub;
 import bl_stub.UserBL_stub;
 import businesslogic.CategoryBL;
+import businesslogic.CommodityBL;
 import layout.TableLayout;
 import presentation.bill.BillExaminePanel;
 import presentation.bill.BillPanel;
@@ -96,7 +96,7 @@ class LeftButtonPanel extends JPanel{
 		// 修改按钮处------------------------------
 		if (type == UserType.KEEPER) {
 			addButton("商品分类管理", e -> mw.changePanel(new CategoryDataPanel(new CategoryBL(), closeListener)));
-			addButton("商品管理", e -> mw.changePanel(new CommodityDataPanel(new CommodityBL_stub(), closeListener)));
+			addButton("商品管理", e -> mw.changePanel(new CommodityDataPanel(new CommodityBL(), closeListener)));
 			addButton("库存查看", new Listener_stub());
 			addButton("库存盘点", new Listener_stub());
 			addButton("报溢/报损", e -> mw.changePanel(new ChangeBillPanel(mainWindow.getUser(), closeListener)));
