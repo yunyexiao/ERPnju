@@ -6,21 +6,27 @@ import java.util.ArrayList;
 import blservice.AccountBLService;
 import blservice.infoservice.GetAccountInterface;
 import dataservice.AccountDataService;
+import ds_stub.AccountDs_stub;
 import po.AccountPO;
 import presentation.component.MyTableModel;
-import rmi.Rmi;
 import vo.AccountVO;
+import vo.UserVO;
 
 public class AccountBL implements AccountBLService, GetAccountInterface {
 
-	private AccountDataService accountDataService = Rmi.getRemote(AccountDataService.class);
+	private AccountDataService accountDataService = new AccountDs_stub();//Rmi.getRemote(AccountDataService.class);
 	private String[] tableHeader = {"银行账号", "账户名称", "余额"};
+	private int userRank;
+	
+	public AccountBL(UserVO user) {
+		userRank = user.getRank();
+	}
 	
 	private String[] getLine(AccountPO account) {
 		return new String[] {
 				account.getId(), 
 				account.getName(),
-				Double.toString(account.getMoney())
+				userRank==1?Double.toString(account.getMoney()):"****"
 		};
 	}
 	

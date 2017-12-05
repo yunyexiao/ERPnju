@@ -9,12 +9,6 @@ import po.AccountPO;
 public interface AccountDataService extends Remote {
 
 	/**
-	 * 新增账户时，获取账户应当持有的唯一id
-	 * @return 下一个账户应当持有的id [id格式：四位数字字符串，如0001]
-	 * @throws RemoteException
-	 */
-	public String getNewId() throws RemoteException;
-	/**
 	 * 根据账户的完整ID返回一个AccountPO对象，不论这个账户是否被删除<br/>
 	 * 找不到就返回一个null...
 	 * @param id 账户的id [id格式：四位数字字符串，如0001]
