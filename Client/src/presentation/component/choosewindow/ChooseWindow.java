@@ -16,8 +16,6 @@ import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
-import presentation.component.MyTableModel;
-
 public abstract class ChooseWindow {
 
 	protected JDialog frame = new JDialog();
