@@ -23,6 +23,7 @@ import bl_stub.UserBL_stub;
 import layout.TableLayout;
 import presentation.bill.BillExaminePanel;
 import presentation.bill.BillPanel;
+import presentation.billui.CashCostBillPanel;
 import presentation.billui.ChangeBillPanel;
 import presentation.billui.PurchaseBillPanel;
 import presentation.billui.SaleBillPanel;
@@ -114,7 +115,7 @@ class LeftButtonPanel extends JPanel{
 		else if (type == UserType.ACCOUNTANT) {
 			addButton("账户管理", e -> mw.changePanel(new AccountDataPanel(new AccountBL_stub(), closeListener)));
 			addButton("制定收付款单", new Listener_stub());
-			addButton("制定现金费用单", new Listener_stub());
+			addButton("制定现金费用单", e -> mw.changePanel(new CashCostBillPanel(mainWindow.getUser(), closeListener)));
 			addButton("查看销售明细表", new Listener_stub());
 			addButton("查看经营状况表", new Listener_stub());
 			addButton("查看经营历程表", new Listener_stub());
