@@ -2,6 +2,7 @@ package businesslogic;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import bl_stub.CustomerBL_stub;
 import blservice.billblservice.PurchaseBillBLService;
@@ -28,7 +29,11 @@ public class PurchaseBillBL implements PurchaseBillBLService {
     @Override
     public String getNewId() {
         try {
-            return purchaseBillDs.getNewId();
+            Calendar c = Calendar.getInstance();
+            String date = c.get(Calendar.YEAR) + ""
+                        + c.get(Calendar.MONTH) + ""
+                        + c.get(Calendar.DATE);
+            return "JHD-" + date + "-" + purchaseBillDs.getNewId();
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;
@@ -38,7 +43,8 @@ public class PurchaseBillBL implements PurchaseBillBLService {
     @Override
     public boolean deleteBill(String id) {
         try{
-            return purchaseBillDs.deleteBill(id);
+            int length = id.length();
+            return purchaseBillDs.deleteBill(id.substring(length - 5, length));
         }catch(RemoteException e){
             e.printStackTrace();
             return false;

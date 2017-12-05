@@ -5,6 +5,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import layout.TableLayout;
+import presentation.component.InfoWindow;
+import presentation.tools.InputCheck;
 import vo.CategoryVO;
 
 @SuppressWarnings("serial")
@@ -28,6 +30,9 @@ class InputCategoryPanel extends JPanel {
         fatherIdTextField = new JTextField(data[2]);
         fatherNameTextField = new JTextField(data[3]);
         
+        idTextField.setEditable(false);
+        fatherIdTextField.setEditable(false);
+        fatherNameTextField.setEditable(false);
         this.add(idLabel, "1 1");
         this.add(nameLabel, "1 3");
         this.add(fatherIdLabel, "1 5");
@@ -39,8 +44,8 @@ class InputCategoryPanel extends JPanel {
     }
     
     public CategoryVO getCategoryVO(){
-        return new CategoryVO(fatherIdTextField.getText(), fatherNameTextField.getText()
-            , idTextField.getText(), nameTextField.getText());
+    	if (! InputCheck.isLegal(fatherNameTextField.getText())) {new InfoWindow("∑«∑® ‰»Î"); return null;}
+        return new CategoryVO(fatherIdTextField.getText(), idTextField.getText(), nameTextField.getText());
     }
 
 }

@@ -3,7 +3,7 @@ package blservice.billblservice;
 import presentation.component.MyTableModel;
 import vo.billvo.SalesBillVO;
 
-public interface SaleBillBLService extends BillBLService {
+public interface SalesBillBLService extends BillBLService {
 
 	/**
 	 * 将单据保存到数据库（和保存单据不van全一致）

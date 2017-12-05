@@ -8,10 +8,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
 
 import blservice.CategoryBLService;
+import blservice.CommodityBLService;
+import businesslogic.CommodityBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
+import presentation.component.InfoWindow;
 import presentation.component.TopButtonPanel;
 import vo.CategoryVO;
 
@@ -21,8 +25,10 @@ public class CategoryDataPanel implements PanelInterface{
     private JTree tree;
 
     public CategoryDataPanel(CategoryBLService categoryBl, ActionListener closeListener) {
-        System.out.println("testestetstsgdjfsalkghfsjghsf");
+    	CommodityBLService commodityBL = new CommodityBL();
+    	
         tree = new JTree(categoryBl.getModel());
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);//设置单选
         double[][] size = {{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}};
         panel = new JPanel(new TableLayout(size));
         
@@ -30,31 +36,54 @@ public class CategoryDataPanel implements PanelInterface{
         buttonPanel.addButton("增加", new ImageIcon("resource/AddData.png"), new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                new AddCategoryWindow(categoryBl);
-                tree.setModel(categoryBl.getModel());
+            	if (tree.getSelectionCount() == 1) {
+            		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            		CategoryVO category = (CategoryVO)node.getUserObject();
+            		if (categoryBl.hasContent(category.getId()) || commodityBL.hasCommodity(category.getId())) {
+            			new InfoWindow("请选择一个空节点作为父节点");
+            		} else {
+                        new AddCategoryWindow(categoryBl, category);
+                        tree.setModel(categoryBl.getModel());
+            		}
+            	} else {
+            		new InfoWindow("请选择一个节点作为父节点");
+            	}
             }
         });
 		buttonPanel.addButton("修改", new ImageIcon("resource/ChangeData.png"), new ActionListener(){
 		    @Override
 		    public void actionPerformed(ActionEvent e){
-		        if(tree.isSelectionEmpty())return;
-		        DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
-		        new UpdateCategoryWindow(categoryBl, (CategoryVO)node.getUserObject());
-		        tree.setModel(categoryBl.getModel());
+		    	if (tree.getSelectionCount() == 1) {
+			        DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
+			        if (node.isRoot()) new InfoWindow("不能修改父节点");
+			        else {
+				        new UpdateCategoryWindow(categoryBl, (CategoryVO)node.getUserObject());
+				        tree.setModel(categoryBl.getModel());
+			        }
+		    	} else {
+		    		new InfoWindow("请选择一个需要修改的节点");
+		    	}
 		    }
 		});
 		buttonPanel.addButton("删除", new ImageIcon("resource/DeleteData.png"), new ActionListener(){
 		    @Override
 		    public void actionPerformed(ActionEvent e){
-		        if(tree.isSelectionEmpty()) return;
+		        if(tree.isSelectionEmpty()) {new InfoWindow("请选择需要删除的节点"); return;}
 				int response = JOptionPane.showConfirmDialog(null, "确认要删除此条信息？", "提示", JOptionPane.YES_NO_OPTION);
 				if(response == 0){
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
-				    String id = ((CategoryVO)node.getUserObject()).getId();
-				    if(categoryBl.delete(id)){
-				        JOptionPane.showMessageDialog(null, "信息已成功删除", "系统", JOptionPane.INFORMATION_MESSAGE); 
-				        tree.setModel(categoryBl.getModel());
-				    }
+                    if (node.isRoot()) new InfoWindow("不能删除父节点");
+                    else {
+                    	CategoryVO category = (CategoryVO)node.getUserObject();
+                    	if (categoryBl.hasContent(category.getId()) || commodityBL.hasCommodity(category.getId())) {
+                			new InfoWindow("不能删除非空节点");
+                		} else {
+                			if(categoryBl.delete(category.getId())){
+        				        JOptionPane.showMessageDialog(null, "信息已成功删除", "系统", JOptionPane.INFORMATION_MESSAGE); 
+        				        tree.setModel(categoryBl.getModel());
+        				    }
+                		}
+                    }
 				}
 		    }
 		});

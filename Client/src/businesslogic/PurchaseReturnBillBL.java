@@ -2,6 +2,7 @@ package businesslogic;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import bl_stub.CustomerBL_stub;
 import blservice.billblservice.PurchaseReturnBillBLService;
@@ -27,7 +28,11 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
     @Override
     public String getNewId() {
         try{
-            return purchaseReturnBillDs.getNewId();
+            Calendar c = Calendar.getInstance();
+            String date = c.get(Calendar.YEAR) + ""
+                        + c.get(Calendar.MONTH) + ""
+                        + c.get(Calendar.DATE);
+            return "JHTHD-" + date + "-" + purchaseReturnBillDs.getNewId();
         }catch(RemoteException e){
             e.printStackTrace();
             return null;

@@ -1,7 +1,6 @@
 package presentation.billui;
 
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 
 import javax.swing.JOptionPane;
 
@@ -29,7 +28,6 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
 
     public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener, SalesBillVO saleBill) {
         super(user, closeListener, saleBill);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -87,15 +85,8 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
 
     private PurchaseReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
-        Calendar c = Calendar.getInstance();
-        String date = c.get(Calendar.YEAR) + ""
-                    + c.get(Calendar.MONTH) + ""
-                    + c.get(Calendar.DATE);
-        String time = c.get(Calendar.HOUR_OF_DAY) + ""
-                    + c.get(Calendar.MINUTE) + ""
-                    + c.get(Calendar.SECOND);
-        String id = billIdField.getText()
-             , operater = operatorField.getText()
+        String date = getDate(), time = getTime(), id = getId();
+        String operater = operatorField.getText()
              , customerId = customerIdField.getText()
              , customerName = customerNameField.getText()
              , remark = remarkField.getText();

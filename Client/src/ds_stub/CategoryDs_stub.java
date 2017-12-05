@@ -9,28 +9,42 @@ import po.CategoryPO;
 
 public class CategoryDs_stub implements CategoryDataService {
 
-    public CategoryDs_stub() {}
+	private static ArrayList<CategoryPO> result = new ArrayList<>();
+	
+    public CategoryDs_stub() {
+        result.add(new CategoryPO("000001", "some", "000000", true));
+        result.add(new CategoryPO("000003", "same", "000000", true));
+        result.add(new CategoryPO("000002", "come", "000001", true));
+        result.add(new CategoryPO("000004", "sane", "000003", true));
+    }
 
     @Override
     public String getNewId() throws RemoteException {
-        return "001-20171127-12345";
+        return String.format("%06d", result.size()+1);
     }
 
     @Override
     public CategoryPO findById(String id) throws RemoteException {
         System.out.println("category found in database: " + id);
-        return new CategoryPO("001-201771127-00001", "some", "001-20171127-00002", "solar", true);
+        for (int i = 0; i < result.size(); i++) {
+        	if (result.get(i).getId().equals(id)) return result.get(i);
+        }
+        return null;
     }
 
     @Override
     public boolean add(CategoryPO category) throws RemoteException {
         System.out.println("category added in database: " + category.getId());
+        result.add(category);
         return true;
     }
 
     @Override
     public boolean delete(String id) throws RemoteException {
         System.out.println("category deleted in database: " + id);
+        for (int i = 0; i < result.size(); i++) {
+        	if (id.equals(result.get(i).getId())) {result.remove(i);break;}
+        }
         return true;
     }
 
@@ -43,12 +57,6 @@ public class CategoryDs_stub implements CategoryDataService {
     @Override
     public ArrayList<CategoryPO> getAllCategory() throws RemoteException {
         System.out.println("all categories in database returned");
-        ArrayList<CategoryPO> result = new ArrayList<>();
-        result.add(new CategoryPO("001-20171127-00000", "category-root", "", "", true));
-        result.add(new CategoryPO("001-20171127-00001", "some", "001-20171127-00000", "category-root", true));
-        result.add(new CategoryPO("001-20171127-00003", "same", "001-20171127-00000", "category-root", true));
-        result.add(new CategoryPO("001-20171127-00002", "come", "001-20171127-00001", "some", true));
-        result.add(new CategoryPO("001-20171127-00004", "sane", "001-20171127-00003", "same", true));
         return result;
     }
 

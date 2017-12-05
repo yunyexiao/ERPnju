@@ -11,7 +11,6 @@ import blservice.infoservice.GetCategoryInterface;
 import dataservice.CategoryDataService;
 import ds_stub.CategoryDs_stub;
 import po.CategoryPO;
-import po.CommodityPO;
 import vo.CategoryVO;
 
 /**
@@ -39,30 +38,38 @@ public class CategoryBL implements CategoryBLService, GetCategoryInterface{
 
     @Override
     public DefaultTreeModel getModel() {
+        DefaultTreeModel model = new DefaultTreeModel(null);
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(new CategoryVO("","000000","所有分类"));
+        model.setRoot(root);
         try{
             ArrayList<CategoryPO> list = categoryDs.getAllCategory();
-            DefaultTreeModel model = new DefaultTreeModel(null);
-            String fatherId = "";
-            DefaultMutableTreeNode root = null;
-            for(CategoryPO category: list)if(category.getFatherId().equals(fatherId)){
-                root = new DefaultMutableTreeNode(new CategoryVO(fatherId
-                    , category.getFatherName(), category.getId(), category.getName()));
-                model.setRoot(root);
-                break;
+            ArrayList<CategoryVO> volist = new ArrayList<CategoryVO>();
+            for(CategoryPO category: list) {
+            	volist.add(new CategoryVO(category.getFatherId(), category.getId(), category.getName()));
             }
-            list.remove(root.getUserObject());
-            addChildren(list, root);
+            ArrayList<DefaultMutableTreeNode> nodeList = new ArrayList<DefaultMutableTreeNode>();
+            nodeList.add(root);
+            for(CategoryVO category: volist) {
+            	for(DefaultMutableTreeNode node : nodeList) {
+            		CategoryVO c = (CategoryVO)node.getUserObject();
+            		if(category.getFatherId().equals(c.getId())){
+            			DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(category);
+            			node.add(newNode);
+            			nodeList.add(newNode);
+            			break;
+            		}
+            	}
+            }
             return model;
         }catch(RemoteException e){
             e.printStackTrace();
-            return null;
+            return model;
         }
     }
 
     @Override
     public boolean add(CategoryVO category) {
         try{
-            if(hasCommodity(category.getId())) return false;
             return categoryDs.add(category.toPO());
         }catch(RemoteException e){
             e.printStackTrace();
@@ -73,7 +80,6 @@ public class CategoryBL implements CategoryBLService, GetCategoryInterface{
     @Override
     public boolean delete(String id) {
         try{
-            if(hasContent(id)) return false;
             return categoryDs.delete(id);
         }catch(RemoteException e){
             e.printStackTrace();
@@ -110,7 +116,7 @@ public class CategoryBL implements CategoryBLService, GetCategoryInterface{
             return null;
         }
     }
-
+/*  //no use code
     private void addChildren(ArrayList<CategoryPO> list, DefaultMutableTreeNode fatherNode){
         String fatherId = ((CategoryVO)fatherNode.getUserObject()).getId();
         ArrayList<CategoryPO> children = new ArrayList<>();
@@ -127,18 +133,9 @@ public class CategoryBL implements CategoryBLService, GetCategoryInterface{
             addChildren(list, (DefaultMutableTreeNode)fatherNode.getChildAt(i));
         }
     }
-
-    private boolean hasCommodity(String categoryId){
-        ArrayList<CommodityPO> commodities = new CommodityBL().getAllCommodities();
-        for(CommodityPO commodity: commodities){
-            if(commodity.getCategoryId().equals(categoryId))
-                return true;
-        }
-        return false;
-    }
-
-    private boolean hasContent(String id){
-        if(hasCommodity(id)) return true;
+*/
+    public boolean hasContent(String id){
+        //if(hasCommodity(id)) return true;
         try {
             ArrayList<CategoryPO> categories = categoryDs.getAllCategory();
             for(CategoryPO category: categories){
@@ -150,5 +147,16 @@ public class CategoryBL implements CategoryBLService, GetCategoryInterface{
         }
         return false;
     }
+
+	@Override
+	public CategoryVO findById(String id) {
+		try{
+			CategoryPO category = categoryDs.findById(id);
+			if (category == null) return null;
+            return new CategoryVO(category.getFatherId(),category.getId(),category.getName());
+        }catch(RemoteException e){
+            return null;
+        }
+	}
 
 }

@@ -1,10 +1,10 @@
 package bl_stub;
 
-import blservice.billblservice.SaleBillBLService;
+import blservice.billblservice.SalesBillBLService;
 import presentation.component.MyTableModel;
 import vo.billvo.SalesBillVO;
 
-public class SaleBillBL_stub implements SaleBillBLService {
+public class SaleBillBL_stub implements SalesBillBLService {
 
 	@Override
 	public String getNewId() {

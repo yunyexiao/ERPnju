@@ -1,8 +1,8 @@
 package presentation.billui;
 
 import java.awt.BorderLayout;
+import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 
 import layout.TableLayout;
 import presentation.billui.choosewindow.CommodityChooseWin;
+import presentation.tools.IntField;
 import vo.CommodityVO;
 
 /**
@@ -75,25 +76,22 @@ class InputCommodityInfoWin {
         fields = new JTextField[labelTexts.length];
         for(int i = 0; i < labelTexts.length; i++){
             labels[i] = new JLabel(labelTexts[i]);
-            fields[i] = new JTextField(10);
+            if(i == 5){
+                fields[i] = new IntField(10);
+            } else {
+                fields[i] = new JTextField(10);
+            }
             fields[i].setEditable(false);
             centerPanel.add(labels[i], "1 " + (2 * i + 1));
             centerPanel.add(fields[i], "3 " + (2 * i + 1));
         }
         fields[5].setEditable(true);
         fields[7].setEditable(true);
-        fields[5].addFocusListener(new FocusListener(){
-
-            @Override
-            public void focusGained(FocusEvent e) {
-                // No needs to complete it.
-            }
-
+        fields[5].addFocusListener(new FocusAdapter(){
             @Override
             public void focusLost(FocusEvent e) {
                 sumUp();
             }
-            
         });
         
         JButton chooseButton = new JButton("Ñ¡ÔñÉÌÆ·");
@@ -106,7 +104,7 @@ class InputCommodityInfoWin {
     private void handleOk(){
         if(fields[0].getText().length() == 0) return;
         if(fields[6].getText().length() == 0){
-            sumUp();
+            if(!sumUp())return;
         }
         rowData = new String[fields.length];
         for(int i = 0; i < fields.length; i++){
@@ -126,13 +124,15 @@ class InputCommodityInfoWin {
         if(fields[5].getText().length() > 0) sumUp();
     }
 
-    private void sumUp(){
+    private boolean sumUp(){
         try{
-            int num = Integer.parseInt(fields[5].getText());
+            int num = ((IntField)fields[5]).getValue();
             double price = Double.parseDouble(fields[4].getText());
             fields[6].setText(num * price + "");
+            return true;
         }catch(NumberFormatException e){
             e.printStackTrace();
+            return false;
         }
     }
 

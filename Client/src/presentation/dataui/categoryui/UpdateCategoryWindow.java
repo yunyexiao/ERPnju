@@ -14,8 +14,9 @@ public class UpdateCategoryWindow extends FatherWindow{
     public UpdateCategoryWindow(CategoryBLService categoryBl, CategoryVO category) {
         super();
         this.categoryBl = categoryBl;
+        CategoryVO fatherVO = categoryBl.findById(category.getFatherId());
         centerPanel = new InputCategoryPanel(new String[]{category.getId(), category.getName()
-                , category.getFatherId(), category.getFatherName()});
+                , category.getFatherId(), fatherVO==null?"所有分类":fatherVO.getName()});
         frame.add(centerPanel, BorderLayout.CENTER);
         frame.setTitle("修改商品分类属性");
         frame.setSize(400, 300);

@@ -16,15 +16,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import bl_stub.AccountBL_stub;
-import bl_stub.CategoryBL_stub;
 import bl_stub.CommodityBL_stub;
 import bl_stub.CustomerBL_stub;
 import bl_stub.UserBL_stub;
+import businesslogic.CategoryBL;
 import layout.TableLayout;
 import presentation.bill.BillExaminePanel;
+import presentation.billui.CashCostBillPanel;
 import presentation.billui.ChangeBillPanel;
 import presentation.billui.PurchaseBillPanel;
 import presentation.billui.PurchaseReturnBillPanel;
+import presentation.billui.ReceiptOrPaymentBillPanel;
 import presentation.billui.SalesBillPanel;
 import presentation.billui.SalesReturnBillPanel;
 import presentation.component.Listener_stub;
@@ -94,7 +96,7 @@ class LeftButtonPanel extends JPanel{
 		
 		// 修改按钮处------------------------------
 		if (type == UserType.KEEPER) {
-			addButton("商品分类管理", e -> mw.changePanel(new CategoryDataPanel(new CategoryBL_stub(), closeListener)));
+			addButton("商品分类管理", e -> mw.changePanel(new CategoryDataPanel(new CategoryBL(), closeListener)));
 			addButton("商品管理", e -> mw.changePanel(new CommodityDataPanel(new CommodityBL_stub(), closeListener)));
 			addButton("库存查看", new Listener_stub());
 			addButton("库存盘点", new Listener_stub());
@@ -112,8 +114,8 @@ class LeftButtonPanel extends JPanel{
 		}
 		else if (type == UserType.ACCOUNTANT) {
 			addButton("账户管理", e -> mw.changePanel(new AccountDataPanel(new AccountBL_stub(), closeListener)));
-			addButton("制定收付款单", new Listener_stub());
-			addButton("制定现金费用单", new Listener_stub());
+			addButton("制定收付款单", e -> mw.changePanel(new ReceiptOrPaymentBillPanel(mainWindow.getUser(), closeListener)));
+			addButton("制定现金费用单", e -> mw.changePanel(new CashCostBillPanel(mainWindow.getUser(), closeListener)));
 			addButton("查看销售明细表", new Listener_stub());
 			addButton("查看经营状况表", new Listener_stub());
 			addButton("查看经营历程表", new Listener_stub());

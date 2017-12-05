@@ -1,10 +1,10 @@
 package bl_stub;
 
-import blservice.billblservice.SaleReturnBillBLService;
+import blservice.billblservice.SalesReturnBillBLService;
 import vo.billvo.SalesReturnBillVO;
 
 
-public class SaleReturnBillBL_stub implements SaleReturnBillBLService {
+public class SaleReturnBillBL_stub implements SalesReturnBillBLService {
 
     public SaleReturnBillBL_stub() {}
 

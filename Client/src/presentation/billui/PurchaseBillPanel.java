@@ -1,7 +1,6 @@
 package presentation.billui;
 
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 
 import javax.swing.JOptionPane;
 
@@ -84,14 +83,9 @@ public class PurchaseBillPanel extends CommonSaleBillPanel {
 
     private PurchaseBillVO getBill(int state){
         if(!isCorrectable()) return null;
-        Calendar c = Calendar.getInstance();
-        String date = c.get(Calendar.YEAR) + ""
-                    + c.get(Calendar.MONTH) + ""
-                    + c.get(Calendar.DATE);
-        String time = c.get(Calendar.HOUR_OF_DAY) + ""
-                    + c.get(Calendar.MINUTE) + ""
-                    + c.get(Calendar.SECOND);
-        String id = billIdField.getText()
+        String date = getDate();
+        String time = getTime();
+        String id = getId()
              , operater = operatorField.getText()
              , customerId = customerIdField.getText()
              , customerName = customerNameField.getText()

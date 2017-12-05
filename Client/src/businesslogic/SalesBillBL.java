@@ -2,9 +2,10 @@ package businesslogic;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import bl_stub.CustomerBL_stub;
-import blservice.billblservice.SaleBillBLService;
+import blservice.billblservice.SalesBillBLService;
 import dataservice.SalesBillDataService;
 import ds_stub.SalesBillDs_stub;
 import po.billpo.BillPO;
@@ -17,7 +18,7 @@ import vo.billvo.SalesBillVO;
 /**
  * @author 恽叶霄
  */
-public class SalesBillBL implements SaleBillBLService {
+public class SalesBillBL implements SalesBillBLService {
     
     private SalesBillDataService saleBillDs;
     
@@ -28,7 +29,11 @@ public class SalesBillBL implements SaleBillBLService {
     @Override
     public String getNewId() {
         try{
-            return saleBillDs.getNewId();
+            Calendar c = Calendar.getInstance();
+            String date = c.get(Calendar.YEAR) + ""
+                        + c.get(Calendar.MONTH) + ""
+                        + c.get(Calendar.DATE);
+            return "XSD-" + date + "-" + saleBillDs.getNewId();
         }catch(RemoteException e){
             e.printStackTrace();
             return null;
@@ -117,9 +122,14 @@ public class SalesBillBL implements SaleBillBLService {
     private SalesBillVO toVO(SalesBillPO bill){
         String[] columnNames = {"编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
         ArrayList<SalesBillItemsPO> items = bill.getSalesBillItems();
-        String[][] data = new String[items.size()][];
-        for(int i = 0; i < data.length; i++){
-            data[i] = getRow(items.get(i));
+        String[][] data;
+        if(items == null){
+            data = null;
+        }else{
+            data = new String[items.size()][];
+            for(int i = 0; i < data.length; i++){
+                data[i] = getRow(items.get(i));
+            }
         }
         MyTableModel model = new MyTableModel(data, columnNames);
         String date = bill.getDate(),
@@ -136,8 +146,8 @@ public class SalesBillBL implements SaleBillBLService {
                discount = bill.getDiscount(),
                coupon = bill.getCoupon();
         return new SalesBillVO(date, time, id, operatorId, state
-            , cusId, cusName, model, remark, sum, beforeDiscount
-            , discount, coupon);
+            , cusId, cusName, model, remark, beforeDiscount
+            , discount, coupon, sum);
     }
     
     private String[] getRow(SalesBillItemsPO item){

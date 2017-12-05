@@ -16,4 +16,10 @@ public interface CommodityBLService extends DataBLService {
 	 * @return
 	 */
 	public boolean change(CommodityVO commodity);
+	/**
+	 * 返回某一分类下是否有商品
+	 * @param categoryId 商品分类id
+	 * @return
+	 */
+	public boolean hasCommodity(String categoryId);
 }

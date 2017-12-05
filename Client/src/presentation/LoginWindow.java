@@ -48,8 +48,7 @@ public class LoginWindow {
 		loginWindow.setResizable(false);
 		loginWindow.setUndecorated(true);
 		loginWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//loginWindow.setIconImage(new ImageIcon("resource/LoginIcon.png").getImage());
-		//int border = 15;
+
 		double[][] size = {{0.39019,0.05124,0.04319,0.02853,0.09424,TableLayout.FILL},
 				{0.476,0.062,0.040,0.062,0.03,0.048,TableLayout.FILL}};
 		
@@ -59,13 +58,14 @@ public class LoginWindow {
 		buttonB.setBorderPainted(false);
 		keyField.setBorder(null);
 		nameField.setBorder(null);
+		keyField.setFont(new Font("宋体",Font.PLAIN,20));
+		nameField.setFont(new Font("宋体",Font.PLAIN,20));
+		
 		//add components
 		JPanel panel = (JPanel)loginWindow.getContentPane();
 		panel.setLayout(new TableLayout(size));
 		panel.setOpaque(false);
-        //panel.add(getLabel("用户："), "1, 1, r");
         panel.add(nameField, "2, 1, 4, 1");
-        //panel.add(getLabel("密码："), "1, 3, r");
         panel.add(keyField,"2, 3, 4, 3");
         panel.add(buttonA, "1, 5, 2, 5");
         panel.add(buttonB, "4, 5");

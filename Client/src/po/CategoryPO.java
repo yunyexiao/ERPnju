@@ -15,17 +15,16 @@ public class CategoryPO implements Serializable {
      */
     private static final long serialVersionUID = 802795139476003045L;
     
-    private String id, name, fatherId, fatherName;
+    private String id, name, fatherId;
 
 	private boolean isExist;
 
     public CategoryPO() {}
     
-    public CategoryPO(String id, String name, String fatherId, String fatherName, boolean isExist) {
+    public CategoryPO(String id, String name, String fatherId, boolean isExist) {
         this.id = id;
         this.name = name;
         this.fatherId = fatherId;
-        this.fatherName = fatherName;
         this.isExist = isExist;
     }
 
@@ -51,14 +50,6 @@ public class CategoryPO implements Serializable {
 
     public void setFatherId(String fatherId) {
         this.fatherId = fatherId;
-    }
-
-    public String getFatherName() {
-        return fatherName;
-    }
-
-    public void setFatherName(String fatherName) {
-        this.fatherName = fatherName;
     }
     
     public void setExistFlag(boolean flag) {

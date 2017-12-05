@@ -2,10 +2,12 @@ package businesslogic;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import bl_stub.CustomerBL_stub;
-import blservice.billblservice.SaleReturnBillBLService;
+import blservice.billblservice.SalesReturnBillBLService;
 import dataservice.SalesReturnBillDataService;
+import ds_stub.SalesReturnBillDs_stub;
 import po.billpo.SalesReturnBillItemsPO;
 import po.billpo.SalesReturnBillPO;
 import presentation.component.MyTableModel;
@@ -14,14 +16,22 @@ import vo.billvo.SalesBillVO;
 import vo.billvo.SalesReturnBillVO;
 
 
-public class SaleReturnBillBL implements SaleReturnBillBLService {
+public class SalesReturnBillBL implements SalesReturnBillBLService {
     
-    private SalesReturnBillDataService saleReturnBillDs;
+    private SalesReturnBillDataService salesReturnBillDs;
+    
+    public SalesReturnBillBL(){
+        salesReturnBillDs = new SalesReturnBillDs_stub();
+    }
 
     @Override
     public String getNewId() {
         try{
-            return saleReturnBillDs.getNewId();
+            Calendar c = Calendar.getInstance();
+            String date = c.get(Calendar.YEAR) + ""
+                        + c.get(Calendar.MONTH) + ""
+                        + c.get(Calendar.DATE);
+            return "XSTHD-" + date + "-" + salesReturnBillDs.getNewId();
         }catch(RemoteException e){
             e.printStackTrace();
             return null;
@@ -31,7 +41,7 @@ public class SaleReturnBillBL implements SaleReturnBillBLService {
     @Override
     public boolean deleteBill(String id) {
         try{
-            return saleReturnBillDs.deleteBill(id);
+            return salesReturnBillDs.deleteBill(id);
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -41,7 +51,7 @@ public class SaleReturnBillBL implements SaleReturnBillBLService {
     @Override
     public boolean saveBill(SalesReturnBillVO bill) {
         try{
-            return saleReturnBillDs.saveBill(toPO(bill));
+            return salesReturnBillDs.saveBill(toPO(bill));
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -51,7 +61,7 @@ public class SaleReturnBillBL implements SaleReturnBillBLService {
     @Override
     public boolean updateBill(SalesReturnBillVO bill) {
         try{
-            return saleReturnBillDs.saveBill(toPO(bill));
+            return salesReturnBillDs.saveBill(toPO(bill));
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -61,7 +71,7 @@ public class SaleReturnBillBL implements SaleReturnBillBLService {
     @Override
     public SalesReturnBillVO getBill(String id) {
         try{
-            return toVO(saleReturnBillDs.getBillById(id));
+            return toVO(salesReturnBillDs.getBillById(id));
         }catch(RemoteException e){
             e.printStackTrace();
             return null;

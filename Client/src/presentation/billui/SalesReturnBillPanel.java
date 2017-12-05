@@ -2,7 +2,6 @@ package presentation.billui;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -10,10 +9,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import bl_stub.SaleReturnBillBL_stub;
-import blservice.billblservice.SaleReturnBillBLService;
+import blservice.billblservice.SalesReturnBillBLService;
+import businesslogic.SalesReturnBillBL;
 import layout.TableLayout;
+import presentation.billui.choosewindow.SalesBillChooseWin;
 import presentation.component.MyTableModel;
+import presentation.tools.DoubleField;
 import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.SalesReturnBillVO;
@@ -24,8 +25,9 @@ import vo.billvo.SalesReturnBillVO;
  */
 public class SalesReturnBillPanel extends CommonSaleBillPanel {
     
-    private SaleReturnBillBLService saleReturnBl = new SaleReturnBillBL_stub();
-    private JTextField discountRateField, originalSBIdField, finalSumField;
+    private SalesReturnBillBLService saleReturnBl = new SalesReturnBillBL();
+    private JTextField originalSBIdField;
+    private DoubleField discountRateField, finalSumField;
 
     public SalesReturnBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
@@ -48,7 +50,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         customerNameField.setEditable(false);
         originalSBIdField = new JTextField(10);
         originalSBIdField.setEditable(false);
-        discountRateField = new JTextField(5);
+        discountRateField = new DoubleField(5);
         discountRateField.setEditable(false);
         JButton salesBillChooseButton = new JButton("选择源销售单");
         salesBillChooseButton.addActionListener(e -> handleChooseSb());
@@ -76,16 +78,14 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     @Override
     protected void initSouth(){
         remarkField = new JTextField(10);
-        sumField = new JTextField(5);
+        sumField = new DoubleField(10);
         sumField.setEditable(false);
-        finalSumField = new JTextField(5);
+        finalSumField = new DoubleField(10);
         finalSumField.setEditable(false);
-        JButton sumButton = new JButton("结算");
-        sumButton.addActionListener(e -> sumUp());
         
         double[][] size = {
                 {20.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0
-                    , -2.0, 10.0, -2.0, -1.0},
+                    , -2.0, 10.0, -1.0},
                 {-2.0, 10.0, -2.0}
         };
         JPanel southPanel = new JPanel(new TableLayout(size));
@@ -95,7 +95,6 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         southPanel.add(sumField, "3 2");
         southPanel.add(new JLabel("实际总额"), "5 2");
         southPanel.add(finalSumField, "7 2");
-        southPanel.add(sumButton, "9 2");
         
         billPanel.add(southPanel, BorderLayout.SOUTH);
     }
@@ -107,7 +106,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
 
     @Override
     protected String getTableTitle() {
-        return "入库商品列表";
+        return "回库商品列表";
     }
 
     @Override
@@ -134,8 +133,6 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
             if(saleReturnBl.saveBill(bill)){
                 JOptionPane.showMessageDialog(null, "单据已保存。");
             }
-
-           
         };
     }
 
@@ -158,23 +155,16 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     protected void sumUp(){
         if(!editable) return;
         super.sumUp();
-        double discountRate = Double.parseDouble(discountRateField.getText()),
-               originalSum = Double.parseDouble(sumField.getText()),
+        double discountRate = discountRateField.getValue(),
+               originalSum = sumField.getValue(),
                finalSum = originalSum * discountRate;
-        this.finalSumField.setText(finalSum + "");
+        this.finalSumField.setValue(finalSum);
     }
 
     private SalesReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
-        Calendar c = Calendar.getInstance();
-        String date = c.get(Calendar.YEAR) + ""
-                    + c.get(Calendar.MONTH) + ""
-                    + c.get(Calendar.DATE);
-        String time = c.get(Calendar.HOUR_OF_DAY) + ""
-                    + c.get(Calendar.MINUTE) + ""
-                    + c.get(Calendar.SECOND);
-        String id = billIdField.getText()
-             , operater = operatorField.getText()
+        String date = getDate(), time = getTime(), id = getId();
+        String operater = operatorField.getText()
              , customerId = customerIdField.getText()
              , customerName = customerNameField.getText()
              , remark = remarkField.getText()
@@ -190,8 +180,11 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
 
     private void handleChooseSb(){
         if(!editable) return;
-        // TODO create a sales bill choosing window
-        // and then refresh the discountRateField
+        String[] info = new SalesBillChooseWin().getSalesBillInfo();
+        if(info == null) return;
+        originalSBIdField.setText(info[0]);
+        discountRateField.setValue(Double.parseDouble(info[1]));
+        sumUp();
     }
 
 }
