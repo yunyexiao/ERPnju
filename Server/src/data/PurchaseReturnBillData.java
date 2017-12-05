@@ -7,16 +7,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import dataservice.PurchaseReturnBillDataService;
-import po.billpo.PurchaseBillItemsPO;
-import po.billpo.PurchaseBillPO;
-import po.billpo.PurchaseReturnBillItemsPO;
-import po.billpo.PurchaseReturnBillPO;;
+import po.billpo.PurchaseReturnBillPO;
+import po.billpo.SalesItemsPO;;
 public class PurchaseReturnBillData implements PurchaseReturnBillDataService{
+	private String tableName="PurchaseReturnBill";
+	private String idName="PRBID";
 
 	@Override
 	public boolean saveBill(PurchaseReturnBillPO purchaseBill) throws RemoteException {
 		// TODO Auto-generated method stub
-        ArrayList<PurchaseReturnBillItemsPO> items=purchaseBill.getPurchaseReturnBillItems();
+        ArrayList<SalesItemsPO> items=purchaseBill.getPurchaseReturnBillItems();
 		
 		try{
 			Statement s1 = DataHelper.getInstance().createStatement();
@@ -37,7 +37,7 @@ public class PurchaseReturnBillData implements PurchaseReturnBillDataService{
 					+items.get(i).getComId()+"','"
 					+items.get(i).getComQuantity()+"','"
 					+items.get(i).getComSum()+"','"
-					+items.get(i).getRemark()+"','"
+					+items.get(i).getComRemark()+"','"
 					+items.get(i).getComPrice()+"')");
 			}
 			if(r1>0)return true;
@@ -51,55 +51,32 @@ public class PurchaseReturnBillData implements PurchaseReturnBillDataService{
 
 	@Override
 	public boolean deleteBill(String id) throws RemoteException {
-		// TODO Auto-generated method stub
-		try{
-			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("DELETE FROM PurchaseRetrunBill WHERE PRBID="+id+";");
-			if(r>0)return true;
-		}catch(Exception e){
-			  e.printStackTrace();
-			   return false;
-		}
-		return false;
+		
+		boolean res=SQLQueryHelper.getTrueDeleteResult(tableName, idName, id);
+		
+		return res;
 	}
 
 	@Override
 	public String getNewId() throws RemoteException {
-		// TODO Auto-generated method stub
-		String newId=null;
-		Calendar now = Calendar.getInstance();
-		int year=now.get(Calendar.YEAR), month=now.get(Calendar.MONTH),  day=now.get(Calendar.DAY_OF_MONTH);
-		String date=year+"-"+month+"-"+day;
-		int num=0;
-		try{
-			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery("SELECT PRBID FROM PurchaseReturnBill WHERE PRBTime>"
-					+"'"+date+"' "+"AND PRBTime<DATEADD(DAY,1,"+"'"+date+"');");
-			while(r.next()){
-				num++;
-			}
-			num++;
-			
-			newId="JHTHD-"+year+month+day+"-"+String.format("%5d", num);
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
+
+		String newId=SQLQueryHelper.getNewBillIdByDay(tableName);
+		newId="JHTHD-"+newId;
+		
 		return newId;
 	}
 
 	@Override
 	public PurchaseReturnBillPO getBillById(String id) throws RemoteException {
 		// TODO Auto-generated method stub
-		ArrayList<PurchaseReturnBillItemsPO> items=new ArrayList<PurchaseReturnBillItemsPO>();
+		ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
 		PurchaseReturnBillPO purchaseReturnBill=null;
 		try{
-			Statement s1=DataHelper.getInstance().createStatement();
-			ResultSet r1=s1.executeQuery("SELECT * FROM PurchaseReturnRecord WHERE PRRID="+id+";");
-			
+			//Statement s1=DataHelper.getInstance().createStatement();
+			//ResultSet r1=s1.executeQuery("SELECT * FROM PurchaseReturnRecord WHERE PRRID="+id+";");
+			ResultSet r1=SQLQueryHelper.getRecordByAttribute("PurchaseReturnRecord", "PRRID", id);
 			while(r1.next()){	
-			    PurchaseReturnBillItemsPO item=new PurchaseReturnBillItemsPO(
+			    SalesItemsPO item=new SalesItemsPO(
 					r1.getString("PRRComID"),
 					r1.getString("PRRRemark"),
 					r1.getInt("PRRComQuantity"),
@@ -108,8 +85,9 @@ public class PurchaseReturnBillData implements PurchaseReturnBillDataService{
 			    items.add(item);
 			}
 			
-			Statement s2=DataHelper.getInstance().createStatement();
-			ResultSet r2=s2.executeQuery("SELECT * FROM PurchaseBill WHERE PBID="+id+";");
+			//Statement s2=DataHelper.getInstance().createStatement();
+			//ResultSet r2=s2.executeQuery("SELECT * FROM PurchaseBill WHERE PBID="+id+";");
+			ResultSet r2=SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
 			while(r2.next()){
 				String date=null, time=null;
 				

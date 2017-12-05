@@ -11,6 +11,8 @@ import dataservice.UserDataService;
 import po.UserPO;
 
 public class UserData extends UnicastRemoteObject implements UserDataService {
+	private String tableName="SystemUser";
+	private String idName="SUID";
 
 	public UserData() throws RemoteException {
 		super();
@@ -19,24 +21,8 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 	@Override
 	public String getNewId() throws RemoteException {
 		
-		int max=0,res=0;
-		String newId;
-		try{
-			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery("SELECT SUID FROM SystemUser;");
-			while(r.next())
-			{
-				int temp=0;
-				temp=r.getInt("SUID");
-				//temp=Integer.valueOf(r.getString("SUID"));
-				if(temp>max)max=temp;
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
-		res=max+1;
-		newId=String.format("%04d", res);
+        String newId=SQLQueryHelper.getNewId(tableName, idName, "%04d");
+		
 		return newId;
 	}
 
@@ -44,25 +30,23 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 	public UserPO findById(String id) throws RemoteException {
 		
 		UserPO upo = new UserPO();
+		int userAge,birthYear = 0;
 		upo.setUserId(id);
-		String userName = null,userPwd = null,userSex = null,userBirth = null,userTel = null;
-		int userRank = -1,userAge,birthYear,userType=-1;
-		  
+		
 		try {
-		    Statement s = DataHelper.getInstance().createStatement();
-			ResultSet r = s.executeQuery("SELECT SUName,SUPwd,SUDept,SURank,SUSex,SUBirth,SUTel "
-					+ "FROM SystemUser WHERE SUID=" + id +";");
+		    //Statement s = DataHelper.getInstance().createStatement();
+			//ResultSet r = s.executeQuery("SELECT SUName,SUPwd,SUDept,SURank,SUSex,SUBirth,SUTel "
+					//+ "FROM SystemUser WHERE SUID=" + id +";");
+			ResultSet r = SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
 			while(r.next()) {
-				userName=r.getString("SUName");
-				userPwd=r.getString("SUPwd");
-				userType=r.getInt("SUDept");
-				userRank=r.getInt("SURank");
-				//userType=Integer.valueOf(r.getString("SUDept"));
-				//userRank=Integer.valueOf(r.getString("SURank"));
-				userSex=r.getString("SUSex");
-				userTel=r.getString("SUTel");
-				userBirth=r.getString("SUBirth");
 				
+				birthYear=r.getInt("SUBirth");
+				upo.setUserName(r.getString("SUName"));
+		        upo.setUserPwd(r.getString("SUPwd"));
+		        upo.setUserSex(r.getString("SUSex"));
+		        upo.setUserTelNumber(r.getString("SUTel"));
+		        upo.setUsertype(r.getInt("SUDept"));
+		        upo.setUserRank(r.getInt("SURank"));
 			}	
 		 }
 		 catch(Exception e) {
@@ -70,45 +54,35 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 		   return null;
 		 }
 		
-		birthYear=Integer.valueOf(userBirth);
+		
 		Calendar now = Calendar.getInstance(); 
 		userAge=now.get(Calendar.YEAR)-birthYear;
 		
 		upo.setUserAge(userAge);
-		upo.setUserName(userName);
-		upo.setUserPwd(userPwd);
-		upo.setUserSex(userSex);
-		upo.setUserTelNumber(userTel);
-		upo.setUsertype(userType);
-		upo.setUserRank(userRank);
 		
-		return upo;
-		
+		return upo;	
 	}
 
 	@Override
 	public boolean add(UserPO user) throws RemoteException {
+				
+		int userBirth = 0;
 		
-		String userId=null,userName = null,userPwd = null,userSex = null,userTel = null;
-		int userRank = -1,userAge,userBirth = 0,userType=-1,userIsExist=0;
-		userId=user.getUserId();
-		userName=user.getUserName();
-		userPwd=user.getUserPwd();
-		userSex=user.getUserSex();
-		userAge=user.getUserAge();
-		userTel=user.getUserTelNumber();
-		userRank=user.getUserRank();
-		userType=user.getUsertype();
 		Calendar now = Calendar.getInstance(); 
-		userBirth=now.get(Calendar.YEAR)-userAge;
-		if(user.getExistFlag())userIsExist=1;
-		
+		userBirth=now.get(Calendar.YEAR)-user.getUserAge();
 		
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("INSERT INTO SystemUser VALUES"
-					+ "('"+userId+"','"+userName+"','"+userPwd+"','"+userType+"','"
-					+userRank+"','"+userSex+"','"+userBirth+"','"+userTel+"','"+userIsExist+"')");
+			int r=s.executeUpdate("INSERT INTO SystemUser VALUES('"
+			        +user.getUserId()+"','"
+					+user.getUserName()+"','"
+			        +user.getUserPwd()+"','"
+					+user.getUsertype()+"','"
+					+user.getUserRank()+"','"
+					+user.getUserSex()+"','"
+					+userBirth+"','"
+					+user.getUserTelNumber()+"','"
+					+1+"')");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -120,38 +94,30 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 	@Override
 	public boolean delete(String id) throws RemoteException {
 		
-		try{
-			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("UPDATE SystemUser SET SUIsExist=0 WHERE SUID="+id+";");
-			if(r>0)return true;
-		}catch(Exception e){
-			  e.printStackTrace();
-			   return false;
-		}
-		return false;
+        boolean res=SQLQueryHelper.getFalseDeleteResult(tableName, "SUIsExist",idName, id);
+		
+		return res;
 	}
 
 	@Override
 	public boolean update(UserPO user) throws RemoteException {
 		
-		String userId=null,userName = null,userPwd = null,userSex = null,userTel = null;
-		int userRank = -1,userAge,userBirth = 0,userType=-1;
-		userId=user.getUserId();
-		userName=user.getUserName();
-		userPwd=user.getUserPwd();
-		userSex=user.getUserSex();
-		userAge=user.getUserAge();
-		userTel=user.getUserTelNumber();
-		userRank=user.getUserRank();
-		userType=user.getUsertype();
+		int userBirth = 0;
+		
 		Calendar now = Calendar.getInstance(); 
-		userBirth=now.get(Calendar.YEAR)-userAge;
+		userBirth=now.get(Calendar.YEAR)-user.getUserAge();
 		
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
 			int r=s.executeUpdate("UPDATE SystemUser SET "
-					+ "SUName="+userName+", SUPwd="+userPwd+", SUDept="+userType+", SURank="+userRank
-					+", SUSex="+userSex+", SUBirth="+userBirth+", SUTel="+userTel+"WHERE SUID="+userId+";");
+					+ "SUName="+user.getUserName()
+					+", SUPwd="+user.getUserPwd()
+					+", SUDept="+user.getUsertype()
+					+", SURank="+user.getUserRank()
+					+", SUSex="+user.getUserSex()
+					+", SUBirth="+userBirth
+					+", SUTel="+user.getUserTelNumber()
+					+"WHERE SUID="+user.getUserId()+";");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -171,36 +137,23 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 		    Statement s = DataHelper.getInstance().createStatement();
 			ResultSet r = s.executeQuery("SELECT * FROM SystemUser");
 			while(r.next()) {
-				String userId=null,userName = null,userPwd = null,userSex = null,userBirth = null,userTel = null;
-				int userRank = -1,userAge,birthYear,userType=-1;
-				boolean userIsExist=false;
 				
+				int userAge;
+				boolean userIsExist=r.getBoolean("SUIsExist");				
 				UserPO upo = new UserPO();
-				userId=r.getString("SUID");
-				userName=r.getString("SUName");
-				userPwd=r.getString("SUPwd");
-				userType=r.getInt("SUDept");
-				userRank=r.getInt("SURank");
-				//userType=Integer.valueOf(r.getString("SUDept"));
-				//userRank=Integer.valueOf(r.getString("SURank"));
-				userSex=r.getString("SUSex");
-				userTel=r.getString("SUTel");
-				userBirth=r.getString("SUBirth");
-				userIsExist=r.getBoolean("SUIsExist");
-				
-				birthYear=Integer.valueOf(userBirth);
+							
 				Calendar now = Calendar.getInstance(); 
-				userAge=now.get(Calendar.YEAR)-birthYear;
+				userAge=now.get(Calendar.YEAR)-r.getInt("SUBirth");
 				
 				if(userIsExist){
-				upo.setUserId(userId);
+				upo.setUserId(r.getString("SUID"));
 				upo.setUserAge(userAge);
-				upo.setUserName(userName);
-				upo.setUserPwd(userPwd);
-				upo.setUserSex(userSex);
-				upo.setUserTelNumber(userTel);
-				upo.setUsertype(userType);
-				upo.setUserRank(userRank);
+				upo.setUserName(r.getString("SUName"));
+		        upo.setUserPwd(r.getString("SUPwd"));
+		        upo.setUserSex(r.getString("SUSex"));
+		        upo.setUserTelNumber(r.getString("SUTel"));
+		        upo.setUsertype(r.getInt("SUDept"));
+		        upo.setUserRank(r.getInt("SURank"));
 				
 				upos.add(upo);	
 				}
@@ -221,36 +174,22 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 			    Statement s = DataHelper.getInstance().createStatement();
 				ResultSet r = s.executeQuery("SELECT * FROM SystemUser WHERE "+field+"LIKE '%"+content+"%';");
 				while(r.next()) {
-					String userId=null,userName = null,userPwd = null,userSex = null,userBirth = null,userTel = null;
-					int userRank = -1,userAge,birthYear,userType=-1;
-					boolean userIsExist=false;
-					
+					int userAge;
+					boolean userIsExist=r.getBoolean("SUIsExist");				
 					UserPO upo = new UserPO();
-					userId=r.getString("SUID");
-					userName=r.getString("SUName");
-					userPwd=r.getString("SUPwd");
-					userType=r.getInt("SUDept");
-					userRank=r.getInt("SURank");
-					//userType=Integer.valueOf(r.getString("SUDept"));
-					//userRank=Integer.valueOf(r.getString("SURank"));
-					userSex=r.getString("SUSex");
-					userTel=r.getString("SUTel");
-					userBirth=r.getString("SUBirth");
-					userIsExist=r.getBoolean("SUIsExist");
+								
+					Calendar now = Calendar.getInstance(); 
+					userAge=now.get(Calendar.YEAR)-r.getInt("SUBirth");
 					
 					if(userIsExist){
-					birthYear=Integer.valueOf(userBirth);
-					Calendar now = Calendar.getInstance(); 
-					userAge=now.get(Calendar.YEAR)-birthYear;
-					
-					upo.setUserId(userId);
+					upo.setUserId(r.getString("SUID"));
 					upo.setUserAge(userAge);
-					upo.setUserName(userName);
-					upo.setUserPwd(userPwd);
-					upo.setUserSex(userSex);
-					upo.setUserTelNumber(userTel);
-					upo.setUsertype(userType);
-					upo.setUserRank(userRank);
+					upo.setUserName(r.getString("SUName"));
+			        upo.setUserPwd(r.getString("SUPwd"));
+			        upo.setUserSex(r.getString("SUSex"));
+			        upo.setUserTelNumber(r.getString("SUTel"));
+			        upo.setUsertype(r.getInt("SUDept"));
+			        upo.setUserRank(r.getInt("SURank"));
 					
 					upos.add(upo);	
 					}
@@ -263,39 +202,26 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 		}
 		else if(!isfuzzy){
 			try {
-			    Statement s = DataHelper.getInstance().createStatement();
-				ResultSet r = s.executeQuery("SELECT * FROM SystemUser WHERE "+field+"LIKE '"+content+"';");
+			    //Statement s = DataHelper.getInstance().createStatement();
+				//ResultSet r = s.executeQuery("SELECT * FROM SystemUser WHERE "+field+"LIKE '"+content+"';");
+				ResultSet r=SQLQueryHelper.getRecordByAttribute(tableName, field, content);
 				while(r.next()) {
-					String userId=null,userName = null,userPwd = null,userSex = null,userBirth = null,userTel = null;
-					int userRank = -1,userAge,birthYear,userType=-1;
-					boolean userIsExist=false;
-					
+					int userAge;
+					boolean userIsExist=r.getBoolean("SUIsExist");				
 					UserPO upo = new UserPO();
-					userId=r.getString("SUID");
-					userName=r.getString("SUName");
-					userPwd=r.getString("SUPwd");
-					userType=r.getInt("SUDept");
-					userRank=r.getInt("SURank");
-					//userType=Integer.valueOf(r.getString("SUDept"));
-					//userRank=Integer.valueOf(r.getString("SURank"));
-					userSex=r.getString("SUSex");
-					userTel=r.getString("SUTel");
-					userBirth=r.getString("SUBirth");
-					userIsExist=r.getBoolean("SUIsExist");
+								
+					Calendar now = Calendar.getInstance(); 
+					userAge=now.get(Calendar.YEAR)-r.getInt("SUBirth");
 					
 					if(userIsExist){
-					birthYear=Integer.valueOf(userBirth);
-					Calendar now = Calendar.getInstance(); 
-					userAge=now.get(Calendar.YEAR)-birthYear;
-					
-					upo.setUserId(userId);
+					upo.setUserId(r.getString("SUID"));
 					upo.setUserAge(userAge);
-					upo.setUserName(userName);
-					upo.setUserPwd(userPwd);
-					upo.setUserSex(userSex);
-					upo.setUserTelNumber(userTel);
-					upo.setUsertype(userType);
-					upo.setUserRank(userRank);
+					upo.setUserName(r.getString("SUName"));
+			        upo.setUserPwd(r.getString("SUPwd"));
+			        upo.setUserSex(r.getString("SUSex"));
+			        upo.setUserTelNumber(r.getString("SUTel"));
+			        upo.setUsertype(r.getInt("SUDept"));
+			        upo.setUserRank(r.getInt("SURank"));
 					
 					upos.add(upo);	
 					}

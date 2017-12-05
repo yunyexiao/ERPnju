@@ -90,43 +90,12 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
 	public String getNewId(boolean isOver) throws RemoteException{
 
 		String newId=null;
-		int max=0,res=0;
+		
 		if(isOver){
-			try{
-				Statement s=DataHelper.getInstance().createStatement();
-				ResultSet r=s.executeQuery("SELECT IOBID FROM InventoryOverflowBill;");
-				while(r.next())
-				{
-					int temp=0;
-					temp=r.getInt("IOBID");
-					//temp=Integer.valueOf(r.getString("SUID"));
-					if(temp>max)max=temp;
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-				return null;
-			}
-			res=max+1;
-			newId=String.format("%08d", res);
+			newId=SQLQueryHelper.getNewId("InventoryOverflowBill", "IOBID", "%08d");
 		}
 		else if(!isOver){
-            try{
-            	Statement s=DataHelper.getInstance().createStatement();
-				ResultSet r=s.executeQuery("SELECT ILBID FROM InventoryLostBill;");
-				while(r.next())
-				{
-					int temp=0;
-					temp=r.getInt("ILBID");
-					//temp=Integer.valueOf(r.getString("SUID"));
-					if(temp>max)max=temp;
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-				return null;
-			}
-            
-            res=max+1;
-			newId=String.format("%08d", res);
+			newId=SQLQueryHelper.getNewId("InventoryLostBill", "ILBID", "%08d");
 		}
 		return newId;
 	}
@@ -135,30 +104,15 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
 	@Override
 	public boolean deleteBill(String id, boolean isOver) throws RemoteException {
 		
+		boolean res=false;
 		if(isOver){
-			try{
-				Statement s = DataHelper.getInstance().createStatement();
-				int r=s.executeUpdate("DELETE FROM InventoryOverflowBill WHERE IOBID="+id+";");
-				if(r>0)return true;
-			}catch(Exception e){
-				  e.printStackTrace();
-				   return false;
-			}
-			return false;
+			res=SQLQueryHelper.getTrueDeleteResult("InventoryOverflowBill", "IOBID", id);
+			return res;
 		}
 		else if(!isOver){
-			try{
-				Statement s = DataHelper.getInstance().createStatement();
-				int r=s.executeUpdate("DELETE FROM InventoryLostBill WHERE ILBID="+id+";");
-				if(r>0)return true;
-			}catch(Exception e){
-				  e.printStackTrace();
-				   return false;
-			}
-			return false;
-		}
- 
-		
+			res=SQLQueryHelper.getTrueDeleteResult("InventoryLostBill", "ILBID", id);
+			return res;
+		}	
 		return false;
 	}
 
@@ -169,8 +123,7 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
 		if(bill.isOver()){
 			try{
 				Statement s1 = DataHelper.getInstance().createStatement();
-				int r1=s1.executeUpdate("INSERT INTO InventoryOverflowBill VALUES"
-						+ "('"
+				int r1=s1.executeUpdate("INSERT INTO InventoryOverflowBill VALUES('"
 						+String.format("%8d", bill.getId())+"','"
 						+bill.getOperatorId()+"','"
 						+bill.getState()+"','"

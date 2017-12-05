@@ -5,14 +5,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.sql.*;
 import dataservice.PurchaseBillDataService;
-import po.billpo.PurchaseBillItemsPO;
 import po.billpo.PurchaseBillPO;
+import po.billpo.SalesItemsPO;
 public class PurchaseBillData implements PurchaseBillDataService{
+	private String tableName="PurchaseBill";
+	private String idName="PBID";
 
 	@Override
 	public boolean saveBill(PurchaseBillPO purchaseBill) throws RemoteException {
 		
-		ArrayList<PurchaseBillItemsPO> items=purchaseBill.getPurchaseBillItems();
+		ArrayList<SalesItemsPO> items=purchaseBill.getPurchaseBillItems();
 		
 		try{
 			Statement s1 = DataHelper.getInstance().createStatement();
@@ -33,7 +35,7 @@ public class PurchaseBillData implements PurchaseBillDataService{
 					+items.get(i).getComId()+"','"
 					+items.get(i).getComQuantity()+"','"
 					+items.get(i).getComSum()+"','"
-					+items.get(i).getRemark()+"','"
+					+items.get(i).getComRemark()+"','"
 					+items.get(i).getComPrice()+"')");
 			}
 			if(r1>0)return true;
@@ -46,55 +48,33 @@ public class PurchaseBillData implements PurchaseBillDataService{
 
 	@Override
 	public boolean deleteBill(String id) throws RemoteException {
-		// TODO Auto-generated method stub
-		try{
-			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("DELETE FROM PurchaseBill WHERE PBID="+id+";");
-			if(r>0)return true;
-		}catch(Exception e){
-			  e.printStackTrace();
-			   return false;
-		}
-		return false;
+	
+		boolean res=SQLQueryHelper.getTrueDeleteResult(tableName, idName, id);
+		
+		return res;
 	}
 
 	@Override
 	public String getNewId() throws RemoteException {
-		// TODO Auto-generated method stub
-		String newId=null;
-		Calendar now = Calendar.getInstance();
-		int year=now.get(Calendar.YEAR), month=now.get(Calendar.MONTH),  day=now.get(Calendar.DAY_OF_MONTH);
-		String date=year+"-"+month+"-"+day;
-		int num=0;
-		try{
-			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery("SELECT PBID FROM PurchaseBill WHERE PBTime>"
-					+"'"+date+"' "+"AND PBTime<DATEADD(DAY,1,"+"'"+date+"');");
-			while(r.next()){
-				num++;
-			}
-			num++;
-			
-			newId="JHD-"+year+month+day+"-"+String.format("%5d", num);
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
+
+		String newId=SQLQueryHelper.getNewBillIdByDay(tableName);
+		newId="JHD-"+newId;
+		
 		return newId;
 	}
 
 	@Override
 	public PurchaseBillPO getBillById(String id) throws RemoteException {
 		// TODO Auto-generated method stub
-		ArrayList<PurchaseBillItemsPO> items=new ArrayList<PurchaseBillItemsPO>();
+		ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
 		PurchaseBillPO purchaseBill=null;
 		try{
-			Statement s1=DataHelper.getInstance().createStatement();
-			ResultSet r1=s1.executeQuery("SELECT * FROM PurchaseRecord WHERE PRID="+id+";");
-			
+			//Statement s1=DataHelper.getInstance().createStatement();
+			//ResultSet r1=s1.executeQuery("SELECT * FROM PurchaseRecord WHERE PRID="+id+";");
+			ResultSet r1=SQLQueryHelper.getRecordByAttribute("PurchaseRecord", "PRID", id);
+	
 			while(r1.next()){	
-			    PurchaseBillItemsPO item=new PurchaseBillItemsPO(
+			    SalesItemsPO item=new SalesItemsPO(
 					r1.getString("PRComID"),
 					r1.getString("PRRemark"),
 					r1.getInt("PRComQuantity"),
@@ -103,8 +83,9 @@ public class PurchaseBillData implements PurchaseBillDataService{
 			    items.add(item);
 			}
 			
-			Statement s2=DataHelper.getInstance().createStatement();
-			ResultSet r2=s2.executeQuery("SELECT * FROM PurchaseBill WHERE PBID="+id+";");
+			//Statement s2=DataHelper.getInstance().createStatement();
+			//ResultSet r2=s2.executeQuery("SELECT * FROM PurchaseBill WHERE PBID="+id+";");
+			ResultSet r2=SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
 			while(r2.next()){
 				String date=null, time=null;
 				
