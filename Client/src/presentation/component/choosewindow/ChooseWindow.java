@@ -1,4 +1,4 @@
-package presentation.billui.choosewindow;
+package presentation.component.choosewindow;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

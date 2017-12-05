@@ -1,4 +1,4 @@
-package presentation.billui.choosewindow;
+package presentation.component.choosewindow;
 
 import bl_stub.CommodityBL_stub;
 import blservice.CommodityBLService;
