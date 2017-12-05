@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import bl_stub.CommodityBL_stub;
 import blservice.billblservice.ChangeBillBLService;
+import blservice.infoservice.GetCategoryInterface;
 import blservice.infoservice.GetCommodityInterface;
 import dataservice.ChangeBillDataService;
 import ds_stub.ChangeBillDs_stub;
@@ -15,7 +16,8 @@ import vo.billvo.ChangeBillVO;
 public class ChangeBillBL implements ChangeBillBLService {
 
 	private ChangeBillDataService changeBillDS;
-	private GetCommodityInterface commodityInfo = new CommodityBL_stub();//TODO
+	private GetCommodityInterface commodityInfo = new CommodityBL_stub();
+	private GetCategoryInterface categoryInfo = new CategoryBL();
 	private String[] headers = {"商品id", "商品名称", "库存数量", "实际数量"};
 	private static boolean isOver = true;
 	
@@ -53,7 +55,7 @@ public class ChangeBillBL implements ChangeBillBLService {
 		for (int i = 0; i < size; i++) {
 			ChangeItem item = bill.getCommodityList().get(i);
 			data[i] = new String[]{item.getCommodityId(), "", ""+item.getOriginalValue(), ""+item.getChangedValue()};
-			data[i][1] = commodityInfo.getCommodity(item.getCommodityId()).getCategoryName();
+			data[i][1] = categoryInfo.getCatrgory(commodityInfo.getCommodity(item.getCommodityId()).getCategoryId()).getName();
 			if (bill.getState() != ChangeBillPO.PASS) data[i][2]= ""+commodityInfo.getCommodity(item.getCommodityId()).getAmount();
 		}
 		return new ChangeBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), bill.getState(), bill.getFlag(), new MyTableModel(data, headers));
