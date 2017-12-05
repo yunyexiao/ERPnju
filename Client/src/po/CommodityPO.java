@@ -15,7 +15,7 @@ public class CommodityPO implements Serializable {
      */
     private static final long serialVersionUID = 6222451958770566420L;
     
-    private String id, name, type, store, categoryId, categoryName;
+    private String id, name, type, store, categoryId;
     private long amount, alarmNum;
     private double inPrice, salePrice, recentInPrice, recentSalePrice;
 
@@ -24,14 +24,13 @@ public class CommodityPO implements Serializable {
     public CommodityPO() {}
     
     public CommodityPO(String id, String name, String type, String store, String categoryId
-        , String categoryName, long amount, long alarmNum, double inPrice, double salePrice
+        , long amount, long alarmNum, double inPrice, double salePrice
         , double recentInPrice, double recentSalePrice, boolean isExist) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.store = store;
         this.categoryId = categoryId;
-        this.categoryName = categoryName;
         this.amount = amount;
         this.alarmNum = alarmNum;
         this.inPrice = inPrice;
@@ -79,14 +78,6 @@ public class CommodityPO implements Serializable {
 
     public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
     }
 
     public long getAmount() {
