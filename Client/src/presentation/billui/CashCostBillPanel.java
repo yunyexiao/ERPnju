@@ -33,7 +33,7 @@ public class CashCostBillPanel extends BillPanel {
 	private JTextField billIdField, operatorField, accountIdField, sumField;
 	private MyTableModel itemTable;
 	private JTable itemListTable = new JTable(itemTable);
-	private boolean editable=true;
+	private boolean editable;
 	
 	public CashCostBillPanel(UserVO user, ActionListener closeListener) {
 		super(user, closeListener);
@@ -67,15 +67,16 @@ public class CashCostBillPanel extends BillPanel {
 		JButton accountChooseButton, itemChooseButton, itemDeleteButton, chooseFinishButton;
 		
 		headPanel=new JPanel();
+		double firstPanelSize[][]={
+				{20,55,5,150,20,40,5,150,TableLayout.FILL},
+				{12,25,TableLayout.FILL}
+		};
 		billIdField = new JTextField(10);
 		operatorField = new JTextField(10);
 	
 		billIdField.setEditable(false);
 		operatorField.setEditable(false);
-		double firstPanelSize[][]={
-				{20,55,5,150,20,40,5,150,TableLayout.FILL},
-				{12,25,TableLayout.FILL}
-		};
+		
 		headPanel.setLayout(new TableLayout(firstPanelSize));
 		headPanel.add(new JLabel("单据编号"),"1,1");
 		headPanel.add(billIdField,"3,1");
@@ -116,7 +117,6 @@ public class CashCostBillPanel extends BillPanel {
 		chooseFinishButton=new JButton("选择完成");
 		chooseFinishButton.addActionListener(e -> sumUp());
 
-		
 		itemButtonPanel.setLayout(new TableLayout(forthPanelSize));
 		itemButtonPanel.add(itemChooseButton, "0,0");
 		itemButtonPanel.add(itemDeleteButton, "0,2");
