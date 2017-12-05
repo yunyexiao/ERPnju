@@ -8,9 +8,9 @@ public class AccountVO {
 	private String number;
 	private double money;
 	
-	public AccountVO(String name, String number, double money) {
-		this.name = name;
+	public AccountVO(String number, String name, double money) {
 		this.number = number;
+		this.name = name;
 		this.money = money;
 	}
 	

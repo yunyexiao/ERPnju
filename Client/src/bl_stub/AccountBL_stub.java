@@ -1,10 +1,12 @@
 package bl_stub;
 
 import blservice.AccountBLService;
+import blservice.infoservice.GetAccountInterface;
 import presentation.component.MyTableModel;
 import vo.AccountVO;
+import vo.CustomerVO;
 
-public class AccountBL_stub implements AccountBLService {
+public class AccountBL_stub implements AccountBLService, GetAccountInterface {
 
 	@Override
 	public boolean delete(String id) {
@@ -45,4 +47,8 @@ public class AccountBL_stub implements AccountBLService {
 		return "0003";
 	}
 
+	@Override
+    public AccountVO getAccount(String id) {
+        return new AccountVO("111111111", "ÂíÔÆ", Double.parseDouble("9999999999999"));
+    }
 }
