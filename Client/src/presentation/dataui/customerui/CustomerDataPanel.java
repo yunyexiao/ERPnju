@@ -4,20 +4,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import blservice.CustomerBLService;
-import blservice.DataBLService;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.dataui.DataPanel;
-import presentation.dataui.commodityui.AddCommodityWindow;
-import presentation.dataui.commodityui.SearchCommodityWindow;
-import presentation.dataui.userui.UpdateUserWindow;
+import presentation.tools.TableTools;
+import vo.UserVO;
 
 public class CustomerDataPanel extends DataPanel{
 	
     private CustomerBLService customerBL;
+    private UserVO user;
 
-	public CustomerDataPanel(CustomerBLService customerBL, ActionListener closeListener) {
+	public CustomerDataPanel(UserVO user, CustomerBLService customerBL, ActionListener closeListener) {
 		super(customerBL, closeListener);
+		this.user = user;
 		this.customerBL = customerBL;
+		TableTools.autoFit(table);
 	}
 
 	@Override
@@ -25,7 +27,7 @@ public class CustomerDataPanel extends DataPanel{
 		 return new ActionListener(){
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
-	                new AddCustomerWindow(customerBL);
+	                new AddCustomerWindow(user.getRank(), customerBL);
 	                updateTable();
 	            }
 	        };
@@ -37,8 +39,11 @@ public class CustomerDataPanel extends DataPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 MyTableModel tableModel = (MyTableModel)table.getModel();
-                new UpdateCustomerWindow(customerBL, tableModel.getValueAtRow(table.getSelectedRow()));
-                updateTable();
+	            if (table.getSelectedRow() != -1) {
+	                new UpdateCustomerWindow(customerBL, tableModel.getValueAtRow(table.getSelectedRow()), user.getRank());
+	                updateTable();
+                }
+	            else new InfoWindow("请选择需要修改的客户");
             }
             
         };
@@ -52,7 +57,6 @@ public class CustomerDataPanel extends DataPanel{
                 MyTableModel model = new SearchCustomerWindow(customerBL).getModel();
                 if(model != null) table.setModel(model);
             }
-            
         };
 	}
 

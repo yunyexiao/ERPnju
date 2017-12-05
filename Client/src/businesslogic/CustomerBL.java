@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import blservice.CustomerBLService;
 import blservice.infoservice.GetCustomerInterface;
 import dataservice.CustomerDataService;
+import ds_stub.CustomerDs_stub;
 import po.CustomerPO;
 import presentation.component.MyTableModel;
-import rmi.Rmi;
 import vo.CustomerVO;
 
 public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 	
-	private CustomerDataService customerDataService = Rmi.getRemote(CustomerDataService.class);
+	private CustomerDataService customerDataService = new CustomerDs_stub();//Rmi.getRemote(CustomerDataService.class);
 	private String[] tableHeader = {"客户编号", "客户姓名", "分类", "级别", "电话", "地址", 
 			"邮编", "电子邮箱", "应收额度", "应收", "应付", "默认业务员"};
 	
@@ -21,8 +21,8 @@ public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 		return new String[] {
 				customer.getId(),
 				customer.getName(),
-				Integer.toString(customer.getType()),
-				Integer.toString(customer.getRank()),
+				customer.getType()==0?"进货商":"销售商",
+				"LV"+customer.getRank(),
 				customer.getTelNumber(),
 				customer.getAddress(),
 				customer.getCode(),

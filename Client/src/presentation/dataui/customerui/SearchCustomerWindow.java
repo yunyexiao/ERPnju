@@ -19,6 +19,7 @@ public class SearchCustomerWindow extends SearchWindow{
 	protected ButtonGroup initTypeGroup() {
         JRadioButton idRadioButton = new JRadioButton("°´±àºÅËÑË÷");
         JRadioButton keyRadioButton = new JRadioButton("°´¹Ø¼ü×ÖËÑË÷");
+        idRadioButton.setSelected(true);
         ButtonGroup typeGroup = new ButtonGroup();
         typeGroup.add(idRadioButton);
         typeGroup.add(keyRadioButton);

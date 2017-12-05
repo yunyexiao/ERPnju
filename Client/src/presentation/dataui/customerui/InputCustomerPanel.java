@@ -4,30 +4,33 @@ import java.util.Enumeration;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import layout.TableLayout;
-import presentation.dataui.util.Tools;
+import presentation.component.InfoWindow;
+import presentation.tools.InputCheck;
 import vo.CustomerVO;
-import vo.UserType;
-import vo.UserVO;
 
 public class InputCustomerPanel extends JPanel{
 	private JTextField customerIdTextField, customerNameTextField, customerTelNumberTextField,
 	customerAddressTextField, customerCodeTextField, customerMailTextField, customerSalesmanTextField,
-	customerRecRangeTextField, customerReceivableTextField, customerPaymentTextField; 
+	customerRecRangeTextField; 
 	
-	private ButtonGroup rankButtonGroup, typeButtonGroup;
+	private String[] customer;
+	private JComboBox<String> comboBox;
+	private JRadioButton purchaseRadioButton;
 	
 	/**
 	 * 根据已有数据初始化界面
 	 * @param 表格中取出的一行数据
 	 */
-	protected InputCustomerPanel(String[] customer) {
+	protected InputCustomerPanel(String[] customer, boolean isSaleGM) {
 		super();
+		this.customer = customer;
 		double[] rows = new double[37];
         rows[0] = TableLayout.FILL;
         for(int i = 0; i < 12; i++){
@@ -35,11 +38,11 @@ public class InputCustomerPanel extends JPanel{
             rows[3 * i + 2] = 10.0;
         }
         rows[rows.length - 1] = TableLayout.FILL;
-        double[][] size = {{0.37, TableLayout.FILL, 10.0, TableLayout.FILL, 0.37}, rows};
+        double[][] size = {{TableLayout.FILL, TableLayout.PREFERRED, 10.0, 0.5, TableLayout.FILL}, rows};
         this.setLayout(new TableLayout(size));
 		
 		String[] texts = {"客户编号", "客户姓名", "分类", "级别", "电话", "地址", 
-				"邮编", "电子邮箱", "应收额度", "应收", "应付", "默认业务员"};
+				"邮编", "电子邮箱", "应收额度", "默认业务员"};
         JLabel[] labels = new JLabel[texts.length];
         for(int i = 0; i < labels.length; i++){
             labels[i] = new JLabel(texts[i]);
@@ -53,41 +56,23 @@ public class InputCustomerPanel extends JPanel{
         customerCodeTextField = new JTextField(customer[6]);
         customerMailTextField = new JTextField(customer[7]);
         customerRecRangeTextField = new JTextField(customer[8]);
-        customerReceivableTextField = new JTextField(customer[9]);
-        customerPaymentTextField = new JTextField(customer[10]);
         customerSalesmanTextField = new JTextField(customer[11]);
 
 
         customerIdTextField.setEditable(false);
+        customerRecRangeTextField.setEditable(isSaleGM);
 
-		JRadioButton purchaseRadioButton = new JRadioButton("进货商");
+		purchaseRadioButton = new JRadioButton("进货商");
 	    JRadioButton saleRadioButton = new JRadioButton("销售商");
 		purchaseRadioButton.setSelected(true);
 		JPanel typePanel = new JPanel();
 		typePanel.add(purchaseRadioButton);
 		typePanel.add(saleRadioButton);
-		typeButtonGroup = new ButtonGroup();
+		ButtonGroup typeButtonGroup = new ButtonGroup();
 		typeButtonGroup.add(purchaseRadioButton);
 		typeButtonGroup.add(saleRadioButton);
 		
-		JRadioButton rank1RadioButton = new JRadioButton("1");
-		JRadioButton rank2RadioButton = new JRadioButton("2");
-		JRadioButton rank3RadioButton = new JRadioButton("3");
-		JRadioButton rank4RadioButton = new JRadioButton("4");
-		JRadioButton rank5RadioButton = new JRadioButton("5");
-		rank1RadioButton.setSelected(true);
-		JPanel rankPanel = new JPanel();
-		rankPanel.add(rank1RadioButton);
-		rankPanel.add(rank2RadioButton);
-		rankPanel.add(rank3RadioButton);
-		rankPanel.add(rank4RadioButton);
-		rankPanel.add(rank5RadioButton);
-		rankButtonGroup = new ButtonGroup();
-		rankButtonGroup.add(rank1RadioButton);
-		rankButtonGroup.add(rank2RadioButton);
-		rankButtonGroup.add(rank3RadioButton);
-		rankButtonGroup.add(rank4RadioButton);
-		rankButtonGroup.add(rank5RadioButton);
+		JComboBox<String> comboBox = new JComboBox<String>(new String[]{"LV1","LV2","LV3","LV4","LV5"});
 
 		int length = customer.length;
 		
@@ -111,15 +96,13 @@ public class InputCustomerPanel extends JPanel{
 		add(customerIdTextField, "3 1");
 		add(customerNameTextField, "3 4");
 		add(typePanel, "3 7");
-		add(rankPanel, "3 10");
+		add(comboBox, "3 10");
 		add(customerTelNumberTextField, "3 13");
 		add(customerAddressTextField, "3 16");
 		add(customerCodeTextField, "3 19");
 		add(customerMailTextField, "3 22");
 		add(customerRecRangeTextField, "3 25");
-		add(customerReceivableTextField, "3 28");
-		add(customerPaymentTextField, "3 31");
-		add(customerSalesmanTextField, "3 34");
+		add(customerSalesmanTextField, "3 28");
 	}
 	
 	/**
@@ -127,19 +110,28 @@ public class InputCustomerPanel extends JPanel{
 	 * @return
 	 */
 	public CustomerVO getCustomerVO() {
-	    String id = customerIdTextField.getText(),
+		String id = customerIdTextField.getText(),
 	    		name = customerNameTextField.getText(),
 	    		telNumber = customerTelNumberTextField.getText(), 
 	    		address = customerAddressTextField.getText(), 
 	    		code = customerCodeTextField.getText(),
 	    		mail = customerMailTextField.getText(),
 	    		salesman = customerSalesmanTextField.getText();
-	    int type = Integer.parseInt(Tools.getSelectedText(typeButtonGroup));//可能有问题
-	    int rank = Integer.parseInt(Tools.getSelectedText(rankButtonGroup));
-        double recRange = Double.parseDouble(customerRecRangeTextField.getText());
-        double receivable = Double.parseDouble(customerReceivableTextField.getText());
-        double payment = Double.parseDouble(customerPaymentTextField.getText());
-
-	    return new CustomerVO(id, name, type, rank, telNumber, address, code, mail, recRange, receivable, payment, salesman);
+		if (! InputCheck.isLegal(customerNameTextField.getText())) new InfoWindow("请输入合法的姓名");
+		else if (! InputCheck.isAllNumber(telNumber, 11)) new InfoWindow("请输入正确的手机号");
+		else if (! InputCheck.isLegal(address)) new InfoWindow("请输入合法的地址");
+		else if (! InputCheck.isAllNumber(code, 6)) new InfoWindow("请输入正确的邮编");
+		else if (! InputCheck.isLegal(salesman)) new InfoWindow("请输入合法的业务员姓名");
+		else if (! InputCheck.isDouble(customerRecRangeTextField.getText())) new InfoWindow("请输入正确的应收额度");
+		else {
+		    int type = purchaseRadioButton.isSelected()?0:1;
+		    int rank = comboBox.getSelectedIndex()+1;
+	        double recRange = Double.parseDouble(customerRecRangeTextField.getText());
+	        double receivable = Double.parseDouble(customer[9]);
+	        double payment = Double.parseDouble(customer[10]);
+	        
+		    return new CustomerVO(id, name, type, rank, telNumber, address, code, mail, recRange, receivable, payment, salesman);
+		}
+	    return null;
 	}
 }		

@@ -41,7 +41,7 @@ public class CustomerPO implements Serializable {
         this.setTelNumber(telNumber);
         this.setAddress(address);
         this.setMail(mail);
-   
+        this.setCode(code);
         this.setSalesman(salesman);
         this.setRank(rank);
         this.setType(type);

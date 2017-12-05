@@ -6,8 +6,6 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -15,11 +13,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import bl_stub.CustomerBL_stub;
 import bl_stub.UserBL_stub;
 import businesslogic.AccountBL;
 import businesslogic.CategoryBL;
 import businesslogic.CommodityBL;
+import businesslogic.CustomerBL;
 import layout.TableLayout;
 import presentation.bill.BillExaminePanel;
 import presentation.bill.BillPanel;
@@ -27,6 +25,7 @@ import presentation.billui.CashCostBillPanel;
 import presentation.billui.ChangeBillPanel;
 import presentation.billui.ReceiptOrPaymentBillPanel;
 import presentation.billui.SaleBillPanel;
+import presentation.component.InfoAdapter;
 import presentation.component.Listener_stub;
 import presentation.dataui.accountui.AccountDataPanel;
 import presentation.dataui.categoryui.CategoryDataPanel;
@@ -55,18 +54,8 @@ class LeftButtonPanel extends JPanel{
     	JButton button = new JButton(text);
 		button.setFont(new Font("等线",Font.BOLD,18));
 		button.addActionListener(listener);
-		button.addMouseListener(new MouseAdapter() {
-			@Override  
-		    public void mouseEntered(MouseEvent e) {
-		        if ("退出".equals(text)) MainWindow.setInfo("退出系统");
-		        else MainWindow.setInfo("进入<" + text + ">界面");  
-		    }  
-		  
-		    @Override  
-		    public void mouseExited(MouseEvent e) {
-		    	MainWindow.setInfo();  
-		    }  
-		});
+		if ("退出".equals(text)) button.addMouseListener(new InfoAdapter("退出系统"));
+		else button.addMouseListener(new InfoAdapter("进入<" + text + ">界面"));
 		innerPanel.add(button);
     }
     /**
@@ -106,7 +95,7 @@ class LeftButtonPanel extends JPanel{
 			
 		}
 		else if (type == UserType.SALESMAN) {
-			addButton("客户管理", e -> mw.changePanel(new CustomerDataPanel(new CustomerBL_stub(), closeListener)));
+			addButton("客户管理", e -> mw.changePanel(new CustomerDataPanel(user, new CustomerBL(), closeListener)));
 			addButton("制定进货单", e -> mw.changePanel(new BillPanel(mw, BillType.PURCHASE, true)));
 			addButton("制定进货退货单", new Listener_stub());
 			addButton("制定销售单", e -> mw.changePanel(new SaleBillPanel(user, closeListener)));
