@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import blservice.CommodityBLService;
+import blservice.infoservice.GetCategoryInterface;
 import dataservice.CommodityDataService;
 import ds_stub.CommodityDs_stub;
 import po.CategoryPO;
@@ -19,12 +20,14 @@ import vo.CommodityVO;
 public class CommodityBL implements CommodityBLService{
     
     private CommodityDataService commodityDs;
+    private GetCategoryInterface categoryInfo;
     private static final String[] columnNames = {"商品编号", "名称", "型号", "库存", "数量", "警戒值"
             , "所属分类编号", "所属分类名称", "进价", "售价", "最近进价", "最近售价"};
 
     public CommodityBL() {
-        //commodityDs = RemoteHelper.getInstance().getCommodityDataService();
+        //commodityDs = Rmi.getRemote(CommodityDataService.class);
         commodityDs = new CommodityDs_stub();
+        categoryInfo = new CategoryBL();
     }
 
     @Override
@@ -117,7 +120,7 @@ public class CommodityBL implements CommodityBLService{
 
     private String[] getLine(CommodityPO c){
         return new String[]{c.getId(), c.getName(), c.getType(), c.getStore(), c.getAmount() + ""
-                , c.getAlarmNum() + "", c.getCategoryId(), c.getCategoryName(), c.getInPrice() + ""
+                , c.getAlarmNum() + "", c.getCategoryId(), categoryInfo.getCatrgory(c.getCategoryId()).getName(), c.getInPrice() + ""
                 , c.getSalePrice() + "", c.getRecentInPrice() + "", c.getRecentSalePrice() + ""};
     }
     

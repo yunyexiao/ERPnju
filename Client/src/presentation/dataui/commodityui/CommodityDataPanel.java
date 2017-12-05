@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import blservice.CommodityBLService;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.dataui.DataPanel;
 
@@ -36,11 +37,12 @@ public class CommodityDataPanel extends DataPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int index = table.getSelectedRow();
-                if(index < 0)return;
                 MyTableModel model = (MyTableModel)table.getModel();
-                new UpdateCommodityWindow(commodityBl, model.getValueAtRow(index));
-                updateTable();
+                if (table.getSelectedRow() != -1) {
+                	new UpdateCommodityWindow(commodityBl, model.getValueAtRow(table.getSelectedRow()));
+                    updateTable();
+                }
+                else new InfoWindow("请选择需要修改的商品");
             }
             
         };
