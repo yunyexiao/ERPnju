@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import blservice.UserBLService;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.dataui.DataPanel;
 
@@ -37,7 +38,7 @@ public class UserDataPanel extends DataPanel {
                 if (table.getSelectedRow() != -1) {
                 	new UpdateUserWindow(userBL, tableModel.getValueAtRow(table.getSelectedRow()));
                 	updateTable();
-                }
+                } else new InfoWindow("请选择需要修改的用户");
             }
         };
     }
