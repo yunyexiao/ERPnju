@@ -16,6 +16,19 @@ public class InputCheck {
 		}
 		return true;
 	}
+	/**
+	 * 判断是否为一个小数
+	 * @param s
+	 * @return
+	 */
+	public static boolean isDouble(String s) {
+		try {
+			Double.parseDouble(s);
+			return true;
+		} catch(NumberFormatException e) {
+			return false;
+		}
+	}
 	
 	public static boolean isLegal(String s) {
 		char[] list = {'-',';','%','[',']','@','!','*','/','\\','|'};
