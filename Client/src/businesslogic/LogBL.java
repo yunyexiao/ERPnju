@@ -8,15 +8,21 @@ import blservice.LogBLService;
 import blservice.infoservice.GetUserInterface;
 import businesslogic.inter.AddLogInterface;
 import dataservice.LogDataService;
+import ds_stub.LogDs_stub;
 import po.LogInfoPO;
 import presentation.component.MyTableModel;
-import rmi.Rmi;
+import vo.UserVO;
 
 public class LogBL implements LogBLService, AddLogInterface {
 
-	private LogDataService logData = Rmi.getRemote(LogDataService.class);
-	private GetUserInterface getUserInfo = new UserBL();
+	private LogDataService logData = new LogDs_stub();//Rmi.getRemote(LogDataService.class);
+	private GetUserInterface getUserInfo;
+	private UserVO user;
 	
+	public LogBL(UserVO user) {
+		getUserInfo = new UserBL();
+		this.user = user;
+	}
 	@Override
 	public MyTableModel getLogInfo() {
 		return listToTable(logData.getAllInfo());
@@ -51,10 +57,10 @@ public class LogBL implements LogBLService, AddLogInterface {
 	}
 
 	@Override
-	public boolean add(String operatorId, String operation, String detail) {
+	public boolean add(String operation, String detail) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date dt = new Date();
 		String time = sdf.format(dt);
-		return logData.add(new LogInfoPO(time, operatorId, operation, detail));
+		return logData.add(new LogInfoPO(time, user.getId(), operation, detail));
 	}
 }

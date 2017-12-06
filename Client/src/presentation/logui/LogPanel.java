@@ -8,8 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import bl_stub.LogBL_stub;
 import blservice.LogBLService;
+import businesslogic.LogBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
 import presentation.component.CloseListener;
@@ -24,13 +24,17 @@ import presentation.main.MainWindow;
 public class LogPanel implements PanelInterface {
 	
 	private JPanel panel;
-	private LogBLService logBL = new LogBL_stub();
+	private LogBLService logBL;
 
 	public LogPanel(MainWindow mw) {
+		logBL = new LogBL(mw.getUser());
+		
 		double[][] size = {{TableLayout.FILL},{0.1,TableLayout.FILL}};
 		panel = new JPanel(new TableLayout(size));
 		
 		JTable table = new JTable(logBL.getLogInfo());
+		table.getTableHeader().setResizingAllowed(false);
+		table.getTableHeader().setReorderingAllowed(false);
 		JScrollPane scrollPane = new JScrollPane(table);
 		panel.add(scrollPane, "0,1");
 		

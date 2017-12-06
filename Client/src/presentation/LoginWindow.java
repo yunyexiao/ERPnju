@@ -18,8 +18,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-import bl_stub.UserBL_stub;
 import blservice.LoginBLService;
+import businesslogic.LoginBL;
 import layout.TableLayout;
 import presentation.main.MainWindow;
 import vo.UserVO;
@@ -30,7 +30,7 @@ public class LoginWindow {
 	private JPasswordField keyField = new JPasswordField();
 	private JButton buttonA = getButton("È¡Ïû");
 	private JButton buttonB = getButton("µÇÂ¼");
-	private LoginBLService loginBL = new UserBL_stub();
+	private LoginBLService loginBL = new LoginBL();
 	
 	public LoginWindow() {
     	try {
