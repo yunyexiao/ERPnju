@@ -1,6 +1,5 @@
 package presentation.billui;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -24,7 +23,6 @@ import vo.AccountVO;
 import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.CashCostBillVO;
-import vo.billvo.PurchaseBillVO;
 
 public class CashCostBillPanel extends BillPanel {
 
@@ -33,7 +31,7 @@ public class CashCostBillPanel extends BillPanel {
 	private JTextField billIdField, operatorField, accountIdField, sumField;
 	private MyTableModel itemTable;
 	private JTable itemListTable = new JTable(itemTable);
-	private boolean editable;
+	private boolean editable = true;
 	
 	public CashCostBillPanel(UserVO user, ActionListener closeListener) {
 		super(user, closeListener);
