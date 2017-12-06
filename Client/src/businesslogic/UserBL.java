@@ -5,18 +5,32 @@ import java.util.ArrayList;
 
 import blservice.UserBLService;
 import blservice.infoservice.GetUserInterface;
+import businesslogic.inter.AddLogInterface;
 import dataservice.UserDataService;
+import ds_stub.UserDs_stub;
 import po.UserPO;
 import presentation.component.MyTableModel;
-import rmi.Rmi;
 import vo.UserType;
 import vo.UserVO;
 
 public class UserBL implements UserBLService, GetUserInterface{
 	
-	private UserDataService userDataService = Rmi.getRemote(UserDataService.class);
+	private UserDataService userDataService = new UserDs_stub();//Rmi.getRemote(UserDataService.class);
 	private String[] tableHeader = {"用户ID", "用户名", "用户类别", "用户权限", "用户密码", "性别", "年龄", "电话号码"};
+	private AddLogInterface addLog;
 
+	/**
+	 * 如果仅使用GetUserInterface接口请使用此构造方法
+	 */
+	public UserBL() {}
+	/**
+	 * 使用UserBLService的构造方法
+	 * @param user
+	 */
+	public UserBL(UserVO user) {
+		addLog = new LogBL(user);
+	}
+	
 	private String[] getLine(UserPO user) {
 		return new String[]{
 			  user.getUserId()
@@ -33,7 +47,10 @@ public class UserBL implements UserBLService, GetUserInterface{
 	@Override
 	public boolean delete(String id) {
 		try {
-			return userDataService.delete(id);
+			if (userDataService.delete(id)) {
+				addLog.add("删除用户", "用户ID：" + id);
+				return true;
+			} else return false;
 		} catch (Exception e) {
 			return false;
 		}
@@ -53,6 +70,7 @@ public class UserBL implements UserBLService, GetUserInterface{
 				data[i] = getLine(list.get(i));
 			}
 			MyTableModel searchTable = new MyTableModel (data, tableHeader);
+			addLog.add("查找用户", type+" : "+key);
 			return searchTable;
 		} catch (Exception e) {
 			return new MyTableModel (new String[][]{{}}, tableHeader);
@@ -78,7 +96,10 @@ public class UserBL implements UserBLService, GetUserInterface{
 	public boolean add(UserVO user) {
 		try {
 			UserPO userPO = user.toPO();
-			return userDataService.add(userPO);
+			if (userDataService.add(userPO)) {
+				addLog.add("增加用户", "新增"+user.getType().getName()+":"+user.getName());
+				return true;
+			} else return false;
 		} catch (Exception e) {
 			return false;
 		}
@@ -88,7 +109,10 @@ public class UserBL implements UserBLService, GetUserInterface{
 	public boolean change(UserVO user) {
 		try {
 			UserPO userPO = user.toPO();
-			return userDataService.update(userPO);
+			if (userDataService.update(userPO)) {
+				addLog.add("修改用户", "修改的用户ID："+user.getId());
+				return true;
+			} else return false;
 		} catch (Exception e) {
 			return false;
 		}
