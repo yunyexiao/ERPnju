@@ -32,8 +32,10 @@ public class CommodityDs_stub implements CommodityDataService {
     @Override
     public CommodityPO findById(String id) throws RemoteException {
         System.out.println("commodity found in database: " + id);
-        return new CommodityPO("002-20171127-00001", "½»Í¨ÐÅºÅµÆ", "TBD", "A", "000001"
-            , 2000L, 200L, 120.0, 340.0, 120.0, 320.0, true);
+        for (int i = 0; i < result.size(); i++) {
+        	if (id.equals(result.get(i).getId())) return result.get(i);
+        }
+		return null;
     }
 
     @Override
@@ -46,6 +48,9 @@ public class CommodityDs_stub implements CommodityDataService {
     @Override
     public boolean delete(String id) throws RemoteException {
         System.out.println("commodity deleted in database: " + id);
+        for (int i = 0; i < result.size(); i++) {
+        	if (id.equals(result.get(i).getId())) {result.remove(i);break;}
+        }
         return true;
     }
 

@@ -21,7 +21,7 @@ import vo.UserVO;
  * @author ã¢Ò¶Ïö*/
 public class CategoryBL implements CategoryBLService, GetCategoryInterface {
     
-    private CategoryDataService categoryDs;
+    private CategoryDataService categoryDs = new CategoryDs_stub();
     private AddLogInterface addLog;
 
     /**
@@ -31,7 +31,6 @@ public class CategoryBL implements CategoryBLService, GetCategoryInterface {
     
     public CategoryBL(UserVO user) {
         //categoryDs = RemoteHelper.getInstance().getCategoryDataService();
-        categoryDs = new CategoryDs_stub();
         addLog = new LogBL(user);
     }
 

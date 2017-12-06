@@ -22,16 +22,13 @@ import vo.UserVO;
  */
 public class CommodityBL implements CommodityBLService, GetCommodityInterface{
     
-    private CommodityDataService commodityDs;
-    private GetCategoryInterface categoryInfo;
+    private CommodityDataService commodityDs = new CommodityDs_stub();//commodityDs = Rmi.getRemote(CommodityDataService.class);
+    private GetCategoryInterface categoryInfo = new CategoryBL();
     private AddLogInterface addLog;
     private static final String[] columnNames = {"商品编号", "名称", "型号", "库存", "数量", "警戒值"
             , "所属分类编号", "所属分类名称", "进价", "售价", "最近进价", "最近售价"};
 
     public CommodityBL(UserVO user) {
-        //commodityDs = Rmi.getRemote(CommodityDataService.class);
-        commodityDs = new CommodityDs_stub();
-        categoryInfo = new CategoryBL();
         addLog = new LogBL(user);
     }
 
@@ -78,7 +75,7 @@ public class CommodityBL implements CommodityBLService, GetCommodityInterface{
             for(int i = 0; i < list.size(); i++){
                 data[i] = getLine(list.get(i));
             }
-            addLog.add("搜索商品", "搜索方式："+type+"  搜索关键词："+key);
+            if (addLog != null) addLog.add("搜索商品", "搜索方式："+type+"  搜索关键词："+key);
             return new MyTableModel(data, columnNames);
         }catch(RemoteException e){
             e.printStackTrace();
