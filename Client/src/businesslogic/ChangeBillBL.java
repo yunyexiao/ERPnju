@@ -55,7 +55,7 @@ public class ChangeBillBL implements ChangeBillBLService {
 		for (int i = 0; i < size; i++) {
 			ChangeItem item = bill.getCommodityList().get(i);
 			data[i] = new String[]{item.getCommodityId(), "", ""+item.getOriginalValue(), ""+item.getChangedValue()};
-			data[i][1] = categoryInfo.getCatrgory(commodityInfo.getCommodity(item.getCommodityId()).getCategoryId()).getName();
+			data[i][1] = categoryInfo.getCategory(commodityInfo.getCommodity(item.getCommodityId()).getCategoryId()).getName();
 			if (bill.getState() != ChangeBillPO.PASS) data[i][2]= ""+commodityInfo.getCommodity(item.getCommodityId()).getAmount();
 		}
 		return new ChangeBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), bill.getState(), bill.getFlag(), new MyTableModel(data, headers));

@@ -120,7 +120,7 @@ public class CommodityBL implements CommodityBLService{
 
     private String[] getLine(CommodityPO c){
         return new String[]{c.getId(), c.getName(), c.getType(), c.getStore(), c.getAmount() + ""
-                , c.getAlarmNum() + "", c.getCategoryId(), categoryInfo.getCatrgory(c.getCategoryId()).getName(), c.getInPrice() + ""
+                , c.getAlarmNum() + "", c.getCategoryId(), categoryInfo.getCategory(c.getCategoryId()).getName(), c.getInPrice() + ""
                 , c.getSalePrice() + "", c.getRecentInPrice() + "", c.getRecentSalePrice() + ""};
     }
     
