@@ -29,8 +29,7 @@ public class CashCostBillPanel extends BillPanel {
 	private CashCostBillBLService cashCostBillBL = new CashCostBillBL_stub();
 	
 	private JTextField billIdField, operatorField, accountIdField, sumField;
-	private MyTableModel itemTable;
-	private JTable itemListTable = new JTable(itemTable);
+	private JTable itemListTable;
 	private boolean editable = true;
 	
 	public CashCostBillPanel(UserVO user, ActionListener closeListener) {
@@ -99,8 +98,7 @@ public class CashCostBillPanel extends BillPanel {
 		
 		String[] itemListAttributes={"条目名", "金额", "备注"};
 		String[][] itemInfo={{"买女装","10000","公款私用"}, {"大保健", "800", ""}};
-		itemTable = new MyTableModel(itemInfo, itemListAttributes);
-		itemListTable = new JTable(itemTable);
+		itemListTable = new JTable(new MyTableModel(itemInfo, itemListAttributes));
 		itemListPane = new JScrollPane(itemListTable);
 		
 		itemButtonPanel=new JPanel();

@@ -39,8 +39,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 	private PaymentBillBLService paymentBillBL = new PaymentBillBL_stub();
 
 	private JTextField billIdField, customerIdField, operaterField, sumField;
-	private MyTableModel transferTable;
-	private JTable transferListTable = new JTable(transferTable);
+	private JTable transferListTable;
 	private boolean editable;
 	private ButtonGroup typeButtonGroup;
 	private JDialog frame = new JDialog();
@@ -113,8 +112,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 		
 		String[] transferListAttributes={"银行账户", "转账金额", "备注"};
 		String[][] transferInfo={{"mayun0001","100000","赎金"}};
-		transferTable = new MyTableModel(transferInfo, transferListAttributes);
-		transferListTable = new JTable(transferTable);
+		transferListTable = new JTable(new MyTableModel(transferInfo,transferListAttributes));
 		transferListPane = new JScrollPane(transferListTable);
 
 		transferButtonPanel=new JPanel();
@@ -181,7 +179,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
         ((MyTableModel)transferListTable.getModel()).removeRow(transferListTable.getSelectedRow());
     }
 	
-    protected void sumUp(){
+    private void sumUp(){
         if(!editable) return;
 	    MyTableModel model = (MyTableModel)this.transferListTable.getModel();
         double total = 0;
