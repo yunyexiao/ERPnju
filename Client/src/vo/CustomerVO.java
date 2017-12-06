@@ -94,7 +94,7 @@ public class CustomerVO {
 	}
 	
 	public CustomerPO toPO() {
-		CustomerPO customerPO = new CustomerPO(id, name, telNumber, address, code, mail, salesman,
+		CustomerPO customerPO = new CustomerPO(id, name, telNumber, address, mail, code, salesman,
 				rank, type, recRange, receivable, payment, true);
 		return customerPO;
 	}

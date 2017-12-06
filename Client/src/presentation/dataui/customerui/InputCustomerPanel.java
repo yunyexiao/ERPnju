@@ -72,7 +72,7 @@ public class InputCustomerPanel extends JPanel{
 		typeButtonGroup.add(purchaseRadioButton);
 		typeButtonGroup.add(saleRadioButton);
 		
-		JComboBox<String> comboBox = new JComboBox<String>(new String[]{"LV1","LV2","LV3","LV4","LV5"});
+		comboBox = new JComboBox<String>(new String[]{"LV1","LV2","LV3","LV4","LV5"});
 
 		int length = customer.length;
 		
