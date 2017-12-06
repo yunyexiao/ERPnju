@@ -60,7 +60,7 @@ public class InputAccountPanel extends JPanel{
 			String id = accountIdTextField.getText(),
 		    		name = accountNameTextField.getText();
 		    double money = Double.parseDouble(accountMoneyTextField.getText());
-		    return new AccountVO(id, name, money);
+		    return new AccountVO(name, id, money);
 		}
 	    return null;
 	}
