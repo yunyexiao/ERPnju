@@ -29,6 +29,7 @@ public class CustomerDataPanel extends DataPanel{
 	            public void actionPerformed(ActionEvent e) {
 	                new AddCustomerWindow(user.getRank(), customerBL);
 	                updateTable();
+	        		TableTools.autoFit(table);
 	            }
 	        };
 	}
@@ -42,6 +43,7 @@ public class CustomerDataPanel extends DataPanel{
 	            if (table.getSelectedRow() != -1) {
 	                new UpdateCustomerWindow(customerBL, tableModel.getValueAtRow(table.getSelectedRow()), user.getRank());
 	                updateTable();
+	        		TableTools.autoFit(table);
                 }
 	            else new InfoWindow("请选择需要修改的客户");
             }
@@ -55,7 +57,10 @@ public class CustomerDataPanel extends DataPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 MyTableModel model = new SearchCustomerWindow(customerBL).getModel();
-                if(model != null) table.setModel(model);
+                if(model != null) {
+                	table.setModel(model);
+            		TableTools.autoFit(table);
+                }
             }
         };
 	}
