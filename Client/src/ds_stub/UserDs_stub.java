@@ -17,7 +17,7 @@ public class UserDs_stub implements UserDataService {
 			result.add(new UserPO("0002","香港记者", "", "男", "12345678900", UserType.SALESMAN.getNum(), 0, 55,true));
 			result.add(new UserPO("0003","长者", "", "男", "12345432112", UserType.ACCOUNTANT.getNum(), 0, 88,true));
 			result.add(new UserPO("0004","比利海灵顿", "", "男", "18851826666", UserType.GM.getNum(), 0, 31,true));
-			result.add(new UserPO("0005","管理员", "", "男", "18851827777", UserType.ADMIN.getNum(), 0, 46,true));
+			result.add(new UserPO("0005","梁逸峰", "", "男", "18851827777", UserType.ADMIN.getNum(), 0, 46,true));
 		}
 	}
 	@Override
@@ -27,7 +27,10 @@ public class UserDs_stub implements UserDataService {
 
 	@Override
 	public UserPO findById(String id) throws RemoteException {
-		System.out.println("commodity found in database: " + id);
+		System.out.println("user found in database: " + id);
+		for (int i = 0; i < result.size(); i++) {
+        	if (id.equals(result.get(i).getUserId())) return result.get(i);
+        }
 		return null;
 	}
 
