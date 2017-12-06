@@ -5,12 +5,14 @@ import java.util.ArrayList;
 
 import blservice.CommodityBLService;
 import blservice.infoservice.GetCategoryInterface;
+import businesslogic.inter.AddLogInterface;
 import dataservice.CommodityDataService;
 import ds_stub.CommodityDs_stub;
 import po.CategoryPO;
 import po.CommodityPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
+import vo.UserVO;
 
 /**
  * 商品模块的BL<br>
@@ -21,13 +23,15 @@ public class CommodityBL implements CommodityBLService{
     
     private CommodityDataService commodityDs;
     private GetCategoryInterface categoryInfo;
+    private AddLogInterface addLog;
     private static final String[] columnNames = {"商品编号", "名称", "型号", "库存", "数量", "警戒值"
             , "所属分类编号", "所属分类名称", "进价", "售价", "最近进价", "最近售价"};
 
-    public CommodityBL() {
+    public CommodityBL(UserVO user) {
         //commodityDs = Rmi.getRemote(CommodityDataService.class);
         commodityDs = new CommodityDs_stub();
         categoryInfo = new CategoryBL();
+        addLog = new LogBL(user);
     }
 
     @Override
@@ -43,7 +47,11 @@ public class CommodityBL implements CommodityBLService{
     @Override
     public boolean delete(String id) {
         try{
-            return commodityDs.delete(id);
+            if (commodityDs.delete(id)) {
+            	addLog.add("删除商品", "删除的商品ID："+id);
+            	return true;
+            }
+            return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -67,6 +75,7 @@ public class CommodityBL implements CommodityBLService{
             for(int i = 0; i < list.size(); i++){
                 data[i] = getLine(list.get(i));
             }
+            addLog.add("搜索商品", "搜索方式："+type+"  搜索关键词："+key);
             return new MyTableModel(data, columnNames);
         }catch(RemoteException e){
             e.printStackTrace();
@@ -92,7 +101,11 @@ public class CommodityBL implements CommodityBLService{
     @Override
     public boolean add(CommodityVO commodity) {
         try{
-            return commodityDs.add(commodity.toPO());
+            if (commodityDs.add(commodity.toPO())) {
+            	addLog.add("新增商品", "新增商品的ID："+commodity.getId()+"商品名称："+commodity.getName());
+            	return true;
+            }
+            return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -102,7 +115,11 @@ public class CommodityBL implements CommodityBLService{
     @Override
     public boolean change(CommodityVO commodity) {
         try{
-            return commodityDs.update(commodity.toPO());
+            if (commodityDs.update(commodity.toPO())) {
+            	addLog.add("修改商品", "被修改的商品编号："+commodity.getId());
+            	return true;
+            }
+            return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
