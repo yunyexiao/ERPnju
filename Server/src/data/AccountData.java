@@ -119,50 +119,33 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 	@Override
 	public ArrayList<AccountPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
 		ArrayList<AccountPO> apos = new ArrayList<AccountPO>();
+		ResultSet r = null;
+		try{
 		if(isfuzzy){
-			try{
-				 Statement s = DataHelper.getInstance().createStatement();
-				 ResultSet r = s.executeQuery("SELECT * FROM AccountInfo WHERE "+field+"LIKE '%"+content+"%';");
-				 while(r.next()){
-					 boolean accountIsExist=r.getBoolean("AccountIsExist");
-					 AccountPO apo = new AccountPO();
-					 
-					 if(accountIsExist){
-					 apo.setId(r.getString("AccountID"));
-					 apo.setName(r.getString("AccountName"));
-					 apo.setMoney(r.getDouble("AccountMoney"));
-					 
-					 apos.add(apo);
-					 }
-				 }
-			}catch(Exception e){
-				e.printStackTrace();
-				return null;
-			}
+			Statement s = DataHelper.getInstance().createStatement();
+		    r = s.executeQuery("SELECT * FROM AccountInfo WHERE "+field+"LIKE '%"+content+"%';");
 		}
 		else if(!isfuzzy){
-			try{
-				 //Statement s = DataHelper.getInstance().createStatement();
-				 //ResultSet r = s.executeQuery("SELECT * FROM AccountInfo WHERE "+field+"LIKE '"+content+"';");
-				 ResultSet r =SQLQueryHelper.getRecordByAttribute(tableName, field, content);
-				 while(r.next()){
-					 boolean accountIsExist=r.getBoolean("AccountIsExist");
-					 AccountPO apo = new AccountPO();
-					 
-					 if(accountIsExist){
-					 apo.setId(r.getString("AccountID"));
-					 apo.setName(r.getString("AccountName"));
-					 apo.setMoney(r.getDouble("AccountMoney"));
-					 
-					 apos.add(apo);
-					 }
-				 }
-			}catch(Exception e){
-				e.printStackTrace();
-				return null;
-			}
+			r =SQLQueryHelper.getRecordByAttribute(tableName, field, content);
 		}
 		
+		 while(r.next()){
+			 boolean accountIsExist=r.getBoolean("AccountIsExist");
+			 AccountPO apo = new AccountPO();
+			 
+			 if(accountIsExist){
+			 apo.setId(r.getString("AccountID"));
+			 apo.setName(r.getString("AccountName"));
+			 apo.setMoney(r.getDouble("AccountMoney"));
+			 
+			 apos.add(apo);
+			 }
+		 }
+		
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
 		return apos;
 	}
 

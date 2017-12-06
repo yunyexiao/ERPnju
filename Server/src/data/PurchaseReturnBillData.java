@@ -1,6 +1,7 @@
 package data;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -9,7 +10,13 @@ import java.util.Calendar;
 import dataservice.PurchaseReturnBillDataService;
 import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesItemsPO;;
-public class PurchaseReturnBillData implements PurchaseReturnBillDataService{
+public class PurchaseReturnBillData extends UnicastRemoteObject implements PurchaseReturnBillDataService{
+	
+	protected PurchaseReturnBillData() throws RemoteException {
+		super();
+		
+	}
+
 	private String tableName="PurchaseReturnBill";
 	private String idName="PRBID";
 
@@ -60,7 +67,7 @@ public class PurchaseReturnBillData implements PurchaseReturnBillDataService{
 	@Override
 	public String getNewId() throws RemoteException {
 
-		String newId=SQLQueryHelper.getNewBillIdByDay(tableName);
+		String newId=SQLQueryHelper.getNewBillIdByDay(tableName,idName);
 		newId="JHTHD-"+newId;
 		
 		return newId;
@@ -91,8 +98,8 @@ public class PurchaseReturnBillData implements PurchaseReturnBillDataService{
 			while(r2.next()){
 				String date=null, time=null;
 				
-				date=r2.getString("ILBTime").split(" ")[0];
-				time=r2.getString("ILBTime").split(" ")[1];
+				date=r2.getString("generateTime").split(" ")[0];
+				time=r2.getString("generateTime").split(" ")[1];
 				
 				purchaseReturnBill=new PurchaseReturnBillPO(
 						date,

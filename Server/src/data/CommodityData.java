@@ -31,50 +31,28 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 		
 		CommodityPO cpo=new CommodityPO();
 		cpo.setId(id);
-		String comName=null,comCateID=null,comCateName=null,comType=null,comStore=null;
-		int comAlarmQuantity=0;
-		long comQuantity=0;
-		double comInPrice=0.0,comSalePrice=0.0,comRecInPrice=0.0,comRecSalePrice=0.0;
 		try{
 			 //Statement s1 = DataHelper.getInstance().createStatement();
 			 //ResultSet r1= s1.executeQuery("SELECT * FROM CustomerInfo WHERE ComID=" + id +";");
 			ResultSet r1=SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
 			 while(r1.next()){
-				 comName=r1.getString("ComName");
-				 comCateID=r1.getString("ComCateID");
-				 comType=r1.getString("ComType");
-				 comStore=r1.getString("ComStore");
-				 comQuantity=r1.getLong("ComQuantity");
-				 comInPrice=r1.getInt("ComInPrice");
-				 comSalePrice=r1.getDouble("ComSalePrice");
-				 comRecInPrice=r1.getDouble("ComRecInPrice");
-				 comRecSalePrice=r1.getDouble("ComRecSalePrice");
-				 comAlarmQuantity=r1.getInt("ComAlarmQuantity");
-			 }
-			 
-			 Statement s2 = DataHelper.getInstance().createStatement();
-			 ResultSet r2=s2.executeQuery("SELECT CateName FROM CategoryInfo,CommodityInfo "
-			 		+ "WHERE CategoryInfo.CateID=CommodityInfo.ComCateID AND CommodityInfo.ComID="+id+";");
-			 while(r2.next()){
-				 comCateName=r2.getString("CateName");
-			 }
+				 
+					cpo.setName(r1.getString("ComName"));
+					cpo.setCategoryId(r1.getString("ComCateID"));
+					cpo.setAlarmNum(r1.getInt("ComAlarmQuantity"));
+					cpo.setAmount(r1.getLong("ComQuantity"));
+					cpo.setInPrice(r1.getInt("ComInPrice"));
+					cpo.setRecentInPrice(r1.getDouble("ComRecInPrice"));
+					cpo.setRecentSalePrice(r1.getDouble("ComRecSalePrice"));
+					cpo.setSalePrice(r1.getDouble("ComSalePrice"));
+					cpo.setType(r1.getString("ComType"));
+					cpo.setStore(r1.getString("ComStore"));
+									 
+			 }			
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
-		}
-		
-		cpo.setName(comName);
-		cpo.setCategoryId(comCateID);
-		cpo.setCategoryName(comCateName);
-		cpo.setAlarmNum(comAlarmQuantity);
-		cpo.setAmount(comQuantity);
-		cpo.setInPrice(comInPrice);
-		cpo.setRecentInPrice(comRecInPrice);
-		cpo.setRecentSalePrice(comRecSalePrice);
-		cpo.setSalePrice(comSalePrice);
-		cpo.setType(comType);
-		cpo.setStore(comStore);
-		
+		}		
 		return cpo;
 	}
 
@@ -174,20 +152,6 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 			e.printStackTrace();
 			return null;
 		}
-		
-		for(int i=0;i<cpos.size();i++){
-			try{
-				 Statement s2 = DataHelper.getInstance().createStatement();
-				 ResultSet r2=s2.executeQuery("SELECT CateName FROM CategoryInfo,CommodityInfo "
-				 		+ "WHERE CategoryInfo.CateID=CommodityInfo.ComCateID AND CommodityInfo.ComID="+cpos.get(i).getId()+";");
-				 while(r2.next()){
-					 cpos.get(i).setCategoryName(r2.getString("CateName"));
-				 }
-			}catch(Exception e){
-				e.printStackTrace();
-				return null;
-			}
-		}
 		return cpos;
 	}
 
@@ -195,100 +159,42 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 	public ArrayList<CommodityPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
 		
 		ArrayList<CommodityPO> cpos=new ArrayList<CommodityPO>();
-		
-		if(isfuzzy){
-			
-			try{
+		ResultSet r1=null;
+		try{
+			if(isfuzzy){
 				Statement s1 = DataHelper.getInstance().createStatement();
-				ResultSet r1 = s1.executeQuery("SELECT * FROM CommodityInfo WHERE "+field+"LIKE '%"+content+"%';");
-				while(r1.next()){
+				r1 = s1.executeQuery("SELECT * FROM CommodityInfo WHERE "+field+"LIKE '%"+content+"%';");
+			}
+			else if(!isfuzzy){
+				r1=SQLQueryHelper.getRecordByAttribute(tableName, field, content);
+			}
+			
+			while(r1.next()){
+				
+				 boolean comIsExist=r1.getBoolean("ComIsExist");
+				 CommodityPO cpo = new CommodityPO();
+				 
+				 if(comIsExist){
+					 cpo.setId(r1.getString("ComID"));
+				     cpo.setName(r1.getString("ComName"));
+				     cpo.setCategoryId(r1.getString("ComCateID"));
+				     cpo.setAlarmNum(r1.getInt("ComAlarmQuantity"));
+				     cpo.setAmount(r1.getLong("ComQuantity"));
+				     cpo.setInPrice(r1.getInt("ComInPrice"));
+				     cpo.setRecentInPrice(r1.getDouble("ComRecInPrice"));
+				     cpo.setRecentSalePrice(r1.getDouble("ComRecSalePrice"));
+				     cpo.setSalePrice(r1.getDouble("ComSalePrice"));
+				     cpo.setType(r1.getString("ComType"));
+				     cpo.setStore(r1.getString("ComStore"));
+				 
+				     cpos.add(cpo);
+				 }
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
 		
-					 boolean comIsExist=r1.getBoolean("ComIsExist");
-					 CommodityPO cpo = new CommodityPO();
-					 
-					 if(comIsExist){
-						 cpo.setId(r1.getString("ComID"));
-					     cpo.setName(r1.getString("ComName"));
-					     cpo.setCategoryId(r1.getString("ComCateID"));
-					     cpo.setAlarmNum(r1.getInt("ComAlarmQuantity"));
-					     cpo.setAmount(r1.getLong("ComQuantity"));
-					     cpo.setInPrice(r1.getInt("ComInPrice"));
-					     cpo.setRecentInPrice(r1.getDouble("ComRecInPrice"));
-					     cpo.setRecentSalePrice(r1.getDouble("ComRecSalePrice"));
-					     cpo.setSalePrice(r1.getDouble("ComSalePrice"));
-					     cpo.setType(r1.getString("ComType"));
-					     cpo.setStore(r1.getString("ComStore"));
-					 
-					     cpos.add(cpo);
-					 }
-				}
-				
-			}catch(Exception e){
-				e.printStackTrace();
-				return null;
-			}
-			
-			for(int i=0;i<cpos.size();i++){
-				try{
-					 Statement s2 = DataHelper.getInstance().createStatement();
-					 ResultSet r2=s2.executeQuery("SELECT CateName FROM CategoryInfo,CommodityInfo "
-					 		+ "WHERE CategoryInfo.CateID=CommodityInfo.ComCateID AND CommodityInfo.ComID="+cpos.get(i).getId()+";");
-					 while(r2.next()){
-						 cpos.get(i).setCategoryName(r2.getString("CateName"));
-					 }
-				}catch(Exception e){
-					e.printStackTrace();
-					return null;
-				}
-			}
-		}
-		else if(!isfuzzy){
-			try{
-				//Statement s1 = DataHelper.getInstance().createStatement();
-				ResultSet r1=SQLQueryHelper.getRecordByAttribute(tableName, field, content);
-				//r1 = s1.executeQuery("SELECT * FROM CommodityInfo WHERE "+field+"LIKE '"+content+"';");
-				while(r1.next()){
-					 
-					 boolean comIsExist=r1.getBoolean("ComIsExist");
-					 CommodityPO cpo = new CommodityPO();
-					 
-					 if(comIsExist){
-						 cpo.setId(r1.getString("ComID"));
-					     cpo.setName(r1.getString("ComName"));
-					     cpo.setCategoryId(r1.getString("ComCateID"));
-					     cpo.setAlarmNum(r1.getInt("ComAlarmQuantity"));
-					     cpo.setAmount(r1.getLong("ComQuantity"));
-					     cpo.setInPrice(r1.getInt("ComInPrice"));
-					     cpo.setRecentInPrice(r1.getDouble("ComRecInPrice"));
-					     cpo.setRecentSalePrice(r1.getDouble("ComRecSalePrice"));
-					     cpo.setSalePrice(r1.getDouble("ComSalePrice"));
-					     cpo.setType(r1.getString("ComType"));
-					     cpo.setStore(r1.getString("ComStore"));
-					 
-					     cpos.add(cpo);
-					 }
-				}
-				
-			}catch(Exception e){
-				e.printStackTrace();
-				return null;
-			}
-			
-			for(int i=0;i<cpos.size();i++){
-				try{
-					 Statement s2 = DataHelper.getInstance().createStatement();
-					 ResultSet r2=s2.executeQuery("SELECT CateName FROM CategoryInfo,CommodityInfo "
-					 		+ "WHERE CategoryInfo.CateID=CommodityInfo.ComCateID AND CommodityInfo.ComID="+cpos.get(i).getId()+";");
-					 while(r2.next()){
-						 cpos.get(i).setCategoryName(r2.getString("CateName"));
-					 }
-				}catch(Exception e){
-					e.printStackTrace();
-					return null;
-				}
-			}
-			
-		}
 		return cpos;
 	}
 

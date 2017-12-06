@@ -169,69 +169,41 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 	@Override
 	public ArrayList<UserPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
 		ArrayList<UserPO> upos=new ArrayList<UserPO>();
-		if(isfuzzy){
-			try {
-			    Statement s = DataHelper.getInstance().createStatement();
-				ResultSet r = s.executeQuery("SELECT * FROM SystemUser WHERE "+field+"LIKE '%"+content+"%';");
-				while(r.next()) {
-					int userAge;
-					boolean userIsExist=r.getBoolean("SUIsExist");				
-					UserPO upo = new UserPO();
-								
-					Calendar now = Calendar.getInstance(); 
-					userAge=now.get(Calendar.YEAR)-r.getInt("SUBirth");
-					
-					if(userIsExist){
-					upo.setUserId(r.getString("SUID"));
-					upo.setUserAge(userAge);
-					upo.setUserName(r.getString("SUName"));
-			        upo.setUserPwd(r.getString("SUPwd"));
-			        upo.setUserSex(r.getString("SUSex"));
-			        upo.setUserTelNumber(r.getString("SUTel"));
-			        upo.setUsertype(r.getInt("SUDept"));
-			        upo.setUserRank(r.getInt("SURank"));
-					
-					upos.add(upo);	
-					}
-				}	
-			 }
-			 catch(Exception e) {
-			   e.printStackTrace();
-			   return null;
-			 }
+		ResultSet r=null;
+		try{
+			if(isfuzzy){
+				Statement s = DataHelper.getInstance().createStatement();
+				r = s.executeQuery("SELECT * FROM SystemUser WHERE "+field+"LIKE '%"+content+"%';");
+			}
+			else if(!isfuzzy){
+				r=SQLQueryHelper.getRecordByAttribute(tableName, field, content);
+			}
+			
+			while(r.next()) {
+				int userAge;
+				boolean userIsExist=r.getBoolean("SUIsExist");				
+				UserPO upo = new UserPO();		
+				Calendar now = Calendar.getInstance(); 
+				userAge=now.get(Calendar.YEAR)-r.getInt("SUBirth");
+				
+				if(userIsExist){
+				upo.setUserId(r.getString("SUID"));
+				upo.setUserAge(userAge);
+				upo.setUserName(r.getString("SUName"));
+		        upo.setUserPwd(r.getString("SUPwd"));
+		        upo.setUserSex(r.getString("SUSex"));
+		        upo.setUserTelNumber(r.getString("SUTel"));
+		        upo.setUsertype(r.getInt("SUDept"));
+		        upo.setUserRank(r.getInt("SURank"));
+				
+				upos.add(upo);	
+				}
+			}	
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
 		}
-		else if(!isfuzzy){
-			try {
-			    //Statement s = DataHelper.getInstance().createStatement();
-				//ResultSet r = s.executeQuery("SELECT * FROM SystemUser WHERE "+field+"LIKE '"+content+"';");
-				ResultSet r=SQLQueryHelper.getRecordByAttribute(tableName, field, content);
-				while(r.next()) {
-					int userAge;
-					boolean userIsExist=r.getBoolean("SUIsExist");				
-					UserPO upo = new UserPO();
-								
-					Calendar now = Calendar.getInstance(); 
-					userAge=now.get(Calendar.YEAR)-r.getInt("SUBirth");
-					
-					if(userIsExist){
-					upo.setUserId(r.getString("SUID"));
-					upo.setUserAge(userAge);
-					upo.setUserName(r.getString("SUName"));
-			        upo.setUserPwd(r.getString("SUPwd"));
-			        upo.setUserSex(r.getString("SUSex"));
-			        upo.setUserTelNumber(r.getString("SUTel"));
-			        upo.setUsertype(r.getInt("SUDept"));
-			        upo.setUserRank(r.getInt("SURank"));
-					
-					upos.add(upo);	
-					}
-				}	
-			 }
-			 catch(Exception e) {
-			   e.printStackTrace();
-			   return null;
-			 }
-		}
+		
 		return upos;
 	}
 

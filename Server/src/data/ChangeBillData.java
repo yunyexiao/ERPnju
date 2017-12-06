@@ -37,8 +37,8 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
 			while(r2.next()){
 				String date=null, time=null;
 				
-				date=r2.getString("ILBTime").split(" ")[0];
-				time=r2.getString("ILBTime").split(" ")[1];
+				date=r2.getString("generateTime").split(" ")[0];
+				time=r2.getString("generateTime").split(" ")[1];
 				
 				changeBill=new ChangeBillPO(date,time,r2.getString("IOBID"),r2.getString("IOBOperatorID"),
 						 r2.getInt("IOBCondition"),true,changeItems);
@@ -66,8 +66,8 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
     			while(r2.next()){
     				String date=null, time=null;
    
-    				date=r2.getString("ILBTime").split(" ")[0];
-    				time=r2.getString("ILBTime").split(" ")[1];
+    				date=r2.getString("generateTime").split(" ")[0];
+    				time=r2.getString("generateTime").split(" ")[1];
     				
     				changeBill=new ChangeBillPO(date,time,r2.getString("ILBID"),r2.getString("ILBOperatorID"),
     						 r2.getInt("ILBCondition"),false,changeItems);

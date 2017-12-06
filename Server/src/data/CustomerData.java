@@ -161,11 +161,17 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 	public ArrayList<CustomerPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
 		 ArrayList<CustomerPO> cpos=new ArrayList<CustomerPO>();
 		 
-		if(isfuzzy){
-			try {
-			    Statement s = DataHelper.getInstance().createStatement();
-				ResultSet r = s.executeQuery("SELECT * FROM CustomerInfo WHERE "+field+"LIKE '%"+content+"%';");
-				while(r.next()) {
+		 ResultSet r=null;
+		 try{
+			 if(isfuzzy){
+				 Statement s = DataHelper.getInstance().createStatement();
+				 r = s.executeQuery("SELECT * FROM CustomerInfo WHERE "+field+"LIKE '%"+content+"%';"); 
+			 }
+			 else if(!isfuzzy){
+				 r=SQLQueryHelper.getRecordByAttribute(tableName, field, content);
+			 }
+			 
+			 while(r.next()) {
 					
 					boolean cusIsExist=r.getBoolean("CusIsExist");
 					CustomerPO cpo = new CustomerPO();
@@ -186,45 +192,12 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 					 
 					 cpos.add(cpo);	
 					}
-				}	
 			 }
-			 catch(Exception e) {
-			   e.printStackTrace();
-			   return null;
-			 }
-		}
-		else if(!isfuzzy){
-			try {
-			    //Statement s = DataHelper.getInstance().createStatement();
-				//ResultSet r = s.executeQuery("SELECT * FROM CustomerInfo WHERE "+field+"LIKE '"+content+"';");
-				ResultSet r=SQLQueryHelper.getRecordByAttribute(tableName, field, content);
-				while(r.next()) {
-					boolean cusIsExist=r.getBoolean("CusIsExist");
-					CustomerPO cpo = new CustomerPO();
-					
-					if(cusIsExist){
-						 cpo.setId(r.getString("CusID"));
-						 cpo.setName(r.getString("CusName"));
-				         cpo.setAddress(r.getString("CusAddress"));
-				         cpo.setMail(r.getString("CusMail"));
-				         cpo.setCode(r.getString("CusCode"));
-				         cpo.setPayment(r.getDouble("CusPayment"));
-				         cpo.setRank(r.getInt("CusRank"));
-				         cpo.setReceivable(r.getDouble("CusReceivable"));
-				         cpo.setRecRange(r.getDouble("CusReceiRange"));
-				         cpo.setSalesman(r.getString("CusSalesman"));
-				         cpo.setTelNumber(r.getString("CusTel"));
-				         cpo.setType(r.getInt("CusType"));
-					 
-					 cpos.add(cpo);	
-					}
-				}	
-			 }
-			 catch(Exception e) {
-			   e.printStackTrace();
-			   return null;
-			 }
-		}
+		 }catch(Exception e){
+			 e.printStackTrace();
+			 return null;
+		 }
+
 		return cpos;
 	}
 

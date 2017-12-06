@@ -1,48 +1,29 @@
 package dataservice;
 
+import java.rmi.RemoteException;
+
+
+
 import po.billpo.CashCostBillPO;
 
 
 
 public interface CashCostBillDataService {
-	/**
 
-	 * 每一种单据都对应一个BillData
 
-	 * 这里没有区分新增和更新！！！，或者区分一下？
 
-	 * @param bill
+	public boolean saveBill(CashCostBillPO bill) throws RemoteException;;
 
-	 * @return
 
-	 */
 
-	public boolean saveBill(CashCostBillPO bill);
+	public boolean deleteBill(String billid) throws RemoteException;;
 
-	/**
 
-	 * 根据编号删除一张单据
 
-	 * @param billid
-
-	 * @return
-
-	 */
-
-	public boolean deleteBill(String billid);
-
-	/**
-
-	 * 获得销售单据的新编号
-
-	 * @return
-
-	 */
-
-	public String getNewId();
+	public String getNewId() throws RemoteException;;
 
 	
 
-	public CashCostBillPO getBillById(String id);
+	public CashCostBillPO getBillById(String id) throws RemoteException;;
 
 }

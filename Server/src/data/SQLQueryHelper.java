@@ -7,7 +7,7 @@ import java.util.Calendar;
 public class SQLQueryHelper {
 	
 	//获取单据类id,不加标识
-	public static String getNewBillIdByDay(String tableName){
+	public static String getNewBillIdByDay(String tableName,String idName){
 		String newId=null;
 		int num=0;
 		
@@ -17,7 +17,7 @@ public class SQLQueryHelper {
 		
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery("SELECT PBID FROM "+tableName+" WHERE generateTime>"
+			ResultSet r=s.executeQuery("SELECT "+idName+" FROM "+tableName+" WHERE generateTime>"
 					+"'"+date+"' "+"AND generateTime<DATEADD(DAY,1,"+"'"+date+"');");
 			while(r.next()){
 				num++;
