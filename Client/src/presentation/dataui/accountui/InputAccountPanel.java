@@ -17,7 +17,7 @@ public class InputAccountPanel extends JPanel{
 	 * 根据已有数据初始化界面
 	 * @param 表格中取出的一行数据
 	 */
-	protected InputAccountPanel(String[] account) {
+	protected InputAccountPanel(String[] account, boolean isAdd) {
 		super();
 		double[] rows = new double[7];
         rows[0] = TableLayout.FILL;
@@ -40,7 +40,8 @@ public class InputAccountPanel extends JPanel{
 		accountNameTextField = new JTextField(account[1]);
 		accountMoneyTextField = new JTextField(account[2]);
 
-        accountIdTextField.setEditable(false);
+		accountIdTextField.setEditable(isAdd);
+		accountMoneyTextField.setEditable(isAdd);
         
 		add(accountIdTextField, "3 1");
 		add(accountNameTextField, "3 3");

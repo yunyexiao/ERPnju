@@ -16,7 +16,7 @@ public class AddAccountWindow extends FatherWindow{
         this.accountBL = accountBl;
         
         frame.setTitle("‘ˆº”’Àªß");
-        centerPanel = new InputAccountPanel(new String[]{null, null, null});
+        centerPanel = new InputAccountPanel(new String[]{null, null, "0.0"}, true);
         frame.add(centerPanel, BorderLayout.CENTER);
 
         frame.setSize(400, 200);

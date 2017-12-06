@@ -16,7 +16,7 @@ public class UpdateAccountWindow extends FatherWindow{
 		super();
 		this.accountBl = accountBl;
         frame.setTitle("ÐÞ¸ÄÕË»§");
-        centerPanel = new InputAccountPanel(data);
+        centerPanel = new InputAccountPanel(data, false);
         frame.add(centerPanel, BorderLayout.CENTER);
 
         frame.setSize(400, 200);
