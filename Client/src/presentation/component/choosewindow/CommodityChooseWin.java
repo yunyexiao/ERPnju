@@ -1,13 +1,19 @@
 package presentation.component.choosewindow;
 
-import bl_stub.CommodityBL_stub;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import blservice.CommodityBLService;
 import blservice.infoservice.GetCommodityInterface;
+import businesslogic.CommodityBL;
+import presentation.tools.TableTools;
+import vo.CategoryVO;
 import vo.CommodityVO;
 
 public class CommodityChooseWin extends ChooseWindow {
 	
 	private CommodityVO data;
+	private CommodityBLService commodityBL;
 
 	public CommodityChooseWin() {
 		super();
@@ -15,17 +21,27 @@ public class CommodityChooseWin extends ChooseWindow {
 
 	@Override
 	public void init() {
-		CommodityBLService commodityBL = new CommodityBL_stub();
-		setTypes(new String[]{"按编号搜索", "按名称搜索"});
+		commodityBL = new CommodityBL();
+		setTypes(new String[]{"按编号搜索", "按名称搜索", "按分类搜索"});
 		table.setModel(commodityBL.update());
-		FitTableColumns();
+		TableTools.autoFit(table);
+		searchTypeBox.addItemListener(e -> keyField.setEditable(searchTypeBox.getSelectedIndex()!=2));
+		keyField.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+        		CategoryVO category = new CategoryChooseWin().getCategory();
+        		if (category != null) {
+        			keyField.setText(category.getName());
+        		}
+        	}
+		});
+		
 		frame.setTitle("选择商品");
 		frame.setVisible(true);
 	}
 
 	@Override
 	protected void yesAction() {
-		GetCommodityInterface commodityInfo = new CommodityBL_stub();
+		GetCommodityInterface commodityInfo = new CommodityBL();
 		if (table.getSelectedRow() != -1) {
 			data = commodityInfo.getCommodity((String) table.getValueAt(table.getSelectedRow(), 0));
 			frame.dispose();
@@ -34,5 +50,14 @@ public class CommodityChooseWin extends ChooseWindow {
 
 	public CommodityVO getCommodity() {
 		return data;
+	}
+
+	@Override
+	protected void searchAction() {
+		if ("".equals(keyField.getText())) table.setModel(commodityBL.update());
+		else if ("按编号搜索".equals(searchTypeBox.getSelectedItem())) table.setModel(commodityBL.search("按编号搜索", keyField.getText()));
+		else if ("按名称搜索".equals(searchTypeBox.getSelectedItem())) table.setModel(commodityBL.search("按名称搜索", keyField.getText()));
+		else if ("按分类搜索".equals(searchTypeBox.getSelectedItem())) table.setModel(commodityBL.search("按分类搜索", keyField.getText()));
+		TableTools.autoFit(table);
 	}
 }

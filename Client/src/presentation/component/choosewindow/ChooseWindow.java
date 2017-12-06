@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
-import java.util.Enumeration;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,14 +12,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
+import javax.swing.JTextField;
 
 public abstract class ChooseWindow {
 
 	protected JDialog frame = new JDialog();
 	protected JTable table = new JTable();
-	private JComboBox<String> searchTypeBox;
+	protected JComboBox<String> searchTypeBox;
+	protected JTextField keyField = new JTextField(15);
 	
 	public ChooseWindow() {
 		frame.setModal(true);
@@ -34,6 +33,9 @@ public abstract class ChooseWindow {
 		searchPanel.add(new JLabel("选择搜索方式"));
 		searchTypeBox = new JComboBox<String>();
 		searchPanel.add(searchTypeBox);
+		searchPanel.add(keyField);
+		JButton searchButton = new JButton("搜索");
+		searchPanel.add(searchButton);
 		
 		table.getTableHeader().setReorderingAllowed(false);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); 
@@ -51,31 +53,11 @@ public abstract class ChooseWindow {
 		frame.add(tablePane, BorderLayout.CENTER);
 		frame.add(southPanel, BorderLayout.SOUTH);
 		
+		searchButton.addActionListener(e -> searchAction());
 		quitButton.addActionListener(e -> frame.dispose());
 		yesButton.addActionListener(e -> yesAction());
 
 		init();
-	}
-	
-	protected void FitTableColumns(){
-	    JTableHeader header = table.getTableHeader();
-	    int rowCount = table.getRowCount();
-	
-	    Enumeration<TableColumn> columns = table.getColumnModel().getColumns();
-	    while(columns.hasMoreElements()){
-	        TableColumn column = columns.nextElement();
-	        int col = header.getColumnModel().getColumnIndex(column.getIdentifier());
-	        int width = (int)table.getTableHeader().getDefaultRenderer()
-	                 .getTableCellRendererComponent(table, column.getIdentifier()
-	                         , false, false, -1, col).getPreferredSize().getWidth();
-	        for(int row = 0; row < rowCount; row++){
-	        	int preferedWidth = (int)table.getCellRenderer(row, col).getTableCellRendererComponent(table,
-	               table.getValueAt(row, col), false, false, row, col).getPreferredSize().getWidth();
-	             width = Math.max(width, preferedWidth);
-	        }
-	        header.setResizingColumn(column); // 此行很重要
-	        column.setWidth(width + table.getIntercellSpacing().width + 15);
-		}
 	}
 		     
 	protected void setTypes(String[] searchTypes) {
@@ -90,4 +72,6 @@ public abstract class ChooseWindow {
 	abstract public void init();
 	
 	abstract protected void yesAction();
+	
+	abstract protected void searchAction();
 }
