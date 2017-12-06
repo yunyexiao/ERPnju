@@ -53,7 +53,7 @@ public class UserDs_stub implements UserDataService {
 	@Override
 	public boolean update(UserPO user) throws RemoteException {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
