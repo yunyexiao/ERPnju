@@ -38,7 +38,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 	private ReceiptBillBLService receiptBillBL = new ReceiptBillBL_stub();
 	private PaymentBillBLService paymentBillBL = new PaymentBillBL_stub();
 
-	private JTextField billIdField, customerIdField, operaterField;
+	private JTextField billIdField, customerIdField, operaterField, sumField;
 	private MyTableModel transferTable;
 	private JTable transferListTable = new JTable(transferTable);
 	private boolean editable;
@@ -75,7 +75,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 		}
 		
 		JScrollPane transferListPane;
-		JPanel headPanel, customerInfoPanel,centerPanel,transferButtonPanel;
+		JPanel headPanel, customerInfoPanel,centerPanel,transferButtonPanel, tailPanel;
 		JButton customerChooseButton, transferChooseButton, transferDeleteButton, chooseFinishButton;
 		
 		headPanel=new JPanel();
@@ -127,6 +127,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
         transferDeleteButton=new JButton("删除转账");
         transferDeleteButton.addActionListener(e -> deleteItem());
         chooseFinishButton=new JButton("选择完成");
+        chooseFinishButton.addActionListener(e -> sumUp());
 		
 		transferButtonPanel.setLayout(new TableLayout(forthPanelSize));
 		transferButtonPanel.add(transferChooseButton, "0,0");
@@ -143,14 +144,26 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 		centerPanel.add(transferListPane, "1,3");
 		centerPanel.add(transferButtonPanel, "3,3");
 		
+		tailPanel = new JPanel();
+		double[][] size = {
+                {20.0, -2.0, 10.0, 100.0, -1.0, -1.0},
+                {10.0, -1.0, 10.0, -1.0, -1.0}
+        };
+        tailPanel.setLayout(new TableLayout(size));
+		sumField = new JTextField(20);
+		sumField.setEditable(false);
+		tailPanel.add(new JLabel("总额"),"1,1");
+		tailPanel.add(sumField,"3,1");
+		
 		double mainPanelSize[][]={
 				{TableLayout.FILL},
-				{0.1, 0.1, 0.5}	
+				{0.1, 0.1, 0.5,0.1,0.15}	
 		};
 		billPanel.setLayout(new TableLayout(mainPanelSize));
 		billPanel.add(headPanel, "0,0");
 		billPanel.add(customerInfoPanel, "0,1");
 		billPanel.add(centerPanel,"0,2");
+		billPanel.add(tailPanel, "0,4");
 	}
 
 	private void addItem(){
@@ -168,6 +181,16 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
         ((MyTableModel)transferListTable.getModel()).removeRow(transferListTable.getSelectedRow());
     }
 	
+    protected void sumUp(){
+        if(!editable) return;
+	    MyTableModel model = (MyTableModel)this.transferListTable.getModel();
+        double total = 0;
+	    for(int i = 0; i < model.getRowCount(); i++){
+	        total += Double.parseDouble((String)model.getValueAt(i, 1));
+	    }
+	    sumField.setText(Double.toString(total));
+    }
+    
     private void handleChooseCustomer(){
         if(!editable) return;
         CustomerVO c = new CustomerChooseWin().getCustomer();
