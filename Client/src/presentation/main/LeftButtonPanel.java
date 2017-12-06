@@ -13,11 +13,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import bl_stub.UserBL_stub;
 import businesslogic.AccountBL;
 import businesslogic.CategoryBL;
 import businesslogic.CommodityBL;
 import businesslogic.CustomerBL;
+import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.bill.BillExaminePanel;
 import presentation.bill.BillPanel;
@@ -86,8 +86,8 @@ class LeftButtonPanel extends JPanel{
 		
 		// 修改按钮处------------------------------
 		if (type == UserType.KEEPER) {
-			addButton("商品分类管理", e -> mw.changePanel(new CategoryDataPanel(new CategoryBL(), closeListener)));
-			addButton("商品管理", e -> mw.changePanel(new CommodityDataPanel(new CommodityBL(), closeListener)));
+			addButton("商品分类管理", e -> mw.changePanel(new CategoryDataPanel(new CategoryBL(user), closeListener)));
+			addButton("商品管理", e -> mw.changePanel(new CommodityDataPanel(new CommodityBL(user), closeListener)));
 			addButton("库存查看", new Listener_stub());
 			addButton("库存盘点", new Listener_stub());
 			addButton("报溢/报损", e -> mw.changePanel(new ChangeBillPanel(user, closeListener)));
@@ -95,7 +95,7 @@ class LeftButtonPanel extends JPanel{
 			
 		}
 		else if (type == UserType.SALESMAN) {
-			addButton("客户管理", e -> mw.changePanel(new CustomerDataPanel(user, new CustomerBL(), closeListener)));
+			addButton("客户管理", e -> mw.changePanel(new CustomerDataPanel(user, new CustomerBL(user), closeListener)));
 			addButton("制定进货单", e -> mw.changePanel(new BillPanel(mw, BillType.PURCHASE, true)));
 			addButton("制定进货退货单", new Listener_stub());
 			addButton("制定销售单", e -> mw.changePanel(new SaleBillPanel(user, closeListener)));
@@ -123,7 +123,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.ADMIN) {
-			addButton("用户管理", e -> mw.changePanel(new UserDataPanel(new UserBL_stub(), closeListener)));
+			addButton("用户管理", e -> mw.changePanel(new UserDataPanel(new UserBL(user), closeListener)));
 			addButton("查看日志", e -> mw.changePanel(new LogPanel(mw)));		
 			addButton("退出", new CloseListener());
 		}

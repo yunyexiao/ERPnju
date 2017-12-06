@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import blservice.CommodityBLService;
 import blservice.infoservice.GetCategoryInterface;
+import blservice.infoservice.GetCommodityInterface;
 import businesslogic.inter.AddLogInterface;
 import dataservice.CommodityDataService;
 import ds_stub.CommodityDs_stub;
@@ -19,7 +20,7 @@ import vo.UserVO;
  * 与CategoryBL有直接依赖关系
  * @author 恽叶霄
  */
-public class CommodityBL implements CommodityBLService{
+public class CommodityBL implements CommodityBLService, GetCommodityInterface{
     
     private CommodityDataService commodityDs;
     private GetCategoryInterface categoryInfo;
@@ -34,7 +35,9 @@ public class CommodityBL implements CommodityBLService{
         addLog = new LogBL(user);
     }
 
-    @Override
+    public CommodityBL() {}
+
+	@Override
     public String getNewId() {
         try {
             return commodityDs.getNewId();
@@ -160,6 +163,17 @@ public class CommodityBL implements CommodityBLService{
                 return true;
         }
         return false;
+	}
+
+	@Override
+	public CommodityVO getCommodity(String id) {
+		try {
+			CommodityPO c = commodityDs.findById(id);
+			return new CommodityVO(c.getId(),c.getName(),c.getType(),c.getStore(),c.getCategoryId(),c.getAmount(),c.getAlarmNum(),c.getInPrice(),c.getSalePrice(),c.getRecentInPrice(),c.getRecentSalePrice());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
