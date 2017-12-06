@@ -96,6 +96,8 @@ class InputUserPanel extends JPanel {
 		
 		int length = user.length;
 		if(length > 2 && user[2] != null) {
+        	if ("财务人员".equals(user[2])) accountantType();
+        	if ("进货销售人员".equals(user[2])) accountantType();
 		    Enumeration<AbstractButton> eb = typeButtonGroup.getElements();
 		    while(eb.hasMoreElements()){
 		        AbstractButton b = eb.nextElement(); 
