@@ -11,7 +11,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 import blservice.CategoryBLService;
-import blservice.CommodityBLService;
+import blservice.infoservice.GetCommodityInterface;
 import businesslogic.CommodityBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
@@ -25,7 +25,7 @@ public class CategoryDataPanel implements PanelInterface{
     private JTree tree;
 
     public CategoryDataPanel(CategoryBLService categoryBl, ActionListener closeListener) {
-    	CommodityBLService commodityBL = new CommodityBL();
+    	GetCommodityInterface commodityBL = new CommodityBL();
     	
         tree = new JTree(categoryBl.getModel());
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);//…Ë÷√µ•—°
