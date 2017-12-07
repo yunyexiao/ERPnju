@@ -38,7 +38,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 	private ReceiptBillBLService receiptBillBL = new ReceiptBillBL_stub();
 	private PaymentBillBLService paymentBillBL = new PaymentBillBL_stub();
 
-	private JTextField billIdField, customerIdField, operaterField, sumField;
+	private JTextField billIdField, customerIdField, customerNameField, operaterField, sumField;
 	private JTable transferListTable;
 	private boolean editable;
 	private ButtonGroup typeButtonGroup;
@@ -85,12 +85,15 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 		billIdField = new JTextField(10);
 		operaterField = new JTextField(10);
 		customerIdField = new JTextField(10);
+		customerNameField = new JTextField(10);
 		customerIdField.setText("编号");
-		
+		customerNameField.setText("姓名");
+
 		billIdField.setEditable(false);
 		operaterField.setEditable(false);
 		customerIdField.setEditable(false);
-		
+		customerNameField.setEditable(false);
+
 		headPanel.setLayout(new TableLayout(firstPanelSize));
 		headPanel.add(new JLabel("单据编号"),"1,1");
 		headPanel.add(billIdField,"3,1");
@@ -99,7 +102,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 		
 		customerInfoPanel=new JPanel();
 		double secondPanelSize[][]={
-				{20,45,5,70,12,100,5,60,TableLayout.FILL},
+				{20,45,5,70,12,70,12,70,60,TableLayout.FILL},
 				{8,25,TableLayout.FILL}
 		};
 		customerChooseButton=new JButton("选择");	
@@ -108,7 +111,8 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 		customerInfoPanel.add(new JLabel("客户"),"1,1");
 		customerInfoPanel.add(customerIdField,"3,1");
 		customerInfoPanel.add(new JLabel("--"),"4,1");
-		customerInfoPanel.add(customerChooseButton,"5,1");
+		customerInfoPanel.add(customerNameField,"5,1");
+		customerInfoPanel.add(customerChooseButton,"7,1");
 		
 		String[] transferListAttributes={"银行账户", "转账金额", "备注"};
 		String[][] transferInfo={{"mayun0001","100000","赎金"}};
@@ -194,6 +198,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
         CustomerVO c = new CustomerChooseWin().getCustomer();
         if(c == null) return;
         customerIdField.setText(c.getId());
+        customerNameField.setText(c.getName());
     }
 
 	protected void clear(){
