@@ -22,5 +22,7 @@ public interface SalesBillBLService extends BillBLService {
 	 */
 	public SalesBillVO getBill(String id);
 	
+	public MyTableModel search(String type, String key);
+	
 	public MyTableModel getFinishedBills();
 }

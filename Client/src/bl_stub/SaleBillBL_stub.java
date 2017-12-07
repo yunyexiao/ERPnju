@@ -42,4 +42,9 @@ public class SaleBillBL_stub implements SalesBillBLService {
         return null;
     }
 
+    @Override
+    public MyTableModel search(String type, String key) {
+        return null;
+    }
+
 }

@@ -8,11 +8,11 @@ import bl_stub.CustomerBL_stub;
 import blservice.billblservice.SalesBillBLService;
 import dataservice.SalesBillDataService;
 import ds_stub.SalesBillDs_stub;
-import po.billpo.BillPO;
 import po.billpo.SalesBillItemsPO;
 import po.billpo.SalesBillPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
+import vo.billvo.BillVO;
 import vo.billvo.SalesBillVO;
 
 /**
@@ -83,9 +83,20 @@ public class SalesBillBL implements SalesBillBLService {
     
     @Override
     public MyTableModel getFinishedBills(){
-        // TODO the field is unknown
-        try {
-            ArrayList<SalesBillPO> bills = saleBillDs.getBillsBy("", BillPO.PASS + "", false);
+        return search("按状态搜索", BillVO.PASS + "");
+    }
+
+    @Override
+    public MyTableModel search(String type, String key) {
+        try{
+            String field = null;
+            // TODO generate the field
+            if("按编号搜索".equals(type)){
+                field = "SBID";
+            }else if("按时间搜索".equals(type)){
+                field = "generateTime";
+            }
+            ArrayList<SalesBillPO> bills = saleBillDs.getBillsBy(field, key, true);
             String[] columnNames = {"制定时间", "单据编号"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < bills.size(); i++){
@@ -94,7 +105,7 @@ public class SalesBillBL implements SalesBillBLService {
                 data[i][1] = "XSD-" + salesBill.getDate() + "-" + salesBill.getId();
             }
             return new MyTableModel(data, columnNames);
-        } catch (RemoteException e) {
+        }catch(RemoteException e){
             e.printStackTrace();
             return null;
         }

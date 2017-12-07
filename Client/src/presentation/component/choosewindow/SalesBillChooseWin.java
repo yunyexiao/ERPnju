@@ -44,8 +44,13 @@ public class SalesBillChooseWin extends ChooseWindow {
 
 	@Override
 	protected void searchAction() {
-		// TODO Auto-generated method stub
-		
+		String type = searchTypeBox.getSelectedItem().toString()
+		     , key = keyField.getText();
+		if(key.length() == 0){
+		    table.setModel(salesBillBl.getFinishedBills());
+		} else {
+		    table.setModel(salesBillBl.search(type, key));
+		}
 	}
 
 }
