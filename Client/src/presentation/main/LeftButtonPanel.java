@@ -27,6 +27,7 @@ import presentation.billui.PurchaseReturnBillPanel;
 import presentation.billui.ReceiptOrPaymentBillPanel;
 import presentation.billui.SalesBillPanel;
 import presentation.billui.SalesReturnBillPanel;
+import presentation.component.InfoAdapter;
 import presentation.component.Listener_stub;
 import presentation.dataui.accountui.AccountDataPanel;
 import presentation.dataui.categoryui.CategoryDataPanel;
@@ -98,7 +99,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("客户管理", e -> mw.changePanel(new CustomerDataPanel(user, new CustomerBL(user), closeListener)));
 			addButton("制定进货单", e -> mw.changePanel(new PurchaseBillPanel(mainWindow.getUser(), closeListener)));
 			addButton("制定进货退货单", e -> mw.changePanel(new PurchaseReturnBillPanel(mainWindow.getUser(), closeListener)));
-			addButton("制定销售单", e -> mw.changePanel(new SaleBillPanel(user, closeListener)));
+			addButton("制定销售单", e -> mw.changePanel(new SalesBillPanel(user, closeListener)));
 			addButton("制定销售退货单", e -> mw.changePanel(new SalesReturnBillPanel(mainWindow.getUser(), closeListener)));
 			addButton("退出", new CloseListener());
 		}

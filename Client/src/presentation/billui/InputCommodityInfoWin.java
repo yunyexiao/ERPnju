@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import layout.TableLayout;
-import presentation.billui.choosewindow.CommodityChooseWin;
+import presentation.component.choosewindow.CommodityChooseWin;
 import presentation.tools.IntField;
 import vo.CommodityVO;
 
