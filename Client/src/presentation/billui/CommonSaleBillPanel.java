@@ -88,6 +88,8 @@ public abstract class CommonSaleBillPanel extends BillPanel {
     
     abstract protected String getTableTitle();
     
+    abstract protected int getCustomerType();
+    
     private void initNorth(){
         double[][] size = {{-1.0}, {-1.0, -1.0}};
         JPanel northPanel = new JPanel(new TableLayout(size));
@@ -156,19 +158,16 @@ public abstract class CommonSaleBillPanel extends BillPanel {
     private void initEast(){
         double size[][]={
                 {-1.0,TableLayout.FILL},
-                {40.0,25,10,25,10,25,10,TableLayout.FILL},
+                {40.0,25,10,25,10,TableLayout.FILL},
         };
         JPanel goodsButtonPanel = new JPanel(new TableLayout(size));
         JButton goodsChooseButton=new JButton("选择商品");
         goodsChooseButton.addActionListener(e -> addItem());
         JButton goodsDeleteButton=new JButton("删除商品");
         goodsDeleteButton.addActionListener(e -> deleteItem());
-        // TODO seemingly useless button here
-        JButton chooseFinishButton=new JButton("选择完成");
 
         goodsButtonPanel.add(goodsChooseButton, "0,1");
         goodsButtonPanel.add(goodsDeleteButton, "0,3");
-        goodsButtonPanel.add(chooseFinishButton, "0,5");
 
         billPanel.add(goodsButtonPanel, BorderLayout.EAST);
     }
@@ -193,7 +192,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
     private void addItem(){
         if(!editable) return;
         String[] newRow = new InputCommodityInfoWin().getRowData();
-        if(newRow == null) return;
+        if(newRow == null || newRow[5].equals("0")) return;
         MyTableModel model = (MyTableModel) goodsListTable.getModel();
         model.addRow(newRow);
         sumUp();
@@ -209,7 +208,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 
     protected void handleChooseCustomer(){
         if(!editable) return;
-        CustomerVO c = new CustomerChooseWin().getCustomer();
+        CustomerVO c = new CustomerChooseWin(getCustomerType()).getCustomer();
         if(c == null) return;
         customerIdField.setText(c.getId());
         customerNameField.setText(c.getName());
@@ -241,9 +240,10 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 
     protected void setTime(){
         Calendar c = Calendar.getInstance();
-        String time = c.get(Calendar.HOUR_OF_DAY) + ":"
-                    + c.get(Calendar.MINUTE) + ":"
-                    + c.get(Calendar.SECOND);
+        int hour = c.get(Calendar.HOUR_OF_DAY),
+            minute = c.get(Calendar.MINUTE),
+            second = c.get(Calendar.SECOND);
+        String time = String.format("%02d:%02d:%02d", hour, minute, second);
         timeLabel.setText(time);
     }
 

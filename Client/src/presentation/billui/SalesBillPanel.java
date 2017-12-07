@@ -48,6 +48,11 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		}
 	}
 	
+    @Override
+    protected int getCustomerType(){
+        return 1;
+    }
+
 	@Override
 	protected ActionListener getNewActionListener() {
 		return e -> {
@@ -56,6 +61,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
             clear();
             billIdField.setText(saleBillBL.getNewId());
             operatorField.setText(this.getUser().getName());
+            setTime();
 		};
 	}
 

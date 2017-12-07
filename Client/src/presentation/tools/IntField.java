@@ -1,14 +1,10 @@
 package presentation.tools;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
-import javax.swing.JTextField;
 import javax.swing.text.Document;
 
 
 @SuppressWarnings("serial")
-public class IntField extends JTextField {
+public class IntField extends MyField{
     
     private int defaultValue;
     
@@ -31,15 +27,6 @@ public class IntField extends JTextField {
     public IntField(Document doc, int value, int columns, int defaultValue){
         super(doc, value + "", columns);
         this.defaultValue = defaultValue;
-        this.addKeyListener(new KeyAdapter(){
-            @Override
-            public void keyTyped(KeyEvent e){
-                char c = e.getKeyChar();
-                if(!valid(c)){
-                    e.consume();
-                }
-            }
-        });
     }
     
     public int getValue(){
@@ -68,7 +55,8 @@ public class IntField extends JTextField {
         }
     }
 
-    private boolean valid(char c){
+    @Override
+    protected boolean valid(char c){
         if(super.getText().length() > 8){
             // exceeded the limit of int
             return false;
@@ -80,7 +68,12 @@ public class IntField extends JTextField {
             // seeable chars
             return false;
         }
-        return true;
+        return false;
     }
 
+    @Override
+    protected void pasteAction() {
+        // no paste action
+    }
+    
 }

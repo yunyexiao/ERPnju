@@ -41,6 +41,11 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     }
 
     @Override
+    protected int getCustomerType(){
+        return 0;
+    }
+
+    @Override
     protected ActionListener getNewActionListener() {
         return e -> {
             int response = JOptionPane.showConfirmDialog(
@@ -49,6 +54,7 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
             clear();
             billIdField.setText(purchaseReturnBl.getNewId());
             operatorField.setText(getUser().getName());
+            setTime();
         };
     }
 

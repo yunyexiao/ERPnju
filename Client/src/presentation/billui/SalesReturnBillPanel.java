@@ -43,6 +43,11 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     }
     
     @Override
+    protected int getCustomerType(){
+        return 1;
+    }
+
+    @Override
     protected JPanel getCustomerPanel(){
         customerIdField = new JTextField(10);
         customerIdField.setEditable(false);
@@ -118,6 +123,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
             clear();
             billIdField.setText(saleReturnBl.getNewId());
             operatorField.setText(getUser().getName());
+            setTime();
         };
     }
 

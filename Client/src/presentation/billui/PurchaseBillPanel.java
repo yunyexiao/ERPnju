@@ -38,6 +38,11 @@ public class PurchaseBillPanel extends CommonSaleBillPanel {
     protected String getTableTitle() {
         return "进库商品列表";
     }
+    
+    @Override
+    protected int getCustomerType(){
+        return 0;
+    }
 
     @Override
     protected ActionListener getNewActionListener() {
@@ -48,6 +53,7 @@ public class PurchaseBillPanel extends CommonSaleBillPanel {
             clear();
             billIdField.setText(purchaseBl.getNewId());
             operatorField.setText(this.getUser().getName());
+            setTime();
         };
     }
 

@@ -9,15 +9,18 @@ import vo.CustomerVO;
 public class CustomerChooseWin extends ChooseWindow {
     
     private CustomerVO data;
+    private int type;
 
-    public CustomerChooseWin() {
+    public CustomerChooseWin(int type) {
         super();
+        this.type = type;
     }
 
     @Override
     public void init() {
         CustomerBLService customerBl = new CustomerBL_stub();
         setTypes(new String[]{"按编号搜索", "按名称搜索"});
+        // TODO show different types of customers
         table.setModel(customerBl.update());
         TableTools.autoFit(table);
         frame.setTitle("选择客户");
