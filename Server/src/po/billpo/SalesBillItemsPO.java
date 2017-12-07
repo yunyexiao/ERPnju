@@ -10,28 +10,20 @@ import java.io.Serializable;
  */
 
 public class SalesBillItemsPO implements Serializable{
-	
 	private static final long serialVersionUID = -7983830700017283896L;
 	
-	private String comId, comName, comRemark;
+	private String comId, comRemark;
 	private int comQuantity;
 	private double comPrice,comSum;
 	
-	public SalesBillItemsPO(String comId, String comName, String comRemark, int comQuantity, double comPrice,
-			double comSum) {
+    public SalesBillItemsPO(String comId, String comRemark, int comQuantity, double comPrice, double comSum) {
 		super();
 		this.comId = comId;
-		this.comName = comName;
 		this.comRemark = comRemark;
 		this.comQuantity = comQuantity;
 		this.comPrice = comPrice;
 		this.comSum = comSum;
 	}
-
-	
-	
-	public SalesBillItemsPO(){};
-	
 	
 	
 	public void setComId(String id){
@@ -74,15 +66,4 @@ public class SalesBillItemsPO implements Serializable{
 		return comPrice;
 	}
 
-
-
-	public String getComName() {
-		return comName;
-	}
-
-
-
-	public void setComName(String comName) {
-		this.comName = comName;
-	}
 }

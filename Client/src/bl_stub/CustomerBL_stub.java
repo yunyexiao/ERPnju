@@ -1,10 +1,11 @@
 package bl_stub;
 
 import blservice.CustomerBLService;
+import blservice.infoservice.GetCustomerInterface;
 import presentation.component.MyTableModel;
 import vo.CustomerVO;
 
-public class CustomerBL_stub implements CustomerBLService {
+public class CustomerBL_stub implements CustomerBLService, GetCustomerInterface {
 
 	@Override
 	public boolean delete(String id) {
@@ -46,5 +47,11 @@ public class CustomerBL_stub implements CustomerBLService {
 	public String getNewId() {
 		return "0003";
 	}
+
+    @Override
+    public CustomerVO getCustomer(String id) {
+        return new CustomerVO("JHS-001","ÇåÁ÷", 1, 5,""
+            ,"deep dark ¡á fantasy","","",4000,0,0,"Van");
+    }
 	
 }

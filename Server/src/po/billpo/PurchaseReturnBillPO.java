@@ -11,22 +11,19 @@ import java.util.ArrayList;
  */
 
 public class PurchaseReturnBillPO extends BillPO implements Serializable{
-
 /**
 	 * 
 	 */
 	private static final long serialVersionUID = 2578319197720284508L;
 	
-	private String  supplierId, supplierName, remark;
+	private String  supplierId,remark;
 	private double sum;
 	private ArrayList<PurchaseReturnBillItemsPO> purchaseReturnBillItems;
 	
-	public PurchaseReturnBillPO(String date, String time, String id, String operatorId, String operatorName, int state,
-			String supplierId, String supplierName, String remark, double sum,
-			ArrayList<PurchaseReturnBillItemsPO> purchaseReturnBillItems) {
-		super(date, time, id, operatorId, operatorName, state);
+	public PurchaseReturnBillPO(String date, String time, String id, String operatorId, int state, String supplierId,
+			String remark, double sum, ArrayList<PurchaseReturnBillItemsPO> purchaseReturnBillItems) {
+		super(date, time, id, operatorId, state);
 		this.supplierId = supplierId;
-		this.supplierName = supplierName;
 		this.remark = remark;
 		this.sum = sum;
 		this.purchaseReturnBillItems = purchaseReturnBillItems;
@@ -37,12 +34,6 @@ public class PurchaseReturnBillPO extends BillPO implements Serializable{
 	}
 	public void setSupplierId(String supplierId) {
 		this.supplierId = supplierId;
-	}
-	public String getSupplierName() {
-		return supplierName;
-	}
-	public void setSupplierName(String supplierName) {
-		this.supplierName = supplierName;
 	}
 	
 	public String getRemark() {

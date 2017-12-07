@@ -4,9 +4,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
-import bl_stub.PurchaseBillBL_stub;
-import blservice.billblservice.SaleBillBLService;
+import blservice.billblservice.PurchaseBillBLService;
+import businesslogic.PurchaseBillBL;
+import presentation.component.MyTableModel;
 import vo.UserVO;
+import vo.billvo.BillVO;
+import vo.billvo.PurchaseBillVO;
 
 /**
  * 进货单的面板
@@ -14,18 +17,18 @@ import vo.UserVO;
  */
 public class PurchaseBillPanel extends CommonSaleBillPanel {
     
-    private SaleBillBLService purchaseBl = new PurchaseBillBL_stub();
+    private PurchaseBillBLService purchaseBl = new PurchaseBillBL();
 
     public PurchaseBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
         this.billIdField.setText(purchaseBl.getNewId());
-        this.operaterField.setText(user.getName());
+        this.operatorField.setText(user.getId());
     }
     
-//    public ImportBillPanel(UserVO user, ActionListener closeListener, ImportBillVO importBill){
-//        super(user, closeListener, importBill);
-//    }
-//
+    public PurchaseBillPanel(UserVO user, ActionListener closeListener, PurchaseBillVO purchaseBill){
+        super(user, closeListener, purchaseBill);
+    }
+
     @Override
     protected String getObjectType() {
         return "供应商";
@@ -33,49 +36,64 @@ public class PurchaseBillPanel extends CommonSaleBillPanel {
 
     @Override
     protected String getTableTitle() {
-        return "进货商品列表";
+        return "进库商品列表";
     }
 
     @Override
     protected ActionListener getNewActionListener() {
         return e -> {
-            int response = JOptionPane.showConfirmDialog(null, "确认要新建一张销售单吗？", "提示", JOptionPane.YES_NO_OPTION);
+            int response = JOptionPane.showConfirmDialog(
+                null, "确认要新建一张进货单吗？", "提示", JOptionPane.YES_NO_OPTION);
             if(response == 1)return;
-            initBillPanel();
+            clear();
             billIdField.setText(purchaseBl.getNewId());
-            operaterField.setText(this.getUser().getName());
+            operatorField.setText(this.getUser().getName());
         };
     }
 
     @Override
     protected ActionListener getSaveActionListener() {
         return e ->{
-            // TODO
-//            PurchaseBillVO bill = getBill(BillVO.DRAFT);
-//            if(bill == null){
-//                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-//                return;
-//            }
-//            purchaseBl.saveBill(bill);
+            if(!editable) return;
+            PurchaseBillVO bill = getBill(BillVO.SAVED);
+            if(bill == null){
+                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
+                return;
+            }
+            if(purchaseBl.saveBill(bill)){
+                JOptionPane.showMessageDialog(null, "单据已保存。");
+            }
         };
     }
 
     @Override
     protected ActionListener getCommitActionListener() {
         return e ->{
-            // TODO
+            if(!editable) return;
+            PurchaseBillVO bill = getBill(BillVO.COMMITED);
+            if(bill == null){
+                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
+                return;
+            }
+            if(purchaseBl.saveBill(bill)){
+                JOptionPane.showMessageDialog(null, "单据已提交。");
+            }
         };
     }
 
-    @Override
-    protected boolean isCorrectable() {
-        return true;
+    private PurchaseBillVO getBill(int state){
+        if(!isCorrectable()) return null;
+        String date = getDate();
+        String time = getTime();
+        String id = getId()
+             , operater = operatorField.getText()
+             , customerId = customerIdField.getText()
+             , customerName = customerNameField.getText()
+             , remark = remarkField.getText();
+        MyTableModel model = (MyTableModel)goodsListTable.getModel();
+        double sum = Double.parseDouble(sumField.getText());
+        return new PurchaseBillVO(date, time, id, operater, state
+            , customerId, customerName, model, remark, sum);
     }
 
-//    private PurchaseBillVO getBill(int state){
-//        if(!isCorrectable()) return null;
-//        // TODO
-//        return null;
-//    }
-//
 }

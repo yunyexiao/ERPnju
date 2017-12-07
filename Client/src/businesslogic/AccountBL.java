@@ -70,7 +70,7 @@ public class AccountBL implements AccountBLService, GetAccountInterface {
 				data[i] = getLine(list.get(i));
 			}
 			MyTableModel searchTable = new MyTableModel (data, tableHeader);
-			addLog.add("查找账户", "查询条件：" + type + "	查询关键词："+ key);
+			if (addLog != null) addLog.add("查找账户", "查询条件：" + type + "	查询关键词："+ key);
 			return searchTable;
 		} catch (Exception e) {
 			return null;

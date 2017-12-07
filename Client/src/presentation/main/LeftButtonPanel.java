@@ -20,12 +20,13 @@ import businesslogic.CustomerBL;
 import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.bill.BillExaminePanel;
-import presentation.bill.BillPanel;
 import presentation.billui.CashCostBillPanel;
 import presentation.billui.ChangeBillPanel;
+import presentation.billui.PurchaseBillPanel;
+import presentation.billui.PurchaseReturnBillPanel;
 import presentation.billui.ReceiptOrPaymentBillPanel;
-import presentation.billui.SaleBillPanel;
-import presentation.component.InfoAdapter;
+import presentation.billui.SalesBillPanel;
+import presentation.billui.SalesReturnBillPanel;
 import presentation.component.Listener_stub;
 import presentation.dataui.accountui.AccountDataPanel;
 import presentation.dataui.categoryui.CategoryDataPanel;
@@ -33,7 +34,6 @@ import presentation.dataui.commodityui.CommodityDataPanel;
 import presentation.dataui.customerui.CustomerDataPanel;
 import presentation.dataui.userui.UserDataPanel;
 import presentation.logui.LogPanel;
-import vo.BillType;
 import vo.UserType;
 import vo.UserVO;
 
@@ -96,10 +96,10 @@ class LeftButtonPanel extends JPanel{
 		}
 		else if (type == UserType.SALESMAN) {
 			addButton("客户管理", e -> mw.changePanel(new CustomerDataPanel(user, new CustomerBL(user), closeListener)));
-			addButton("制定进货单", e -> mw.changePanel(new BillPanel(mw, BillType.PURCHASE, true)));
-			addButton("制定进货退货单", new Listener_stub());
+			addButton("制定进货单", e -> mw.changePanel(new PurchaseBillPanel(mainWindow.getUser(), closeListener)));
+			addButton("制定进货退货单", e -> mw.changePanel(new PurchaseReturnBillPanel(mainWindow.getUser(), closeListener)));
 			addButton("制定销售单", e -> mw.changePanel(new SaleBillPanel(user, closeListener)));
-			addButton("制定销售退货单", new Listener_stub());
+			addButton("制定销售退货单", e -> mw.changePanel(new SalesReturnBillPanel(mainWindow.getUser(), closeListener)));
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.ACCOUNTANT) {

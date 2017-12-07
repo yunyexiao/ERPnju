@@ -76,7 +76,7 @@ public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 				data[i] = getLine(list.get(i));
 			}
 			MyTableModel searchTable = new MyTableModel (data, tableHeader);
-			addLog.add("ËÑË÷¿Í»§", "ËÑË÷·½Ê½£º"+type+"  ËÑË÷¹Ø¼ü´Ê£º"+key);
+			if (addLog != null) addLog.add("ËÑË÷¿Í»§", "ËÑË÷·½Ê½£º"+type+"  ËÑË÷¹Ø¼ü´Ê£º"+key);
 			return searchTable;
 		} catch (Exception e) {
 			return null;

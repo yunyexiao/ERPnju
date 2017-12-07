@@ -24,7 +24,8 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 			ResultSet r = s.executeQuery("SELECT AccountID FROM AccountInfo;");
 			while(r.next()){
 				int temp = 0;
-				temp = Integer.valueOf(r.getString("AccountID"));
+				//temp = Integer.valueOf(r.getString("AccountID"));
+				temp=r.getInt("AccountID");
 				if(temp>max)max = temp;
 			}
 		}catch(Exception e){
@@ -48,7 +49,8 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 			 		+ "WHERE AccountID = " + id +";");
 			 while(r.next()){
 				 accountName = r.getString("AccountName");
-				 accountMoney = Double.valueOf(r.getString("AccountMoney"));
+				 //accountMoney = Double.valueOf(r.getString("AccountMoney"));
+				 accountMoney = r.getDouble("AccountMoney");
 			 }
 			 
 		}catch(Exception e){
@@ -71,7 +73,7 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
 			int r = s.executeUpdate("INSERT INTO AccountInfo VALUES"
-					+ "('"+accountId+"','"+accountName+"','"+accountMoney+"')");
+					+ "('"+accountId+"','"+accountName+"','"+accountMoney+1+"')");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -84,7 +86,7 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 	public boolean delete(String id) throws RemoteException {
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
-			int r = s.executeUpdate("DELETE FROM AccountInfo WHERE AccountID = "+id+";");
+			int r = s.executeUpdate("UPDATE AccountInfo SET AccountIsExist=0 WHERE AccountID="+id+";");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -121,14 +123,21 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 			 while(r.next()){
 				 String accountId = null,accountName = null;
 				 double accountMoney = 0.0;
+				 boolean accountIsExist=false;
 				 AccountPO apo = new AccountPO();
 				 accountId = r.getString("AccountID");
 				 accountName = r.getString("AccountName");
-				 accountMoney = Double.valueOf(r.getString("AccountMoney"));
+				 //accountMoney = Double.valueOf(r.getString("AccountMoney"));
+				 accountMoney = r.getDouble("AccountMoney");
+				 accountIsExist=r.getBoolean("AccountIsExist");
+				 
+				 if(accountIsExist){
 				 apo.setId(accountId);
 				 apo.setName(accountName);
 				 apo.setMoney(accountMoney);
+				 
 				 apos.add(apo);
+				 }
 			 }
 		}catch(Exception e){
 			e.printStackTrace();
@@ -138,8 +147,66 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 	}
 
 	@Override
-	public ArrayList<AccountPO> getAccountsBy(String field, String content, boolean isfuzzy) throws RemoteException {
-		return null;
+	public ArrayList<AccountPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+		ArrayList<AccountPO> apos = new ArrayList<AccountPO>();
+		if(isfuzzy){
+			try{
+				 Statement s = DataHelper.getInstance().createStatement();
+				 ResultSet r = s.executeQuery("SELECT * FROM AccountInfo WHERE "+field+"LIKE '%"+content+"%';");
+				 while(r.next()){
+					 String accountId = null,accountName = null;
+					 double accountMoney = 0.0;
+					 boolean accountIsExist=false;
+					 AccountPO apo = new AccountPO();
+					 accountId = r.getString("AccountID");
+					 accountName = r.getString("AccountName");
+					 //accountMoney = Double.valueOf(r.getString("AccountMoney"));
+					 accountMoney = r.getDouble("AccountMoney");
+					 accountIsExist=r.getBoolean("AccountIsExist");
+					 
+					 if(accountIsExist){
+					 apo.setId(accountId);
+					 apo.setName(accountName);
+					 apo.setMoney(accountMoney);
+					 
+					 apos.add(apo);
+					 }
+				 }
+			}catch(Exception e){
+				e.printStackTrace();
+				return null;
+			}
+		}
+		else if(!isfuzzy){
+			try{
+				 Statement s = DataHelper.getInstance().createStatement();
+				 ResultSet r = s.executeQuery("SELECT * FROM AccountInfo WHERE "+field+"LIKE '"+content+"';");
+				 while(r.next()){
+					 String accountId = null,accountName = null;
+					 double accountMoney = 0.0;
+					 boolean accountIsExist=false;
+					 AccountPO apo = new AccountPO();
+					 accountId = r.getString("AccountID");
+					 accountName = r.getString("AccountName");
+					 //accountMoney = Double.valueOf(r.getString("AccountMoney"));
+					 accountMoney = r.getDouble("AccountMoney");
+					 accountIsExist=r.getBoolean("AccountIsExist");
+					 
+					 if(accountIsExist){
+					 apo.setId(accountId);
+					 apo.setName(accountName);
+					 apo.setMoney(accountMoney);
+					 
+					 apos.add(apo);
+					 }
+				 }
+			}catch(Exception e){
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
+		return apos;
 	}
 
 }
