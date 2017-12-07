@@ -171,6 +171,8 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     @Override
     protected void addItem(){
         if(!editable) return;
+        // TODO change the window
+        // use the selected sales bill to initialize it
         String[] newRow = new InputCommodityInfoWin().getRowData();
         if(newRow == null || newRow[5].equals("0")) return;
         // check if the sales bill contains that commodity

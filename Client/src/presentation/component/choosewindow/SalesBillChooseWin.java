@@ -3,6 +3,8 @@ package presentation.component.choosewindow;
 import java.awt.Component;
 import java.awt.Container;
 
+import javax.swing.JLabel;
+
 import blservice.billblservice.SalesBillBLService;
 import businesslogic.SalesBillBL;
 import presentation.component.DateChooser;
@@ -15,7 +17,8 @@ public class SalesBillChooseWin extends ChooseWindow {
     private String[] data;
     private SalesBillBLService salesBillBl;
     private Container searchPanel;
-    private DateChooser dateChooser;
+    private DateChooser dateFromChooser, dateToChooser;
+    private JLabel dateFromLabel, dateToLabel;
     
     public SalesBillChooseWin(){
         super();
@@ -24,7 +27,8 @@ public class SalesBillChooseWin extends ChooseWindow {
     @Override
     public void init() {
         searchPanel = searchTypeBox.getParent();
-        dateChooser = DateChooser.getInstance();
+        dateFromLabel = new JLabel("开始日期");
+        dateToLabel = new JLabel("结束日期");
 
         salesBillBl = new SalesBillBL();
         setTypes(new String[]{"按编号搜索", "按时间搜索"});
@@ -35,6 +39,11 @@ public class SalesBillChooseWin extends ChooseWindow {
         TableTools.autoFit(table);
         frame.setTitle("选择源销售单");
         frame.setVisible(true);
+        initDateLabels();
+    }
+
+    public String[] getSalesBillInfo(){
+        return data;
     }
 
     @Override
@@ -51,10 +60,6 @@ public class SalesBillChooseWin extends ChooseWindow {
         }
     }
     
-    public String[] getSalesBillInfo(){
-        return data;
-    }
-
 	@Override
 	protected void searchAction() {
 		String type = searchTypeBox.getSelectedItem().toString()
@@ -64,25 +69,51 @@ public class SalesBillChooseWin extends ChooseWindow {
 		} else {
 		    table.setModel(salesBillBl.search(type, key));
 		}
+		TableTools.autoFit(table);
+	}
+
+	private void initDateLabels(){
+        dateFromChooser = DateChooser.getInstance();
+        dateToChooser = DateChooser.getInstance();
+        dateFromChooser.register(dateFromLabel);
+        dateToChooser.register(dateToLabel);
+        
+        int x = keyField.getLocation().x,
+               y = keyField.getLocation().y,
+               width = keyField.getWidth() / 2,
+               height = keyField.getHeight();
+        System.out.println("" + x + y + width + height);
+        dateFromLabel.setLocation(x, y);
+        dateFromLabel.setSize(width, height);
+        dateToLabel.setLocation(x + width, y);
+        dateToLabel.setSize(width, height);
 	}
 
 	private void handleItemChanged(){
 	    String selected = searchTypeBox.getItemAt(searchTypeBox.getSelectedIndex());
         Component[] components = searchPanel.getComponents();
 	    if(selected.equals("按编号搜索")){
-	        int index = indexOf(components, dateChooser);
+	        int index = indexOf(components, dateFromLabel);
 	        if(index < 0) return;
 	        keyField.setText("");
-	        searchPanel.remove(dateChooser);
+	        searchPanel.remove(dateFromLabel);
+	        searchPanel.remove(dateToLabel);
 	        searchPanel.add(keyField, index);
 	    } else {
 	        int index = indexOf(components, keyField);
 	        if(index < 0) return;
-	        dateChooser = DateChooser.getInstance();
+//	        dateFromChooser = DateChooser.getInstance();
+//	        dateToChooser = DateChooser.getInstance();
 	        searchPanel.remove(keyField);
-	        searchPanel.add(dateChooser, index);
+	        searchPanel.add(dateFromLabel);
+	        searchPanel.add(dateToLabel);
+            dateFromLabel.validate();
+            dateToLabel.validate();
 	    }
 	    searchPanel.repaint();
+	    for(Component c: searchPanel.getComponents()){
+	        System.out.println(c);
+	    }
 	}
 	
 	private int indexOf(Component[] components, Component c){
