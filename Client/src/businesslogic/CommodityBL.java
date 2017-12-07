@@ -4,13 +4,16 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import blservice.CommodityBLService;
+import blservice.infoservice.GetCategoryInterface;
 import blservice.infoservice.GetCommodityInterface;
+import businesslogic.inter.AddLogInterface;
 import dataservice.CommodityDataService;
 import ds_stub.CommodityDs_stub;
 import po.CategoryPO;
 import po.CommodityPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
+import vo.UserVO;
 
 /**
  * 商品模块的BL<br>
@@ -19,16 +22,19 @@ import vo.CommodityVO;
  */
 public class CommodityBL implements CommodityBLService, GetCommodityInterface{
     
-    private CommodityDataService commodityDs;
+    private CommodityDataService commodityDs = new CommodityDs_stub();//commodityDs = Rmi.getRemote(CommodityDataService.class);
+    private GetCategoryInterface categoryInfo = new CategoryBL();
+    private AddLogInterface addLog;
     private static final String[] columnNames = {"商品编号", "名称", "型号", "库存", "数量", "警戒值"
             , "所属分类编号", "所属分类名称", "进价", "售价", "最近进价", "最近售价"};
 
-    public CommodityBL() {
-        //commodityDs = RemoteHelper.getInstance().getCommodityDataService();
-        commodityDs = new CommodityDs_stub();
+    public CommodityBL(UserVO user) {
+        addLog = new LogBL(user);
     }
 
-    @Override
+    public CommodityBL() {}
+
+	@Override
     public String getNewId() {
         try {
             return commodityDs.getNewId();
@@ -41,7 +47,11 @@ public class CommodityBL implements CommodityBLService, GetCommodityInterface{
     @Override
     public boolean delete(String id) {
         try{
-            return commodityDs.delete(id);
+            if (commodityDs.delete(id)) {
+            	addLog.add("删除商品", "删除的商品ID："+id);
+            	return true;
+            }
+            return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -65,6 +75,7 @@ public class CommodityBL implements CommodityBLService, GetCommodityInterface{
             for(int i = 0; i < list.size(); i++){
                 data[i] = getLine(list.get(i));
             }
+            if (addLog != null) addLog.add("搜索商品", "搜索方式："+type+"  搜索关键词："+key);
             return new MyTableModel(data, columnNames);
         }catch(RemoteException e){
             e.printStackTrace();
@@ -90,7 +101,11 @@ public class CommodityBL implements CommodityBLService, GetCommodityInterface{
     @Override
     public boolean add(CommodityVO commodity) {
         try{
-            return commodityDs.add(commodity.toPO());
+            if (commodityDs.add(commodity.toPO())) {
+            	addLog.add("新增商品", "新增商品的ID："+commodity.getId()+"商品名称："+commodity.getName());
+            	return true;
+            }
+            return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -100,7 +115,11 @@ public class CommodityBL implements CommodityBLService, GetCommodityInterface{
     @Override
     public boolean change(CommodityVO commodity) {
         try{
-            return commodityDs.update(commodity.toPO());
+            if (commodityDs.update(commodity.toPO())) {
+            	addLog.add("修改商品", "被修改的商品编号："+commodity.getId());
+            	return true;
+            }
+            return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -118,7 +137,7 @@ public class CommodityBL implements CommodityBLService, GetCommodityInterface{
 
     private String[] getLine(CommodityPO c){
         return new String[]{c.getId(), c.getName(), c.getType(), c.getStore(), c.getAmount() + ""
-                , c.getAlarmNum() + "", c.getCategoryId(), c.getCategoryName(), c.getInPrice() + ""
+                , c.getAlarmNum() + "", c.getCategoryId(), categoryInfo.getCategory(c.getCategoryId()).getName(), c.getInPrice() + ""
                 , c.getSalePrice() + "", c.getRecentInPrice() + "", c.getRecentSalePrice() + ""};
     }
     
@@ -133,20 +152,6 @@ public class CommodityBL implements CommodityBLService, GetCommodityInterface{
         return list;
     }
 
-    @Override
-    public CommodityVO getCommodity(String id) {
-        try{
-            CommodityPO c = commodityDs.findById(id);
-            return new CommodityVO(c.getId(), c.getName(), c.getType()
-                , c.getStore(), c.getCategoryId(), c.getCategoryName()
-                , c.getAmount(), c.getAlarmNum(), c.getInPrice()
-                , c.getSalePrice(), c.getRecentInPrice(), c.getRecentSalePrice());
-        }catch(RemoteException e){
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 	@Override
 	public boolean hasCommodity(String categoryId) {
 		ArrayList<CommodityPO> commodities = getAllCommodities();
@@ -155,6 +160,17 @@ public class CommodityBL implements CommodityBLService, GetCommodityInterface{
                 return true;
         }
         return false;
+	}
+
+	@Override
+	public CommodityVO getCommodity(String id) {
+		try {
+			CommodityPO c = commodityDs.findById(id);
+			return new CommodityVO(c.getId(),c.getName(),c.getType(),c.getStore(),c.getCategoryId(),c.getAmount(),c.getAlarmNum(),c.getInPrice(),c.getSalePrice(),c.getRecentInPrice(),c.getRecentSalePrice());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

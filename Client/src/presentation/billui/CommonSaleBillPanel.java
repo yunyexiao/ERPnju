@@ -13,8 +13,8 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import layout.TableLayout;
-import presentation.billui.choosewindow.CustomerChooseWin;
 import presentation.component.MyTableModel;
+import presentation.component.choosewindow.CustomerChooseWin;
 import presentation.tools.DoubleField;
 import vo.CustomerVO;
 import vo.UserVO;

@@ -12,6 +12,7 @@ import javax.swing.JTable;
 import blservice.DataBLService;
 import layout.TableLayout;
 import presentation.PanelInterface;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.component.TopButtonPanel;
 /**
@@ -33,25 +34,11 @@ public abstract class DataPanel implements PanelInterface {
 		double[][] size = {{TableLayout.FILL},{TableLayout.PREFERRED,TableLayout.FILL}};
 		panel = new JPanel(new TableLayout(size));
 		
-		class DeleteListener implements ActionListener {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-			    int index = table.getSelectedRow();
-			    if(index < 0) return;
-				int response = JOptionPane.showConfirmDialog(null, "确认要删除此条信息？", "提示", JOptionPane.YES_NO_OPTION);
-				if (response == 0) {
-				    String id = (String)((MyTableModel)table.getModel()).getValueAt(index, 0);
-					if (dataBL.delete(id)) JOptionPane.showMessageDialog(null, "信息已成功删除", "系统", JOptionPane.INFORMATION_MESSAGE); 
-					table.setModel(dataBL.update());
-				}
-			}			
-		}
-		
 		TopButtonPanel buttonPanel = new TopButtonPanel();
 		buttonPanel.addButton("增加", new ImageIcon("resource/AddData.png"), getAddListener());
 		buttonPanel.addButton("修改", new ImageIcon("resource/ChangeData.png"), getUpdateListener());
 		buttonPanel.addButton("查询", new ImageIcon("resource/SearchData.png"), getSearchListener());
-		buttonPanel.addButton("删除", new ImageIcon("resource/DeleteData.png"), new DeleteListener());
+		buttonPanel.addButton("删除", new ImageIcon("resource/DeleteData.png"), getDeleteListener());
 		buttonPanel.addButton("刷新", new ImageIcon("resource/Refresh.png"), e -> table.setModel(dataBL.update()));
 		buttonPanel.addButton("关闭", new ImageIcon("resource/Close.png"), closeListener);
 		
@@ -63,6 +50,22 @@ public abstract class DataPanel implements PanelInterface {
 	protected void updateTable() {
 		System.out.println("表格数据已更新");
 		table.setModel(dataBL.update());
+	}
+	
+	protected ActionListener getDeleteListener() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+			    int index = table.getSelectedRow();
+			    if(index < 0) {new InfoWindow("请选择需要删除的信息");return;}
+				int response = JOptionPane.showConfirmDialog(null, "确认要删除此条信息？", "提示", JOptionPane.YES_NO_OPTION);
+				if (response == 0) {
+				    String id = (String)((MyTableModel)table.getModel()).getValueAt(index, 0);
+					if (dataBL.delete(id)) new InfoWindow("信息已成功删除");
+					table.setModel(dataBL.update());
+				}
+			}			
+		};
 	}
 	
 	abstract protected ActionListener getAddListener();

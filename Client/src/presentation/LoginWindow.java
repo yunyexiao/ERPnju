@@ -3,6 +3,7 @@ package presentation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,8 +18,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-import bl_stub.UserBL_stub;
 import blservice.LoginBLService;
+import businesslogic.LoginBL;
 import layout.TableLayout;
 import presentation.main.MainWindow;
 import vo.UserVO;
@@ -29,7 +30,7 @@ public class LoginWindow {
 	private JPasswordField keyField = new JPasswordField();
 	private JButton buttonA = getButton("È¡Ïû");
 	private JButton buttonB = getButton("µÇÂ¼");
-	private LoginBLService loginBL = new UserBL_stub();
+	private LoginBLService loginBL = new LoginBL();
 	
 	public LoginWindow() {
     	try {
@@ -47,6 +48,7 @@ public class LoginWindow {
 		//other setting
 		loginWindow.setResizable(false);
 		loginWindow.setUndecorated(true);
+		loginWindow.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(Toolkit.getDefaultToolkit().getImage("resource/mouse.png"), new Point(0, 0),"Slef"));
 		loginWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		double[][] size = {{0.39019,0.05124,0.04319,0.02853,0.09424,TableLayout.FILL},

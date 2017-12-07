@@ -8,6 +8,6 @@ public interface AddLogInterface {
 	 * @param detail 详情
 	 * @return 是否添加成功
 	 */
-	public boolean add(String operatorId, String operation, String detail);
+	public boolean add(String operation, String detail);
 	
 }

@@ -5,24 +5,33 @@ import java.util.ArrayList;
 
 import blservice.CustomerBLService;
 import blservice.infoservice.GetCustomerInterface;
+import businesslogic.inter.AddLogInterface;
 import dataservice.CustomerDataService;
+import ds_stub.CustomerDs_stub;
 import po.CustomerPO;
 import presentation.component.MyTableModel;
-import rmi.Rmi;
 import vo.CustomerVO;
+import vo.UserVO;
 
 public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 	
-	private CustomerDataService customerDataService = Rmi.getRemote(CustomerDataService.class);
+	private AddLogInterface addLog;
+	private CustomerDataService customerDataService = new CustomerDs_stub();//Rmi.getRemote(CustomerDataService.class);
 	private String[] tableHeader = {"客户编号", "客户姓名", "分类", "级别", "电话", "地址", 
 			"邮编", "电子邮箱", "应收额度", "应收", "应付", "默认业务员"};
+	
+	public CustomerBL() {}
+	
+	public CustomerBL(UserVO user) {
+		addLog = new LogBL(user);
+	}
 	
 	private String[] getLine(CustomerPO customer) {
 		return new String[] {
 				customer.getId(),
 				customer.getName(),
-				Integer.toString(customer.getType()),
-				Integer.toString(customer.getRank()),
+				customer.getType()==0?"进货商":"销售商",
+				"LV"+customer.getRank(),
 				customer.getTelNumber(),
 				customer.getAddress(),
 				customer.getCode(),
@@ -47,7 +56,11 @@ public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 	@Override
 	public boolean delete(String id) {
 		try {
-			return customerDataService.delete(id);
+			if (customerDataService.delete(id)) {
+            	addLog.add("删除客户", "删除的商品ID："+id);
+            	return true;
+            }
+            return false;
 		} catch (Exception e) {
 			return false;
 		}
@@ -63,6 +76,7 @@ public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 				data[i] = getLine(list.get(i));
 			}
 			MyTableModel searchTable = new MyTableModel (data, tableHeader);
+			if (addLog != null) addLog.add("搜索客户", "搜索方式："+type+"  搜索关键词："+key);
 			return searchTable;
 		} catch (Exception e) {
 			return null;
@@ -87,8 +101,11 @@ public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 	@Override
 	public boolean add(CustomerVO customer) {
 		try {
-			CustomerPO customerPO = customer.toPO(); 
-			return customerDataService.add(customerPO);
+			if (customerDataService.add(customer.toPO())) {
+            	addLog.add("新增客户", "新增客户的ID："+customer.getId()+"客户名称："+customer.getName());
+            	return true;
+            }
+            return false;
 		} catch (Exception e) {
 			return false;
 		}
@@ -97,8 +114,11 @@ public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 	@Override
 	public boolean change(CustomerVO customer) {
 		try {
-			CustomerPO customerPO = customer.toPO();
-			return customerDataService.update(customerPO);
+			if (customerDataService.update(customer.toPO())) {
+            	addLog.add("修改客户", "被修改的客户编号："+customer.getId());
+            	return true;
+            }
+            return false;
 		} catch (Exception e) {
 			return false;
 		}

@@ -5,39 +5,54 @@ import java.util.ArrayList;
 
 import blservice.AccountBLService;
 import blservice.infoservice.GetAccountInterface;
+import businesslogic.inter.AddLogInterface;
 import dataservice.AccountDataService;
+import ds_stub.AccountDs_stub;
 import po.AccountPO;
 import presentation.component.MyTableModel;
-import rmi.Rmi;
 import vo.AccountVO;
+import vo.UserVO;
 
 public class AccountBL implements AccountBLService, GetAccountInterface {
 
-	private AccountDataService accountDataService = Rmi.getRemote(AccountDataService.class);
+	private AccountDataService accountDataService = new AccountDs_stub();//Rmi.getRemote(AccountDataService.class);
+	private AddLogInterface addLog;
 	private String[] tableHeader = {"银行账号", "账户名称", "余额"};
+	private int userRank;
+	
+	/**
+	 * 仅使用GetAccountInterface的构造方法
+	 */
+	public AccountBL() {
+		
+	}
+	
+	public AccountBL(UserVO user) {
+		userRank = user.getRank();
+		addLog = new LogBL(user);
+	}
 	
 	private String[] getLine(AccountPO account) {
 		return new String[] {
 				account.getId(), 
 				account.getName(),
-				Double.toString(account.getMoney())
+				userRank==1?Double.toString(account.getMoney()):"****"
 		};
 	}
 	
 	@Override
 	public String getNewId() {
-		try {
-			return accountDataService.getNewId();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return "";
 	}
 
 	@Override
 	public boolean delete(String id) {
 		try {
-			return accountDataService.delete(id);
+			if (accountDataService.delete(id)) {
+				addLog.add("删除账户", "删除的账户卡号为："+id);
+				return true;
+			}
+			return false;
 		} catch (Exception e) {
 			return false;
 		}
@@ -47,12 +62,15 @@ public class AccountBL implements AccountBLService, GetAccountInterface {
 	public MyTableModel search(String type, String key) {
 		try {
 			ArrayList<AccountPO> list = null;
-			list = accountDataService.getAccountsBy("SAID", key, true);
+			if ("按账号搜索".equals(type)) {
+				list = accountDataService.getAccountsBy("SAID", key, true);
+			}
 			String[][] data = new String [list.size()][tableHeader.length];
 			for (int i = 0; i < list.size(); i++) {
 				data[i] = getLine(list.get(i));
 			}
 			MyTableModel searchTable = new MyTableModel (data, tableHeader);
+			if (addLog != null) addLog.add("查找账户", "查询条件：" + type + "	查询关键词："+ key);
 			return searchTable;
 		} catch (Exception e) {
 			return null;
@@ -78,7 +96,11 @@ public class AccountBL implements AccountBLService, GetAccountInterface {
 	public boolean add(AccountVO account) {
 		try {
 			AccountPO accountPO = account.toPO();
-			return accountDataService.add(accountPO);
+			if (accountDataService.add(accountPO)) {
+				addLog.add("增加账户", "新账户卡号："+account.getNumber());
+				return true;
+			}
+			return true;
 		} catch (Exception e) {
 			return false;
 		}
@@ -88,7 +110,11 @@ public class AccountBL implements AccountBLService, GetAccountInterface {
 	public boolean change(AccountVO account) {
 		try {
 			AccountPO accountPO = account.toPO();
-			return accountDataService.update(accountPO);
+			if (accountDataService.update(accountPO)) {
+				addLog.add("修改账户", "修改的账户号码为："+account.getNumber());
+				return true;
+			}
+			return false;
 		} catch (Exception e) {
 			return false;
 		}
@@ -109,5 +135,4 @@ public class AccountBL implements AccountBLService, GetAccountInterface {
 		}
 		return null;
 	}
-	
 }

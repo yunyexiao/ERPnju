@@ -1,6 +1,8 @@
 package rmi;
 
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -33,4 +35,12 @@ public class Rmi {
 		return null;
 	}
 	
+	public static String getIPAddress() {
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
 }

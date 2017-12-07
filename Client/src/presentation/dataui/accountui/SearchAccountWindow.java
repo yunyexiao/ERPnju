@@ -18,7 +18,7 @@ public class SearchAccountWindow extends SearchWindow{
 	@Override
 	protected ButtonGroup initTypeGroup() {
         JRadioButton idRadioButton = new JRadioButton("按账号搜索");
-        JRadioButton keyRadioButton = new JRadioButton("按姓名搜索");
+        JRadioButton keyRadioButton = new JRadioButton("按账户名称搜索");
         ButtonGroup typeGroup = new ButtonGroup();
         typeGroup.add(idRadioButton);
         typeGroup.add(keyRadioButton);

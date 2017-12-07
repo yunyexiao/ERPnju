@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 
 import blservice.CustomerBLService;
 import presentation.dataui.FatherWindow;
-import presentation.dataui.customerui.InputCustomerPanel;
 import vo.CustomerVO;
 
 public class UpdateCustomerWindow extends FatherWindow{
@@ -12,13 +11,14 @@ public class UpdateCustomerWindow extends FatherWindow{
 	private InputCustomerPanel centerPanel;
     private CustomerBLService customerBl;
 
-	public UpdateCustomerWindow(CustomerBLService customerBl, String[] data) {
+	public UpdateCustomerWindow(CustomerBLService customerBl, String[] data, int userRank) {
 		super();
 		this.customerBl = customerBl;
         frame.setTitle("ÐÞ¸Ä¿Í»§");
-        centerPanel = new InputCustomerPanel(data);
+        centerPanel = new InputCustomerPanel(data, userRank==1);
         frame.add(centerPanel, BorderLayout.CENTER);
         
+        frame.setSize(400, 550);
         frame.setVisible(true);
 	}
 

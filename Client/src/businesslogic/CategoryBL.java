@@ -8,22 +8,30 @@ import javax.swing.tree.DefaultTreeModel;
 
 import blservice.CategoryBLService;
 import blservice.infoservice.GetCategoryInterface;
+import businesslogic.inter.AddLogInterface;
 import dataservice.CategoryDataService;
 import ds_stub.CategoryDs_stub;
 import po.CategoryPO;
 import vo.CategoryVO;
+import vo.UserVO;
 
 /**
  * 商品分类的BL<br>
  * 与CommodityBL有直接依赖关系
  * @author 恽叶霄*/
-public class CategoryBL implements CategoryBLService, GetCategoryInterface{
+public class CategoryBL implements CategoryBLService, GetCategoryInterface {
     
-    private CategoryDataService categoryDs;
+    private CategoryDataService categoryDs = new CategoryDs_stub();
+    private AddLogInterface addLog;
 
-    public CategoryBL() {
+    /**
+     * 仅使用GetCategoryInterface时的构造方法
+     */
+    public CategoryBL() {}
+    
+    public CategoryBL(UserVO user) {
         //categoryDs = RemoteHelper.getInstance().getCategoryDataService();
-        categoryDs = new CategoryDs_stub();
+        addLog = new LogBL(user);
     }
 
     @Override
@@ -70,7 +78,11 @@ public class CategoryBL implements CategoryBLService, GetCategoryInterface{
     @Override
     public boolean add(CategoryVO category) {
         try{
-            return categoryDs.add(category.toPO());
+            if (categoryDs.add(category.toPO())) {
+            	addLog.add("增加商品分类", "新增商品分类编号："+ category.getId() + "  名称：" + category.getName());
+            	return true;
+            }
+            return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -80,7 +92,11 @@ public class CategoryBL implements CategoryBLService, GetCategoryInterface{
     @Override
     public boolean delete(String id) {
         try{
-            return categoryDs.delete(id);
+            if (categoryDs.delete(id)) {
+            	addLog.add("删除商品分类", "删除的分类Id:"+id);
+            	return true;
+            }
+            return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -90,22 +106,14 @@ public class CategoryBL implements CategoryBLService, GetCategoryInterface{
     @Override
     public boolean change(CategoryVO category) {
         try{
-            return categoryDs.update(category.toPO());
+            if (categoryDs.update(category.toPO())) {
+            	addLog.add("修改商品分类", "被修改的商品分类："+category.getId());
+            	return true;
+            }
+            return false;
         }catch(RemoteException e){
             return false;
         }
-    }
-
-    @Override
-    public CategoryVO getCategory(String id){
-	    try{
-		    CategoryPO cat = categoryDs.findById(id);
-		    return new CategoryVO(cat.getFatherId(), cat.getFatherName()
-				    , cat.getId(), cat.getName());
-	    }catch(RemoteException e){
-		    e.printStackTrace();
-		    return null;
-	    }
     }
     
     public ArrayList<CategoryPO> searchByName(String name){
@@ -157,6 +165,18 @@ public class CategoryBL implements CategoryBLService, GetCategoryInterface{
         }catch(RemoteException e){
             return null;
         }
+	}
+
+	@Override
+	public CategoryVO getCategory(String id) {
+		try {
+			CategoryPO category = categoryDs.findById(id);
+			if (category == null) return null;
+            return new CategoryVO(category.getFatherId(),category.getId(),category.getName());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

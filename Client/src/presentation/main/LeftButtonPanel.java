@@ -6,8 +6,6 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -15,11 +13,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import bl_stub.AccountBL_stub;
-import bl_stub.CommodityBL_stub;
-import bl_stub.CustomerBL_stub;
-import bl_stub.UserBL_stub;
+import businesslogic.AccountBL;
 import businesslogic.CategoryBL;
+import businesslogic.CommodityBL;
+import businesslogic.CustomerBL;
+import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.bill.BillExaminePanel;
 import presentation.billui.CashCostBillPanel;
@@ -29,6 +27,7 @@ import presentation.billui.PurchaseReturnBillPanel;
 import presentation.billui.ReceiptOrPaymentBillPanel;
 import presentation.billui.SalesBillPanel;
 import presentation.billui.SalesReturnBillPanel;
+import presentation.component.InfoAdapter;
 import presentation.component.Listener_stub;
 import presentation.dataui.accountui.AccountDataPanel;
 import presentation.dataui.categoryui.CategoryDataPanel;
@@ -37,6 +36,7 @@ import presentation.dataui.customerui.CustomerDataPanel;
 import presentation.dataui.userui.UserDataPanel;
 import presentation.logui.LogPanel;
 import vo.UserType;
+import vo.UserVO;
 
 /**
  * MainWindow左侧的按钮栏，此处继承了JPanel
@@ -55,18 +55,8 @@ class LeftButtonPanel extends JPanel{
     	JButton button = new JButton(text);
 		button.setFont(new Font("等线",Font.BOLD,18));
 		button.addActionListener(listener);
-		button.addMouseListener(new MouseAdapter() {
-			@Override  
-		    public void mouseEntered(MouseEvent e) {
-		        if ("退出".equals(text)) MainWindow.setInfo("退出系统");
-		        else MainWindow.setInfo("进入<" + text + ">界面");  
-		    }  
-		  
-		    @Override  
-		    public void mouseExited(MouseEvent e) {
-		    	MainWindow.setInfo();  
-		    }  
-		});
+		if ("退出".equals(text)) button.addMouseListener(new InfoAdapter("退出系统"));
+		else button.addMouseListener(new InfoAdapter("进入<" + text + ">界面"));
 		innerPanel.add(button);
     }
     /**
@@ -75,7 +65,8 @@ class LeftButtonPanel extends JPanel{
      */
 	public LeftButtonPanel(MainWindow mw) {
 		this.mainWindow = mw;
-		UserType type = mainWindow.getUser().getType();
+		UserVO user = mainWindow.getUser();
+		UserType type = user.getType();
 		innerPanel.setOpaque(false);
 		
 		class CloseListener implements ActionListener {
@@ -96,26 +87,26 @@ class LeftButtonPanel extends JPanel{
 		
 		// 修改按钮处------------------------------
 		if (type == UserType.KEEPER) {
-			addButton("商品分类管理", e -> mw.changePanel(new CategoryDataPanel(new CategoryBL(), closeListener)));
-			addButton("商品管理", e -> mw.changePanel(new CommodityDataPanel(new CommodityBL_stub(), closeListener)));
+			addButton("商品分类管理", e -> mw.changePanel(new CategoryDataPanel(new CategoryBL(user), closeListener)));
+			addButton("商品管理", e -> mw.changePanel(new CommodityDataPanel(new CommodityBL(user), closeListener)));
 			addButton("库存查看", new Listener_stub());
 			addButton("库存盘点", new Listener_stub());
-			addButton("报溢/报损", e -> mw.changePanel(new ChangeBillPanel(mainWindow.getUser(), closeListener)));
+			addButton("报溢/报损", e -> mw.changePanel(new ChangeBillPanel(user, closeListener)));
 			addButton("退出", new CloseListener());
 			
 		}
 		else if (type == UserType.SALESMAN) {
-			addButton("客户管理", e -> mw.changePanel(new CustomerDataPanel(new CustomerBL_stub(), closeListener)));
+			addButton("客户管理", e -> mw.changePanel(new CustomerDataPanel(user, new CustomerBL(user), closeListener)));
 			addButton("制定进货单", e -> mw.changePanel(new PurchaseBillPanel(mainWindow.getUser(), closeListener)));
 			addButton("制定进货退货单", e -> mw.changePanel(new PurchaseReturnBillPanel(mainWindow.getUser(), closeListener)));
-			addButton("制定销售单", e -> mw.changePanel(new SalesBillPanel(mainWindow.getUser(), closeListener)));
+			addButton("制定销售单", e -> mw.changePanel(new SalesBillPanel(user, closeListener)));
 			addButton("制定销售退货单", e -> mw.changePanel(new SalesReturnBillPanel(mainWindow.getUser(), closeListener)));
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.ACCOUNTANT) {
-			addButton("账户管理", e -> mw.changePanel(new AccountDataPanel(new AccountBL_stub(), closeListener)));
-			addButton("制定收付款单", e -> mw.changePanel(new ReceiptOrPaymentBillPanel(mainWindow.getUser(), closeListener)));
-			addButton("制定现金费用单", e -> mw.changePanel(new CashCostBillPanel(mainWindow.getUser(), closeListener)));
+			addButton("账户管理", e -> mw.changePanel(new AccountDataPanel(user, new AccountBL(user), closeListener)));
+			addButton("制定收付款单", e -> mw.changePanel(new ReceiptOrPaymentBillPanel(user, closeListener)));
+			addButton("制定现金费用单", e -> mw.changePanel(new CashCostBillPanel(user, closeListener)));
 			addButton("查看销售明细表", new Listener_stub());
 			addButton("查看经营状况表", new Listener_stub());
 			addButton("查看经营历程表", new Listener_stub());
@@ -133,7 +124,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.ADMIN) {
-			addButton("用户管理", e -> mw.changePanel(new UserDataPanel(new UserBL_stub(), closeListener)));
+			addButton("用户管理", e -> mw.changePanel(new UserDataPanel(new UserBL(user), closeListener)));
 			addButton("查看日志", e -> mw.changePanel(new LogPanel(mw)));		
 			addButton("退出", new CloseListener());
 		}

@@ -11,7 +11,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import layout.TableLayout;
+import presentation.component.InfoWindow;
 import presentation.dataui.util.Tools;
+import presentation.tools.InputCheck;
 import vo.UserType;
 import vo.UserVO;
 
@@ -94,6 +96,8 @@ class InputUserPanel extends JPanel {
 		
 		int length = user.length;
 		if(length > 2 && user[2] != null) {
+        	if ("财务人员".equals(user[2])) accountantType();
+        	if ("进货销售人员".equals(user[2])) accountantType();
 		    Enumeration<AbstractButton> eb = typeButtonGroup.getElements();
 		    while(eb.hasMoreElements()){
 		        AbstractButton b = eb.nextElement(); 
@@ -130,15 +134,23 @@ class InputUserPanel extends JPanel {
 	 * @return
 	 */
 	public UserVO getUserVO() {
-	    String id = userIdTextField.getText()
-	        , name = userNameTextField.getText()
-	        , key = userKeyTextField.getText()
-	        , sex = Tools.getSelectedText(sexButtonGroup)
-	        , telNumber = userTelTextField.getText();
-	    UserType type = getSelectedType();
-	    int rank = rankComboBox.getSelectedIndex();
-        int age = Integer.parseInt(userAgeTextField.getText());
-	    return new UserVO(name, key, type, rank, id, sex, telNumber, age);
+		if (! InputCheck.isLegal(userNameTextField.getText())) new InfoWindow("用户姓名格式非法");
+		else if (! InputCheck.isAlnum(userKeyTextField.getText(), 0)) new InfoWindow("用户密码格式非法");
+		else if (! InputCheck.isAllNumber(userAgeTextField.getText(), 2)) new InfoWindow("请输入真实的用户年龄");
+		else if (! InputCheck.isAllNumber(userTelTextField.getText(), 11)) new InfoWindow("请输入11位手机号码");
+		else {
+			String id = userIdTextField.getText()
+			        , name = userNameTextField.getText()
+			        , key = userKeyTextField.getText()
+			        , sex = Tools.getSelectedText(sexButtonGroup)
+			        , telNumber = userTelTextField.getText();
+		    UserType type = getSelectedType();
+		    int rank = rankComboBox.getSelectedIndex();
+	        int age = Integer.parseInt(userAgeTextField.getText());
+		    return new UserVO(name, key, type, rank, id, sex, telNumber, age);
+		}
+		return null;
+	    
 	}
 	
 	private UserType getSelectedType(){

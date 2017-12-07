@@ -1,24 +1,23 @@
 package presentation.dataui.accountui;
 
-import java.util.Enumeration;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import layout.TableLayout;
-import presentation.dataui.util.Tools;
+import presentation.component.InfoWindow;
+import presentation.tools.InputCheck;
 import vo.AccountVO;
 
 public class InputAccountPanel extends JPanel{
-	private JTextField accountIdTextField, accountNameTextField, accountMoneyTextField; 
 	
+	private JTextField accountIdTextField, accountNameTextField, accountMoneyTextField; 
 	
 	/**
 	 * 根据已有数据初始化界面
 	 * @param 表格中取出的一行数据
 	 */
-	protected InputAccountPanel(String[] account) {
+	protected InputAccountPanel(String[] account, boolean isAdd) {
 		super();
 		double[] rows = new double[7];
         rows[0] = TableLayout.FILL;
@@ -27,7 +26,7 @@ public class InputAccountPanel extends JPanel{
             rows[2 * i + 2] = 10.0;
         }
         rows[rows.length - 1] = TableLayout.FILL;
-        double[][] size = {{0.37, TableLayout.FILL, 10.0, TableLayout.FILL, 0.37}, rows};
+        double[][] size = {{TableLayout.FILL, TableLayout.PREFERRED, 10.0, 0.5, TableLayout.FILL}, rows};
         this.setLayout(new TableLayout(size));
 		
 		String[] texts = {"银行账号", "账户姓名", "余额"};
@@ -41,7 +40,8 @@ public class InputAccountPanel extends JPanel{
 		accountNameTextField = new JTextField(account[1]);
 		accountMoneyTextField = new JTextField(account[2]);
 
-        accountIdTextField.setEditable(false);
+		accountIdTextField.setEditable(isAdd);
+		accountMoneyTextField.setEditable(isAdd);
         
 		add(accountIdTextField, "3 1");
 		add(accountNameTextField, "3 3");
@@ -53,9 +53,15 @@ public class InputAccountPanel extends JPanel{
 	 * @return
 	 */
 	public AccountVO getAccountVO() {
-	    String id = accountIdTextField.getText(),
-	    		name = accountNameTextField.getText();
-	    double money = Double.parseDouble(accountMoneyTextField.getText());
-	    return new AccountVO(id, name, money);
+		if (! InputCheck.isAllNumber(accountIdTextField.getText(), 0)) new InfoWindow("请输入格式正确的卡号");
+		else if (! InputCheck.isLegal(accountIdTextField.getText())) new InfoWindow("请输入格式正确的账户名称");
+		else if (! InputCheck.isDouble(accountMoneyTextField.getText())) new InfoWindow("请输入正确的余额");
+		else {
+			String id = accountIdTextField.getText(),
+		    		name = accountNameTextField.getText();
+		    double money = Double.parseDouble(accountMoneyTextField.getText());
+		    return new AccountVO(name, id, money);
+		}
+	    return null;
 	}
 }		
