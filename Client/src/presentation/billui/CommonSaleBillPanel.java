@@ -182,7 +182,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
                 {10.0, -1.0, 10.0, -1.0, -1.0}
         };
         JPanel southPanel = new JPanel(new TableLayout(size));
-        southPanel.add(new JLabel("             备注"), "1 1");
+        southPanel.add(new JLabel("        备注"), "1 1");
         southPanel.add(remarkField, "3 1 4 1");
         southPanel.add(new JLabel("金额合计"), "1 3");
         southPanel.add(sumField, "3 3");
