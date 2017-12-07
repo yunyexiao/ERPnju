@@ -106,7 +106,6 @@ public class PurchaseBillBL implements PurchaseBillBLService {
             data[i] = toArray(items.get(i));
         }
         MyTableModel model = new MyTableModel(data, columnNames);
-        // TODO replace that stub with the real one
         CustomerVO supplier = new CustomerBL_stub().getCustomer(bill.getSupplierId());
         return new PurchaseBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator()
             , bill.getState(), bill.getSupplierId(), supplier.getName()
