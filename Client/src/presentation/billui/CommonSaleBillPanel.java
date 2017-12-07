@@ -100,7 +100,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
     }
     
     private JPanel getHeader(){
-        billIdField = new JTextField(10);
+        billIdField = new JTextField(15);
         billIdField.setEditable(false);
         operatorField = new JTextField(10);
         operatorField.setEditable(false);
@@ -189,7 +189,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         billPanel.add(southPanel, BorderLayout.SOUTH);
     }
     
-    private void addItem(){
+    protected void addItem(){
         if(!editable) return;
         String[] newRow = new InputCommodityInfoWin().getRowData();
         if(newRow == null || newRow[5].equals("0")) return;

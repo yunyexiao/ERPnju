@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 import blservice.billblservice.SalesReturnBillBLService;
 import businesslogic.SalesReturnBillBL;
 import layout.TableLayout;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.component.choosewindow.SalesBillChooseWin;
 import presentation.tools.DoubleField;
@@ -53,7 +54,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         customerIdField.setEditable(false);
         customerNameField = new JTextField(10);
         customerNameField.setEditable(false);
-        originalSBIdField = new JTextField(10);
+        originalSBIdField = new JTextField(15);
         originalSBIdField.setEditable(false);
         discountRateField = new DoubleField(5);
         discountRateField.setEditable(false);
@@ -90,12 +91,12 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         
         double[][] size = {
                 {20.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0
-                    , -2.0, 10.0, -1.0},
+                    , -2.0, -1.0, -1.0},
                 {-2.0, 10.0, -2.0}
         };
         JPanel southPanel = new JPanel(new TableLayout(size));
         southPanel.add(new JLabel("备注"), "1 0");
-        southPanel.add(remarkField, "2 0 9 0");
+        southPanel.add(remarkField, "2 0 8 0");
         southPanel.add(new JLabel("原总额"), "1 2");
         southPanel.add(sumField, "3 2");
         southPanel.add(new JLabel("实际总额"), "5 2");
@@ -167,6 +168,19 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         this.finalSumField.setValue(finalSum);
     }
 
+    @Override
+    protected void addItem(){
+        if(!editable) return;
+        String[] newRow = new InputCommodityInfoWin().getRowData();
+        if(newRow == null || newRow[5].equals("0")) return;
+        // check if the sales bill contains that commodity
+        // also check the amount
+        if(!itemValid(newRow)) return;
+        MyTableModel model = (MyTableModel) goodsListTable.getModel();
+        model.addRow(newRow);
+        sumUp();
+    }
+
     private SalesReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
         String date = getDate(), time = getTime(), id = getId();
@@ -186,11 +200,20 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
 
     private void handleChooseSb(){
         if(!editable) return;
+        if(customerIdField.getText().length() == 0){
+            new InfoWindow("请先选择销售商^_^");
+            return;
+        }
         String[] info = new SalesBillChooseWin().getSalesBillInfo();
         if(info == null) return;
         originalSBIdField.setText(info[0]);
         discountRateField.setValue(Double.parseDouble(info[1]));
         sumUp();
+    }
+
+    private boolean itemValid(String[] item){
+        // TODO
+        return false;
     }
 
 }
