@@ -17,7 +17,7 @@ public class AccountBL_stub implements AccountBLService, GetAccountInterface {
 	@Override
 	public MyTableModel search(String type, String key) {
 		String[] attributes={"银行账号", "账户名称", "余额"};
-		String[][] info={{"111111111", "马云", "9999999999999"}};
+		String[][] info={{"111111111", "马云", "9999999999999"},{"000001", "Vanの账户", "1"}};
 		System.out.println("显示搜索的账户信息");
 		return new MyTableModel(info, attributes);
 	}
@@ -25,7 +25,7 @@ public class AccountBL_stub implements AccountBLService, GetAccountInterface {
 	@Override
 	public MyTableModel update() {
 		String[] attributes={"银行账号", "账户名称", "余额"};
-		String[][] info={{"111111111", "马云", "9999999999999"}};
+		String[][] info={{"111111111", "马云", "9999999999999"},{"000001", "Vanの账户", "1"}};
 		System.out.println("账户信息已成功更新");
 		return new MyTableModel(info, attributes);
 	}
