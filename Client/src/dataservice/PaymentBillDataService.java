@@ -5,13 +5,12 @@ import java.rmi.RemoteException;
 import po.billpo.PaymentBillPO;
 
 public interface PaymentBillDataService {
-	
-	boolean saveBill(PaymentBillPO paymentBill) throws RemoteException;
 
-	boolean deleteBill(String id) throws RemoteException;
+	public boolean saveBill(PaymentBillPO bill) throws RemoteException;
+
+	public boolean deleteBill(String billid) throws RemoteException;
+
+	public String getNewId() throws RemoteException;
 	
-	String getNewId() throws RemoteException;
-	
-	PaymentBillPO getBillById(String id) throws RemoteException;
-	
+	public PaymentBillPO getBillById(String id) throws RemoteException;
 }
