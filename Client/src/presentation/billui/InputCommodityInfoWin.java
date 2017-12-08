@@ -3,6 +3,7 @@ package presentation.billui;
 import java.awt.BorderLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -12,6 +13,7 @@ import javax.swing.JTextField;
 
 import layout.TableLayout;
 import presentation.component.choosewindow.CommodityChooseWin;
+import presentation.tools.DoubleField;
 import presentation.tools.IntField;
 import vo.CommodityVO;
 
@@ -78,6 +80,8 @@ class InputCommodityInfoWin {
             labels[i] = new JLabel(labelTexts[i]);
             if(i == 5){
                 fields[i] = new IntField(10);
+            } else if(i == 4){
+                fields[i] = new DoubleField(10);
             } else {
                 fields[i] = new JTextField(10);
             }
@@ -85,14 +89,17 @@ class InputCommodityInfoWin {
             centerPanel.add(labels[i], "1 " + (2 * i + 1));
             centerPanel.add(fields[i], "3 " + (2 * i + 1));
         }
-        fields[5].setEditable(true);
-        fields[7].setEditable(true);
-        fields[5].addFocusListener(new FocusAdapter(){
+        FocusListener l = new FocusAdapter(){
             @Override
             public void focusLost(FocusEvent e) {
                 sumUp();
             }
-        });
+        };
+        fields[4].setEditable(true);
+        fields[4].addFocusListener(l);
+        fields[5].setEditable(true);
+        fields[7].setEditable(true);
+        fields[5].addFocusListener(l);
         
         JButton chooseButton = new JButton("Ñ¡ÔñÉÌÆ·");
         chooseButton.addActionListener(e -> handleChoose());
@@ -120,7 +127,7 @@ class InputCommodityInfoWin {
         fields[1].setText(c.getName());
         fields[2].setText(c.getType());
         fields[3].setText(c.getStore());
-        fields[4].setText(c.getSalePrice() + "");
+        // set default value for priceField(fields[4])
         if(fields[5].getText().length() > 0) sumUp();
     }
 

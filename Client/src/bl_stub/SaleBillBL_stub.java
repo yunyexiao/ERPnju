@@ -47,4 +47,16 @@ public class SaleBillBL_stub implements SalesBillBLService {
         return null;
     }
 
+    @Override
+    public MyTableModel getBillsByDate(String from, String to) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public MyTableModel getFinishedBills(String customerId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

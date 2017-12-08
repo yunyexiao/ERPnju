@@ -5,22 +5,49 @@ import java.util.ArrayList;
 
 import dataservice.SalesBillDataService;
 import po.billpo.BillPO;
+import po.billpo.SalesBillItemsPO;
 import po.billpo.SalesBillPO;
 
 
 public class SalesBillDs_stub implements SalesBillDataService {
     
-    private ArrayList<SalesBillPO> bills;
+    private static final ArrayList<SalesBillPO> BILLS = new ArrayList<>();
     
     public SalesBillDs_stub(){
-        bills = new ArrayList<>();
-        bills.add(new SalesBillPO(
-            "20171205", "19:23:55", "12345", null, BillPO.PASS
-            , null, null, null, null, 15000, 0, 0, 9500, null
+        if(BILLS.size() > 0) return;
+        
+        ArrayList<SalesBillItemsPO> items1 = new ArrayList<>();
+        items1.add(new SalesBillItemsPO("000001", "", 50, 100, 5000));
+        items1.add(new SalesBillItemsPO("000002", "", 100, 100, 10000));
+
+        BILLS.add(new SalesBillPO(
+            "2017-12-05", "19:23:55", "12345", null, BillPO.PASS
+            , null, null, null, null, 15000, 500, 5000, 9500, items1
         ));
-        bills.add(new SalesBillPO(
-            "20171201", "08:30:02", "12000", null, BillPO.PASS
-            , null, null, null, null, 10000, 0, 0, 8000, null
+        
+        ArrayList<SalesBillItemsPO> items2 = new ArrayList<>();
+        items2.add(new SalesBillItemsPO("000003", "", 50, 200, 10000));
+        
+        BILLS.add(new SalesBillPO(
+            "2017-12-01", "08:30:02", "12000", null, BillPO.PASS
+            , null, null, null, null, 10000, 1000, 1000, 8000, items2
+        ));
+        
+        ArrayList<SalesBillItemsPO> items3 = new ArrayList<>();
+        items3.add(new SalesBillItemsPO("000004", "", 100, 100, 10000));
+        items3.add(new SalesBillItemsPO("000003", "", 200, 200, 40000));
+        
+        BILLS.add(new SalesBillPO(
+            "2017-12-08", "11:24:51", "32100", null, BillPO.COMMITED
+            , null, "rarara", null, "12300", 50000, 1000, 1000, 48000, items3
+        ));
+        
+        ArrayList<SalesBillItemsPO> items4 = new ArrayList<>();
+        items4.add(new SalesBillItemsPO("000002", "", 30, 100, 3000));
+
+        BILLS.add(new SalesBillPO(
+            "2017-12-09", "12:08:21", "98765", null, BillPO.SAVED
+            , null, "°Â¶÷", null, null, 3000, 300, 500, 2200, items4
         ));
     }
 
@@ -37,19 +64,30 @@ public class SalesBillDs_stub implements SalesBillDataService {
 
     @Override
     public boolean saveBill(SalesBillPO bill) throws RemoteException {
-        bills.add(bill);
+        BILLS.add(bill);
         System.out.println("sales bill saved in database: " + bill.getId());
         return true;
     }
 
     @Override
     public SalesBillPO getBillById(String id) throws RemoteException {
-        return bills.get(0);
+        return BILLS.get(0);
     }
 
     @Override
     public ArrayList<SalesBillPO> getBillsBy(String field, String key, boolean isFuzzy) throws RemoteException {
-        return bills;
+        ArrayList<SalesBillPO> result = new ArrayList<>();
+        result.add(BILLS.get(0));
+        result.add(BILLS.get(3));
+        return result;
+    }
+
+    @Override
+    public ArrayList<SalesBillPO> getBillByDate(String from, String to) throws RemoteException {
+        ArrayList<SalesBillPO> result = new ArrayList<>();
+        result.add(BILLS.get(2));
+        result.add(BILLS.get(1));
+        return result;
     }
 
 }

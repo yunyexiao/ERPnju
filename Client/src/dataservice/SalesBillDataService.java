@@ -29,4 +29,7 @@ public interface SalesBillDataService {
 	public SalesBillPO getBillById(String id) throws RemoteException;
 	
 	public ArrayList<SalesBillPO> getBillsBy(String field, String key, boolean isFuzzy) throws RemoteException;
+	
+	public ArrayList<SalesBillPO> getBillByDate(String from, String to) throws RemoteException;
+	
 }

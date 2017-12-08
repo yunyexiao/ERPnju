@@ -24,5 +24,10 @@ public interface SalesBillBLService extends BillBLService {
 	
 	public MyTableModel search(String type, String key);
 	
+	public MyTableModel getBillsByDate(String from, String to);
+	
 	public MyTableModel getFinishedBills();
+	
+	public MyTableModel getFinishedBills(String customerId);
+	
 }

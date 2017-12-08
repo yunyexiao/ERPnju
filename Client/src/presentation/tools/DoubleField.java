@@ -46,6 +46,9 @@ public class DoubleField extends MyField{
     
     public void setDefaultValue(double defaultValue){
         this.defaultValue = defaultValue;
+        if(super.getText().length() == 0){
+            this.setValue(defaultValue);
+        }
     }
     
     public double getDefaultValue(){

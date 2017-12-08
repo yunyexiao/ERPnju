@@ -162,7 +162,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         };
         JPanel goodsButtonPanel = new JPanel(new TableLayout(size));
         JButton goodsChooseButton=new JButton("选择商品");
-        goodsChooseButton.addActionListener(e -> addItem());
+        goodsChooseButton.addActionListener(e -> handleAddItem());
         JButton goodsDeleteButton=new JButton("删除商品");
         goodsDeleteButton.addActionListener(e -> deleteItem());
 
@@ -189,13 +189,11 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         billPanel.add(southPanel, BorderLayout.SOUTH);
     }
     
-    protected void addItem(){
+    protected void handleAddItem(){
         if(!editable) return;
         String[] newRow = new InputCommodityInfoWin().getRowData();
         if(newRow == null || newRow[5].equals("0")) return;
-        MyTableModel model = (MyTableModel) goodsListTable.getModel();
-        model.addRow(newRow);
-        sumUp();
+        addItem(newRow);
     }
     
     private void deleteItem(){
@@ -257,6 +255,30 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 
     protected String getId(){
         return billIdField.getText().split("-")[2];
+    }
+
+    protected void addItem(String[] newRow){
+        MyTableModel model = (MyTableModel) goodsListTable.getModel();
+        int rowIndex = getRowIndex(model, newRow[0]);
+        if(rowIndex >= 0){
+            int amount = Integer.parseInt((String)model.getValueAt(rowIndex, 5))
+                       + Integer.parseInt(newRow[5]);
+            model.setValueAt(amount, rowIndex, 5);
+        } else {
+            model.addRow(newRow);
+        }
+        sumUp();
+       
+    }
+
+    private int getRowIndex(MyTableModel model, String comId){
+        for(int i = 0; i < model.getRowCount(); i++){
+            String[] row = model.getValueAtRow(i);
+            if(row[0].equals(comId)){
+                return i;
+            }
+        }
+        return -1;
     }
 
 }

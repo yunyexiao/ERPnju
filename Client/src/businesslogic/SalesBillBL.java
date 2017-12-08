@@ -8,6 +8,7 @@ import bl_stub.CustomerBL_stub;
 import blservice.billblservice.SalesBillBLService;
 import dataservice.SalesBillDataService;
 import ds_stub.SalesBillDs_stub;
+import po.billpo.BillPO;
 import po.billpo.SalesBillItemsPO;
 import po.billpo.SalesBillPO;
 import presentation.component.MyTableModel;
@@ -85,30 +86,54 @@ public class SalesBillBL implements SalesBillBLService {
     public MyTableModel getFinishedBills(){
         return search("按状态搜索", BillVO.PASS + "");
     }
+    
+    public MyTableModel getFinishedBills(String customerId){
+        try{
+            String field = "CONCAT(SBCondition,',',SBCustomerID)";
+            String key = BillPO.PASS + "," + customerId;
+            ArrayList<SalesBillPO> bills = saleBillDs.getBillsBy(field, key, true);
+            return toModel(bills);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @Override
     public MyTableModel search(String type, String key) {
         try{
             String field = null;
-            // TODO generate the field
             if("按编号搜索".equals(type)){
                 field = "SBID";
-            }else if("按时间搜索".equals(type)){
-                field = "generateTime";
-            }
+            } // other searching methods not yet considered
             ArrayList<SalesBillPO> bills = saleBillDs.getBillsBy(field, key, true);
-            String[] columnNames = {"制定时间", "单据编号"};
-            String[][] data = new String[bills.size()][columnNames.length];
-            for(int i = 0; i < bills.size(); i++){
-                SalesBillPO salesBill = bills.get(i);
-                data[i][0] = salesBill.getDate() + " " + salesBill.getTime();
-                data[i][1] = "XSD-" + salesBill.getDate() + "-" + salesBill.getId();
-            }
-            return new MyTableModel(data, columnNames);
+            return toModel(bills);
         }catch(RemoteException e){
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public MyTableModel getBillsByDate(String from, String to){
+        try{
+            ArrayList<SalesBillPO> bills = saleBillDs.getBillByDate(from, to);
+            return toModel(bills);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    private MyTableModel toModel(ArrayList<SalesBillPO> bills){
+        String[] columnNames = {"制定时间", "单据编号"};
+        String[][] data = new String[bills.size()][columnNames.length];
+        for(int i = 0; i < bills.size(); i++){
+            SalesBillPO salesBill = bills.get(i);
+            data[i][0] = salesBill.getDate() + " " + salesBill.getTime();
+            data[i][1] = "XSD-" + salesBill.getDate() + "-" + salesBill.getId();
+        }
+        return new MyTableModel(data, columnNames);
     }
 
     private SalesBillPO toPO(SalesBillVO bill){
