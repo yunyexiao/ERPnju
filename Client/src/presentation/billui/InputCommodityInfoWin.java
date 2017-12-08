@@ -21,10 +21,10 @@ import vo.CommodityVO;
  * 输入商品的面板
  * @author 恽叶霄
  */
-class InputCommodityInfoWin {
+abstract class InputCommodityInfoWin {
     
-    private JTextField[] fields; 
-    private JDialog frame;
+    protected JTextField[] fields; 
+    protected JDialog frame;
     private String[] rowData;
     private String[] labelTexts = {"编号", "名称", "型号", "库存"
                 , "单价", "数量", "总价", "备注"};
@@ -39,12 +39,15 @@ class InputCommodityInfoWin {
         frame.setLayout(new BorderLayout());
         initCenter();
         initSouth();
-        frame.setVisible(true);
     }
 
     public String[] getRowData(){
         return rowData;
     }
+
+    abstract protected boolean isPriceEditable();
+    
+    abstract protected void setPrice(CommodityVO commodity);
 
     private void initSouth() {
         JButton okButton = new JButton("确定");
@@ -95,7 +98,7 @@ class InputCommodityInfoWin {
                 sumUp();
             }
         };
-        fields[4].setEditable(true);
+        fields[4].setEditable(isPriceEditable());
         fields[4].addFocusListener(l);
         fields[5].setEditable(true);
         fields[7].setEditable(true);
@@ -127,7 +130,7 @@ class InputCommodityInfoWin {
         fields[1].setText(c.getName());
         fields[2].setText(c.getType());
         fields[3].setText(c.getStore());
-        // set default value for priceField(fields[4])
+        setPrice(c);
         if(fields[5].getText().length() > 0) sumUp();
     }
 

@@ -1,6 +1,7 @@
 package bl_stub;
 
 import blservice.billblservice.PurchaseBillBLService;
+import presentation.component.MyTableModel;
 import vo.billvo.MarketBillVO;
 import vo.billvo.PurchaseBillVO;
 
@@ -34,6 +35,24 @@ public class PurchaseBillBL_stub implements PurchaseBillBLService {
 
     @Override
     public PurchaseBillVO getBill(String id) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public MyTableModel getFinishedBills(String customerId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public MyTableModel search(String type, String key) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public MyTableModel getBillByDate(String from, String to) {
         // TODO Auto-generated method stub
         return null;
     }

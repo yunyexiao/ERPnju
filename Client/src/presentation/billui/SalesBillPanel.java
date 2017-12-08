@@ -52,6 +52,11 @@ public class SalesBillPanel extends CommonSaleBillPanel {
     protected int getCustomerType(){
         return 1;
     }
+    
+    @Override
+    protected String[] getInputRow(){
+        return new SalesItemInputWin().getRowData();
+    }
 
 	@Override
 	protected ActionListener getNewActionListener() {

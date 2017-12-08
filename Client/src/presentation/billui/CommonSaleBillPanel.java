@@ -90,6 +90,8 @@ public abstract class CommonSaleBillPanel extends BillPanel {
     
     abstract protected int getCustomerType();
     
+    abstract protected String[] getInputRow();
+    
     private void initNorth(){
         double[][] size = {{-1.0}, {-1.0, -1.0}};
         JPanel northPanel = new JPanel(new TableLayout(size));
@@ -191,7 +193,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
     
     protected void handleAddItem(){
         if(!editable) return;
-        String[] newRow = new InputCommodityInfoWin().getRowData();
+        String[] newRow = getInputRow();
         if(newRow == null || newRow[5].equals("0")) return;
         addItem(newRow);
     }

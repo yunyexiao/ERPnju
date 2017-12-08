@@ -118,6 +118,11 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     }
 
     @Override
+    protected String[] getInputRow(){
+        return new SalesReturnItemInputWin(originalSB).getRowData();
+    }
+
+    @Override
     protected ActionListener getNewActionListener() {
         return e -> {
             int response = JOptionPane.showConfirmDialog(
@@ -173,7 +178,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     @Override
     protected void handleAddItem(){
         if(!editable) return;
-        String[] newRow = new InputCommodityInfoWin().getRowData();
+        String[] newRow = getInputRow();
         if(newRow == null || newRow[5].equals("0")) return;
         // check if the sales bill contains that commodity, also check the amount
         if(!itemValid(newRow)) return;
