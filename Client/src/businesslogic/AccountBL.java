@@ -10,12 +10,13 @@ import dataservice.AccountDataService;
 import ds_stub.AccountDs_stub;
 import po.AccountPO;
 import presentation.component.MyTableModel;
+import rmi.Rmi;
 import vo.AccountVO;
 import vo.UserVO;
 
 public class AccountBL implements AccountBLService, GetAccountInterface {
 
-	private AccountDataService accountDataService = new AccountDs_stub();//Rmi.getRemote(AccountDataService.class);
+	private AccountDataService accountDataService = Rmi.flag ? Rmi.getRemote(AccountDataService.class) : new AccountDs_stub();
 	private AddLogInterface addLog;
 	private String[] tableHeader = {"银行账号", "账户名称", "余额"};
 	private int userRank;

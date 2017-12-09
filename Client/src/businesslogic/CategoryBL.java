@@ -12,6 +12,7 @@ import businesslogic.inter.AddLogInterface;
 import dataservice.CategoryDataService;
 import ds_stub.CategoryDs_stub;
 import po.CategoryPO;
+import rmi.Rmi;
 import vo.CategoryVO;
 import vo.UserVO;
 
@@ -21,7 +22,7 @@ import vo.UserVO;
  * @author ã¢Ò¶Ïö*/
 public class CategoryBL implements CategoryBLService, GetCategoryInterface {
     
-    private CategoryDataService categoryDs = new CategoryDs_stub();
+    private CategoryDataService categoryDs = Rmi.flag ? Rmi.getRemote(CategoryDataService.class) : new CategoryDs_stub();
     private AddLogInterface addLog;
 
     /**

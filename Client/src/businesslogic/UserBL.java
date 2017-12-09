@@ -10,12 +10,13 @@ import dataservice.UserDataService;
 import ds_stub.UserDs_stub;
 import po.UserPO;
 import presentation.component.MyTableModel;
+import rmi.Rmi;
 import vo.UserType;
 import vo.UserVO;
 
 public class UserBL implements UserBLService, GetUserInterface{
 	
-	private UserDataService userDataService = new UserDs_stub();//Rmi.getRemote(UserDataService.class);
+	private UserDataService userDataService = Rmi.flag ? Rmi.getRemote(UserDataService.class) : new UserDs_stub();//
 	private String[] tableHeader = {"用户ID", "用户名", "用户类别", "用户权限", "用户密码", "性别", "年龄", "电话号码"};
 	private AddLogInterface addLog;
 

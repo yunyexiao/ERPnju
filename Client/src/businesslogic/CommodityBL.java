@@ -12,6 +12,7 @@ import ds_stub.CommodityDs_stub;
 import po.CategoryPO;
 import po.CommodityPO;
 import presentation.component.MyTableModel;
+import rmi.Rmi;
 import vo.CommodityVO;
 import vo.UserVO;
 
@@ -22,7 +23,7 @@ import vo.UserVO;
  */
 public class CommodityBL implements CommodityBLService, GetCommodityInterface{
     
-    private CommodityDataService commodityDs = new CommodityDs_stub();//commodityDs = Rmi.getRemote(CommodityDataService.class);
+    private CommodityDataService commodityDs = Rmi.flag ? commodityDs = Rmi.getRemote(CommodityDataService.class) : new CommodityDs_stub();//;
     private GetCategoryInterface categoryInfo = new CategoryBL();
     private AddLogInterface addLog;
     private static final String[] columnNames = {"商品编号", "名称", "型号", "库存", "数量", "警戒值"

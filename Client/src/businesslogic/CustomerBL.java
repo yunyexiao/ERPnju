@@ -10,13 +10,14 @@ import dataservice.CustomerDataService;
 import ds_stub.CustomerDs_stub;
 import po.CustomerPO;
 import presentation.component.MyTableModel;
+import rmi.Rmi;
 import vo.CustomerVO;
 import vo.UserVO;
 
 public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 	
 	private AddLogInterface addLog;
-	private CustomerDataService customerDataService = new CustomerDs_stub();//Rmi.getRemote(CustomerDataService.class);
+	private CustomerDataService customerDataService = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
 	private String[] tableHeader = {"客户编号", "客户姓名", "分类", "级别", "电话", "地址", 
 			"邮编", "电子邮箱", "应收额度", "应收", "应付", "默认业务员"};
 	
