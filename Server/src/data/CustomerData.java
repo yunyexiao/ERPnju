@@ -13,7 +13,7 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 	private String tableName="CustomerInfo";
 	private String idName="CusID";
 
-	protected CustomerData() throws RemoteException {
+	public CustomerData() throws RemoteException {
 		super();
 	}
 

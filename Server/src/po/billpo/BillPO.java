@@ -19,7 +19,9 @@ public abstract class BillPO {
 	 * @param time 制定时间
 	 * @param id 每一天之内的编号
 	 * @param operator 操作人员的id
+	 * 
 	 */
+	public BillPO(){};
 	public BillPO(String date, String time, String id, String operatorId, int state) {
 		super();
 		this.date = date;

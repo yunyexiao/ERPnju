@@ -60,7 +60,7 @@ public class SQLQueryHelper {
 	public static boolean getTrueDeleteResult(String tableName, String attributeName, String value){
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("DELETE FROM "+tableName+" WHERE "+attributeName+"="+value+";");
+			int r=s.executeUpdate("DELETE FROM "+tableName+" WHERE "+attributeName+"='"+value+"';");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -73,7 +73,7 @@ public class SQLQueryHelper {
 		
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("UPDATE "+tableName+" SET "+flagName+"=0 WHERE "+"attributeName="+value+";");
+			int r=s.executeUpdate("UPDATE "+tableName+" SET "+flagName+"=0 WHERE "+attributeName+"='"+value+"';");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();

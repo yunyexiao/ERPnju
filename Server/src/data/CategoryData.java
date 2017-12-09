@@ -12,7 +12,7 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 	private String tableName="CategoryInfo";
 	private String idName="CateID";
 
-	protected CategoryData() throws RemoteException {
+	public CategoryData() throws RemoteException {
 		super();
 	}
 
@@ -29,26 +29,20 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 		
 		CategoryPO cpo = new CategoryPO();
 		cpo.setId(id);
-		String cateName = null,cateFatherId = null;
+
 		try{
 			Statement s1 = DataHelper.getInstance().createStatement();
-			ResultSet r1 = s1.executeQuery("SELECT CateName FROM CategoryInfo "
+			ResultSet r1 = s1.executeQuery("SELECT CateName, FatherID FROM CategoryInfo "
 			 		+ "WHERE CateID = " + id +";");
 			 while(r1.next()){
-				 cateName = r1.getString("CateName");
+					cpo.setName(r1.getString("CateName"));
+					cpo.setFatherId(r1.getString("FatherID"));
 			 }
 			 
-			 Statement s2 = DataHelper.getInstance().createStatement();
-			 ResultSet r2 = s2.executeQuery("SELECT CateFather FROM CategoryRelation WHERE CateID = " + id +";");
-			 while(r2.next()){
-				 cateFatherId = r2.getString("CateFather");
-			 }
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		cpo.setName(cateName);
-		cpo.setFatherId(cateFatherId);
 	
 		return cpo;
 	}
@@ -61,14 +55,10 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 			int r1 = s1.executeUpdate("INSERT INTO CategoryInfo VALUES('"
 			        +category.getId()+"','"
 					+category.getName()+"','"
-			        +1+"')");
-			Statement s2 = DataHelper.getInstance().createStatement();
-			int r2 = s2.executeUpdate("INSERT INTO CategoryRelation VALUES('"
-			        +category.getId()+"','"
-					+category.getFatherId()+"','"
-			        +1+"')");
+			        +1+"','"
+			        +category.getFatherId()+"')");
 			
-			if(r1>0&&r2>0)return true;
+			if(r1>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
 			   return false;
@@ -100,15 +90,12 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 		
 		
 		try{
-			Statement s1 = DataHelper.getInstance().createStatement();
-			int r1 = s1.executeUpdate("UPDATE CategoryRelation SET "
-					+ "CateFather = "+category.getFatherId()
-					+"WHERE CateID = "+category.getId()+";");
 			Statement s2 = DataHelper.getInstance().createStatement();
 			int r2 = s2.executeUpdate("UPDATE CategoryInfo SET "
-					+ "CateName = "+category.getName()
-					+"WHERE CateID = "+category.getId()+";");
-			if(r1>0&&r2>0)return true;
+					+ "CateName = '"+category.getName()
+					+ "FatherID = '"+category.getFatherId()
+					+"' WHERE CateID = "+category.getId()+";");
+			if(r2>0)return true;
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -130,17 +117,11 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 				 if(cateIsExist){
 				 cpo.setId(r.getString("CateID"));
 				 cpo.setName(r.getString("CateName"));
-				 
+				 cpo.setFatherId(r.getString("FatherID"));;
 				 cpos.add(cpo);
 				 }
 			 }
 			 
-			 for(int i = 0;i<cpos.size();i++){
-				 Statement s2 = DataHelper.getInstance().createStatement();
-				 ResultSet r2 = s2.executeQuery("SELECT CateFather FROM CategoryRelation WHERE CateID= " +cpos.get(i).getId() +";");
-				 cpos.get(i).setFatherId(r2.getString("CateFather"));
-				
-			 }
 			
 		}catch(Exception e){
 			e.printStackTrace();
@@ -170,17 +151,11 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 				 if(cateIsExist){
 				 cpo.setId(r.getString("CateID"));
 				 cpo.setName(r.getString("CateName"));
-				 
+				 cpo.setFatherId(r.getString("FatherID"));;
 				 cpos.add(cpo);
 				 }
 			 }
 			 
-			 for(int i = 0;i<cpos.size();i++){
-				 Statement s2 = DataHelper.getInstance().createStatement();
-				 ResultSet r2 = s2.executeQuery("SELECT CateFather FROM CategoryRelation WHERE CateID= " +cpos.get(i).getId() +";");
-				 cpos.get(i).setFatherId(r2.getString("CateFather"));
-				 
-			 }
 			
 		}catch(Exception e){
 			e.printStackTrace();

@@ -47,6 +47,8 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 		        upo.setUserTelNumber(r.getString("SUTel"));
 		        upo.setUsertype(r.getInt("SUDept"));
 		        upo.setUserRank(r.getInt("SURank"));
+		        upo.setExistFlag(r.getBoolean("SUIsExist"));
+		       
 			}	
 		 }
 		 catch(Exception e) {
@@ -110,14 +112,14 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
 			int r=s.executeUpdate("UPDATE SystemUser SET "
-					+ "SUName="+user.getUserName()
-					+", SUPwd="+user.getUserPwd()
-					+", SUDept="+user.getUsertype()
-					+", SURank="+user.getUserRank()
-					+", SUSex="+user.getUserSex()
-					+", SUBirth="+userBirth
-					+", SUTel="+user.getUserTelNumber()
-					+"WHERE SUID="+user.getUserId()+";");
+					+ "SUName='"+user.getUserName()
+					+"', SUPwd='"+user.getUserPwd()
+					+"', SUDept='"+user.getUsertype()
+					+"', SURank='"+user.getUserRank()
+					+"', SUSex='"+user.getUserSex()
+					+"', SUBirth='"+userBirth
+					+"', SUTel='"+user.getUserTelNumber()
+					+"' WHERE SUID='"+user.getUserId()+"';");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();

@@ -13,7 +13,7 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 	private String tableName="AccountInfo";
 	private String idName="AccountID";
 
-	protected AccountData() throws RemoteException {
+	public AccountData() throws RemoteException {
 		super();
 	}
 

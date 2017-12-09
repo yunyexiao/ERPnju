@@ -96,14 +96,10 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 			
 			ResultSet r2=SQLQueryHelper.getRecordByAttribute(billTableName, billIdName, id);
 			while(r2.next()){
-				String date=null, time=null;
-				
-				date=r2.getString("generateTime").split(" ")[0];
-				time=r2.getString("generateTime").split(" ")[1];
 				
 			    bill=new SalesBillPO(
-						date,
-						time,
+			    		r2.getString("generateTime").split(" ")[0],
+			    		r2.getString("generateTime").split(" ")[1],
 						r2.getString("SBID"),
 						r2.getString("SBOperatorID"),
 						r2.getInt("SBCondition"),
@@ -129,19 +125,19 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 	public ArrayList<SalesBillPO> getBillsBy(String field, String key, boolean isFuzzy) throws RemoteException {
 		// TODO Auto-generated method stub
 		ArrayList<SalesBillPO> bills=new ArrayList<SalesBillPO>();
-		ResultSet res1=null;
-		ResultSet res2=null;
+		ResultSet res_Bill=null;
+		ResultSet res_Record=null;
 		try{
 		if(isFuzzy){
 			Statement s1 = DataHelper.getInstance().createStatement();
-		    res1 = s1.executeQuery("SELECT * FROM SalesBill WHERE "+field+"LIKE '%"+key+"%';");
+			res_Bill = s1.executeQuery("SELECT * FROM SalesBill WHERE "+field+"LIKE '%"+key+"%';");
 		    
 		    Statement s2 = DataHelper.getInstance().createStatement();
-		    res2 = s2.executeQuery("SELECT * FROM SalesRecord WHERE "+field+"LIKE '%"+key+"%';");
+		    res_Record = s2.executeQuery("SELECT * FROM SalesRecord WHERE "+field+"LIKE '%"+key+"%';");
 		}
 		else if(!isFuzzy){
-			res1 =SQLQueryHelper.getRecordByAttribute(billTableName, field, key);
-			res2 =SQLQueryHelper.getRecordByAttribute(recordTableName, field, key);
+			res_Bill =SQLQueryHelper.getRecordByAttribute(billTableName, field, key);
+			res_Record =SQLQueryHelper.getRecordByAttribute(recordTableName, field, key);
 		}
 		
 		if(field.equals("SRComID")||field.equals("SRComQuantity")
@@ -149,11 +145,11 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 				||field.equals("SRRemark")){
 			ArrayList<String> ids=new ArrayList<String>();
 			
-			while(res2.next()){
+			while(res_Record.next()){
 				boolean isAdd=true;
 				for(int i=0;i<ids.size();i++)
-					if(res2.getString("SRID")==ids.get(i))isAdd=false;
-				if(isAdd)ids.add(res2.getString("SRID"));
+					if(res_Record.getString("SRID")==ids.get(i))isAdd=false;
+				if(isAdd)ids.add(res_Record.getString("SRID"));
 			}
 			
 			for(int i=0;i<ids.size();i++){
@@ -174,14 +170,10 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 			   ResultSet s =SQLQueryHelper.getRecordByAttribute(billTableName, billIdName, ids.get(i));
 			   
 			   while(s.next()){
-					String date=null, time=null;
-					
-					date=s.getString("generateTime").split(" ")[0];
-					time=s.getString("generateTime").split(" ")[1];
-					
+				
 					bill=new SalesBillPO(
-							date,
-							time,
+							s.getString("generateTime").split(" ")[0],
+							s.getString("generateTime").split(" ")[1],
 							s.getString("SBID"),
 							s.getString("SBOperatorID"),
 							s.getInt("PBCondition"),
@@ -193,16 +185,17 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 							s.getDouble("SBDiscount"),
 							s.getDouble("SBCoupon"),
 							s.getDouble("SBAfterDiscount"),
-							items);
+							items);		 
+				   bills.add(bill);	
 				}			   
-			   bills.add(bill);	
+	
 			}
 		}
 		else{
 			
-			while(res1.next()){
+			while(res_Bill.next()){
 				ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
-				ResultSet r =SQLQueryHelper.getRecordByAttribute(recordTableName, recordIdName, res1.getString("SBID"));
+				ResultSet r =SQLQueryHelper.getRecordByAttribute(recordTableName, recordIdName, res_Bill.getString("SBID"));
 				while(r.next()){
 					SalesItemsPO item=new SalesItemsPO(
 							r.getString("SRComID"),
@@ -213,25 +206,21 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 					    items.add(item);
 				}
 				
-				String date=null, time=null;
-				
-				date=res1.getString("generateTime").split(" ")[0];
-				time=res1.getString("generateTime").split(" ")[1];
 				
 				SalesBillPO bill=new SalesBillPO(
-						date,
-						time,
-						res1.getString("SBID"),
-						res1.getString("SBOperatorID"),
-						res1.getInt("PBCondition"),
-						res1.getString("SBCustomerID"),
-						res1.getString("SBSalesmanName"),
-						res1.getString("SBRemark"),
-						res1.getString("SBPromotionID"),
-						res1.getDouble("SBBeforeDiscount"),
-						res1.getDouble("SBDiscount"),
-						res1.getDouble("SBCoupon"),
-						res1.getDouble("SBAfterDiscount"),
+						res_Bill.getString("generateTime").split(" ")[0],
+						res_Bill.getString("generateTime").split(" ")[1],
+						res_Bill.getString("SBID"),
+						res_Bill.getString("SBOperatorID"),
+						res_Bill.getInt("PBCondition"),
+						res_Bill.getString("SBCustomerID"),
+						res_Bill.getString("SBSalesmanName"),
+						res_Bill.getString("SBRemark"),
+						res_Bill.getString("SBPromotionID"),
+						res_Bill.getDouble("SBBeforeDiscount"),
+						res_Bill.getDouble("SBDiscount"),
+						res_Bill.getDouble("SBCoupon"),
+						res_Bill.getDouble("SBAfterDiscount"),
 						items);
 				bills.add(bill);
 			}
@@ -245,4 +234,59 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 		return bills;
 	}
 
+	@Override
+	public ArrayList<SalesBillPO> getBillByDate(String from, String to) throws RemoteException {
+
+		ArrayList<SalesBillPO> bills=new ArrayList<SalesBillPO>();
+		try{
+			
+			Statement s=DataHelper.getInstance().createStatement();
+			ResultSet r=s.executeQuery("SELECT * FROM "+billTableName+
+					" WHERE generateTime>'"+from+"' AND generateTime<'"+to+"';");
+			while(r.next()){
+				SalesBillPO bill=new SalesBillPO();
+				bill.setId(r.getString("SBID"));
+				bill.setCustomerId(r.getString("SBCustomerID"));
+				bill.setOperatorId(r.getString("SBOperatorID"));
+				bill.setAfterDiscount(r.getDouble("SBBeforeDiscount"));
+				bill.setBeforeDiscount(r.getDouble("SBBeforeDiscount"));
+				bill.setCoupon(r.getDouble("SBCoupon"));
+				bill.setDate(r.getString("generateTime").split(" ")[0]);
+				bill.setTime(r.getString("generateTime").split(" ")[1]);
+				bill.setDiscount(r.getDouble("SBDiscount"));
+				bill.setPromotionId(r.getString("SBPromotionID"));
+				bill.setRemark(r.getString("SBRemark"));
+				bill.setSalesManName(r.getString("SBSalesmanName"));
+				bill.setState(r.getInt("PBCondition"));
+				
+				bills.add(bill);
+			}
+			
+			for(int i=0;i<bills.size();i++){
+				Statement s1=DataHelper.getInstance().createStatement();
+				ResultSet r1=s1.executeQuery("SELECT * FROM "+recordTableName+
+						" WHERE SRID="+bills.get(i).getId()+";");
+				ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
+				
+				while(r1.next()){
+					SalesItemsPO item=new SalesItemsPO(
+							r1.getString("SRComID"),
+							r1.getString("SRRemark"),
+							r1.getInt("SRComQuantity"),
+							r1.getDouble("SRPrice"),
+							r1.getDouble("SRComSum"));
+					items.add(item);
+				}
+				
+				bills.get(i).setSalesBillItems(items);
+
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+		return bills;
+	}
+	
 }

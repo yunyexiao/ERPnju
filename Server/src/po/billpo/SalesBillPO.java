@@ -20,8 +20,10 @@ public class SalesBillPO extends BillPO implements Serializable{
 	 private String customerId, salesManName, remark, promotionId;
 	 private double beforeDiscount, discount, coupon, afterDiscount;
 	 private ArrayList<SalesItemsPO> salesBillItems;
+	 
+	 public SalesBillPO(){};
 	
-	public SalesBillPO(String date, String time, String id, String operatorId, int state, String customerId,
+	 public SalesBillPO(String date, String time, String id, String operatorId, int state, String customerId,
 			String salesManName, String remark, String promotionId, double beforeDiscount, double discount,
 			double coupon, double afterDiscount, ArrayList<SalesItemsPO> salesBillItems) {
 		super(date, time, id, operatorId, state);

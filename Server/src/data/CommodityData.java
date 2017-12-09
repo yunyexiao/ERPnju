@@ -13,7 +13,7 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 	private String tableName="CommodityInfo";
 	private String idName="ComID";
 
-	protected CommodityData() throws RemoteException {
+	public CommodityData() throws RemoteException {
 		super();
 	}
 
@@ -98,18 +98,18 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
 			int r=s.executeUpdate("UPDATE CustomerInfo SET "
-					+ "ComName="+commodity.getName()
-					+", ComCateID="+commodity.getCategoryId()
-					+", ComType="+commodity.getType()
-					+", ComStore="+commodity.getStore()
-					+", ComQuantity="+commodity.getAmount()
-					+", ComInPrice="+commodity.getInPrice()
-					+", ComSalePrice="+commodity.getSalePrice()
-					+", ComRecInPrice="+commodity.getRecentInPrice()
-					+", ComRecSalePrice="+commodity.getRecentSalePrice()
-					+", ComAlarmQuantity="+commodity.getAlarmNum()
-					+"WHERE ComID="
-					+commodity.getId()+";");
+					+ "ComName='"+commodity.getName()
+					+"', ComCateID="+commodity.getCategoryId()
+					+"', ComType='"+commodity.getType()
+					+"', ComStore='"+commodity.getStore()
+					+"', ComQuantity='"+commodity.getAmount()
+					+"', ComInPrice='"+commodity.getInPrice()
+					+"', ComSalePrice='"+commodity.getSalePrice()
+					+"', ComRecInPrice='"+commodity.getRecentInPrice()
+					+"', ComRecSalePrice='"+commodity.getRecentSalePrice()
+					+"', ComAlarmQuantity='"+commodity.getAlarmNum()
+					+"'WHERE ComID='"
+					+commodity.getId()+"';");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
