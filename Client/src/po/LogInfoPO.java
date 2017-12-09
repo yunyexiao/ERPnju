@@ -1,6 +1,8 @@
 package po;
 
-public class LogInfoPO {
+import java.io.Serializable;
+
+public class LogInfoPO implements Serializable {
 
 	private String time;
 	private String operatorId;
