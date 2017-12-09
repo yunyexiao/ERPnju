@@ -44,6 +44,10 @@ public class PurchaseBillBL implements PurchaseBillBLService {
     @Override
     public boolean deleteBill(String id) {
         try{
+            // passed bills cannot be deleted, only can be offsetted
+            PurchaseBillPO bill = purchaseBillDs.getBillById(id);
+            if(bill.getState() == BillPO.PASS) return false;
+
             int length = id.length();
             return purchaseBillDs.deleteBill(id.substring(length - 5, length));
         }catch(RemoteException e){

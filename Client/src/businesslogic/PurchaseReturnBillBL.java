@@ -9,6 +9,7 @@ import blservice.billblservice.PurchaseReturnBillBLService;
 import blservice.infoservice.GetCommodityInterface;
 import dataservice.PurchaseReturnBillDataService;
 import ds_stub.PurchaseReturnBillDs_stub;
+import po.billpo.BillPO;
 import po.billpo.PurchaseReturnBillItemsPO;
 import po.billpo.PurchaseReturnBillPO;
 import presentation.component.MyTableModel;
@@ -42,7 +43,12 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
     @Override
     public boolean deleteBill(String id) {
         try{
-            return purchaseReturnBillDs.deleteBill(id);
+            // passed bills cannot be deleted, only can be offsetted
+            PurchaseReturnBillPO bill = purchaseReturnBillDs.getBillById(id);
+            if(bill.getState() == BillPO.PASS) return false;
+            
+            int length = id.length();
+            return purchaseReturnBillDs.deleteBill(id.substring(length - 5, length));
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
