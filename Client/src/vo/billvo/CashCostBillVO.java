@@ -7,17 +7,14 @@ public class CashCostBillVO extends BillVO {
 	private String accountId;
 	private MyTableModel tableModel;
 	
-	public CashCostBillVO(String date, String time, String id, String operator, int state, String accountId) {
+	public CashCostBillVO(String date, String time, String id, String operator, int state, String accountId, MyTableModel tableModel) {
 		super(date, time, id, operator, state);
 		this.accountId  = accountId;
+		this.tableModel = tableModel;
 	}
 	
 	public String getAccountId() {
 		return accountId;
-	}
-	
-	public void setTableModel(MyTableModel tableModel) {
-		this.tableModel = tableModel;
 	}
 	
 	public MyTableModel getTableModel() {

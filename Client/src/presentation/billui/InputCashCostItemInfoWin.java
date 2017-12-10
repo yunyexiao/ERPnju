@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import layout.TableLayout;
+import presentation.component.InfoWindow;
+import presentation.tools.InputCheck;
 
 /**
  * 输入条目清单的面板
@@ -18,14 +20,14 @@ public class InputCashCostItemInfoWin {
     
     private JTextField[] fields; 
     private JDialog frame;
-    private String[] rowData;
+    private String[] rowData = null;
     private String[] labelTexts = {"条目名", "金额", "备注"};
 
     public InputCashCostItemInfoWin() {
         frame = new JDialog();
-        frame.setTitle("条目清单");
+        frame.setTitle("输入条目清单");
         frame.setModal(true);
-        frame.setSize(400, 430);
+        frame.setSize(400, 250);
         frame.setLocation(400, 200);
         frame.setResizable(false);
         frame.setLayout(new BorderLayout());
@@ -56,7 +58,7 @@ public class InputCashCostItemInfoWin {
     }
 
     private void initCenter() {
-        double[] columnSize = {-1.0, -2.0, 10.0, -2.0, 10.0, -2.0, -1.0};
+        double[] columnSize = {TableLayout.FILL, TableLayout.PREFERRED , 10.0, 0.6, 10.0, TableLayout.PREFERRED, TableLayout.FILL};
         double[] rowSize = new double[labelTexts.length * 2 + 1];
         rowSize[0] = 20.0;
         for(int i = 0; i < labelTexts.length; i++){
@@ -71,35 +73,23 @@ public class InputCashCostItemInfoWin {
         for(int i = 0; i < labelTexts.length; i++){
             labels[i] = new JLabel(labelTexts[i]);
             fields[i] = new JTextField(10);
-            fields[i].setEditable(false);
             centerPanel.add(labels[i], "1 " + (2 * i + 1));
             centerPanel.add(fields[i], "3 " + (2 * i + 1));
         }
-        fields[1].setEditable(true);
-        fields[2].setEditable(true);
-     /*   fields[5].addFocusListener(new FocusListener(){
-
-            @Override
-            public void focusGained(FocusEvent e) {
-                // No needs to complete it.
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                sumUp();
-            }
-            
-        });
-        */
         frame.add(centerPanel, BorderLayout.CENTER);
     }
-        
+
     private void handleOk(){
-        rowData = new String[fields.length];
-        for(int i = 0; i < fields.length; i++){
-            rowData[i] = fields[i].getText();
-        }
-        frame.dispose();
+    	if (! InputCheck.isLegal(fields[0].getText())) new InfoWindow("请输入正确的条目名称");
+    	else if (! InputCheck.isDouble(fields[1].getText())) new InfoWindow("请输入正确的金额");
+    	else if (! InputCheck.isLegalOrBlank(fields[2].getText())) new InfoWindow("备注非法");
+    	else {
+    		rowData = new String[fields.length];
+            for(int i = 0; i < fields.length; i++){
+                rowData[i] = fields[i].getText();
+            }
+            frame.dispose();
+    	}
     }
 
 }

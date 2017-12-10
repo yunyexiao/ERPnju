@@ -9,6 +9,7 @@ import ds_stub.CashCostBillDs_stub;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
 import presentation.component.MyTableModel;
+import rmi.Rmi;
 import vo.billvo.CashCostBillVO;
 
 public class CashCostBillBL implements CashCostBillBLService {
@@ -16,7 +17,7 @@ public class CashCostBillBL implements CashCostBillBLService {
 	private CashCostBillDataService cashCostBillDataService;
 	
 	public CashCostBillBL() {
-		cashCostBillDataService = new CashCostBillDs_stub();//Rmi.getRemote(CashCostBillDataService.class);
+		cashCostBillDataService = Rmi.flag ? Rmi.getRemote(CashCostBillDataService.class) : new CashCostBillDs_stub();
 	}
 	
 	@Override
@@ -91,13 +92,11 @@ public class CashCostBillBL implements CashCostBillBLService {
         }
         MyTableModel model = new MyTableModel(data, columnNames);
         CashCostBillVO cashCostBillVO = new CashCostBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator()
-                , bill.getState(), bill.getAccountId());
-        cashCostBillVO.setTableModel(model);
+                , bill.getState(), bill.getAccountId(), model);
         return cashCostBillVO;
     }
     
     private String[] toArray(CashCostItem item){
-        // TODO the type and store to complete
         return new String[]{item.getName(), Double.toString(item.getMoney()), item.getRemark()};
     }
 }

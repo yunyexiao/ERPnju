@@ -2,6 +2,7 @@ package presentation.billui;
 
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -11,8 +12,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-import bl_stub.CashCostBillBL_stub;
 import blservice.billblservice.CashCostBillBLService;
+import businesslogic.CashCostBillBL;
 import layout.TableLayout;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
@@ -25,16 +26,15 @@ import vo.billvo.CashCostBillVO;
 
 public class CashCostBillPanel extends BillPanel {
 
-	private CashCostBillBLService cashCostBillBL = new CashCostBillBL_stub();
+	private CashCostBillBLService cashCostBillBL = new CashCostBillBL();
 	
 	private JTextField billIdField, operatorField, accountIdField, sumField;
 	private JTable itemListTable;
-	private boolean editable = true;
 	
 	public CashCostBillPanel(UserVO user, ActionListener closeListener) {
 		super(user, closeListener);
         this.billIdField.setText(cashCostBillBL.getNewId());
-        this.operatorField.setText(user.getId());
+        this.operatorField.setText(user.getName());
 	}
 
 	public CashCostBillPanel(UserVO user, ActionListener closeListener, CashCostBillVO cashCostBill) {
@@ -43,11 +43,6 @@ public class CashCostBillPanel extends BillPanel {
         operatorField.setText(cashCostBill.getOperator());
         accountIdField.setText(cashCostBill.getAccountId());
         itemListTable.setModel(cashCostBill.getTableModel());
-        if(cashCostBill.getState() == BillVO.COMMITED || cashCostBill.getState() == BillVO.PASS){
-            editable = false;
-        } else {
-            editable = true;
-        }
 	}
 	
 	@Override
@@ -59,63 +54,60 @@ public class CashCostBillPanel extends BillPanel {
 		}
 		
 		JScrollPane itemListPane;
-		JPanel headPanel, accountInfoPanel, centerPanel, itemButtonPanel, southPanel;
+		JPanel headPanel, accountInfoPanel, centerPanel, itemButtonPanel;
 		JButton accountChooseButton, itemChooseButton, itemDeleteButton, chooseFinishButton;
 		
-		headPanel=new JPanel();
 		double firstPanelSize[][]={
-				{20,55,5,150,20,40,5,150,TableLayout.FILL},
+				{20,55,5,TableLayout.PREFERRED,20,55,5,TableLayout.PREFERRED,TableLayout.FILL},
 				{12,25,TableLayout.FILL}
 		};
-		billIdField = new JTextField(10);
+		billIdField = new JTextField(15);
 		operatorField = new JTextField(10);
-	
 		billIdField.setEditable(false);
 		operatorField.setEditable(false);
-		
-		headPanel.setLayout(new TableLayout(firstPanelSize));
+		headPanel = new JPanel(new TableLayout(firstPanelSize));
 		headPanel.add(new JLabel("单据编号"),"1,1");
 		headPanel.add(billIdField,"3,1");
 		headPanel.add(new JLabel("操作人"),"5,1");
 		headPanel.add(operatorField,"7,1");
 		
-		accountInfoPanel=new JPanel();
-		accountIdField = new JTextField(10);
-		accountIdField.setText("编号");
-		
+		accountIdField = new JTextField(20);
+		accountIdField.setText("");
 		accountIdField.setEditable(false);
 		double secondPanelSize[][]={
-				{20,45,5,70,12,100,5,60,TableLayout.FILL},
+				{20,55,5,TableLayout.PREFERRED,5,TableLayout.PREFERRED,TableLayout.FILL},
 				{8,25,TableLayout.FILL}
 		};
 		accountChooseButton=new JButton("选择");
 		accountChooseButton.addActionListener(e -> handleChooseAccount());
-		accountInfoPanel.setLayout(new TableLayout(secondPanelSize));
+		accountInfoPanel = new JPanel(new TableLayout(secondPanelSize));
 		accountInfoPanel.add(new JLabel("账户"),"1,1");
 		accountInfoPanel.add(accountIdField,"3,1");
 	    accountInfoPanel.add(accountChooseButton,"5,1");
 		
 		String[] itemListAttributes={"条目名", "金额", "备注"};
-		String[][] itemInfo={{"买女装","10000","公款私用"}, {"大保健", "800", ""}};
-		itemListTable = new JTable(new MyTableModel(itemInfo, itemListAttributes));
+		itemListTable = new JTable(new MyTableModel(null, itemListAttributes));
+		itemListTable.getTableHeader().setReorderingAllowed(false);
 		itemListPane = new JScrollPane(itemListTable);
 		
-		itemButtonPanel=new JPanel();
 		double forthPanelSize[][]={
-				{85,TableLayout.FILL},
-				{25,10,25,10,25,10,TableLayout.FILL},
+				{TableLayout.PREFERRED,TableLayout.FILL},
+				{25,10,25,10,25,10,25,TableLayout.FILL},
 		};
-		itemChooseButton=new JButton("新建条目");
+		itemChooseButton=new JButton("新建条目", new ImageIcon("resource/AddButton.png"));
         itemChooseButton.addActionListener(e -> addItem());
-		itemDeleteButton=new JButton("删除条目");
+		itemDeleteButton=new JButton("删除条目", new ImageIcon("resource/DeleteButton.png"));
         itemDeleteButton.addActionListener(e -> deleteItem());
 		chooseFinishButton=new JButton("选择完成");
 		chooseFinishButton.addActionListener(e -> sumUp());
-
-		itemButtonPanel.setLayout(new TableLayout(forthPanelSize));
+		sumField = new JTextField(10);
+		sumField.setEditable(false);
+		sumField.setText("0.0");
+		itemButtonPanel = new JPanel(new TableLayout(forthPanelSize));
 		itemButtonPanel.add(itemChooseButton, "0,0");
 		itemButtonPanel.add(itemDeleteButton, "0,2");
-		itemButtonPanel.add(chooseFinishButton, "0,4");
+		itemButtonPanel.add(new JLabel("总额："), "0,4");
+		itemButtonPanel.add(sumField, "0,6");
 
 		centerPanel=new JPanel();
 		double centerPanelSize[][]={
@@ -127,54 +119,41 @@ public class CashCostBillPanel extends BillPanel {
 		centerPanel.add(itemListPane, "1,3");
 		centerPanel.add(itemButtonPanel, "3,3");
 		
-		southPanel = new JPanel();
-		double[][] size = {
-                {20.0, -2.0, 10.0, 100.0, -1.0, -1.0},
-                {10.0, -1.0, 10.0, -1.0, -1.0}
-        };
-        southPanel.setLayout(new TableLayout(size));
-		sumField = new JTextField(20);
-		sumField.setEditable(false);
-		southPanel.add(new JLabel("总额"),"1,1");
-		southPanel.add(sumField,"3,1");
-		
 		double mainPanelSize[][]={
 				{TableLayout.FILL},
-				{0.1, 0.1, 0.5,0.1,0.15}
+				{0.08, 0.08, 0.6, TableLayout.FILL}
 		};
 		billPanel.setLayout(new TableLayout(mainPanelSize));
 		billPanel.add(headPanel, "0,0");
 		billPanel.add(accountInfoPanel, "0,1");
 		billPanel.add(centerPanel, "0,2");
-		billPanel.add(southPanel, "0,4");
 
 	}
 
 	private void addItem(){
-        if(!editable) return;
         String[] newRow = new InputCashCostItemInfoWin().getRowData();
-        if(newRow == null) return;
-        MyTableModel model = (MyTableModel) itemListTable.getModel();
-        model.addRow(newRow);
+        if (newRow != null) {
+            MyTableModel model = (MyTableModel) itemListTable.getModel();
+            model.addRow(newRow);
+        	sumUp();
+        } 
     }
 	
     private void deleteItem(){
-        if(!editable) return;
 	    int row = itemListTable.getSelectedRow();
-	    if(row < 0) return;
-        ((MyTableModel)itemListTable.getModel()).removeRow(itemListTable.getSelectedRow());
+	    if(row >= 0) {
+	    	((MyTableModel)itemListTable.getModel()).removeRow(itemListTable.getSelectedRow());
+	    	sumUp();
+	    } else new InfoWindow("请选择删除的条目");
     }
 	
     private void handleChooseAccount(){
-        if(!editable) return;
         AccountVO a = new AccountChooseWin().getAccount();
         if(a == null) return;
         accountIdField.setText(a.getNumber());
-     //   accountNameField.setText(a.getName());
     }
     
     protected void sumUp(){
-        if(!editable) return;
 	    MyTableModel model = (MyTableModel)this.itemListTable.getModel();
         double total = 0;
 	    for(int i = 0; i < model.getRowCount(); i++){
@@ -184,10 +163,9 @@ public class CashCostBillPanel extends BillPanel {
     }
     
     protected void clear(){
-        billIdField.setText("");
-        operatorField.setText("");
+        billIdField.setText(cashCostBillBL.getNewId());
         accountIdField.setText("");
-        sumField.setText("");
+        sumField.setText("0.0");
         MyTableModel model = (MyTableModel) itemListTable.getModel();
         while(model.getRowCount() > 0){
             model.removeRow(0);
@@ -201,47 +179,31 @@ public class CashCostBillPanel extends BillPanel {
                 null, "确认要新建一张现金费用单吗？", "提示", JOptionPane.YES_NO_OPTION);
             if(response == 1)return;
             clear();
-            billIdField.setText(cashCostBillBL.getNewId());
-            operatorField.setText(this.getUser().getName());
         };
 	}
 	
 	@Override
 	protected ActionListener getSaveActionListener() {
 		return e ->{
-            if(!editable) return;
             CashCostBillVO bill = getBill(BillVO.SAVED);
-            if(bill == null){
-                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-                return;
-            }
-            if(cashCostBillBL.saveBill(bill)){
-                JOptionPane.showMessageDialog(null, "单据已保存。");
-            }
+            if (bill != null && cashCostBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已保存。");
         };
 	}
 
 	@Override
 	protected ActionListener getCommitActionListener() {
 		return e ->{
-            if(!editable) return;
             CashCostBillVO bill = getBill(BillVO.COMMITED);
-            if(bill == null){
-                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-                return;
-            }
-            if(cashCostBillBL.saveBill(bill)){
-                JOptionPane.showMessageDialog(null, "单据已提交。");
-            }
+            if (bill != null && cashCostBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
         };
 	}
 
 	@Override
 	protected boolean isCorrectable() {
-		//todo:不知道是否还应该加些什么
-		if (itemListTable.getRowCount() == 0) {new InfoWindow("没有选择条目");return false;}
-		return true;
-
+		if (itemListTable.getRowCount() == 0) new InfoWindow("没有选择条目");
+		else if ("".equals(accountIdField.getText())) new InfoWindow("没有选择账户");
+		else return true;
+		return false;
 	}
 
 	/**
@@ -249,10 +211,8 @@ public class CashCostBillPanel extends BillPanel {
 	 * @return
 	 */
 	public CashCostBillVO getBill(int state) {
-		if (! isCorrectable()) {
-			return null;
-		}
+		if (! isCorrectable()) return null;
 		Timetools.check();
-		return new CashCostBillVO(Timetools.getDate(), Timetools.getTime(), cashCostBillBL.getNewId(), operatorField.getText(), state, accountIdField.getText());
+		return new CashCostBillVO(Timetools.getDate(), Timetools.getTime(), cashCostBillBL.getNewId(), operatorField.getText(), state, accountIdField.getText(),(MyTableModel) itemListTable.getModel());
 	}
 }

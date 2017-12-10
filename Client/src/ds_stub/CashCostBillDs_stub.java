@@ -19,7 +19,7 @@ public class CashCostBillDs_stub implements CashCostBillDataService {
 
 	@Override
 	public String getNewId() {
-		return "00001";
+		return "XJFYD-20171210-00001";
 	}
 
 	@Override
