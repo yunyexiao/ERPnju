@@ -60,7 +60,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 		}
 		
 		JScrollPane transferListPane;
-		JPanel headPanel, customerInfoPanel,centerPanel,transferButtonPanel, tailPanel;
+		JPanel headPanel, customerInfoPanel,centerPanel,transferButtonPanel;
 		JButton customerChooseButton, transferChooseButton, transferDeleteButton;
 		
 		headPanel=new JPanel();
@@ -124,17 +124,20 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 		transferButtonPanel=new JPanel();
 		double forthPanelSize[][]={
 				{TableLayout.PREFERRED,TableLayout.FILL},
-				{25,10,25,10,25,10,TableLayout.FILL},
+				{25,10,25,10,25,10,25,TableLayout.FILL},
 		};
-		
+		sumField = new JTextField(8);
+		sumField.setText("0.0");
+		sumField.setEditable(false);
 		transferChooseButton=new JButton("新增转账", new ImageIcon("resource/AddButton.png"));
         transferChooseButton.addActionListener(e -> addItem());
         transferDeleteButton=new JButton("删除转账", new ImageIcon("resource/DeleteButton.png"));
         transferDeleteButton.addActionListener(e -> deleteItem());
-		
 		transferButtonPanel.setLayout(new TableLayout(forthPanelSize));
 		transferButtonPanel.add(transferChooseButton, "0,0");
 		transferButtonPanel.add(transferDeleteButton, "0,2");
+		transferButtonPanel.add(new JLabel("总额"),"0,4");
+		transferButtonPanel.add(sumField,"0,6");
 
 		centerPanel=new JPanel();
 		double centerPanelSize[][]={
@@ -146,34 +149,24 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 		centerPanel.add(transferListPane, "1,3");
 		centerPanel.add(transferButtonPanel, "3,3");
 		
-		tailPanel = new JPanel();
-		double[][] size = {
-                {20.0, -2.0, 10.0, 100.0, -1.0, -1.0},
-                {10.0, -1.0, 10.0, -1.0, -1.0}
-        };
-        tailPanel.setLayout(new TableLayout(size));
-		sumField = new JTextField(20);
-		sumField.setText("0.0");
-		sumField.setEditable(false);
-		tailPanel.add(new JLabel("总额"),"1,1");
-		tailPanel.add(sumField,"3,1");
-		
 		double mainPanelSize[][]={
 				{TableLayout.FILL},
-				{0.08,0.08,0.08,0.5,0.175,0.175}	
+				{0.08,0.08,0.08,0.6}	
 		};
 		billPanel.setLayout(new TableLayout(mainPanelSize));
 		billPanel.add(headPanel, "0,0");
 		billPanel.add(choosePanel, "0,1");
 		billPanel.add(customerInfoPanel, "0,2");
 		billPanel.add(centerPanel,"0,3");
-		billPanel.add(tailPanel, "0,4");
 	}
 
 	private void addItem(){
         String[] newRow = new InputTransferItemInfoWin().getRowData();
         if(newRow != null) {
             MyTableModel model = (MyTableModel) transferListTable.getModel();
+            for(int i = 0; i < model.getRowCount(); i++) {
+            	if (newRow[0].equals(model.getValueAt(i, 1))) {new InfoWindow("表格中已有此账户"); return;}
+            }
             model.addRow(newRow);
             sumUp();
         }
