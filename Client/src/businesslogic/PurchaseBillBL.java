@@ -125,6 +125,18 @@ public class PurchaseBillBL implements PurchaseBillBLService {
             return null;
         }
     }
+    
+    /**
+     * This method is not intended for personal use
+     */
+    public ArrayList<PurchaseBillPO> getBillPOsByDate(String from, String to){
+        try{
+            return purchaseBillDs.getBillsByDate(from, to);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 
     private PurchaseBillPO toPO(PurchaseBillVO bill){
         ArrayList<PurchaseBillItemsPO> items = new ArrayList<>();

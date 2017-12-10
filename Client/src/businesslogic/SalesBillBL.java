@@ -129,6 +129,15 @@ public class SalesBillBL implements SalesBillBLService {
         }
     }
     
+    public ArrayList<SalesBillPO> getBillPOsByDate(String from, String to){
+        try{
+            return salesBillDs.getBillByDate(from, to);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
     private MyTableModel toModel(ArrayList<SalesBillPO> bills){
         String[] columnNames = {"制定时间", "单据编号"};
         String[][] data = new String[bills.size()][columnNames.length];

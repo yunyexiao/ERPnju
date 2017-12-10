@@ -84,6 +84,15 @@ public class SalesReturnBillBL implements SalesReturnBillBLService {
         }
     }
 
+    public ArrayList<SalesReturnBillPO> getBillPOsByDate(String from, String to){
+        try{
+            return salesReturnBillDs.getBillsByDate(from, to);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
     private SalesReturnBillPO toPO(SalesReturnBillVO bill){
         String date = bill.getDate(),
                time = bill.getTime(),

@@ -86,6 +86,15 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
         }
     }
     
+    public ArrayList<PurchaseReturnBillPO> getPurchaseReturnBillPOsByDate(String from, String to){
+        try{
+            return purchaseReturnBillDs.getBillsByDate(from, to);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
     private PurchaseReturnBillPO toPO(PurchaseReturnBillVO bill){
         ArrayList<PurchaseReturnBillItemsPO> items = new ArrayList<>();
         for(int i = 0; i < bill.getModel().getRowCount(); i++){
