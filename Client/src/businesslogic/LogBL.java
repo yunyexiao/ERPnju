@@ -11,13 +11,14 @@ import dataservice.LogDataService;
 import ds_stub.LogDs_stub;
 import po.LogInfoPO;
 import presentation.component.MyTableModel;
+import rmi.Rmi;
 import vo.UserVO;
 
 public class LogBL implements LogBLService, AddLogInterface {
 
-	private LogDataService logData = new LogDs_stub();//Rmi.getRemote(LogDataService.class);
+	private LogDataService logData = Rmi.flag ? Rmi.getRemote(LogDataService.class) : new LogDs_stub();
 	private GetUserInterface getUserInfo;
-	private UserVO user;
+	private final UserVO user;
 	
 	public LogBL(UserVO user) {
 		getUserInfo = new UserBL();

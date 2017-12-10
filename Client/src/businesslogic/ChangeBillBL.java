@@ -44,7 +44,7 @@ public class ChangeBillBL implements ChangeBillBLService {
 			ChangeItem item = new ChangeItem(s[0], Integer.parseInt(s[2]), Integer.parseInt(s[3]));
 			commodityList.add(item);
 		}
-		return changeBillDS.saveBill(new ChangeBillPO(bill, bill.getFlag(), commodityList));
+		return changeBillDS.saveBill(new ChangeBillPO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), bill.getState(), bill.getFlag(), commodityList));
 	}
 
 	@Override

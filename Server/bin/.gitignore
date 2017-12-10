@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 /Start.class
 /po/
 /rmi/
 /data/
 /dataservice/
+=======
+/Start.class
+/data/
+/dataservice/
+/po/
+/rmi/
+>>>>>>> 037dev

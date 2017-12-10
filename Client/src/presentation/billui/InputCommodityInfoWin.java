@@ -12,8 +12,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import layout.TableLayout;
+import presentation.component.InfoWindow;
 import presentation.component.choosewindow.CommodityChooseWin;
 import presentation.tools.DoubleField;
+import presentation.tools.InputCheck;
 import presentation.tools.IntField;
 import vo.CommodityVO;
 
@@ -21,11 +23,11 @@ import vo.CommodityVO;
  * 输入商品的面板
  * @author 恽叶霄
  */
-abstract class InputCommodityInfoWin {
+class InputCommodityInfoWin {
     
-    protected JTextField[] fields; 
-    protected JDialog frame;
-    private String[] rowData;
+    private JTextField[] fields; 
+    private JDialog frame;
+    private String[] rowData = null;
     private String[] labelTexts = {"编号", "名称", "型号", "库存"
                 , "单价", "数量", "总价", "备注"};
 
@@ -39,15 +41,12 @@ abstract class InputCommodityInfoWin {
         frame.setLayout(new BorderLayout());
         initCenter();
         initSouth();
+        frame.setVisible(true);
     }
 
     public String[] getRowData(){
         return rowData;
     }
-
-    abstract protected boolean isPriceEditable();
-    
-    abstract protected void setPrice(CommodityVO commodity);
 
     private void initSouth() {
         JButton okButton = new JButton("确定");
@@ -67,15 +66,14 @@ abstract class InputCommodityInfoWin {
     }
 
     private void initCenter() {
-        double[] columnSize = {-1.0, -2.0, 10.0, -2.0, 10.0, -2.0, -1.0};
+        double[] columnSize = {TableLayout.FILL, TableLayout.PREFERRED , 10.0, 0.6, 10.0, TableLayout.PREFERRED, TableLayout.FILL};
         double[] rowSize = new double[labelTexts.length * 2 + 1];
         rowSize[0] = 20.0;
         for(int i = 0; i < labelTexts.length; i++){
             rowSize[2 * i + 1] = -2.0;
             rowSize[2 * i + 2] = 10.0;
         }
-        JPanel centerPanel = new JPanel(new TableLayout(
-            new double[][]{columnSize, rowSize}));
+        JPanel centerPanel = new JPanel(new TableLayout(new double[][]{columnSize, rowSize}));
 
         JLabel[] labels = new JLabel[labelTexts.length];
         fields = new JTextField[labelTexts.length];
@@ -98,12 +96,11 @@ abstract class InputCommodityInfoWin {
                 sumUp();
             }
         };
-        fields[4].setEditable(isPriceEditable());
+        fields[4].setEditable(true);
         fields[4].addFocusListener(l);
         fields[5].setEditable(true);
         fields[7].setEditable(true);
         fields[5].addFocusListener(l);
-        
         JButton chooseButton = new JButton("选择商品");
         chooseButton.addActionListener(e -> handleChoose());
         centerPanel.add(chooseButton, "5 1");
@@ -112,15 +109,19 @@ abstract class InputCommodityInfoWin {
     }
     
     private void handleOk(){
-        if(fields[0].getText().length() == 0) return;
-        if(fields[6].getText().length() == 0){
+        if (fields[0].getText().length() == 0) new InfoWindow("请选择商品");
+        else if (Double.parseDouble(fields[4].getText()) == 0) new InfoWindow("请输入大于0的商品单价");
+        else if (Integer.parseInt(fields[5].getText()) == 0) new InfoWindow("请输入大于0的数量");
+        else if (! InputCheck.isLegalOrBlank(fields[7].getText())) new InfoWindow("备注非法");
+        else if(fields[6].getText().length() == 0){
             if(!sumUp())return;
+        } else {
+	        rowData = new String[fields.length];
+	        for(int i = 0; i < fields.length; i++){
+	            rowData[i] = fields[i].getText();
+	        }
+	        frame.dispose();
         }
-        rowData = new String[fields.length];
-        for(int i = 0; i < fields.length; i++){
-            rowData[i] = fields[i].getText();
-        }
-        frame.dispose();
     }
 
     private void handleChoose(){
@@ -130,18 +131,17 @@ abstract class InputCommodityInfoWin {
         fields[1].setText(c.getName());
         fields[2].setText(c.getType());
         fields[3].setText(c.getStore());
-        setPrice(c);
         if(fields[5].getText().length() > 0) sumUp();
     }
 
     private boolean sumUp(){
         try{
-            int num = ((IntField)fields[5]).getValue();
+            int num = Integer.parseInt(fields[5].getText());
             double price = Double.parseDouble(fields[4].getText());
             fields[6].setText(num * price + "");
             return true;
         }catch(NumberFormatException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         }
     }

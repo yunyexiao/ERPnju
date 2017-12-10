@@ -2,8 +2,8 @@ package presentation.billui;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,10 +12,14 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import blservice.infoservice.GetUserInterface;
+import businesslogic.UserBL;
 import layout.TableLayout;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.component.choosewindow.CustomerChooseWin;
 import presentation.tools.DoubleField;
+import presentation.tools.InputCheck;
 import vo.CustomerVO;
 import vo.UserVO;
 import vo.billvo.BillVO;
@@ -33,17 +37,18 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 	protected JTable goodsListTable;
 	protected JLabel timeLabel;
 	protected boolean editable;
+	
+	private GetUserInterface userInfo = new UserBL();
 
     public CommonSaleBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
         this.editable = true;
-        setTime();
     }
     
     public CommonSaleBillPanel(UserVO user, ActionListener closeListener, MarketBillVO bill){
         super(user, closeListener);
         billIdField.setText(bill.getAllId());
-        operatorField.setText(bill.getOperator());
+        operatorField.setText(userInfo.getUser(bill.getOperator()).getName());
         timeLabel.setText(bill.getTime());
         customerIdField.setText(bill.getCustomerId());
         customerNameField.setText(bill.getCustomerName());
@@ -75,22 +80,16 @@ public abstract class CommonSaleBillPanel extends BillPanel {
     
     @Override
     protected boolean isCorrectable(){
-        if(billIdField.getText().length() == 0) return false;
-        if(operatorField.getText().length() == 0) return false;
-        if(customerIdField.getText().length() == 0) return false;
-        if(customerNameField.getText().length() == 0) return false;
-        if(sumField.getText().length() == 0) return false;
-        if(goodsListTable.getModel().getRowCount() == 0) return false;
-        return true;
+        if (customerIdField.getText().length() == 0) new InfoWindow("请选择客户");
+        else if (goodsListTable.getModel().getRowCount() == 0) new InfoWindow("列表为空");
+        else if (! InputCheck.isLegalOrBlank(remarkField.getText())) new InfoWindow("备注非法");
+        else return true;
+        return false;
     }
 
     abstract protected String getObjectType();
     
     abstract protected String getTableTitle();
-    
-    abstract protected int getCustomerType();
-    
-    abstract protected String[] getInputRow();
     
     private void initNorth(){
         double[][] size = {{-1.0}, {-1.0, -1.0}};
@@ -106,7 +105,6 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         billIdField.setEditable(false);
         operatorField = new JTextField(10);
         operatorField.setEditable(false);
-        timeLabel = new JLabel();
 		double size[][]={
 				{20,-2.0,5,-2.0,20,-2.0,5,-2.0,20.0,-2.0,5.0,-2.0,TableLayout.FILL},
 				{12,25,TableLayout.FILL}
@@ -114,10 +112,8 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 	    JPanel headPanel = new JPanel(new TableLayout(size));
 		headPanel.add(new JLabel("单据编号"),"1,1");
 		headPanel.add(billIdField,"3,1");
-		headPanel.add(new JLabel("操作人编号"),"5,1");
+		headPanel.add(new JLabel("操作人"),"5,1");
 		headPanel.add(operatorField,"7,1");
-		headPanel.add(new JLabel("单据建立时间"), "9 1");
-		headPanel.add(timeLabel, "11 1");
 		return headPanel;
     }
     
@@ -159,17 +155,17 @@ public abstract class CommonSaleBillPanel extends BillPanel {
    
     private void initEast(){
         double size[][]={
-                {-1.0,TableLayout.FILL},
-                {40.0,25,10,25,10,TableLayout.FILL},
+                {20,TableLayout.PREFERRED,TableLayout.FILL},
+                {40.0,25,10,25,10,25,10,TableLayout.FILL},
         };
         JPanel goodsButtonPanel = new JPanel(new TableLayout(size));
-        JButton goodsChooseButton=new JButton("选择商品");
+        JButton goodsChooseButton=new JButton("选择商品", new ImageIcon("resource/AddButton.png"));
         goodsChooseButton.addActionListener(e -> handleAddItem());
-        JButton goodsDeleteButton=new JButton("删除商品");
+        JButton goodsDeleteButton=new JButton("删除商品", new ImageIcon("resource/DeleteButton.png"));
         goodsDeleteButton.addActionListener(e -> deleteItem());
 
-        goodsButtonPanel.add(goodsChooseButton, "0,1");
-        goodsButtonPanel.add(goodsDeleteButton, "0,3");
+        goodsButtonPanel.add(goodsChooseButton, "1,1");
+        goodsButtonPanel.add(goodsDeleteButton, "1,3");
 
         billPanel.add(goodsButtonPanel, BorderLayout.EAST);
     }
@@ -193,29 +189,34 @@ public abstract class CommonSaleBillPanel extends BillPanel {
     
     protected void handleAddItem(){
         if(!editable) return;
-        String[] newRow = getInputRow();
-        if(newRow == null || newRow[5].equals("0")) return;
-        addItem(newRow);
+        String[] newRow = new InputCommodityInfoWin().getRowData();
+        if (newRow != null && !newRow[5].equals("0")) {
+            addItem(newRow);
+        } 
     }
     
     private void deleteItem(){
         if(!editable) return;
 	    int row = goodsListTable.getSelectedRow();
-	    if(row < 0) return;
-        ((MyTableModel)goodsListTable.getModel()).removeRow(goodsListTable.getSelectedRow());
-        sumUp();
+	    if(row >= 0) {
+	    	((MyTableModel)goodsListTable.getModel()).removeRow(goodsListTable.getSelectedRow());
+	    	sumUp();
+	    } else new InfoWindow("请选择删除的商品");
     }
 
-    protected void handleChooseCustomer(){
+    protected void handleChooseCustomer(boolean isPurchase){
         if(!editable) return;
-        CustomerVO c = new CustomerChooseWin(getCustomerType()).getCustomer();
+        CustomerVO c = new CustomerChooseWin().getCustomer();
         if(c == null) return;
-        customerIdField.setText(c.getId());
-        customerNameField.setText(c.getName());
+        if (c.getType() == (isPurchase?0:1)) {
+        	customerIdField.setText(c.getId());
+        	customerNameField.setText(c.getName());
+        } else new InfoWindow(isPurchase?"请选择进货商":"请选择销售商");
     }
+    
+    abstract protected void handleChooseCustomer();
 
     protected void sumUp(){
-        if(!editable) return;
 	    MyTableModel model = (MyTableModel)this.goodsListTable.getModel();
         double total = 0;
 	    for(int i = 0; i < model.getRowCount(); i++){
@@ -226,29 +227,15 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 
     protected void clear(){
         billIdField.setText("");
-        operatorField.setText("");
         customerIdField.setText("");
         customerNameField.setText("");
         remarkField.setText("");
         remarkField.setEditable(true);
-        sumField.setText("");
+        sumField.setText("0.0");
         MyTableModel model = (MyTableModel) goodsListTable.getModel();
         while(model.getRowCount() > 0){
             model.removeRow(0);
         }
-    }
-
-    protected void setTime(){
-        Calendar c = Calendar.getInstance();
-        int hour = c.get(Calendar.HOUR_OF_DAY),
-            minute = c.get(Calendar.MINUTE),
-            second = c.get(Calendar.SECOND);
-        String time = String.format("%02d:%02d:%02d", hour, minute, second);
-        timeLabel.setText(time);
-    }
-
-    protected String getTime(){
-        return timeLabel.getText();
     }
 
     protected String getDate(){
@@ -265,7 +252,10 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         if(rowIndex >= 0){
             int amount = Integer.parseInt((String)model.getValueAt(rowIndex, 5))
                        + Integer.parseInt(newRow[5]);
-            model.setValueAt(amount, rowIndex, 5);
+            double sum = Double.parseDouble((String)model.getValueAt(rowIndex, 6))
+                       + Double.parseDouble(newRow[6]);
+            model.setValueAt(amount + "", rowIndex, 5);
+            model.setValueAt(sum + "", rowIndex, 6);
         } else {
             model.addRow(newRow);
         }

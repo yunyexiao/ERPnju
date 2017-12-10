@@ -16,6 +16,7 @@ import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.component.choosewindow.SalesBillChooseWin;
 import presentation.tools.DoubleField;
+import presentation.tools.Timetools;
 import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.SalesBillVO;
@@ -35,7 +36,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     public SalesReturnBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
         this.billIdField.setText(saleReturnBl.getNewId());
-        this.operatorField.setText(user.getId());
+        this.operatorField.setText(user.getName());
     }
 
     public SalesReturnBillPanel(UserVO user, ActionListener closeListener, SalesReturnBillVO bill) {
@@ -45,11 +46,6 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         this.finalSumField.setText(bill.getSum() + "");
     }
     
-    @Override
-    protected int getCustomerType(){
-        return 1;
-    }
-
     @Override
     protected JPanel getCustomerPanel(){
         customerIdField = new JTextField(10);
@@ -118,11 +114,6 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     }
 
     @Override
-    protected String[] getInputRow(){
-        return new SalesReturnItemInputWin(originalSB).getRowData();
-    }
-
-    @Override
     protected ActionListener getNewActionListener() {
         return e -> {
             int response = JOptionPane.showConfirmDialog(
@@ -131,37 +122,22 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
             clear();
             billIdField.setText(saleReturnBl.getNewId());
             operatorField.setText(getUser().getName());
-            setTime();
         };
     }
 
     @Override
     protected ActionListener getSaveActionListener() {
-        return e -> {
-            if(!editable) return;
-            SalesReturnBillVO bill = getBill(BillVO.SAVED);
-            if(bill == null){
-                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-                return;
-            }
-            if(saleReturnBl.saveBill(bill)){
-                JOptionPane.showMessageDialog(null, "单据已保存。");
-            }
+    	return e ->{
+    		SalesReturnBillVO bill = getBill(BillVO.SAVED);
+            if (bill != null && saleReturnBl.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已保存。");
         };
     }
 
     @Override
     protected ActionListener getCommitActionListener() {
-        return e -> {
-            if(!editable) return;
-            SalesReturnBillVO bill = getBill(BillVO.COMMITED);
-            if(bill == null){
-                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-                return;
-            }
-            if(saleReturnBl.saveBill(bill)){
-                JOptionPane.showMessageDialog(null, "单据已提交。");
-            }
+    	return e ->{
+    		SalesReturnBillVO bill = getBill(BillVO.COMMITED);
+            if (bill != null && saleReturnBl.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
         };
     }
 
@@ -178,7 +154,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     @Override
     protected void handleAddItem(){
         if(!editable) return;
-        String[] newRow = getInputRow();
+        String[] newRow = new InputCommodityInfoWin().getRowData();
         if(newRow == null || newRow[5].equals("0")) return;
         // check if the sales bill contains that commodity, also check the amount
         if(!itemValid(newRow)) return;
@@ -196,7 +172,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
 
     private SalesReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
-        String date = getDate(), time = getTime(), id = getId();
+        String date = getDate(), id = getId();
         String operater = operatorField.getText()
              , customerId = customerIdField.getText()
              , customerName = customerNameField.getText()
@@ -206,7 +182,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         double discountRate = Double.parseDouble(discountRateField.getText()), 
                originalSum = Double.parseDouble(sumField.getText()),
                sum = Double.parseDouble(finalSumField.getText());
-        return new SalesReturnBillVO(date, time, id, operater, state
+        return new SalesReturnBillVO(date, Timetools.getTime(), id, operater, state
             , customerId, customerName, model, remark, originalSBId
             , discountRate, originalSum, sum);
     }
@@ -250,5 +226,10 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         }
         return amount;
     }
+
+	@Override
+	protected void handleChooseCustomer() {
+		handleChooseCustomer(false);
+	}
 
 }

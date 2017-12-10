@@ -3,14 +3,13 @@ package bl_stub;
 import blservice.billblservice.PaymentBillBLService;
 import vo.billvo.PaymentBillVO;
 
-
 public class PaymentBillBL_stub implements PaymentBillBLService {
 
     public PaymentBillBL_stub() {}
 
     @Override
     public String getNewId() {
-        return "FKD-20171201-00001";
+        return "FKD-20171205-00001";
     }
 
     @Override

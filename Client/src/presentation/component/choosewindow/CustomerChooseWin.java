@@ -1,27 +1,25 @@
 package presentation.component.choosewindow;
 
-import bl_stub.CustomerBL_stub;
 import blservice.CustomerBLService;
 import blservice.infoservice.GetCustomerInterface;
+import businesslogic.CustomerBL;
 import presentation.tools.TableTools;
 import vo.CustomerVO;
 
 public class CustomerChooseWin extends ChooseWindow {
     
     private CustomerVO data;
-    private int type;
     private CustomerBLService customerBl;
 
-    public CustomerChooseWin(int type) {
+    public CustomerChooseWin() {
         super();
-        this.type = type;
     }
 
     @Override
     public void init() {
-        customerBl = new CustomerBL_stub();
+        customerBl = new CustomerBL();
         setTypes(new String[]{"按编号搜索", "按名称搜索"});
-        table.setModel(customerBl.search("CusType", type + ""));
+        table.setModel(customerBl.update());
         TableTools.autoFit(table);
         frame.setTitle("选择客户");
         frame.setVisible(true);
@@ -29,7 +27,7 @@ public class CustomerChooseWin extends ChooseWindow {
 
     @Override
     protected void yesAction() {
-        GetCustomerInterface customerInfo = new CustomerBL_stub();
+        GetCustomerInterface customerInfo = new CustomerBL();
         int index = table.getSelectedRow();
         if(index < 0) return;
         String id = (String) table.getValueAt(index, 0);

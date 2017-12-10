@@ -14,6 +14,7 @@ import layout.TableLayout;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.component.choosewindow.PurchaseBillChooseWin;
+import presentation.tools.Timetools;
 import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.PurchaseBillVO;
@@ -33,7 +34,7 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
         this.billIdField.setText(purchaseReturnBl.getNewId());
-        this.operatorField.setText(user.getId());
+        this.operatorField.setText(user.getName());
     }
 
     public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener, SalesBillVO saleBill) {
@@ -48,11 +49,6 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     @Override
     protected String getTableTitle() {
         return "出库商品列表";
-    }
-
-    @Override
-    protected int getCustomerType(){
-        return 0;
     }
 
     @Override
@@ -87,11 +83,6 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     }
 
     @Override
-    protected String[] getInputRow(){
-        return new PurchaseReturnItemInputWin(originalPB).getRowData();
-    }
-
-    @Override
     protected ActionListener getNewActionListener() {
         return e -> {
             int response = JOptionPane.showConfirmDialog(
@@ -100,51 +91,35 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
             clear();
             billIdField.setText(purchaseReturnBl.getNewId());
             operatorField.setText(getUser().getName());
-            setTime();
         };
     }
 
     @Override
     protected ActionListener getSaveActionListener() {
         return e -> {
-            if(!editable) return;
-            PurchaseReturnBillVO bill = getBill(BillVO.SAVED);
-            if(bill == null){
-                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-                return;
-            }
-            if(purchaseReturnBl.saveBill(bill)){
-                JOptionPane.showMessageDialog(null, "单据已保存。");
-            }
-
+        	PurchaseReturnBillVO bill = getBill(BillVO.SAVED);
+            if (bill != null && purchaseReturnBl.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已保存。");
         };
     }
 
     @Override
     protected ActionListener getCommitActionListener() {
-        return e -> {
-            if(!editable) return;
-            PurchaseReturnBillVO bill = getBill(BillVO.COMMITED);
-            if(bill == null){
-                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-                return;
-            }
-            if(purchaseReturnBl.saveBill(bill)){
-                JOptionPane.showMessageDialog(null, "单据已提交。");
-            }
+    	return e ->{
+    		PurchaseReturnBillVO bill = getBill(BillVO.COMMITED);
+            if (bill != null && purchaseReturnBl.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
         };
     }
 
     private PurchaseReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
-        String date = getDate(), time = getTime(), id = getId();
+        String date = getDate(), id = getId();
         String operater = operatorField.getText()
              , customerId = customerIdField.getText()
              , customerName = customerNameField.getText()
              , remark = remarkField.getText();
         MyTableModel model = (MyTableModel)goodsListTable.getModel();
         double sum = Double.parseDouble(sumField.getText());
-        return new PurchaseReturnBillVO(date, time, id, operater, state
+        return new PurchaseReturnBillVO(date, Timetools.getTime(), id, operater, state
             , customerId, customerName, model, remark, sum);
     }
 
@@ -159,5 +134,11 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
         if(originalPB == null) return;
         originalPBIdField.setText(originalPB.getAllId());
     }
+
+	@Override
+	protected void handleChooseCustomer() {
+		handleChooseCustomer(true);
+	}
+
 
 }

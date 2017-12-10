@@ -14,11 +14,11 @@ public class LoginBL implements LoginBLService {
 	@Override
 	public UserVO getUser(String id, String password){
 		System.out.println(id + "	" + password);
-		UserDataService userDataService = new UserDs_stub();//Rmi.getRemote(UserDataService.class);
+		UserDataService userDataService = Rmi.flag ? Rmi.getRemote(UserDataService.class) : new UserDs_stub();
 		AddLogInterface addLog;
 		try {
 			UserPO user = userDataService.findById(id);
-			if (password.equals(user.getUserPwd())) {
+			if (user != null && password.equals(user.getUserPwd())) {
 				UserVO userVO =  new UserVO(
 						user.getUserName(), 
 						user.getUserPwd(),
@@ -34,6 +34,7 @@ public class LoginBL implements LoginBLService {
 			}
 			else return null;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

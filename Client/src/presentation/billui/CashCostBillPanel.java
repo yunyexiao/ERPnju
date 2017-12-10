@@ -1,10 +1,11 @@
 package presentation.billui;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -16,25 +17,36 @@ import businesslogic.CashCostBillBL;
 import layout.TableLayout;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
+import presentation.component.choosewindow.AccountChooseWin;
 import presentation.tools.Timetools;
+import vo.AccountVO;
 import vo.UserVO;
+import vo.billvo.BillVO;
 import vo.billvo.CashCostBillVO;
 
 public class CashCostBillPanel extends BillPanel {
 
-	private CashCostBillBLService cashCostBillBL;
+	private CashCostBillBLService cashCostBillBL = new CashCostBillBL();
 	
-	private JTextField billIdField, operaterField, accountIdField;
-	private JTable itemListTable = new JTable();
+	private JTextField billIdField, operatorField, accountIdField, sumField;
+	private JTable itemListTable;
 	
 	public CashCostBillPanel(UserVO user, ActionListener closeListener) {
 		super(user, closeListener);
-		// TODO Auto-generated constructor stub
+        this.billIdField.setText(cashCostBillBL.getNewId());
+        this.operatorField.setText(user.getName());
 	}
 
+	public CashCostBillPanel(UserVO user, ActionListener closeListener, CashCostBillVO cashCostBill) {
+		super(user, closeListener);
+        billIdField.setText(cashCostBill.getAllId());
+        operatorField.setText(cashCostBill.getOperator());
+        accountIdField.setText(cashCostBill.getAccountId());
+        itemListTable.setModel(cashCostBill.getTableModel());
+	}
+	
 	@Override
 	protected void initBillPanel() {
-		cashCostBillBL = new CashCostBillBL();
 		try{
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");//Nimbus风格，jdk6 update10版本以后的才会出现
 		}catch(Exception e){
@@ -43,58 +55,57 @@ public class CashCostBillPanel extends BillPanel {
 		
 		JScrollPane itemListPane;
 		JPanel headPanel, accountInfoPanel, centerPanel, itemButtonPanel;
-		JButton accountChooseButton, itemChooseButton, itemDeleteButton, chooseFinishButton;
+		JButton accountChooseButton, itemChooseButton, itemDeleteButton;
 		
-		billIdField = new JTextField(10);
-		operaterField = new JTextField(10);
-		accountIdField = new JTextField(10);
-		accountIdField.setText("编号");
-		
-		billIdField.setEditable(false);
-		operaterField.setEditable(false);
-		accountIdField.setEditable(false);
-		
-		headPanel=new JPanel();
 		double firstPanelSize[][]={
-				{20,55,5,150,20,40,5,150,TableLayout.FILL},
+				{20,55,5,TableLayout.PREFERRED,20,55,5,TableLayout.PREFERRED,TableLayout.FILL},
 				{12,25,TableLayout.FILL}
 		};
-		headPanel.setLayout(new TableLayout(firstPanelSize));
+		billIdField = new JTextField(15);
+		operatorField = new JTextField(10);
+		billIdField.setEditable(false);
+		operatorField.setEditable(false);
+		headPanel = new JPanel(new TableLayout(firstPanelSize));
 		headPanel.add(new JLabel("单据编号"),"1,1");
 		headPanel.add(billIdField,"3,1");
 		headPanel.add(new JLabel("操作人"),"5,1");
-		headPanel.add(operaterField,"7,1");
+		headPanel.add(operatorField,"7,1");
 		
-		accountInfoPanel=new JPanel();
+		accountIdField = new JTextField(20);
+		accountIdField.setText("");
+		accountIdField.setEditable(false);
 		double secondPanelSize[][]={
-				{20,45,5,70,12,100,5,60,TableLayout.FILL},
+				{20,55,5,TableLayout.PREFERRED,5,TableLayout.PREFERRED,TableLayout.FILL},
 				{8,25,TableLayout.FILL}
 		};
-		accountChooseButton=new JButton("选择");	
-		accountInfoPanel.setLayout(new TableLayout(secondPanelSize));
-		accountInfoPanel.add(new JLabel("客户"),"1,1");
+		accountChooseButton=new JButton("选择");
+		accountChooseButton.addActionListener(e -> handleChooseAccount());
+		accountInfoPanel = new JPanel(new TableLayout(secondPanelSize));
+		accountInfoPanel.add(new JLabel("账户"),"1,1");
 		accountInfoPanel.add(accountIdField,"3,1");
 	    accountInfoPanel.add(accountChooseButton,"5,1");
 		
 		String[] itemListAttributes={"条目名", "金额", "备注"};
-		String[][] itemInfo={{"买女装","10000","公款私用"}, {"大保健", "800", ""}};
-		itemListTable = new JTable(new MyTableModel(itemInfo, itemListAttributes));
+		itemListTable = new JTable(new MyTableModel(null, itemListAttributes));
+		itemListTable.getTableHeader().setReorderingAllowed(false);
 		itemListPane = new JScrollPane(itemListTable);
-
-		itemChooseButton=new JButton("新建条目");
-		//todo:新建条目window
-		itemDeleteButton=new JButton("删除条目");
-		chooseFinishButton=new JButton("选择完成");
 		
-		itemButtonPanel=new JPanel();
 		double forthPanelSize[][]={
-				{85,TableLayout.FILL},
-				{25,10,25,10,25,10,TableLayout.FILL},
+				{TableLayout.PREFERRED,TableLayout.FILL},
+				{25,10,25,10,25,10,25,TableLayout.FILL},
 		};
-		itemButtonPanel.setLayout(new TableLayout(forthPanelSize));
+		itemChooseButton=new JButton("新建条目", new ImageIcon("resource/AddButton.png"));
+        itemChooseButton.addActionListener(e -> addItem());
+		itemDeleteButton=new JButton("删除条目", new ImageIcon("resource/DeleteButton.png"));
+        itemDeleteButton.addActionListener(e -> deleteItem());
+		sumField = new JTextField(10);
+		sumField.setEditable(false);
+		sumField.setText("0.0");
+		itemButtonPanel = new JPanel(new TableLayout(forthPanelSize));
 		itemButtonPanel.add(itemChooseButton, "0,0");
 		itemButtonPanel.add(itemDeleteButton, "0,2");
-		itemButtonPanel.add(chooseFinishButton, "0,4");
+		itemButtonPanel.add(new JLabel("总额："), "0,4");
+		itemButtonPanel.add(sumField, "0,6");
 
 		centerPanel=new JPanel();
 		double centerPanelSize[][]={
@@ -108,72 +119,98 @@ public class CashCostBillPanel extends BillPanel {
 		
 		double mainPanelSize[][]={
 				{TableLayout.FILL},
-				{0.1, 0.1, 0.5}	
+				{0.08, 0.08, 0.6, TableLayout.FILL}
 		};
 		billPanel.setLayout(new TableLayout(mainPanelSize));
 		billPanel.add(headPanel, "0,0");
 		billPanel.add(accountInfoPanel, "0,1");
-		billPanel.add(centerPanel,"0,2");
+		billPanel.add(centerPanel, "0,2");
 
 	}
 
+	private void addItem(){
+        String[] newRow = new InputCashCostItemInfoWin().getRowData();
+        if (newRow != null) {
+            MyTableModel model = (MyTableModel) itemListTable.getModel();
+            model.addRow(newRow);
+        	sumUp();
+        } 
+    }
+	
+    private void deleteItem(){
+	    int row = itemListTable.getSelectedRow();
+	    if(row >= 0) {
+	    	((MyTableModel)itemListTable.getModel()).removeRow(itemListTable.getSelectedRow());
+	    	sumUp();
+	    } else new InfoWindow("请选择删除的条目");
+    }
+	
+    private void handleChooseAccount(){
+        AccountVO a = new AccountChooseWin().getAccount();
+        if(a == null) return;
+        accountIdField.setText(a.getNumber());
+    }
+    
+    protected void sumUp(){
+	    MyTableModel model = (MyTableModel)this.itemListTable.getModel();
+        double total = 0;
+	    for(int i = 0; i < model.getRowCount(); i++){
+	        total += Double.parseDouble((String)model.getValueAt(i, 1));
+	    }
+	    sumField.setText(Double.toString(total));
+    }
+    
+    protected void clear(){
+        billIdField.setText(cashCostBillBL.getNewId());
+        accountIdField.setText("");
+        sumField.setText("0.0");
+        MyTableModel model = (MyTableModel) itemListTable.getModel();
+        while(model.getRowCount() > 0){
+            model.removeRow(0);
+        }
+    }
+    
 	@Override
 	protected ActionListener getNewActionListener() {
-		return new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-			}
-		};
+		return e -> {
+            int response = JOptionPane.showConfirmDialog(
+                null, "确认要新建一张现金费用单吗？", "提示", JOptionPane.YES_NO_OPTION);
+            if(response == 1)return;
+            clear();
+        };
 	}
-
+	
 	@Override
 	protected ActionListener getSaveActionListener() {
-		return new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				CashCostBillVO bill = getBill();
-				if (bill != null) {
-					bill.setState(CashCostBillVO.SAVED);
-					if (cashCostBillBL.saveBill(bill)) new InfoWindow("单据保存成功");
-					else new InfoWindow("单据保存失败");
-				}
-			}
-		};
+		return e ->{
+            CashCostBillVO bill = getBill(BillVO.SAVED);
+            if (bill != null && cashCostBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已保存。");
+        };
 	}
 
 	@Override
 	protected ActionListener getCommitActionListener() {
-		return new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				CashCostBillVO bill = getBill();
-				if (bill != null) {
-					bill.setState(CashCostBillVO.COMMITED);
-					if (cashCostBillBL.saveBill(bill)) new InfoWindow("单据提交成功");
-					else new InfoWindow("单据提交失败");
-				}
-			}
-		};
+		return e ->{
+            CashCostBillVO bill = getBill(BillVO.COMMITED);
+            if (bill != null && cashCostBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
+        };
 	}
 
 	@Override
 	protected boolean isCorrectable() {
-		//todo:不知道是否还应该加些什么
-		if (itemListTable.getRowCount() == 0) {new InfoWindow("没有选择条目");return false;}
-		return true;
-
+		if (itemListTable.getRowCount() == 0) new InfoWindow("没有选择条目");
+		else if ("".equals(accountIdField.getText())) new InfoWindow("没有选择账户");
+		else return true;
+		return false;
 	}
 
 	/**
 	 * 获得单据VO
 	 * @return
 	 */
-	public CashCostBillVO getBill() {
-		if (! isCorrectable()) {
-			return null;
-		}
+	public CashCostBillVO getBill(int state) {
+		if (! isCorrectable()) return null;
 		Timetools.check();
-		return new CashCostBillVO(Timetools.getDate(), Timetools.getTime(), cashCostBillBL.getNewId(), operaterField.getText(), CashCostBillVO.DRAFT, accountIdField.getText());
+		return new CashCostBillVO(Timetools.getDate(), Timetools.getTime(), cashCostBillBL.getNewId(), operatorField.getText(), state, accountIdField.getText(),(MyTableModel) itemListTable.getModel());
 	}
 }
