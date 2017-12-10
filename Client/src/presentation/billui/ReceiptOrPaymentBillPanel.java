@@ -1,16 +1,11 @@
 package presentation.billui;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
-import java.util.Enumeration;
 
-import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -40,13 +35,10 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 
 	private JTextField billIdField, customerIdField, customerNameField, operaterField, sumField;
 	private JTable transferListTable;
-	private boolean editable;
-	private ButtonGroup typeButtonGroup;
-	private JDialog frame = new JDialog();
+	private JRadioButton receiptButton, paymentButton;
 	
 	public ReceiptOrPaymentBillPanel(UserVO user, ActionListener closeListener) {
 		super(user, closeListener);
-		editable = true;
         this.billIdField.setText(receiptBillBL.getNewId());
 		this.operaterField.setText(this.getUser().getName());
 	}
@@ -57,11 +49,6 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
         operaterField.setText(bill.getOperator());
         customerIdField.setText(bill.getCustomerId());
         transferListTable.setModel(bill.getTableModel());
-		if(bill.getState() == BillVO.COMMITED || bill.getState() == BillVO.PASS){
-			editable = false;
-		} else {
-	        editable = true;
-	    }
 	}
 	
 	@Override
@@ -74,36 +61,52 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 		
 		JScrollPane transferListPane;
 		JPanel headPanel, customerInfoPanel,centerPanel,transferButtonPanel, tailPanel;
-		JButton customerChooseButton, transferChooseButton, transferDeleteButton, chooseFinishButton;
+		JButton customerChooseButton, transferChooseButton, transferDeleteButton;
 		
 		headPanel=new JPanel();
 		double firstPanelSize[][]={
-				{20,55,5,150,20,40,5,150,TableLayout.FILL},
+				{20,55,5,TableLayout.PREFERRED,20,55,5,TableLayout.PREFERRED,TableLayout.FILL},
 				{12,25,TableLayout.FILL}
 		};
-		billIdField = new JTextField(10);
+		billIdField = new JTextField(15);
 		operaterField = new JTextField(10);
-		customerIdField = new JTextField(10);
-		customerNameField = new JTextField(10);
-		customerIdField.setText("编号");
-		customerNameField.setText("姓名");
-
 		billIdField.setEditable(false);
 		operaterField.setEditable(false);
-		customerIdField.setEditable(false);
-		customerNameField.setEditable(false);
-
 		headPanel.setLayout(new TableLayout(firstPanelSize));
 		headPanel.add(new JLabel("单据编号"),"1,1");
 		headPanel.add(billIdField,"3,1");
 		headPanel.add(new JLabel("操作人"),"5,1");
 		headPanel.add(operaterField,"7,1");
 		
+		JPanel choosePanel = new JPanel();
+		double choosePanelSize[][] = {
+				{20,55,5,TableLayout.PREFERRED,20,TableLayout.PREFERRED,TableLayout.FILL},
+				{12,25,TableLayout.FILL}
+		};
+		choosePanel.setLayout(new TableLayout(choosePanelSize));
+		receiptButton = new JRadioButton("收款单");
+		paymentButton = new JRadioButton("付款单");
+		receiptButton.setSelected(true);
+		receiptButton.addActionListener(e -> setBillId(true));
+		paymentButton.addActionListener(e -> setBillId(false));
+		choosePanel.add(new JLabel("单据类型"), "1,1");
+		choosePanel.add(receiptButton, "3,1");
+		choosePanel.add(paymentButton, "5,1");
+		ButtonGroup chooseGroup = new ButtonGroup();
+		chooseGroup.add(receiptButton);
+		chooseGroup.add(paymentButton);
+		
 		customerInfoPanel=new JPanel();
 		double secondPanelSize[][]={
 				{20,45,5,70,12,70,12,70,60,TableLayout.FILL},
 				{8,25,TableLayout.FILL}
 		};
+		customerIdField = new JTextField(10);
+		customerNameField = new JTextField(10);
+		customerIdField.setText("");
+		customerNameField.setText("");
+		customerIdField.setEditable(false);
+		customerNameField.setEditable(false);
 		customerChooseButton=new JButton("选择");	
         customerChooseButton.addActionListener(e -> handleChooseCustomer());
 		customerInfoPanel.setLayout(new TableLayout(secondPanelSize));
@@ -114,27 +117,24 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 		customerInfoPanel.add(customerChooseButton,"7,1");
 		
 		String[] transferListAttributes={"银行账户", "转账金额", "备注"};
-		String[][] transferInfo={{"mayun0001","100000","赎金"}};
-		transferListTable = new JTable(new MyTableModel(transferInfo,transferListAttributes));
+		transferListTable = new JTable(new MyTableModel(null,transferListAttributes));
+		transferListTable.getTableHeader().setReorderingAllowed(false);
 		transferListPane = new JScrollPane(transferListTable);
 
 		transferButtonPanel=new JPanel();
 		double forthPanelSize[][]={
-				{85,TableLayout.FILL},
+				{TableLayout.PREFERRED,TableLayout.FILL},
 				{25,10,25,10,25,10,TableLayout.FILL},
 		};
 		
-		transferChooseButton=new JButton("选择转账");
+		transferChooseButton=new JButton("新增转账", new ImageIcon("resource/AddButton.png"));
         transferChooseButton.addActionListener(e -> addItem());
-        transferDeleteButton=new JButton("删除转账");
+        transferDeleteButton=new JButton("删除转账", new ImageIcon("resource/DeleteButton.png"));
         transferDeleteButton.addActionListener(e -> deleteItem());
-        chooseFinishButton=new JButton("选择完成");
-        chooseFinishButton.addActionListener(e -> sumUp());
 		
 		transferButtonPanel.setLayout(new TableLayout(forthPanelSize));
 		transferButtonPanel.add(transferChooseButton, "0,0");
 		transferButtonPanel.add(transferDeleteButton, "0,2");
-		transferButtonPanel.add(chooseFinishButton, "0,4");
 
 		centerPanel=new JPanel();
 		double centerPanelSize[][]={
@@ -153,38 +153,42 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
         };
         tailPanel.setLayout(new TableLayout(size));
 		sumField = new JTextField(20);
+		sumField.setText("0.0");
 		sumField.setEditable(false);
 		tailPanel.add(new JLabel("总额"),"1,1");
 		tailPanel.add(sumField,"3,1");
 		
 		double mainPanelSize[][]={
 				{TableLayout.FILL},
-				{0.1, 0.1, 0.5,0.1,0.15}	
+				{0.08,0.08,0.08,0.5,0.175,0.175}	
 		};
 		billPanel.setLayout(new TableLayout(mainPanelSize));
 		billPanel.add(headPanel, "0,0");
-		billPanel.add(customerInfoPanel, "0,1");
-		billPanel.add(centerPanel,"0,2");
+		billPanel.add(choosePanel, "0,1");
+		billPanel.add(customerInfoPanel, "0,2");
+		billPanel.add(centerPanel,"0,3");
 		billPanel.add(tailPanel, "0,4");
 	}
 
 	private void addItem(){
-        if(!editable) return;
         String[] newRow = new InputTransferItemInfoWin().getRowData();
-        if(newRow == null) return;
-        MyTableModel model = (MyTableModel) transferListTable.getModel();
-        model.addRow(newRow);
+        if(newRow != null) {
+            MyTableModel model = (MyTableModel) transferListTable.getModel();
+            model.addRow(newRow);
+            sumUp();
+        }
     }
 	
     private void deleteItem(){
-        if(!editable) return;
 	    int row = transferListTable.getSelectedRow();
-	    if(row < 0) return;
-        ((MyTableModel)transferListTable.getModel()).removeRow(transferListTable.getSelectedRow());
+	    if(row >= 0) {
+	    	((MyTableModel)transferListTable.getModel()).removeRow(transferListTable.getSelectedRow());
+	    	sumUp();
+	    }
+	    else new InfoWindow("请选择删除的转账信息");
     }
 	
     private void sumUp(){
-        if(!editable) return;
 	    MyTableModel model = (MyTableModel)this.transferListTable.getModel();
         double total = 0;
 	    for(int i = 0; i < model.getRowCount(); i++){
@@ -194,7 +198,6 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
     }
     
     private void handleChooseCustomer(){
-        if(!editable) return;
         CustomerVO c = new CustomerChooseWin().getCustomer();
         if(c == null) return;
         customerIdField.setText(c.getId());
@@ -202,111 +205,43 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
     }
 
 	protected void clear(){
-        billIdField.setText("");
-        operaterField.setText("");
+		receiptButton.setSelected(true);
+		billIdField.setText(receiptBillBL.getNewId());
         customerIdField.setText("");
+        customerNameField.setText("");
         MyTableModel model = (MyTableModel) transferListTable.getModel();
         while(model.getRowCount() > 0){
             model.removeRow(0);
         }
+        sumField.setText("0.0");
     }
 	
 	@Override
 	protected ActionListener getNewActionListener() {
 		 return e -> {
-
-				frame.setTitle("新建收付款单");
-				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-				frame.setSize(screenSize.width/2, screenSize.height/2);
-				frame.setLocation(screenSize.width/4, screenSize.height/4);
-				frame.setResizable(false);
-				
-				JRadioButton receiptRadioButton = new JRadioButton("收款单");
-				JRadioButton paymentRadioButton = new JRadioButton("付款单");
-				//  receiptRadioButton.setSelected(true);
-				JPanel typePanel = new JPanel();
-				typePanel.add(receiptRadioButton);
-				typePanel.add(paymentRadioButton);
-				typePanel.setVisible(true);
-				typeButtonGroup = new ButtonGroup();
-				typeButtonGroup.add(receiptRadioButton);
-				typeButtonGroup.add(paymentRadioButton);
-				 
-				JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-				JButton yesButton = new JButton("确定");
-		        yesButton.addActionListener(f -> addPanel());
-				JButton quitButton = new JButton("取消");
-				quitButton.addActionListener(f -> frame.dispose());
-				southPanel.add(yesButton);
-				southPanel.add(quitButton);
-				 
-				double mainPanelSize[][]={
-							{TableLayout.FILL,0.8,TableLayout.FILL},
-							{0.4, 0.2, TableLayout.FILL}	
-				};
-				frame.setLayout(new TableLayout(mainPanelSize));
-			    frame.add(typePanel, "1,1");
-				frame.add(southPanel, "1,2");
-				frame.setVisible(true);			 /*  int response = JOptionPane.showConfirmDialog(
-	                null, "确认要新建一张收付款单吗？", "提示", JOptionPane.YES_NO_OPTION);
-	            
-	            if(response == 1) return;
-	            clear();
-	            billIdField.setText(receiptBillBL.getNewId());
-	            operaterField.setText(getUser().getName());*/
-	        };
+			 int response = JOptionPane.showConfirmDialog(null, "放弃当前未保存的工作新建一张单据？","警告",JOptionPane.YES_NO_OPTION);
+			 if (response == 0) {
+				 clear();
+			 }
+	     };
 	}
 
-	protected void addPanel() {
-		String text="";    
-		Enumeration<AbstractButton> radioBtns= typeButtonGroup.getElements();    
-		while (radioBtns.hasMoreElements()) {    
-		    AbstractButton btn = radioBtns.nextElement();    
-		    if(btn.isSelected()){    
-		        text=btn.getText();    
-		        break;    
-		    }    
-		}    
-		
-		if (text == "收款单") {
-			clear();
-			frame.dispose();
-			billIdField.setText(receiptBillBL.getNewId());
-            operaterField.setText(this.getUser().getName());
-		} else if (text == "付款单") {
-			clear();
-			frame.dispose();
-			billIdField.setText(paymentBillBL.getNewId());
-            operaterField.setText(this.getUser().getName());
-		}
-	}
 	
 	@Override
 	protected ActionListener getSaveActionListener() {
 		 return e -> {
-	            if(!editable) return;
 	            ReceiptBillVO bill = getBill(BillVO.SAVED);
-	            if(bill == null){
-	                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-	                return;
-	            }
-	            if(receiptBillBL.saveBill(bill)){
+	            if(bill != null && receiptBillBL.saveBill(bill)){
 	                JOptionPane.showMessageDialog(null, "单据已保存。");
 	            }
-
 	        };
 	}
 
 	@Override
 	protected ActionListener getCommitActionListener() {
 		return e -> {
-            if(!editable) return;
             ReceiptBillVO bill = getBill(BillVO.COMMITED);
-            if(bill == null){
-                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-                return;
-            }
-            if(receiptBillBL.saveBill(bill)){
+            if(bill != null && receiptBillBL.saveBill(bill)){
                 JOptionPane.showMessageDialog(null, "单据已提交。");
             }
         };
@@ -314,8 +249,10 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 
 	@Override
 	protected boolean isCorrectable() {
-		if (transferListTable.getRowCount() == 0) {new InfoWindow("没有选择转账条目");return false;}
-		return true;
+		if (transferListTable.getRowCount() == 0) new InfoWindow("没有选择转账条目");
+		else if ("".equals(customerIdField.getText())) new InfoWindow("请选择客户");
+		else return true;
+		return false;
 	}
 	
 	/**
@@ -338,4 +275,9 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
         ReceiptBillVO receiptBillVO= new ReceiptBillVO(date, time, id, operater, state, customerId, model); 
         return receiptBillVO;
     }
+	
+	private void setBillId(boolean isReceipt) {
+		if (isReceipt) billIdField.setText(receiptBillBL.getNewId());
+		else billIdField.setText(paymentBillBL.getNewId());
+	}
 }

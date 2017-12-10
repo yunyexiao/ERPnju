@@ -130,8 +130,8 @@ public class AccountBL implements AccountBLService, GetAccountInterface {
 		}
 		if (account != null) {
 			return new AccountVO(
-					account.getId(),
 					account.getName(),
+					account.getId(),
 					account.getMoney()); 
 		}
 		return null;

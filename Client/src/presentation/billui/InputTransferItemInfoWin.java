@@ -9,7 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import layout.TableLayout;
+import presentation.component.InfoWindow;
 import presentation.component.choosewindow.AccountChooseWin;
+import presentation.tools.InputCheck;
 import vo.AccountVO;
 
 /**
@@ -20,14 +22,14 @@ public class InputTransferItemInfoWin {
     
     private JTextField[] fields; 
     private JDialog frame;
-    private String[] rowData;
+    private String[] rowData = null;
     private String[] labelTexts = {"银行账户", "转账金额", "备注"};
 
     public InputTransferItemInfoWin() {
         frame = new JDialog();
         frame.setTitle("填写转账清单信息");
         frame.setModal(true);
-        frame.setSize(400, 430);
+        frame.setSize(400, 250);
         frame.setLocation(400, 200);
         frame.setResizable(false);
         frame.setLayout(new BorderLayout());
@@ -58,7 +60,7 @@ public class InputTransferItemInfoWin {
     }
 
     private void initCenter() {
-        double[] columnSize = {-1.0, -2.0, 10.0, -2.0, 10.0, -2.0, -1.0};
+        double[] columnSize = {TableLayout.FILL, TableLayout.PREFERRED , 10.0, 0.6, 10.0, TableLayout.PREFERRED, TableLayout.FILL};
         double[] rowSize = new double[labelTexts.length * 2 + 1];
         rowSize[0] = 20.0;
         for(int i = 0; i < labelTexts.length; i++){
@@ -73,12 +75,10 @@ public class InputTransferItemInfoWin {
         for(int i = 0; i < labelTexts.length; i++){
             labels[i] = new JLabel(labelTexts[i]);
             fields[i] = new JTextField(10);
-            fields[i].setEditable(false);
             centerPanel.add(labels[i], "1 " + (2 * i + 1));
             centerPanel.add(fields[i], "3 " + (2 * i + 1));
         }
-        fields[1].setEditable(true);
-        fields[2].setEditable(true);
+        fields[0].setEditable(false);
         
         JButton chooseButton = new JButton("选择账户");
         chooseButton.addActionListener(e -> handleChoose());
@@ -88,11 +88,16 @@ public class InputTransferItemInfoWin {
     }
     
     private void handleOk(){
-        rowData = new String[fields.length];
-        for(int i = 0; i < fields.length; i++){
-            rowData[i] = fields[i].getText();
-        }
-        frame.dispose();
+    	if (! InputCheck.isAllNumber(fields[0].getText(), 0)) new InfoWindow("请选择账户");
+    	else if (! InputCheck.isDouble(fields[1].getText())) new InfoWindow("请输入正确的金额");
+    	else if (! InputCheck.isLegalOrBlank(fields[2].getText())) new InfoWindow("备注非法");
+    	else {
+    		rowData = new String[fields.length];
+            for(int i = 0; i < fields.length; i++){
+                rowData[i] = fields[i].getText();
+            }
+            frame.dispose();
+    	}
     }
 
     private void handleChoose(){

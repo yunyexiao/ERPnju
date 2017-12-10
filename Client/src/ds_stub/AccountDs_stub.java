@@ -19,7 +19,7 @@ public class AccountDs_stub implements AccountDataService {
 	}
 	@Override
 	public AccountPO findById(String id) throws RemoteException {
-		System.out.println("account deleted in database: " + id);
+		System.out.println("account find in database: " + id);
         for (int i = 0; i < result.size(); i++) {
         	if (id.equals(result.get(i).getId())) return result.get(i);
         }
