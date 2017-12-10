@@ -17,6 +17,7 @@ import blservice.billblservice.SalesBillBLService;
 import layout.TableLayout;
 import presentation.component.MyTableModel;
 import presentation.tools.DoubleField;
+import presentation.tools.Timetools;
 import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.SalesBillVO;
@@ -37,7 +38,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		super(user, closeListener);
 
 		billIdField.setText(saleBillBL.getNewId());
-		operatorField.setText(this.getUser().getId());
+		operatorField.setText(this.getUser().getName());
 	}
 
 	public SalesBillPanel(UserVO user, SalesBillVO bill, ActionListener closeListener) {
@@ -61,32 +62,18 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 
 	@Override
 	protected ActionListener getSaveActionListener() {
-		return e -> {
-		    if(!editable) return;
-            SalesBillVO bill = getBill(BillVO.SAVED);
-            if(bill == null){
-                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-                return;
-            }
-            if(saleBillBL.saveBill(bill)){
-                JOptionPane.showMessageDialog(null, "单据已保存。");
-            }
-		};
+		return e ->{
+			SalesBillVO bill = getBill(BillVO.SAVED);
+            if (bill != null && saleBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已保存。");
+        };
 	}
 
 	@Override
 	protected ActionListener getCommitActionListener() {
-		return e -> {
-		    if(!editable) return;
-            SalesBillVO bill = getBill(BillVO.COMMITED);
-            if(bill == null){
-                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-                return;
-            }
-            if(saleBillBL.saveBill(bill)){
-                JOptionPane.showMessageDialog(null, "单据已提交。");
-            };
-		};
+		return e ->{
+			SalesBillVO bill = getBill(BillVO.COMMITED);
+            if (bill != null && saleBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
+        };
 	}
 
 	@Override
@@ -153,7 +140,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	 */
 	private SalesBillVO getBill(int state) {
 		if (isCorrectable()) {
-		    String date = getDate(), time = getTime(), id = getId();
+		    String date = getDate(), id = getId();
 		    String operater = operatorField.getText()
 		         , customerId = customerIdField.getText()
 		         , customerName = customerNameField.getText()
@@ -163,7 +150,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		         , sum = Double.parseDouble(afterDiscountField.getText())
 		         , discount = Double.parseDouble(discountField.getText())
 		         , coupon = Double.parseDouble(couponField.getText());
-		    return new SalesBillVO(date, time, id, operater, state
+		    return new SalesBillVO(date, Timetools.getTime(), id, operater, state
 		        , customerId, customerName, model, remark, beforeDiscount
 		        , discount, coupon, sum);
 		}
@@ -222,6 +209,11 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		tailPanel.add(new JLabel("      备注"),"9,3");
 		tailPanel.add(remarkField, "11 3");
 		return tailPanel;
+	}
+
+	@Override
+	protected void handleChooseCustomer() {
+		handleChooseCustomer(false);
 	}
 
 }

@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 import bl_stub.PurchaseReturnBillBL_stub;
 import blservice.billblservice.PurchaseReturnBillBLService;
 import presentation.component.MyTableModel;
+import presentation.tools.Timetools;
 import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.PurchaseReturnBillVO;
@@ -23,7 +24,7 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
         this.billIdField.setText(purchaseReturnBl.getNewId());
-        this.operatorField.setText(user.getId());
+        this.operatorField.setText(user.getName());
     }
 
     public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener, SalesBillVO saleBill) {
@@ -55,46 +56,36 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     @Override
     protected ActionListener getSaveActionListener() {
         return e -> {
-            if(!editable) return;
-            PurchaseReturnBillVO bill = getBill(BillVO.SAVED);
-            if(bill == null){
-                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-                return;
-            }
-            if(purchaseReturnBl.saveBill(bill)){
-                JOptionPane.showMessageDialog(null, "单据已保存。");
-            }
-
+        	PurchaseReturnBillVO bill = getBill(BillVO.SAVED);
+            if (bill != null && purchaseReturnBl.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已保存。");
         };
     }
 
     @Override
     protected ActionListener getCommitActionListener() {
-        return e -> {
-            if(!editable) return;
-            PurchaseReturnBillVO bill = getBill(BillVO.COMMITED);
-            if(bill == null){
-                JOptionPane.showMessageDialog(null, "信息有错，请重新编辑。");
-                return;
-            }
-            if(purchaseReturnBl.saveBill(bill)){
-                JOptionPane.showMessageDialog(null, "单据已提交。");
-            }
+    	return e ->{
+    		PurchaseReturnBillVO bill = getBill(BillVO.COMMITED);
+            if (bill != null && purchaseReturnBl.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
         };
     }
 
     private PurchaseReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
-        String date = getDate(), time = getTime(), id = getId();
+        String date = getDate(), id = getId();
         String operater = operatorField.getText()
              , customerId = customerIdField.getText()
              , customerName = customerNameField.getText()
              , remark = remarkField.getText();
         MyTableModel model = (MyTableModel)goodsListTable.getModel();
         double sum = Double.parseDouble(sumField.getText());
-        return new PurchaseReturnBillVO(date, time, id, operater, state
+        return new PurchaseReturnBillVO(date, Timetools.getTime(), id, operater, state
             , customerId, customerName, model, remark, sum);
     }
+
+	@Override
+	protected void handleChooseCustomer() {
+		handleChooseCustomer(true);
+	}
 
 
 }

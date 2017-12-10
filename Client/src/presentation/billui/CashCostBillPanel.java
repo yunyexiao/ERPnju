@@ -55,7 +55,7 @@ public class CashCostBillPanel extends BillPanel {
 		
 		JScrollPane itemListPane;
 		JPanel headPanel, accountInfoPanel, centerPanel, itemButtonPanel;
-		JButton accountChooseButton, itemChooseButton, itemDeleteButton, chooseFinishButton;
+		JButton accountChooseButton, itemChooseButton, itemDeleteButton;
 		
 		double firstPanelSize[][]={
 				{20,55,5,TableLayout.PREFERRED,20,55,5,TableLayout.PREFERRED,TableLayout.FILL},
@@ -98,8 +98,6 @@ public class CashCostBillPanel extends BillPanel {
         itemChooseButton.addActionListener(e -> addItem());
 		itemDeleteButton=new JButton("删除条目", new ImageIcon("resource/DeleteButton.png"));
         itemDeleteButton.addActionListener(e -> deleteItem());
-		chooseFinishButton=new JButton("选择完成");
-		chooseFinishButton.addActionListener(e -> sumUp());
 		sumField = new JTextField(10);
 		sumField.setEditable(false);
 		sumField.setText("0.0");
