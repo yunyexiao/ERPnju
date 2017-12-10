@@ -1,9 +1,5 @@
 package presentation.tools;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
-import javax.swing.JTextField;
 import javax.swing.text.Document;
 
 /**
@@ -11,7 +7,7 @@ import javax.swing.text.Document;
  * 默认精确到小数点后三位
  */
 @SuppressWarnings("serial")
-public class DoubleField extends JTextField {
+public class DoubleField extends MyField{
     
     private double defaultValue;
     
@@ -38,15 +34,6 @@ public class DoubleField extends JTextField {
     public DoubleField(Document doc, double value, int columns, double defaultValue){
         super(doc, value + "", columns);
         this.defaultValue = defaultValue;
-        this.addKeyListener(new KeyAdapter(){
-            @Override
-            public void keyTyped(KeyEvent e){
-                char c = e.getKeyChar();
-                if(!valid(c)){
-                    e.consume();
-                }
-            }
-        });
     }
     
     public double getValue(){
@@ -59,6 +46,9 @@ public class DoubleField extends JTextField {
     
     public void setDefaultValue(double defaultValue){
         this.defaultValue = defaultValue;
+        if(super.getText().length() == 0){
+            this.setValue(defaultValue);
+        }
     }
     
     public double getDefaultValue(){
@@ -75,7 +65,8 @@ public class DoubleField extends JTextField {
         }
     }
 
-    private boolean valid(char c){
+    @Override
+    protected boolean valid(char c){
         if(c >= '0' && c <= '9') {
             return true;
         }
@@ -87,6 +78,11 @@ public class DoubleField extends JTextField {
             return false;
         }
         return true;
+    }
+
+    @Override
+    protected void pasteAction() {
+        // No paste action
     }
 
 }
