@@ -18,7 +18,7 @@ public class LoginBL implements LoginBLService {
 		AddLogInterface addLog;
 		try {
 			UserPO user = userDataService.findById(id);
-			if (password.equals(user.getUserPwd())) {
+			if (user != null && password.equals(user.getUserPwd())) {
 				UserVO userVO =  new UserVO(
 						user.getUserName(), 
 						user.getUserPwd(),

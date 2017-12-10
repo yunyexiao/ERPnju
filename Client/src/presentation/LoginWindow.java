@@ -5,8 +5,8 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -82,25 +82,16 @@ public class LoginWindow {
 		loginWindow.setVisible(true);
 		
 		//add listener
-		buttonA.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.exit(1);
+		buttonA.addActionListener(e ->System.exit(1));
+		buttonB.addActionListener(e -> login());
+		nameField.addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) login();
 			}
 		});
-		buttonB.addActionListener(new ActionListener() {
-			@SuppressWarnings("unused")
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				UserVO user = loginBL.getUser(nameField.getText(), new String(keyField.getPassword()));
-				if (user == null) {
-					nameField.setText("");
-					keyField.setText("");
-					JOptionPane.showMessageDialog(null, "用户名或密码不正确，请重新输入", "系统消息", JOptionPane.ERROR_MESSAGE);
-				} else {
-					MainWindow mainWindow = new MainWindow(user);
-					loginWindow.dispose();
-				}
+		keyField.addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) login();
 			}
 		});
 	}
@@ -111,4 +102,15 @@ public class LoginWindow {
 		return button;
 	}
 	
+	private void login() {
+		UserVO user = loginBL.getUser(nameField.getText(), new String(keyField.getPassword()));
+		if (user == null) {
+			nameField.setText("");
+			keyField.setText("");
+			JOptionPane.showMessageDialog(null, "用户名或密码不正确，请重新输入", "系统消息", JOptionPane.ERROR_MESSAGE);
+		} else {
+			new MainWindow(user);
+			loginWindow.dispose();
+		}
+	}
 }
