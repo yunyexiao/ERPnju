@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import blservice.SalesDetails;
+import blservice.SalesDetailsBLService;
 import blservice.infoservice.GetCommodityInterface;
 import dataservice.BillSearchDataService;
 import ds_stub.BillSearchDs_stub;
@@ -14,7 +14,7 @@ import presentation.component.MyTableModel;
 import vo.CommodityVO;
 
 
-public class SalesDetailsBL implements SalesDetails {
+public class SalesDetailsBL implements SalesDetailsBLService {
     
     private BillSearchDataService billSearchDs;
     private GetCommodityInterface commodityBl;
