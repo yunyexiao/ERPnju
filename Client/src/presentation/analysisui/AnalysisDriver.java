@@ -19,7 +19,7 @@ public class AnalysisDriver {
             }
         });
 
-        frame.add(new InventoryDynamicPanel().getPanel());
+        frame.add(new InventoryCheckPanel().getPanel());
         frame.setVisible(true);
     }
     
