@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
@@ -21,6 +22,16 @@ import presentation.component.MyTableModel;
 public final class ExcelExporter {
 
     private ExcelExporter() {}
+    
+    public static void export(MyTableModel model){
+        String path = openFileChooser();
+        if(path == null) return;
+        if(export(model, path)){
+            JOptionPane.showMessageDialog(null, "导出成功^_^");
+        } else {
+            JOptionPane.showMessageDialog(null, "导出失败，请重试@_@");
+        }
+    }
     
     public static boolean export(MyTableModel model, String path){
         HSSFWorkbook workbook = toExcel(model);

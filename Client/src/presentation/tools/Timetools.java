@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -45,6 +46,23 @@ public class Timetools {
 		return sdate;
 	}
 	
+	/**
+	 * 检查一个日期段的合法性<br>
+	 * 当且仅当：两个参数均非空字符串且均为yyyy-MM-dd格式且前者from所代表的日期不超过后者to所代表的日期时，该日期段合法
+	 */
+	public static boolean checkDate(String from, String to){
+	    if(from.length() == 0 || to.length() == 0) return false;
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	    try{
+	        Date fromDate = format.parse(from), toDate = format.parse(to);
+	        if(fromDate.after(toDate)) return false;
+	        return true;
+	    }catch(ParseException e){
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+
 	private static Date getNetworkTime(String url1){  
         try{  
             URL url=new URL(url1);  
@@ -60,4 +78,5 @@ public class Timetools {
         }  
         return null;  
     } 
+
 }
