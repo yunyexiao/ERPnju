@@ -5,6 +5,9 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
+/**
+ * @author ã¢Ò¶Ïö
+ */
 public class AnalysisDriver {
 
     public AnalysisDriver() {
@@ -19,7 +22,7 @@ public class AnalysisDriver {
             }
         });
 
-        frame.add(new InventoryCheckPanel().getPanel());
+        frame.add(new SalesDetailsPanel().getPanel());
         frame.setVisible(true);
     }
     
