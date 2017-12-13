@@ -20,6 +20,7 @@ import layout.TableLayout;
 import presentation.PanelInterface;
 import presentation.billui.ChangeBillPanel;
 import presentation.component.MyTableModel;
+import vo.UserType;
 import vo.UserVO;
 
 /**
@@ -52,42 +53,48 @@ public class MainPanel implements PanelInterface {
 		infoPanel.add(infoLabel);
 		infoPanel.setOpaque(false);
 		
-		MyTableModel tabelModel = billShowBL.getBillTable(user);
-		table = new JTable(tabelModel);
-		table.getTableHeader().setReorderingAllowed(false);
-		JScrollPane scrollPane = new JScrollPane(table);
-		
-		ActionListener closeListener = new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainWindow.changePanel();
-            }
-		};
-		
-		JPanel buttonPanel=new JPanel();
-		JButton billChangeButton = new JButton("修改单据", new ImageIcon("resource/FreshButton.png"));
-		JButton billDeleteButton = new JButton("删除单据", new ImageIcon("resource/DeleteButton.png"));
-		billChangeButton.addActionListener(e->{
-			String[] info = tabelModel.getValueAtRow(table.getSelectedRow());
-			String type = info[1].split("-")[0];
-			if ("BYD".equals(type) || "BSD".equals(type)) {
-				mainWindow.changePanel(new ChangeBillPanel(user, billShowBL.getChangeBill(info[1]),closeListener));
-			} else if ("JHD".equals(type)) {
-				
-			}
-		});
-		double forthPanelSize[][]={
-				{10,TableLayout.FILL,10},
-				{10,30,10,30,TableLayout.FILL}
-		};
-		buttonPanel.setLayout(new TableLayout(forthPanelSize));
-		buttonPanel.add(billChangeButton, "1,1");
-		buttonPanel.add(billDeleteButton, "1,3");
-		
+		if (user.getType() != UserType.ADMIN) {
+			MyTableModel tabelModel = billShowBL.getBillTable(user);
+			table = new JTable(tabelModel);
+			table.getTableHeader().setReorderingAllowed(false);
+			JScrollPane scrollPane = new JScrollPane(table);
+			
+			ActionListener closeListener = new ActionListener(){
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                mainWindow.changePanel();
+	            }
+			};
+			
+			JPanel buttonPanel=new JPanel();
+			JButton billChangeButton = new JButton("修改单据", new ImageIcon("resource/FreshButton.png"));
+			JButton billDeleteButton = new JButton("删除单据", new ImageIcon("resource/DeleteButton.png"));
+			billChangeButton.addActionListener(e->{
+				String[] info = tabelModel.getValueAtRow(table.getSelectedRow());
+				String type = info[1].split("-")[0];
+				if ("BYD".equals(type) || "BSD".equals(type)) {
+					mainWindow.changePanel(new ChangeBillPanel(user, billShowBL.getChangeBill(info[1]),closeListener));
+				} else if ("JHD".equals(type)) {
+					
+				}
+			});
+			double forthPanelSize[][]={
+					{10,TableLayout.FILL,10},
+					{10,30,10,30,TableLayout.FILL}
+			};
+			buttonPanel.setLayout(new TableLayout(forthPanelSize));
+			buttonPanel.add(billChangeButton, "1,1");
+			buttonPanel.add(billDeleteButton, "1,3");
+
+			panel.add(scrollPane, "0,1");
+			panel.add(buttonPanel, "1,1");
+		} else {
+			JPanel p = new JPanel();
+			p.setBackground(Color.WHITE);
+			panel.add(p, "0,1,1,1");
+		}
 		panel.setVisible(true);
 		panel.add(infoPanel, "0,0,1,0");
-		panel.add(scrollPane, "0,1");
-		panel.add(buttonPanel, "1,1");
 	}
 
 	@Override
