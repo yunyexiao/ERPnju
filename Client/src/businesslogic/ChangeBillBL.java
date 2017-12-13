@@ -2,7 +2,6 @@ package businesslogic;
 
 import java.util.ArrayList;
 
-import bl_stub.CommodityBL_stub;
 import blservice.billblservice.ChangeBillBLService;
 import blservice.infoservice.GetCategoryInterface;
 import blservice.infoservice.GetCommodityInterface;
@@ -11,18 +10,19 @@ import ds_stub.ChangeBillDs_stub;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
 import presentation.component.MyTableModel;
+import rmi.Rmi;
 import vo.billvo.ChangeBillVO;
 
 public class ChangeBillBL implements ChangeBillBLService {
 
 	private ChangeBillDataService changeBillDS;
-	private GetCommodityInterface commodityInfo = new CommodityBL_stub();
+	private GetCommodityInterface commodityInfo = new CommodityBL();
 	private GetCategoryInterface categoryInfo = new CategoryBL();
 	private String[] headers = {"商品id", "商品名称", "库存数量", "实际数量"};
 	private static boolean isOver = true;
 	
 	public ChangeBillBL() {
-		changeBillDS = new ChangeBillDs_stub();//Rmi.getRemote(ChangeBillDataService.class);
+		changeBillDS = Rmi.flag ? Rmi.getRemote(ChangeBillDataService.class) : new ChangeBillDs_stub();
 	}
 	
 	@Override

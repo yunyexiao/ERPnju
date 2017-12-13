@@ -22,5 +22,11 @@ public class ChangeBillPO extends BillPO {
 	public ArrayList<ChangeItem> getCommodityList() {
 		return commodityList;
 	}
+
+	@Override
+	public String getAllId() {
+		String s = isOver ? "BYD-" : "BSD-";
+		return s + this.getDate() + "-" + this.getId();
+	}
 	
 }
