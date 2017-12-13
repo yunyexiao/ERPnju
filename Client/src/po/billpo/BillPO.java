@@ -1,6 +1,8 @@
 package po.billpo;
 
-public abstract class BillPO {
+import java.io.Serializable;
+
+public abstract class BillPO implements Serializable{
 
 	public static int DRAFT = 0;
 	public static int SAVED = 1;

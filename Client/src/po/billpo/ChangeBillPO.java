@@ -1,8 +1,9 @@
 package po.billpo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ChangeBillPO extends BillPO {
+public class ChangeBillPO extends BillPO implements Serializable{
 
 	/*判断报溢或者报损*/
 	private boolean isOver;

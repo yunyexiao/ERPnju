@@ -1,6 +1,8 @@
 package po.billpo;
 
-public class CashCostItem {
+import java.io.Serializable;
+
+public class CashCostItem implements Serializable{
 
 	private String name;
 	private double money;
