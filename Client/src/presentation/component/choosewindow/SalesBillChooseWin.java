@@ -2,50 +2,47 @@ package presentation.component.choosewindow;
 
 import blservice.billblservice.SalesBillBLService;
 import businesslogic.SalesBillBL;
-import presentation.tools.TableTools;
+import presentation.component.MyTableModel;
 import vo.billvo.SalesBillVO;
 
-public class SalesBillChooseWin extends ChooseWindow {
-    
-    private String[] data;
-    private SalesBillBLService salesBillBl;
-    
-    public SalesBillChooseWin(){
-        super();
-    }
 
-    @Override
-    public void init() {
-        salesBillBl = new SalesBillBL();
-        setTypes(new String[]{"按编号搜索", "按时间搜索"});
-        table.setModel(salesBillBl.getFinishedBills());
-        TableTools.autoFit(table);
-        frame.setTitle("选择源销售单");
+public class SalesBillChooseWin extends BillChooseWin {
+    
+    private SalesBillBLService salesBillBl;
+    private SalesBillVO bill;
+
+    public SalesBillChooseWin(String customerId) {
+        super(customerId);
         frame.setVisible(true);
     }
 
     @Override
-    protected void yesAction() {
-        int index = table.getSelectedRow();
-        if(index >= 0){
-            String id = (String)table.getValueAt(index, 1);
-            SalesBillVO bill = salesBillBl.getBill(id);
-            System.out.println(bill.getBeforeDiscount());
-            System.out.println(bill.getSum());
-            double discountRate = bill.getSum() / bill.getBeforeDiscount();
-            data = new String[]{id, String.format("%.4f", discountRate)};
-            frame.dispose();
-        }
-    }
-    
-    public String[] getSalesBillInfo(){
-        return data;
+    protected void initBLService() {
+        salesBillBl = new SalesBillBL();
     }
 
-	@Override
-	protected void searchAction() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    protected MyTableModel getInitModel() {
+        return salesBillBl.getFinishedBills(customerId);
+    }
+
+    @Override
+    protected MyTableModel search(String type, String key) {
+        return salesBillBl.search(type, key);
+    }
+
+    @Override
+    protected MyTableModel getBillByDate(String from, String to) {
+        return salesBillBl.getBillsByDate(from, to);
+    }
+
+    @Override
+    protected void setBill(String id) {
+        bill = salesBillBl.getBill(id);
+    }
+    
+    public SalesBillVO getSalesBill(){
+        return bill;
+    }
 
 }

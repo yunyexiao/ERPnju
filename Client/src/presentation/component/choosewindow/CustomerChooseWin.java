@@ -9,6 +9,7 @@ import vo.CustomerVO;
 public class CustomerChooseWin extends ChooseWindow {
     
     private CustomerVO data;
+    private CustomerBLService customerBl;
 
     public CustomerChooseWin() {
         super();
@@ -16,7 +17,7 @@ public class CustomerChooseWin extends ChooseWindow {
 
     @Override
     public void init() {
-        CustomerBLService customerBl = new CustomerBL();
+        customerBl = new CustomerBL();
         setTypes(new String[]{"°´±àºÅËÑË÷", "°´Ãû³ÆËÑË÷"});
         table.setModel(customerBl.update());
         TableTools.autoFit(table);
@@ -40,8 +41,12 @@ public class CustomerChooseWin extends ChooseWindow {
 
 	@Override
 	protected void searchAction() {
-		// TODO Auto-generated method stub
-		
+	    String type = searchTypeBox.getSelectedItem().toString(), key = keyField.getText();
+	    if(key.length() == 0) {
+	        table.setModel(customerBl.update());
+	    } else {
+	        table.setModel(customerBl.search(type, key));
+	    }
 	}
 
 }

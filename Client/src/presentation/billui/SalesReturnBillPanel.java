@@ -12,12 +12,14 @@ import javax.swing.JTextField;
 import blservice.billblservice.SalesReturnBillBLService;
 import businesslogic.SalesReturnBillBL;
 import layout.TableLayout;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.component.choosewindow.SalesBillChooseWin;
 import presentation.tools.DoubleField;
 import presentation.tools.Timetools;
 import vo.UserVO;
 import vo.billvo.BillVO;
+import vo.billvo.SalesBillVO;
 import vo.billvo.SalesReturnBillVO;
 
 /**
@@ -27,6 +29,7 @@ import vo.billvo.SalesReturnBillVO;
 public class SalesReturnBillPanel extends CommonSaleBillPanel {
     
     private SalesReturnBillBLService saleReturnBl = new SalesReturnBillBL();
+    private SalesBillVO originalSB;
     private JTextField originalSBIdField;
     private DoubleField discountRateField, finalSumField;
 
@@ -49,9 +52,9 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         customerIdField.setEditable(false);
         customerNameField = new JTextField(10);
         customerNameField.setEditable(false);
-        originalSBIdField = new JTextField(10);
+        originalSBIdField = new JTextField(15);
         originalSBIdField.setEditable(false);
-        discountRateField = new DoubleField(5);
+        discountRateField = new DoubleField(1.0, 5, 1.0);
         discountRateField.setEditable(false);
         JButton salesBillChooseButton = new JButton("选择源销售单");
         salesBillChooseButton.addActionListener(e -> handleChooseSb());
@@ -86,12 +89,12 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         
         double[][] size = {
                 {20.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0
-                    , -2.0, 10.0, -1.0},
+                    , -2.0, -1.0, -1.0},
                 {-2.0, 10.0, -2.0}
         };
         JPanel southPanel = new JPanel(new TableLayout(size));
         southPanel.add(new JLabel("备注"), "1 0");
-        southPanel.add(remarkField, "2 0 9 0");
+        southPanel.add(remarkField, "2 0 8 0");
         southPanel.add(new JLabel("原总额"), "1 2");
         southPanel.add(sumField, "3 2");
         southPanel.add(new JLabel("实际总额"), "5 2");
@@ -148,6 +151,25 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         this.finalSumField.setValue(finalSum);
     }
 
+    @Override
+    protected void handleAddItem(){
+        if(!editable) return;
+        String[] newRow = new InputCommodityInfoWin().getRowData();
+        if(newRow == null || newRow[5].equals("0")) return;
+        // check if the sales bill contains that commodity, also check the amount
+        if(!itemValid(newRow)) return;
+        addItem(newRow);
+    }
+
+    @Override
+    protected void clear(){
+        super.clear();
+        originalSB = null;
+        originalSBIdField.setText("");
+        discountRateField.setValue(1.0);
+        finalSumField.setValue(0.0);
+    }
+
     private SalesReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
         String date = getDate(), id = getId();
@@ -167,11 +189,42 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
 
     private void handleChooseSb(){
         if(!editable) return;
-        String[] info = new SalesBillChooseWin().getSalesBillInfo();
-        if(info == null) return;
-        originalSBIdField.setText(info[0]);
-        discountRateField.setValue(Double.parseDouble(info[1]));
+        String customerId = customerIdField.getText();
+        if(customerId.length() == 0){
+            new InfoWindow("请先选择销售商^_^");
+            return;
+        }
+        originalSB = new SalesBillChooseWin(customerId).getSalesBill();
+        if(originalSB == null) return;
+        originalSBIdField.setText(originalSB.getAllId());
+        discountRateField.setValue(originalSB.getSum() / originalSB.getBeforeDiscount());
         sumUp();
+    }
+
+    private boolean itemValid(String[] item){
+        String id = item[0];
+        int amount = Integer.parseInt(item[5]) + getAmountInModel(
+            (MyTableModel)goodsListTable.getModel(), id);
+        int originalAmount = getAmountInModel(originalSB.getModel(), id);
+        if(originalAmount == 0){
+            new InfoWindow("源销售单中无此商品@_@");
+            return false;
+        } else if(amount > originalAmount){
+            new InfoWindow("商品数量过多@_@");
+            return false;
+        }
+        return true;
+    }
+    
+    private int getAmountInModel(MyTableModel model, String id){
+        int amount = 0;
+        for(int i = 0; i < model.getRowCount(); i++){
+            String[] row = model.getValueAtRow(i);
+            if(row[0].equals(id)){
+                amount += Integer.parseInt(row[5]);
+            }
+        }
+        return amount;
     }
 
 	@Override

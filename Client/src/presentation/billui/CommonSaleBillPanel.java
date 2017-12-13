@@ -160,7 +160,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         };
         JPanel goodsButtonPanel = new JPanel(new TableLayout(size));
         JButton goodsChooseButton=new JButton("选择商品", new ImageIcon("resource/AddButton.png"));
-        goodsChooseButton.addActionListener(e -> addItem());
+        goodsChooseButton.addActionListener(e -> handleAddItem());
         JButton goodsDeleteButton=new JButton("删除商品", new ImageIcon("resource/DeleteButton.png"));
         goodsDeleteButton.addActionListener(e -> deleteItem());
 
@@ -179,7 +179,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
                 {10.0, -1.0, 10.0, -1.0, -1.0}
         };
         JPanel southPanel = new JPanel(new TableLayout(size));
-        southPanel.add(new JLabel("             备注"), "1 1");
+        southPanel.add(new JLabel("        备注"), "1 1");
         southPanel.add(remarkField, "3 1 4 1");
         southPanel.add(new JLabel("金额合计"), "1 3");
         southPanel.add(sumField, "3 3");
@@ -187,13 +187,11 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         billPanel.add(southPanel, BorderLayout.SOUTH);
     }
     
-    private void addItem(){
+    protected void handleAddItem(){
         if(!editable) return;
         String[] newRow = new InputCommodityInfoWin().getRowData();
-        if (newRow != null) {
-            MyTableModel model = (MyTableModel) goodsListTable.getModel();
-            model.addRow(newRow);
-        	sumUp();
+        if (newRow != null && !newRow[5].equals("0")) {
+            addItem(newRow);
         } 
     }
     
@@ -239,13 +237,40 @@ public abstract class CommonSaleBillPanel extends BillPanel {
             model.removeRow(0);
         }
     }
-    
+
     protected String getDate(){
         return billIdField.getText().split("-")[1];
     }
 
     protected String getId(){
         return billIdField.getText().split("-")[2];
+    }
+
+    protected void addItem(String[] newRow){
+        MyTableModel model = (MyTableModel) goodsListTable.getModel();
+        int rowIndex = getRowIndex(model, newRow[0]);
+        if(rowIndex >= 0){
+            int amount = Integer.parseInt((String)model.getValueAt(rowIndex, 5))
+                       + Integer.parseInt(newRow[5]);
+            double sum = Double.parseDouble((String)model.getValueAt(rowIndex, 6))
+                       + Double.parseDouble(newRow[6]);
+            model.setValueAt(amount + "", rowIndex, 5);
+            model.setValueAt(sum + "", rowIndex, 6);
+        } else {
+            model.addRow(newRow);
+        }
+        sumUp();
+       
+    }
+
+    private int getRowIndex(MyTableModel model, String comId){
+        for(int i = 0; i < model.getRowCount(); i++){
+            String[] row = model.getValueAtRow(i);
+            if(row[0].equals(comId)){
+                return i;
+            }
+        }
+        return -1;
     }
 
 }

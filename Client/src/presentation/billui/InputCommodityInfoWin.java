@@ -131,7 +131,6 @@ class InputCommodityInfoWin {
         fields[1].setText(c.getName());
         fields[2].setText(c.getType());
         fields[3].setText(c.getStore());
-        fields[4].setText(c.getSalePrice() + "");
         if(fields[5].getText().length() > 0) sumUp();
     }
 

@@ -8,6 +8,7 @@ import bl_stub.CustomerBL_stub;
 import blservice.billblservice.SalesReturnBillBLService;
 import dataservice.SalesReturnBillDataService;
 import ds_stub.SalesReturnBillDs_stub;
+import po.billpo.BillPO;
 import po.billpo.SalesReturnBillItemsPO;
 import po.billpo.SalesReturnBillPO;
 import presentation.component.MyTableModel;
@@ -41,7 +42,12 @@ public class SalesReturnBillBL implements SalesReturnBillBLService {
     @Override
     public boolean deleteBill(String id) {
         try{
-            return salesReturnBillDs.deleteBill(id);
+            // passed bills cannot be deleted, only can be offsetted
+            SalesReturnBillPO bill = salesReturnBillDs.getBillById(id);
+            if(bill.getState() == BillPO.PASS) return false;
+            
+            int length = id.length();
+            return salesReturnBillDs.deleteBill(id.substring(length - 5, length));
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -75,6 +81,15 @@ public class SalesReturnBillBL implements SalesReturnBillBLService {
         }catch(RemoteException e){
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public ArrayList<SalesReturnBillPO> getBillPOsByDate(String from, String to){
+        try{
+            return salesReturnBillDs.getBillsByDate(from, to);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 

@@ -13,6 +13,7 @@ import po.billpo.SalesBillItemsPO;
 import po.billpo.SalesBillPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
+import vo.billvo.BillVO;
 import vo.billvo.SalesBillVO;
 
 /**
@@ -20,10 +21,10 @@ import vo.billvo.SalesBillVO;
  */
 public class SalesBillBL implements SalesBillBLService {
     
-    private SalesBillDataService saleBillDs;
+    private SalesBillDataService salesBillDs;
     
     public SalesBillBL(){
-        saleBillDs = new SalesBillDs_stub();
+        salesBillDs = new SalesBillDs_stub();
     }
 
     @Override
@@ -33,7 +34,7 @@ public class SalesBillBL implements SalesBillBLService {
             String date = c.get(Calendar.YEAR) + ""
                         + c.get(Calendar.MONTH) + ""
                         + c.get(Calendar.DATE);
-            return "XSD-" + date + "-" + saleBillDs.getNewId();
+            return "XSD-" + date + "-" + salesBillDs.getNewId();
         }catch(RemoteException e){
             e.printStackTrace();
             return null;
@@ -43,8 +44,12 @@ public class SalesBillBL implements SalesBillBLService {
     @Override
     public boolean deleteBill(String id) {
         try{
-            // this is the complete id: "XSD-..."
-            return saleBillDs.deleteBill(id.split("-")[2]);
+            // passed bills cannot be deleted, only can be offsetted
+            SalesBillPO bill = salesBillDs.getBillById(id);
+            if(bill.getState() == BillPO.PASS) return false;
+
+            int length = id.length();
+            return salesBillDs.deleteBill(id.substring(length - 5, length));
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -54,7 +59,7 @@ public class SalesBillBL implements SalesBillBLService {
     @Override
     public boolean saveBill(SalesBillVO bill) {
         try{
-            return saleBillDs.saveBill(toPO(bill));
+            return salesBillDs.saveBill(toPO(bill));
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -64,7 +69,7 @@ public class SalesBillBL implements SalesBillBLService {
     @Override
     public boolean updateBill(SalesBillVO bill) {
         try{
-            return saleBillDs.saveBill(toPO(bill));
+            return salesBillDs.saveBill(toPO(bill));
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -74,7 +79,7 @@ public class SalesBillBL implements SalesBillBLService {
     @Override
     public SalesBillVO getBill(String id) {
         try{
-            return toVO(saleBillDs.getBillById(id));
+            return toVO(salesBillDs.getBillById(id));
         }catch(RemoteException e){
             e.printStackTrace();
             return null;
@@ -83,21 +88,65 @@ public class SalesBillBL implements SalesBillBLService {
     
     @Override
     public MyTableModel getFinishedBills(){
-        // TODO the field is unknown
-        try {
-            ArrayList<SalesBillPO> bills = saleBillDs.getBillsBy("", BillPO.PASS + "", false);
-            String[] columnNames = {"制定时间", "单据编号"};
-            String[][] data = new String[bills.size()][columnNames.length];
-            for(int i = 0; i < bills.size(); i++){
-                SalesBillPO salesBill = bills.get(i);
-                data[i][0] = salesBill.getDate() + " " + salesBill.getTime();
-                data[i][1] = "XSD-" + salesBill.getDate() + "-" + salesBill.getId();
-            }
-            return new MyTableModel(data, columnNames);
-        } catch (RemoteException e) {
+        return search("按状态搜索", BillVO.PASS + "");
+    }
+    
+    public MyTableModel getFinishedBills(String customerId){
+        try{
+            String field = "CONCAT(SBCondition,',',SBCustomerID)";
+            String key = BillPO.PASS + "," + customerId;
+            ArrayList<SalesBillPO> bills = salesBillDs.getBillsBy(field, key, true);
+            return toModel(bills);
+        }catch(RemoteException e){
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public MyTableModel search(String type, String key) {
+        try{
+            String field = null;
+            if("按编号搜索".equals(type)){
+                field = "SBID";
+            } // other searching methods not yet considered
+            ArrayList<SalesBillPO> bills = salesBillDs.getBillsBy(field, key, true);
+            return toModel(bills);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public MyTableModel getBillsByDate(String from, String to){
+        try{
+            ArrayList<SalesBillPO> bills = salesBillDs.getBillByDate(from, to);
+            return toModel(bills);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public ArrayList<SalesBillPO> getBillPOsByDate(String from, String to){
+        try{
+            return salesBillDs.getBillByDate(from, to);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    private MyTableModel toModel(ArrayList<SalesBillPO> bills){
+        String[] columnNames = {"制定时间", "单据编号"};
+        String[][] data = new String[bills.size()][columnNames.length];
+        for(int i = 0; i < bills.size(); i++){
+            SalesBillPO salesBill = bills.get(i);
+            data[i][0] = salesBill.getDate() + " " + salesBill.getTime();
+            data[i][1] = "XSD-" + salesBill.getDate() + "-" + salesBill.getId();
+        }
+        return new MyTableModel(data, columnNames);
     }
 
     private SalesBillPO toPO(SalesBillVO bill){

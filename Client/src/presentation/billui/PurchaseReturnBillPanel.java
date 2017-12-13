@@ -2,14 +2,22 @@ package presentation.billui;
 
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import bl_stub.PurchaseReturnBillBL_stub;
 import blservice.billblservice.PurchaseReturnBillBLService;
+import layout.TableLayout;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
+import presentation.component.choosewindow.PurchaseBillChooseWin;
 import presentation.tools.Timetools;
 import vo.UserVO;
 import vo.billvo.BillVO;
+import vo.billvo.PurchaseBillVO;
 import vo.billvo.PurchaseReturnBillVO;
 import vo.billvo.SalesBillVO;
 
@@ -20,6 +28,8 @@ import vo.billvo.SalesBillVO;
 public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     
     private PurchaseReturnBillBLService purchaseReturnBl = new PurchaseReturnBillBL_stub();
+    private JTextField originalPBIdField;
+    private PurchaseBillVO originalPB;
 
     public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
@@ -39,6 +49,37 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     @Override
     protected String getTableTitle() {
         return "出库商品列表";
+    }
+
+    @Override
+    protected JPanel getCustomerPanel(){
+        customerIdField = new JTextField(10);
+        customerIdField.setEditable(false);
+        customerNameField = new JTextField(10);
+        customerNameField.setEditable(false);
+        originalPBIdField = new JTextField(15);
+        originalPBIdField.setEditable(false);
+        JButton purchaseBillChooseButton = new JButton("选择源进货单");
+        purchaseBillChooseButton.addActionListener(e -> handleChoosePb());
+        JButton customerChooseButton = new JButton("选择");
+        customerChooseButton.addActionListener(e -> handleChooseCustomer());
+        
+        double[][] size = {
+                {20.0, -2.0, 10.0, -2.0, -2.0, -2.0, 20.0
+                    , -2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, -1.0},
+                {8, -2.0, -1.0}
+        };
+        JPanel customerPanel = new JPanel(new TableLayout(size));
+        customerPanel.add(new JLabel(getObjectType()), "1 1");
+		customerPanel.add(customerIdField,"3,1");
+		customerPanel.add(new JLabel("--"),"4,1");
+		customerPanel.add(customerNameField,"5,1");
+		customerPanel.add(customerChooseButton,"7,1");
+		customerPanel.add(new JLabel("源进货单"), "9 1");
+		customerPanel.add(originalPBIdField, "11 1");
+		customerPanel.add(purchaseBillChooseButton, "13 1");
+
+        return customerPanel;
     }
 
     @Override
@@ -80,6 +121,18 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
         double sum = Double.parseDouble(sumField.getText());
         return new PurchaseReturnBillVO(date, Timetools.getTime(), id, operater, state
             , customerId, customerName, model, remark, sum);
+    }
+
+    private void handleChoosePb(){
+        if(!editable) return;
+        String customerId = customerIdField.getText();
+        if(customerId.length() == 0){
+            new InfoWindow("请先选择进货商^_^");
+            return;
+        }
+        originalPB = new PurchaseBillChooseWin(customerId).getPurchaseBill();
+        if(originalPB == null) return;
+        originalPBIdField.setText(originalPB.getAllId());
     }
 
 	@Override
