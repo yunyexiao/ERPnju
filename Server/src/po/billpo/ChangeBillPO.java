@@ -8,6 +8,8 @@ public class ChangeBillPO extends BillPO {
 
 	private ArrayList<ChangeItem> commodityList;
 	
+	public ChangeBillPO(){};
+	
 	public ChangeBillPO(String date, String time, String id, String operatorId, int state, boolean isOver,
 			ArrayList<ChangeItem> commodityList) {
 		super(date, time, id, operatorId, state);

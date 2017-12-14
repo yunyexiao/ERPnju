@@ -99,18 +99,18 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
 			int r=s.executeUpdate("UPDATE CustomerInfo SET "
-					+ "CusName="+customer.getName()
-					+", CusRank="+customer.getRank()
-					+", CusTel="+customer.getTelNumber()
-					+", CusAddress="+customer.getAddress()
-					+", CusCode="+customer.getCode()
-					+", CusMail="+customer.getMail()
-					+", CusReceiRange="+customer.getRecRange()
-					+", CusReceivable="+customer.getReceivable()
-					+", CusPayment="+customer.getPayment()
-					+", CusSalesman="+customer.getSalesman()
-					+", CusType="+customer.getType()
-					+"WHERE CusID="+customer.getId()+";");
+					+ "CusName='"+customer.getName()
+					+"', CusRank='"+customer.getRank()
+					+"', CusTel='"+customer.getTelNumber()
+					+"', CusAddress='"+customer.getAddress()
+					+"', CusCode='"+customer.getCode()
+					+"', CusMail='"+customer.getMail()
+					+"', CusReceiRange='"+customer.getRecRange()
+					+"', CusReceivable='"+customer.getReceivable()
+					+"', CusPayment='"+customer.getPayment()
+					+"', CusSalesman='"+customer.getSalesman()
+					+"', CusType='"+customer.getType()
+					+"' WHERE CusID="+customer.getId()+";");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();

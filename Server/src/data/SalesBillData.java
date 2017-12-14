@@ -10,6 +10,10 @@ import dataservice.SalesBillDataService;
 import po.billpo.SalesItemsPO;
 import po.billpo.SalesBillPO;
 public class SalesBillData extends UnicastRemoteObject implements SalesBillDataService{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -952253035895433810L;
 	private String billTableName="SalesBill";
 	private String recordTableName="SalesRecord";
 	private String billIdName="SBID";
@@ -242,7 +246,7 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 			
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT * FROM "+billTableName+
-					" WHERE generateTime>'"+from+"' AND generateTime<'"+to+"';");
+					" WHERE generateTime>'"+from+"' AND generateTime<DATEADD(DAY,1,"+"'"+to+"');");
 			while(r.next()){
 				SalesBillPO bill=new SalesBillPO();
 				bill.setId(r.getString("SBID"));

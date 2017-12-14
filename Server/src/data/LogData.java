@@ -30,7 +30,7 @@ public class LogData extends UnicastRemoteObject implements LogDataService{
 					+logInfo.getTime()+"','"
 			        +logInfo.getOperatorId()+"','"
 					+logInfo.getOperation()+"','"
-			        +logInfo.getDetail()+"')");
+			        +logInfo.getDetail()+"');");
 			if(r2>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -44,7 +44,7 @@ public class LogData extends UnicastRemoteObject implements LogDataService{
 		ArrayList<LogInfoPO> lips=new ArrayList<LogInfoPO>();
 		try{
 			 Statement s = DataHelper.getInstance().createStatement();
-			 ResultSet r = s.executeQuery("SELECT * FROM LogInfo");
+			 ResultSet r = s.executeQuery("SELECT * FROM LogInfo;");
 			 while(r.next()){
 				  
 				 LogInfoPO lip=new LogInfoPO(r.getString("LITime"),
@@ -68,8 +68,9 @@ public class LogData extends UnicastRemoteObject implements LogDataService{
 		ArrayList<LogInfoPO> lips=new ArrayList<LogInfoPO>();
 		try{
 			 Statement s = DataHelper.getInstance().createStatement();
-			 ResultSet r = s.executeQuery("SELECT * FROM LogInfo WHERE LITime BETWEEN "
-			 +"'"+startTime+"'"+"AND"+"'"+EndTime+"';");
+			 //ResultSet r = s.executeQuery("SELECT * FROM LogInfo WHERE LITime BETWEEN "
+			// +"'"+startTime+"'"+"AND"+"'"+EndTime+"';");
+			 ResultSet r = s.executeQuery("SELECT * FROM LogInfo WHERE LITime>'"+startTime+"' AND LITime<DATEADD(DAY,1,"+"'"+EndTime+"');");
 			 while(r.next()){
 		
 				 LogInfoPO lip=new LogInfoPO(r.getString("LITime"),

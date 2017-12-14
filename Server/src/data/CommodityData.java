@@ -97,9 +97,9 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 	
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("UPDATE CustomerInfo SET "
+			int r=s.executeUpdate("UPDATE CommodityInfo SET "
 					+ "ComName='"+commodity.getName()
-					+"', ComCateID="+commodity.getCategoryId()
+					+"', ComCateID='"+commodity.getCategoryId()
 					+"', ComType='"+commodity.getType()
 					+"', ComStore='"+commodity.getStore()
 					+"', ComQuantity='"+commodity.getAmount()
@@ -108,8 +108,8 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 					+"', ComRecInPrice='"+commodity.getRecentInPrice()
 					+"', ComRecSalePrice='"+commodity.getRecentSalePrice()
 					+"', ComAlarmQuantity='"+commodity.getAlarmNum()
-					+"'WHERE ComID='"
-					+commodity.getId()+"';");
+					+"' WHERE ComID ="
+					+commodity.getId()+";");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -156,14 +156,14 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 	}
 
 	@Override
-	public ArrayList<CommodityPO> getUsersBy(String field, String content, boolean isfuzzy) throws RemoteException {
+	public ArrayList<CommodityPO> getCommoditysBy(String field, String content, boolean isfuzzy) throws RemoteException {
 		
 		ArrayList<CommodityPO> cpos=new ArrayList<CommodityPO>();
 		ResultSet r1=null;
 		try{
 			if(isfuzzy){
 				Statement s1 = DataHelper.getInstance().createStatement();
-				r1 = s1.executeQuery("SELECT * FROM CommodityInfo WHERE "+field+"LIKE '%"+content+"%';");
+				r1 = s1.executeQuery("SELECT * FROM CommodityInfo WHERE "+field+" LIKE '%"+content+"%';");
 			}
 			else if(!isfuzzy){
 				r1=SQLQueryHelper.getRecordByAttribute(tableName, field, content);
@@ -180,7 +180,7 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 				     cpo.setCategoryId(r1.getString("ComCateID"));
 				     cpo.setAlarmNum(r1.getInt("ComAlarmQuantity"));
 				     cpo.setAmount(r1.getLong("ComQuantity"));
-				     cpo.setInPrice(r1.getInt("ComInPrice"));
+				     cpo.setInPrice(r1.getDouble("ComInPrice"));
 				     cpo.setRecentInPrice(r1.getDouble("ComRecInPrice"));
 				     cpo.setRecentSalePrice(r1.getDouble("ComRecSalePrice"));
 				     cpo.setSalePrice(r1.getDouble("ComSalePrice"));

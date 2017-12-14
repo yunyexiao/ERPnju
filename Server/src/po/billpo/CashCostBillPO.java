@@ -10,6 +10,8 @@ public class CashCostBillPO extends BillPO {
 	private ArrayList<CashCostItem> cashcostList;
 	private double sum;
 	
+	public CashCostBillPO(){};
+	
 	public CashCostBillPO(String date, String time, String id, String operatorId, int state, String accountId,
 			ArrayList<CashCostItem> cashcostList, double sum) {
 		super(date, time, id, operatorId, state);
@@ -22,6 +24,18 @@ public class CashCostBillPO extends BillPO {
 		return accountId;
 	}
 	
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
+	}
+
+	public void setCashcostList(ArrayList<CashCostItem> cashcostList) {
+		this.cashcostList = cashcostList;
+	}
+
+	public void setSum(double sum) {
+		this.sum = sum;
+	}
+
 	public ArrayList<CashCostItem> getCashcostList() {
 		return cashcostList;
 	}

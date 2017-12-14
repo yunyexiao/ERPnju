@@ -18,7 +18,7 @@ public class SaleReturnBillData extends UnicastRemoteObject implements SalesRetu
 
 	protected SaleReturnBillData() throws RemoteException {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
 	@Override
@@ -94,14 +94,10 @@ public class SaleReturnBillData extends UnicastRemoteObject implements SalesRetu
 			
 			ResultSet r2=SQLQueryHelper.getRecordByAttribute(billTableName, billIdName, id);
 			while(r2.next()){
-				String date=null, time=null;
-				
-				date=r2.getString("generateTime").split(" ")[0];
-				time=r2.getString("generateTime").split(" ")[1];
 				
 			    bill=new SalesReturnBillPO(
-						date,
-						time,
+			    		r2.getString("generateTime").split(" ")[0],
+			    		r2.getString("generateTime").split(" ")[1],
 						r2.getString("SRBID"),
 						r2.getString("SRBOperatorID"),
 						r2.getInt("SRBCondition"),
@@ -120,6 +116,56 @@ public class SaleReturnBillData extends UnicastRemoteObject implements SalesRetu
 		
 		return bill;
 
+	}
+
+	@Override
+	public ArrayList<SalesReturnBillPO> getBillsByDate(String from, String to) throws RemoteException {
+		// TODO Auto-generated method stub
+		ArrayList<SalesReturnBillPO> bills=new ArrayList<SalesReturnBillPO>();
+		try{
+			Statement s=DataHelper.getInstance().createStatement();
+			ResultSet r=s.executeQuery("SELECT * FROM "+billTableName+
+					" WHERE generateTime>'"+from+"' AND generateTime<DATEADD(DAY,1,"+"'"+to+"');");
+			while(r.next()){
+				SalesReturnBillPO bill=new SalesReturnBillPO();
+				bill.setCustomerId(r.getString("SRBCustomerID"));
+				bill.setDate(r.getString("generateTime").split(" ")[0]);
+				bill.setId(r.getString("SRBID"));
+				bill.setOperatorId(r.getString("SRBOperatorID"));
+				bill.setOriginalSBId(r.getString("SRBOriginalSBID"));
+				bill.setOriginalSum(r.getDouble("SRBReturnSum"));
+				bill.setRemark(r.getString("SRBRemark"));
+				bill.setReturnSum(r.getDouble("SRBReturnSum"));
+				bill.setSalesManName(r.getString("SRBSalesmanName"));
+				bill.setState(r.getInt("SRBCondition"));
+				bill.setTime(r.getString("generateTime").split(" ")[1]);				
+			}
+			
+			for(int i=0;i<bills.size();i++){
+				Statement s1=DataHelper.getInstance().createStatement();
+				ResultSet r1=s1.executeQuery("SELECT * FROM "+recordTableName+
+						" WHERE SRRID="+bills.get(i).getId()+";");
+				ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
+				
+				while(r1.next()){
+					SalesItemsPO item=new SalesItemsPO(
+							r1.getString("SRRComID"),
+							r1.getString("SRRRemark"),
+							r1.getInt("SRRComQuantity"),
+							r1.getDouble("SRRPrice"),
+							r1.getDouble("SRRComSum"));
+					items.add(item);
+				}
+				
+				bills.get(i).setSalesReturnBillItems(items);;
+
+			}
+
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+		return bills;
 	}
 
 }

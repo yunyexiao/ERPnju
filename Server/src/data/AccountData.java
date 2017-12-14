@@ -79,9 +79,9 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
 			int r = s.executeUpdate("UPDATE CustomerInfo SET "
-					+ "AccountName = "+account.getName()
-					+", AccountMoney = "+account.getMoney()
-					+" WHERE AccountID = "+account.getId()+";");
+					+ "AccountName = '"+account.getName()
+					+"', AccountMoney = '"+account.getMoney()
+					+"' WHERE AccountID = "+account.getId()+";");
 			if(r>0)return true;
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -123,7 +123,7 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 		try{
 		if(isfuzzy){
 			Statement s = DataHelper.getInstance().createStatement();
-		    r = s.executeQuery("SELECT * FROM AccountInfo WHERE "+field+"LIKE '%"+content+"%';");
+		    r = s.executeQuery("SELECT * FROM AccountInfo WHERE "+field+" LIKE '%"+content+"%';");
 		}
 		else if(!isfuzzy){
 			r =SQLQueryHelper.getRecordByAttribute(tableName, field, content);

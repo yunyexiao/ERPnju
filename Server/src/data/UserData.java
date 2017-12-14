@@ -145,6 +145,7 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 				UserPO upo = new UserPO();
 							
 				Calendar now = Calendar.getInstance(); 
+	
 				userAge=now.get(Calendar.YEAR)-r.getInt("SUBirth");
 				
 				if(userIsExist){

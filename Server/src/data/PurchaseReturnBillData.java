@@ -96,20 +96,16 @@ public class PurchaseReturnBillData extends UnicastRemoteObject implements Purch
 			//ResultSet r2=s2.executeQuery("SELECT * FROM PurchaseBill WHERE PBID="+id+";");
 			ResultSet r2=SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
 			while(r2.next()){
-				String date=null, time=null;
-				
-				date=r2.getString("generateTime").split(" ")[0];
-				time=r2.getString("generateTime").split(" ")[1];
 				
 				purchaseReturnBill=new PurchaseReturnBillPO(
-						date,
-						time,
-						r2.getString("PBID"),
-						r2.getString("PBOperatorID"),
-						r2.getInt("PBCondition"),
-						r2.getString("PBSupplierID"),
-						r2.getString("PBRemark"),
-						r2.getDouble("PBSum"),
+						r2.getString("generateTime").split(" ")[0],
+						r2.getString("generateTime").split(" ")[1],
+						r2.getString("PRBID"),
+						r2.getString("PRBOperatorID"),
+						r2.getInt("PRBCondition"),
+						r2.getString("PRBSupplierID"),
+						r2.getString("PRBRemark"),
+						r2.getDouble("PRBSum"),
 						items);
 			}
 		}catch(Exception e){
@@ -117,6 +113,54 @@ public class PurchaseReturnBillData extends UnicastRemoteObject implements Purch
 			return null;
 		}
 		return purchaseReturnBill;
+	}
+
+	@Override
+	public ArrayList<PurchaseReturnBillPO> getBillsByDate(String from, String to) throws RemoteException {
+		// TODO Auto-generated method stub
+		ArrayList<PurchaseReturnBillPO> bills=new ArrayList<PurchaseReturnBillPO>();
+		try{
+			Statement s=DataHelper.getInstance().createStatement();
+			ResultSet r=s.executeQuery("SELECT * FROM "+tableName+
+					" WHERE generateTime>'"+from+"' AND generateTime<DATEADD(DAY,1,"+"'"+to+"');");
+			
+			while(r.next()){
+				PurchaseReturnBillPO bill=new PurchaseReturnBillPO();
+				bill.setDate(r.getString("generateTime").split(" ")[0]);
+				bill.setId(r.getString("PRBID"));
+				bill.setOperatorId(r.getString("PRBOperatorID"));
+				bill.setRemark(r.getString("PRBRemark"));
+				bill.setState(r.getInt("PRBCondition"));
+				bill.setSum(r.getDouble("PRBSum"));
+				bill.setSupplierId(r.getString("PRBSupplierID"));
+				bill.setTime(r.getString("generateTime").split(" ")[1]);
+			}
+			
+			for(int i=0;i<bills.size();i++){
+				Statement s1=DataHelper.getInstance().createStatement();
+				ResultSet r1=s1.executeQuery("SELECT * FROM PurchaseReturnRecord WHERE PRRID="+bills.get(i).getId()+";");
+				ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
+				
+				while(r1.next()){
+					SalesItemsPO item=new SalesItemsPO(
+							r1.getString("PRRComID"),
+							r1.getString("PRRRemark"),
+							r1.getInt("PRRComQuantity"),
+							r1.getDouble("PRRComPrice"),
+							r1.getDouble("PRRComSum"));
+					items.add(item);
+				}
+				
+				bills.get(i).setPurchaseReturnBillItems(items);
+
+			}
+
+
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+		return bills;
 	}
 
 }

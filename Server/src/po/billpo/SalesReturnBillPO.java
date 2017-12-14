@@ -20,6 +20,8 @@ public class SalesReturnBillPO extends BillPO implements Serializable{
 	private double originalSum, returnSum;
 	private ArrayList<SalesItemsPO> salesBillItems;
 	
+	public SalesReturnBillPO(){};
+	
 	public SalesReturnBillPO(String date, String time, String id, String operatorId, int state, String customerId,
 			String salesManName, String remark, String originalSBId, double originalSum, double returnSum,
 			ArrayList<SalesItemsPO> salesBillItems) {

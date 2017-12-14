@@ -7,6 +7,7 @@ public class PaymentBillPO extends BillPO {
 	private ArrayList<TransferItem> transferList;
 	private double sum;
 	
+	public PaymentBillPO(){};
 	public PaymentBillPO(String date, String time, String id, String operatorId, int state, String customerId,
 			ArrayList<TransferItem> transferList, double sum) {
 		super(date, time, id, operatorId, state);
@@ -26,5 +27,17 @@ public class PaymentBillPO extends BillPO {
 	public double getSum() {
 		return sum;
 	}
+	
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
+	}
+	public void setTransferList(ArrayList<TransferItem> transferList) {
+		this.transferList = transferList;
+	}
+	public void setSum(double sum) {
+		this.sum = sum;
+	}
+	
+	
 	
 }

@@ -218,7 +218,7 @@ public class PurchaseBillData extends UnicastRemoteObject implements PurchaseBil
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT * FROM "+tableName+
-					" WHERE generateTime>'"+from+"' AND generateTime<'"+to+"';");
+					" WHERE generateTime>'"+from+"' AND generateTime<DATEADD(DAY,1,"+"'"+to+"');");
 			
 			while(r.next()){
 				PurchaseBillPO bill=new PurchaseBillPO();

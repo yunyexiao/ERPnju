@@ -93,14 +93,10 @@ public class CashCostBillData extends UnicastRemoteObject implements CashCostBil
 			//ResultSet r2=s2.executeQuery("SELECT * FROM PurchaseBill WHERE PBID="+id+";");
 			ResultSet r2=SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
 			while(r2.next()){
-				String date=null, time=null;
-				
-				date=r2.getString("generateTime").split(" ")[0];
-				time=r2.getString("generateTime").split(" ")[1];
 				
 				bill=new CashCostBillPO(
-						date,
-						time,
+						r2.getString("generateTime").split(" ")[0],
+						r2.getString("generateTime").split(" ")[1],
 						r2.getString("CCBID"),
 						r2.getString("CCBOperatorID"),
 						r2.getInt("CCBCondition"),

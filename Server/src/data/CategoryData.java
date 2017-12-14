@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import dataservice.CategoryDataService;
 import po.CategoryPO;
 public class CategoryData extends UnicastRemoteObject implements CategoryDataService{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6073002051260265329L;
 	private String tableName="CategoryInfo";
 	private String idName="CateID";
 
@@ -56,7 +60,7 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 			        +category.getId()+"','"
 					+category.getName()+"','"
 			        +1+"','"
-			        +category.getFatherId()+"')");
+			        +category.getFatherId()+"');");
 			
 			if(r1>0)return true;
 		}catch(Exception e){
@@ -71,11 +75,9 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 		
 		try{
 			
-			boolean res1=SQLQueryHelper.getFalseDeleteResult("CategoryRelation", "CateIsExist",idName, id);
-			boolean res2=SQLQueryHelper.getFalseDeleteResult("CategoryRelation", "CateIsExist","CateFather", id);
-			boolean res3=SQLQueryHelper.getFalseDeleteResult(tableName, "CateIsExist",idName, id);
+			boolean res=SQLQueryHelper.getFalseDeleteResult(tableName, "CateIsExist",idName, id);
 			
-			if(res3&&(res1||res2))return true;
+			if(res)return true;
 			
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -93,7 +95,7 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 			Statement s2 = DataHelper.getInstance().createStatement();
 			int r2 = s2.executeUpdate("UPDATE CategoryInfo SET "
 					+ "CateName = '"+category.getName()
-					+ "FatherID = '"+category.getFatherId()
+					+ "', FatherID = '"+category.getFatherId()
 					+"' WHERE CateID = "+category.getId()+";");
 			if(r2>0)return true;
 		}catch(Exception e){
@@ -138,7 +140,7 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 		try{
 			if(isfuzzy){
 				Statement s = DataHelper.getInstance().createStatement();
-				r = s.executeQuery("SELECT * FROM CategoryInfo WHERE "+field+"LIKE '%"+content+"%';");
+				r = s.executeQuery("SELECT * FROM CategoryInfo WHERE "+field+" LIKE '%"+content+"%';");
 			}
 			else if(!isfuzzy){
 				r =SQLQueryHelper.getRecordByAttribute(tableName, field, content);
