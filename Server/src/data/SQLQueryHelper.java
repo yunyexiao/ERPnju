@@ -24,7 +24,7 @@ public class SQLQueryHelper {
 			}
 			num++;
 			
-			newId=year+month+day+"-"+String.format("%5d", num);
+			newId=String.format("%5d", num);
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;

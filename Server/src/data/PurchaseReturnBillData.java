@@ -59,16 +59,13 @@ public class PurchaseReturnBillData extends UnicastRemoteObject implements Purch
 	public boolean deleteBill(String id) throws RemoteException {
 		
 		boolean res=SQLQueryHelper.getTrueDeleteResult(tableName, idName, id);
-		
 		return res;
 	}
 
 	@Override
 	public String getNewId() throws RemoteException {
 
-		String newId=SQLQueryHelper.getNewBillIdByDay(tableName,idName);
-		newId="JHTHD-"+newId;
-		
+		String newId=SQLQueryHelper.getNewBillIdByDay(tableName,idName);	
 		return newId;
 	}
 
