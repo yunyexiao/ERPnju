@@ -11,6 +11,7 @@ import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
 import rmi.Rmi;
+import vo.billvo.BillVO;
 import vo.billvo.CashCostBillVO;
 
 public class CashCostBillBL implements CashCostBillBLService, BillOperationService{
@@ -90,8 +91,10 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
 	}
 	
 	@Override
-	public boolean copyBill(String id){
-	    // TODO
+	public boolean copyBill(BillVO bill){
+	    if(bill instanceof CashCostBillVO){
+	        return saveBill((CashCostBillVO)bill);
+	    }
 	    return false;
 	}
 

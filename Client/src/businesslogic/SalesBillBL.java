@@ -159,8 +159,10 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService {
     }
     
     @Override
-    public boolean copyBill(String id){
-        // TODO
+    public boolean copyBill(BillVO bill){
+        if(bill instanceof SalesBillVO){
+            return saveBill((SalesBillVO) bill);
+        }
         return false;
     }
 

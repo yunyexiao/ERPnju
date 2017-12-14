@@ -12,6 +12,7 @@ import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
 import presentation.component.MyTableModel;
 import rmi.Rmi;
+import vo.billvo.BillVO;
 import vo.billvo.ChangeBillVO;
 
 public class ChangeBillBL implements ChangeBillBLService, BillOperationService{
@@ -91,8 +92,10 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService{
 	}
 
 	@Override
-	public boolean copyBill(String id){
-	    // TODO
+	public boolean copyBill(BillVO bill){
+	    if(bill instanceof ChangeBillVO){
+	        return saveBill((ChangeBillVO) bill);
+	    }
 	    return false;
 	}
 

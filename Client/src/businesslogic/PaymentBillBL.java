@@ -10,13 +10,14 @@ import ds_stub.PaymentBillDs_stub;
 import po.billpo.BillPO;
 import po.billpo.PaymentBillPO;
 import po.billpo.TransferItem;
+import vo.billvo.BillVO;
 import vo.billvo.PaymentBillVO;
 
 public class PaymentBillBL implements PaymentBillBLService, BillOperationService{
 
 	private PaymentBillDataService paymentBillDataService;
 	
-	private PaymentBillBL() {
+	public PaymentBillBL() {
 		paymentBillDataService = new PaymentBillDs_stub();//Rmi.getRemote(ReceiptBillDataService.class);
 	}
 	
@@ -89,8 +90,10 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
 	}
 	
 	@Override
-	public boolean copyBill(String id){
-	    // TODO
+	public boolean copyBill(BillVO bill){
+	    if(bill instanceof PaymentBillVO){
+	        return saveBill((PaymentBillVO) bill);
+	    }
 	    return false;
 	}
 

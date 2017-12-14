@@ -15,6 +15,7 @@ import po.billpo.PurchaseBillPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
 import vo.CustomerVO;
+import vo.billvo.BillVO;
 import vo.billvo.PurchaseBillVO;
 
 /**
@@ -147,8 +148,10 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
     }
     
     @Override
-    public boolean copyBill(String id){
-        // TODO
+    public boolean copyBill(BillVO bill){
+        if(bill instanceof PurchaseBillVO){
+            return saveBill((PurchaseBillVO) bill);
+        }
         return false;
     }
 

@@ -10,13 +10,14 @@ import ds_stub.ReceiptBillDs_stub;
 import po.billpo.BillPO;
 import po.billpo.ReceiptBillPO;
 import po.billpo.TransferItem;
+import vo.billvo.BillVO;
 import vo.billvo.ReceiptBillVO;
 
 public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService{
 
 	private ReceiptBillDataService receiptBillDataService;
 	
-	private ReceiptBillBL() {
+	public ReceiptBillBL() {
 		receiptBillDataService = new ReceiptBillDs_stub();//Rmi.getRemote(ReceiptBillDataService.class);
 	}
 	
@@ -91,8 +92,10 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 	}
 	
 	@Override
-	public boolean copyBill(String id){
-	    // TODO
+	public boolean copyBill(BillVO bill){
+	    if(bill instanceof ReceiptBillVO){
+	        return saveBill((ReceiptBillVO) bill);
+	    }
 	    return false;
 	}
 

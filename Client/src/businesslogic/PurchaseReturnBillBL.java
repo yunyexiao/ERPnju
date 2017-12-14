@@ -16,6 +16,7 @@ import po.billpo.PurchaseReturnBillPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
 import vo.CustomerVO;
+import vo.billvo.BillVO;
 import vo.billvo.PurchaseReturnBillVO;
 
 
@@ -116,8 +117,10 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
     }
     
     @Override
-    public boolean copyBill(String id){
-        // TODO
+    public boolean copyBill(BillVO bill){
+        if(bill instanceof PurchaseReturnBillVO){
+            return saveBill((PurchaseReturnBillVO) bill);
+        }
         return false;
     }
 

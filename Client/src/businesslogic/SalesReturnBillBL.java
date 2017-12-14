@@ -14,6 +14,7 @@ import po.billpo.SalesReturnBillItemsPO;
 import po.billpo.SalesReturnBillPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
+import vo.billvo.BillVO;
 import vo.billvo.SalesBillVO;
 import vo.billvo.SalesReturnBillVO;
 
@@ -115,8 +116,10 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
     }
     
     @Override
-    public boolean copyBill(String id){
-        // TODO
+    public boolean copyBill(BillVO bill){
+        if(bill instanceof SalesReturnBillVO){
+            return saveBill((SalesReturnBillVO) bill);
+        }
         return false;
     }
 
