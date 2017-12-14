@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import bl_stub.CustomerBL_stub;
+import blservice.billblservice.BillOperationService;
 import blservice.billblservice.SalesBillBLService;
 import dataservice.SalesBillDataService;
 import ds_stub.SalesBillDs_stub;
@@ -19,7 +20,7 @@ import vo.billvo.SalesBillVO;
 /**
  * @author ã¢Ò¶Ïö
  */
-public class SalesBillBL implements SalesBillBLService {
+public class SalesBillBL implements SalesBillBLService, BillOperationService {
     
     private SalesBillDataService salesBillDs;
     
@@ -136,6 +137,31 @@ public class SalesBillBL implements SalesBillBLService {
             e.printStackTrace();
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public boolean offsetBill(String id){
+        try{
+            SalesBillPO bill = salesBillDs.getBillById(id);
+            ArrayList<SalesBillItemsPO> items = new ArrayList<>();
+            bill.getSalesBillItems().forEach(i -> items.add(new SalesBillItemsPO(
+                i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
+            )));
+            return salesBillDs.saveBill(new SalesBillPO(
+                bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), BillPO.PASS,
+                bill.getCustomerId(), bill.getSalesManName(), bill.getRemark(), bill.getPromotionId(),
+                -bill.getBeforeDiscount(), -bill.getDiscount(), -bill.getCoupon(), -bill.getAfterDiscount(), items
+            ));
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean copyBill(String id){
+        // TODO
+        return false;
     }
 
     private MyTableModel toModel(ArrayList<SalesBillPO> bills){

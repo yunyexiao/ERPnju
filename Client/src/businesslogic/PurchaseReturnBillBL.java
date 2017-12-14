@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import bl_stub.CustomerBL_stub;
+import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseReturnBillBLService;
 import blservice.infoservice.GetCommodityInterface;
 import dataservice.PurchaseReturnBillDataService;
@@ -18,7 +19,7 @@ import vo.CustomerVO;
 import vo.billvo.PurchaseReturnBillVO;
 
 
-public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
+public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOperationService {
     
     private PurchaseReturnBillDataService purchaseReturnBillDs;
 
@@ -93,6 +94,31 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
             e.printStackTrace();
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public boolean offsetBill(String id){
+        try{
+            PurchaseReturnBillPO bill = purchaseReturnBillDs.getBillById(id);
+            ArrayList<PurchaseReturnBillItemsPO> items = new ArrayList<>();
+            bill.getPurchaseReturnBillItems().forEach(i -> items.add(new PurchaseReturnBillItemsPO(
+                i.getComId(), i.getRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
+            )));
+            // TODO date time id not defined
+            return purchaseReturnBillDs.saveBill(new PurchaseReturnBillPO(
+                bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), BillPO.PASS, 
+                bill.getSupplierId(), bill.getRemark(), -bill.getSum(), items
+            ));
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean copyBill(String id){
+        // TODO
+        return false;
     }
 
     private PurchaseReturnBillPO toPO(PurchaseReturnBillVO bill){

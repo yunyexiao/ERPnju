@@ -3,15 +3,17 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import blservice.billblservice.BillOperationService;
 import blservice.billblservice.ReceiptBillBLService;
 import dataservice.ReceiptBillDataService;
 import ds_stub.ReceiptBillDs_stub;
+import po.billpo.BillPO;
 import po.billpo.ReceiptBillPO;
 import po.billpo.TransferItem;
 import presentation.component.MyTableModel;
 import vo.billvo.ReceiptBillVO;
 
-public class ReceiptBillBL implements ReceiptBillBLService {
+public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService{
 
 	private ReceiptBillDataService receiptBillDataService;
 	
@@ -68,6 +70,31 @@ public class ReceiptBillBL implements ReceiptBillBLService {
             e.printStackTrace();
             return null;
         }
+	}
+
+	@Override
+	public boolean offsetBill(String id){
+	    try{
+	        ReceiptBillPO bill = receiptBillDataService.getBillById(id);
+	        ArrayList<TransferItem> items = new ArrayList<>();
+	        bill.getTransferList().forEach(i -> items.add(new TransferItem(
+	            i.getAccountId(), -i.getMoney(), i.getRemark()
+	        )));
+	        // TODO date time id not considered
+	        return receiptBillDataService.saveBill(new ReceiptBillPO(
+	            bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), BillPO.PASS,
+	            bill.getCustomerId(), items
+	        ));
+	    }catch(RemoteException e){
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+	
+	@Override
+	public boolean copyBill(String id){
+	    // TODO
+	    return false;
 	}
 
 	private ReceiptBillPO toPO(ReceiptBillVO bill){

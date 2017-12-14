@@ -3,16 +3,18 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import blservice.billblservice.BillOperationService;
 import blservice.billblservice.CashCostBillBLService;
 import dataservice.CashCostBillDataService;
 import ds_stub.CashCostBillDs_stub;
+import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
 import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.billvo.CashCostBillVO;
 
-public class CashCostBillBL implements CashCostBillBLService {
+public class CashCostBillBL implements CashCostBillBLService, BillOperationService{
 
 	private CashCostBillDataService cashCostBillDataService;
 	
@@ -70,6 +72,30 @@ public class CashCostBillBL implements CashCostBillBLService {
         }
 	}
 	
+	@Override
+	public boolean offsetBill(String id){
+	    try{
+            CashCostBillPO bill = cashCostBillDataService.getBillById(id);
+            ArrayList<CashCostItem> items = new ArrayList<>();
+            bill.getCashcostList().forEach(i -> items.add
+                (new CashCostItem(i.getName(), -i.getMoney(), i.getRemark())));
+            // TODO date time id not defined
+            CashCostBillPO offset = new CashCostBillPO(
+                bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator()
+                , BillPO.PASS, bill.getAccountId(), items);
+            return cashCostBillDataService.saveBill(offset);
+	    }catch(RemoteException e){
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+	
+	@Override
+	public boolean copyBill(String id){
+	    // TODO
+	    return false;
+	}
+
     private CashCostBillPO toPO(CashCostBillVO bill){
         ArrayList<CashCostItem> items = new ArrayList<>();
         for(int i = 0; i < bill.getTableModel().getRowCount(); i++){

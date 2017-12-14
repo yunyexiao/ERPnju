@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import bl_stub.CustomerBL_stub;
+import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseBillBLService;
 import dataservice.PurchaseBillDataService;
 import ds_stub.PurchaseBillDs_stub;
@@ -19,7 +20,7 @@ import vo.billvo.PurchaseBillVO;
 /**
  * @author ã¢Ò¶Ïö
  */
-public class PurchaseBillBL implements PurchaseBillBLService {
+public class PurchaseBillBL implements PurchaseBillBLService, BillOperationService{
     
     private PurchaseBillDataService purchaseBillDs;
 
@@ -126,6 +127,31 @@ public class PurchaseBillBL implements PurchaseBillBLService {
         }
     }
     
+    @Override
+    public boolean offsetBill(String id){
+        try{
+            PurchaseBillPO bill = purchaseBillDs.getBillById(id);
+            ArrayList<PurchaseBillItemsPO> items = new ArrayList<>();
+            bill.getPurchaseBillItems().forEach(i -> items.add(new PurchaseBillItemsPO(
+                i.getComId(), i.getRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
+            )));
+            // TODO date time id not defined
+            return purchaseBillDs.saveBill(new PurchaseBillPO(
+                bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), BillPO.PASS,
+                bill.getSupplierId(), bill.getRemark(), -bill.getSum(), items
+            ));
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean copyBill(String id){
+        // TODO
+        return false;
+    }
+
     /**
      * This method is not intended for personal use
      */

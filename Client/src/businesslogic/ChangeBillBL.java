@@ -3,17 +3,19 @@ package businesslogic;
 import java.util.ArrayList;
 
 import bl_stub.CommodityBL_stub;
+import blservice.billblservice.BillOperationService;
 import blservice.billblservice.ChangeBillBLService;
 import blservice.infoservice.GetCategoryInterface;
 import blservice.infoservice.GetCommodityInterface;
 import dataservice.ChangeBillDataService;
 import ds_stub.ChangeBillDs_stub;
+import po.billpo.BillPO;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
 import presentation.component.MyTableModel;
 import vo.billvo.ChangeBillVO;
 
-public class ChangeBillBL implements ChangeBillBLService {
+public class ChangeBillBL implements ChangeBillBLService, BillOperationService{
 
 	private ChangeBillDataService changeBillDS;
 	private GetCommodityInterface commodityInfo = new CommodityBL_stub();
@@ -59,6 +61,25 @@ public class ChangeBillBL implements ChangeBillBLService {
 			if (bill.getState() != ChangeBillPO.PASS) data[i][2]= ""+commodityInfo.getCommodity(item.getCommodityId()).getAmount();
 		}
 		return new ChangeBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), bill.getState(), bill.getFlag(), new MyTableModel(data, headers));
+	}
+
+	@Override
+	public boolean offsetBill(String id){
+        ChangeBillPO bill = changeBillDS.getBillById(id);
+        ArrayList<ChangeItem> items = new ArrayList<>();
+        bill.getCommodityList().forEach(i -> items.add(new ChangeItem(
+            i.getCommodityId(), i.getChangedValue(), i.getOriginalValue())));
+        // TODO date time id not defined
+        ChangeBillPO offset = new ChangeBillPO(
+            bill.getDate(), bill.getTime(), bill.getId()
+            , bill.getOperator(), BillPO.PASS, bill.getFlag(), items);
+        return changeBillDS.saveBill(offset);
+	}
+
+	@Override
+	public boolean copyBill(String id){
+	    // TODO
+	    return false;
 	}
 
 	public static void setOver(boolean isOver) {
