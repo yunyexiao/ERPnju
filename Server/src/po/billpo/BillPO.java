@@ -1,6 +1,8 @@
 package po.billpo;
 
-public abstract class BillPO {
+import java.io.Serializable;
+
+public abstract class BillPO implements Serializable{
 	public static int DRAFT = 0;
 	public static int SAVED = 1;
 	public static int COMMITED = 2;
@@ -19,7 +21,9 @@ public abstract class BillPO {
 	 * @param time 制定时间
 	 * @param id 每一天之内的编号
 	 * @param operator 操作人员的id
+	 * 
 	 */
+	public BillPO(){};
 	public BillPO(String date, String time, String id, String operatorId, int state) {
 		super();
 		this.date = date;
@@ -68,4 +72,23 @@ public abstract class BillPO {
 	public void setState(int state) {
 		this.state = state;
 	}
+	/**
+	 * 修改此处名称->修改MainPanel中能否删除的判断
+	 * @return 单据状态的中文名称
+	 */
+	public String getStateName() {
+		switch(state) {
+			case 0 : return "草稿";
+			case 1 : return "已保存";
+			case 2 : return "已提交";
+			case 3 : return "审批通过";
+			case 4 : return "审批未通过";
+		}
+		return "未知状态";
+	}
+	/**
+	 * 
+	 * @return 返回PO对象完整的Id
+	 */
+	public abstract String getAllId();
 }

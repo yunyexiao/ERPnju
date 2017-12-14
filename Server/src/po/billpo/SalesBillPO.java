@@ -12,18 +12,17 @@ import java.util.ArrayList;
  */
 
 public class SalesBillPO extends BillPO implements Serializable{
-	
-	/**
-	 * 
-	 */
+
 	 private static final long serialVersionUID = 2021998686222663097L;
 	 private String customerId, salesManName, remark, promotionId;
 	 private double beforeDiscount, discount, coupon, afterDiscount;
-	 private ArrayList<SalesBillItemsPO> salesBillItems;
+	 private ArrayList<SalesItemsPO> salesBillItems;
+	 
+	 public SalesBillPO(){};
 	
-	public SalesBillPO(String date, String time, String id, String operatorId, int state, String customerId,
+	 public SalesBillPO(String date, String time, String id, String operatorId, int state, String customerId,
 			String salesManName, String remark, String promotionId, double beforeDiscount, double discount,
-			double coupon, double afterDiscount, ArrayList<SalesBillItemsPO> salesBillItems) {
+			double coupon, double afterDiscount, ArrayList<SalesItemsPO> salesBillItems) {
 		super(date, time, id, operatorId, state);
 		this.customerId = customerId;
 		this.salesManName = salesManName;
@@ -103,12 +102,17 @@ public class SalesBillPO extends BillPO implements Serializable{
 		 return coupon;
 	 }
 	 
-	 public void setSalesBillItems(ArrayList<SalesBillItemsPO> sbis){
+	 public void setSalesBillItems(ArrayList<SalesItemsPO> sbis){
 		 this.salesBillItems=sbis;
 	 }
 	 
-	 public ArrayList<SalesBillItemsPO> getSalesBillItems(){
+	 public ArrayList<SalesItemsPO> getSalesBillItems(){
 		 return salesBillItems;
 	 }
+
+	@Override
+	public String getAllId() {
+		return "XSD-" + this.getDate() + "-" + this.getId();
+	}
 
 }
