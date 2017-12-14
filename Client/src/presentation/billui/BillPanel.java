@@ -22,7 +22,7 @@ import vo.UserVO;
  */
 public abstract class BillPanel implements PanelInterface {
 
-	private UserVO user;
+	protected UserVO user;
 	private JPanel panel;
 	protected JPanel billPanel;
 	/**

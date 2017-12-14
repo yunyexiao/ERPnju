@@ -11,9 +11,7 @@ import java.util.ArrayList;
  */
 
 public class PurchaseBillPO extends BillPO implements Serializable{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -3790261082899739952L;
 	
 	private String  supplierId,remark;
@@ -61,6 +59,11 @@ public class PurchaseBillPO extends BillPO implements Serializable{
 
 	public void setPurchaseBillItems(ArrayList<PurchaseBillItemsPO> purchaseBillItems) {
 		this.purchaseBillItems = purchaseBillItems;
+	}
+
+	@Override
+	public String getAllId() {
+		return "JHD-" + this.getDate() + "-" + this.getId();
 	}
 	
 }

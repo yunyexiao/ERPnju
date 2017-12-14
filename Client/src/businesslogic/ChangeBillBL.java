@@ -1,40 +1,46 @@
 package businesslogic;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import bl_stub.CommodityBL_stub;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.ChangeBillBLService;
-import blservice.infoservice.GetCategoryInterface;
-import blservice.infoservice.GetCommodityInterface;
 import dataservice.ChangeBillDataService;
 import ds_stub.ChangeBillDs_stub;
 import po.billpo.BillPO;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
 import presentation.component.MyTableModel;
+import rmi.Rmi;
 import vo.billvo.ChangeBillVO;
 
 public class ChangeBillBL implements ChangeBillBLService, BillOperationService{
 
 	private ChangeBillDataService changeBillDS;
-	private GetCommodityInterface commodityInfo = new CommodityBL_stub();
-	private GetCategoryInterface categoryInfo = new CategoryBL();
-	private String[] headers = {"商品id", "商品名称", "库存数量", "实际数量"};
 	private static boolean isOver = true;
 	
 	public ChangeBillBL() {
-		changeBillDS = new ChangeBillDs_stub();//Rmi.getRemote(ChangeBillDataService.class);
+		changeBillDS = Rmi.flag ? Rmi.getRemote(ChangeBillDataService.class) : new ChangeBillDs_stub();
 	}
 	
 	@Override
 	public String getNewId() {
-		return changeBillDS.getNewId(isOver);
+		try {
+			return changeBillDS.getNewId(isOver);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return "";
+		}
 	}
 
 	@Override
 	public boolean deleteBill(String id) {
-		return changeBillDS.deleteBill(id);
+		try {
+			return changeBillDS.deleteBill(id);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
@@ -46,34 +52,42 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService{
 			ChangeItem item = new ChangeItem(s[0], Integer.parseInt(s[2]), Integer.parseInt(s[3]));
 			commodityList.add(item);
 		}
-		return changeBillDS.saveBill(new ChangeBillPO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), bill.getState(), bill.getFlag(), commodityList));
+		try {
+			return changeBillDS.saveBill(new ChangeBillPO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), bill.getState(), bill.getFlag(), commodityList));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
 	public ChangeBillVO getBill(String id) {
-		ChangeBillPO bill = changeBillDS.getBillById(id);
-		int size = bill.getCommodityList().size();
-		String[][] data = new String[size][4];
-		for (int i = 0; i < size; i++) {
-			ChangeItem item = bill.getCommodityList().get(i);
-			data[i] = new String[]{item.getCommodityId(), "", ""+item.getOriginalValue(), ""+item.getChangedValue()};
-			data[i][1] = categoryInfo.getCategory(commodityInfo.getCommodity(item.getCommodityId()).getCategoryId()).getName();
-			if (bill.getState() != ChangeBillPO.PASS) data[i][2]= ""+commodityInfo.getCommodity(item.getCommodityId()).getAmount();
+		ChangeBillPO bill;
+		try {
+			bill = changeBillDS.getBillById(id);
+			return BillTools.toChangeBillVO(bill);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
 		}
-		return new ChangeBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), bill.getState(), bill.getFlag(), new MyTableModel(data, headers));
 	}
 
 	@Override
 	public boolean offsetBill(String id){
-        ChangeBillPO bill = changeBillDS.getBillById(id);
-        ArrayList<ChangeItem> items = new ArrayList<>();
-        bill.getCommodityList().forEach(i -> items.add(new ChangeItem(
-            i.getCommodityId(), i.getChangedValue(), i.getOriginalValue())));
-        // TODO date time id not defined
-        ChangeBillPO offset = new ChangeBillPO(
-            bill.getDate(), bill.getTime(), bill.getId()
-            , bill.getOperator(), BillPO.PASS, bill.getFlag(), items);
-        return changeBillDS.saveBill(offset);
+	    try{
+            ChangeBillPO bill = changeBillDS.getBillById(id);
+            ArrayList<ChangeItem> items = new ArrayList<>();
+            bill.getCommodityList().forEach(i -> items.add(new ChangeItem(
+                i.getCommodityId(), i.getChangedValue(), i.getOriginalValue())));
+            // TODO date time id not defined
+            ChangeBillPO offset = new ChangeBillPO(
+                bill.getDate(), bill.getTime(), bill.getId()
+                , bill.getOperator(), BillPO.PASS, bill.getFlag(), items);
+            return changeBillDS.saveBill(offset);
+	    }catch(RemoteException e){
+	        e.printStackTrace();
+	        return false;
+	    }
 	}
 
 	@Override

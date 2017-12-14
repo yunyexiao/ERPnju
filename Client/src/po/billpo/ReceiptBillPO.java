@@ -1,8 +1,9 @@
 package po.billpo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ReceiptBillPO extends BillPO {
+public class ReceiptBillPO extends BillPO implements Serializable{
 
 	private String customerId;
 	private ArrayList<TransferItem> transferList;
@@ -19,6 +20,11 @@ public class ReceiptBillPO extends BillPO {
 	
 	public ArrayList<TransferItem> getTransferList() {
 		return transferList;
+	}
+
+	@Override
+	public String getAllId() {
+		return "SKD-" + this.getDate() + "-" + this.getId();
 	}
 	
 }

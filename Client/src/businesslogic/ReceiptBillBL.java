@@ -10,7 +10,6 @@ import ds_stub.ReceiptBillDs_stub;
 import po.billpo.BillPO;
 import po.billpo.ReceiptBillPO;
 import po.billpo.TransferItem;
-import presentation.component.MyTableModel;
 import vo.billvo.ReceiptBillVO;
 
 public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService{
@@ -65,7 +64,7 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 	public ReceiptBillVO getBill(String id) {
 		try{
             ReceiptBillPO bill = receiptBillDataService.getBillById(id);
-            return toVO(bill);
+            return BillTools.toReceiptBillVO(bill);
         }catch(RemoteException e){
             e.printStackTrace();
             return null;
@@ -108,23 +107,5 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
         return new ReceiptBillPO(bill.getDate(), bill.getTime()
             , bill.getId(), bill.getOperator(), bill.getState()
             , bill.getCustomerId(), items);
-    }
-
-    private ReceiptBillVO toVO(ReceiptBillPO bill){
-        String[] columnNames = {"银行账户", "转账金额", "备注"};
-        ArrayList<TransferItem> items = bill.getTransferList();
-        String[][] data = new String[columnNames.length][items.size()];
-        for(int i = 0; i < data.length; i++){
-            data[i] = toArray(items.get(i));
-        }
-        MyTableModel model = new MyTableModel(data, columnNames);
-        ReceiptBillVO receiptBillVO = new ReceiptBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator()
-                , bill.getState(), bill.getCustomerId(), model);
-        return receiptBillVO;
-    }
-    
-    private String[] toArray(TransferItem item){
-        // TODO the type and store to complete
-        return new String[]{item.getAccountId(), Double.toString(item.getMoney()), item.getRemark()};
     }
 }

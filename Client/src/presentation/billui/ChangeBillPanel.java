@@ -2,8 +2,6 @@ package presentation.billui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -19,10 +17,10 @@ import javax.swing.UIManager;
 import blservice.billblservice.ChangeBillBLService;
 import businesslogic.ChangeBillBL;
 import layout.TableLayout;
+import presentation.component.InfoAdapter;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.component.choosewindow.CommodityChooseWin;
-import presentation.main.MainWindow;
 import presentation.tools.Timetools;
 import vo.CommodityVO;
 import vo.UserVO;
@@ -37,10 +35,35 @@ public class ChangeBillPanel extends BillPanel {
 	private JRadioButton overButton, lostButton;
 	private ChangeBillBLService changeBillBL;
 	
+	/**
+	 * 新建单据界面
+	 * @param user
+	 * @param closeListener
+	 */
 	public ChangeBillPanel(UserVO user, ActionListener closeListener) {
 		super(user, closeListener);
 	}
 
+	/**
+	 * 根据已有的一张单据初始化界面，仅报溢/报损类型不能修改
+	 * @param user
+	 * @param bill
+	 * @param closeListener
+	 */
+	public ChangeBillPanel(UserVO user, ChangeBillVO bill, ActionListener closeListener) {
+		super(user, closeListener);
+		ChangeBillBL.setOver(bill.getFlag());
+		billIdField.setText(bill.getAllId());
+		overButton.setEnabled(false);
+		lostButton.setEnabled(false);
+		if (bill.getFlag()) overButton.setSelected(true);
+		else lostButton.setSelected(true);
+		operaterField.setText(bill.getOperator());
+		MyTableModel tableModel = bill.getTableModel();
+		tableModel.setEditable(new int[]{3});
+		table.setModel(tableModel);
+	}
+	
 	@Override
 	protected void initBillPanel() {
 		changeBillBL = new ChangeBillBL();
@@ -147,27 +170,9 @@ public class ChangeBillPanel extends BillPanel {
 			}
 		});
 		
-		addButton.addMouseListener(new MouseAdapter() {
-			@Override  
-		    public void mouseEntered(MouseEvent e) {
-				MainWindow.setInfo("选择需要修改的商品");  
-		    }
-		    @Override  
-		    public void mouseExited(MouseEvent e) {
-		    	MainWindow.setInfo();  
-		    }
-		});
+		addButton.addMouseListener(new InfoAdapter("选择需要修改的商品"));
 		
-		deleteButton.addMouseListener(new MouseAdapter() {
-			@Override  
-		    public void mouseEntered(MouseEvent e) {
-				MainWindow.setInfo("删除选中的一行");  
-		    }
-		    @Override  
-		    public void mouseExited(MouseEvent e) {
-		    	MainWindow.setInfo();  
-		    }
-		});
+		deleteButton.addMouseListener(new InfoAdapter("删除选中的一行"));
 	}
 
 	@Override
@@ -237,7 +242,7 @@ public class ChangeBillPanel extends BillPanel {
 			return null;
 		}
 		Timetools.check();
-		return new ChangeBillVO(Timetools.getDate(), Timetools.getTime(), changeBillBL.getNewId(), operaterField.getText(), ChangeBillVO.DRAFT, overButton.isSelected(), (MyTableModel) table.getModel());
+		return new ChangeBillVO(Timetools.getDate(), Timetools.getTime(), changeBillBL.getNewId(), user.getId(), ChangeBillVO.DRAFT, overButton.isSelected(), (MyTableModel) table.getModel());
 	}
 	
 	private void setBillId(boolean isOver) {

@@ -10,7 +10,6 @@ import ds_stub.PaymentBillDs_stub;
 import po.billpo.BillPO;
 import po.billpo.PaymentBillPO;
 import po.billpo.TransferItem;
-import presentation.component.MyTableModel;
 import vo.billvo.PaymentBillVO;
 
 public class PaymentBillBL implements PaymentBillBLService, BillOperationService{
@@ -65,7 +64,7 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
 	public PaymentBillVO getBill(String id) {
 		try{
             PaymentBillPO bill = paymentBillDataService.getBillById(id);
-            return toVO(bill);
+            return BillTools.toPaymentBillVO(bill);
         }catch(RemoteException e){
             e.printStackTrace();
             return null;
@@ -106,24 +105,5 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
         return new PaymentBillPO(bill.getDate(), bill.getTime()
             , bill.getId(), bill.getOperator(), bill.getState()
             , bill.getCustomerId(), items);
-    }
-
-    private PaymentBillVO toVO(PaymentBillPO bill){
-        String[] columnNames = {"银行账户", "转账金额", "备注"};
-        ArrayList<TransferItem> items = bill.getTransferList();
-        String[][] data = new String[columnNames.length][items.size()];
-        for(int i = 0; i < data.length; i++){
-            data[i] = toArray(items.get(i));
-        }
-        MyTableModel model = new MyTableModel(data, columnNames);
-        PaymentBillVO paymentBillVO = new PaymentBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator()
-                , bill.getState(), bill.getCustomerId());
-        paymentBillVO.setTableModel(model);
-        return paymentBillVO;
-    }
-    
-    private String[] toArray(TransferItem item){
-        // TODO the type and store to complete
-        return new String[]{item.getAccountId(), Double.toString(item.getMoney()), item.getRemark()};
     }
 }
