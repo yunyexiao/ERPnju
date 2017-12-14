@@ -5,13 +5,10 @@ import java.util.TreeMap;
 
 import blservice.InventoryDynamicBLService;
 import blservice.infoservice.GetCommodityInterface;
-import po.billpo.PurchaseBillItemsPO;
 import po.billpo.PurchaseBillPO;
-import po.billpo.PurchaseReturnBillItemsPO;
 import po.billpo.PurchaseReturnBillPO;
-import po.billpo.SalesBillItemsPO;
 import po.billpo.SalesBillPO;
-import po.billpo.SalesReturnBillItemsPO;
+import po.billpo.SalesItemsPO;
 import po.billpo.SalesReturnBillPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
@@ -74,21 +71,6 @@ public class InventoryDynamicBL implements InventoryDynamicBLService {
             purchaseSum += sum;
         }
         
-        public void addPurchaseReturn(int num, double sum){
-            purchaseReturnNum += num;
-            purchaseReturnSum += sum;
-        }
-        
-        public void addSales(int num, double sum){
-            salesNum += num;
-            salesSum += sum;
-        }
-        
-        public void addSalesReturn(int num, double sum){
-            salesReturnNum += num;
-            salesReturnSum += sum;
-        }
-        
         private void summary(){
             importNum = purchaseNum + salesReturnNum;
             exportNum = salesNum + purchaseReturnNum;
@@ -116,46 +98,13 @@ public class InventoryDynamicBL implements InventoryDynamicBLService {
             map = new TreeMap<>();
         }
         
-        public void addItem(PurchaseBillItemsPO billItem){
+        public void addItem(SalesItemsPO billItem){
             String id = billItem.getComId();
             if(map.containsKey(id)){
                 map.get(id).addPurchase(billItem.getComQuantity(), billItem.getComSum());
             } else {
                 Item item = new Item(id);
                 item.addPurchase(billItem.getComQuantity(), billItem.getComSum());
-                map.put(id, item);
-            }
-        }
-        
-        public void addItem(PurchaseReturnBillItemsPO billItem){
-            String id = billItem.getComId();
-            if(map.containsKey(id)){
-                map.get(id).addPurchaseReturn(billItem.getComQuantity(), billItem.getComSum());
-            } else {
-                Item item = new Item(id);
-                item.addPurchaseReturn(billItem.getComQuantity(), billItem.getComSum());
-                map.put(id, item);
-            }
-        }
-        
-        public void addItem(SalesBillItemsPO billItem){
-            String id = billItem.getComId();
-            if(map.containsKey(id)){
-                map.get(id).addSales(billItem.getComQuantity(), billItem.getComSum());
-            } else {
-                Item item = new Item(id);
-                item.addSales(billItem.getComQuantity(), billItem.getComSum());
-                map.put(id, item);
-            }
-        }
-        
-        public void addItem(SalesReturnBillItemsPO billItem){
-            String id = billItem.getComId();
-            if(map.containsKey(id)){
-                map.get(id).addSalesReturn(billItem.getComQuantity(), billItem.getComSum());
-            } else {
-                Item item = new Item(id);
-                item.addSalesReturn(billItem.getComQuantity(), billItem.getComSum());
                 map.put(id, item);
             }
         }

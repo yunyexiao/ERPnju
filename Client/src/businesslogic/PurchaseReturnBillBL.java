@@ -10,8 +10,8 @@ import blservice.infoservice.GetCommodityInterface;
 import dataservice.PurchaseReturnBillDataService;
 import ds_stub.PurchaseReturnBillDs_stub;
 import po.billpo.BillPO;
-import po.billpo.PurchaseReturnBillItemsPO;
 import po.billpo.PurchaseReturnBillPO;
+import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
 import vo.CustomerVO;
@@ -96,13 +96,13 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
     }
 
     private PurchaseReturnBillPO toPO(PurchaseReturnBillVO bill){
-        ArrayList<PurchaseReturnBillItemsPO> items = new ArrayList<>();
+        ArrayList<SalesItemsPO> items = new ArrayList<>();
         for(int i = 0; i < bill.getModel().getRowCount(); i++){
             String[] row = bill.getModel().getValueAtRow(i);
             int num = Integer.parseInt(row[5]);
             double price = Double.parseDouble(row[4]),
                    sum = Double.parseDouble(row[6]);
-            items.add(new PurchaseReturnBillItemsPO(
+            items.add(new SalesItemsPO(
                 row[0], row[7], num, price, sum));
         }
         return new PurchaseReturnBillPO(bill.getDate(), bill.getTime()
@@ -112,7 +112,7 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
 
     private PurchaseReturnBillVO toVO(PurchaseReturnBillPO bill){
         String[] columnNames = {"商品编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
-        ArrayList<PurchaseReturnBillItemsPO> items = bill.getPurchaseReturnBillItems();
+        ArrayList<SalesItemsPO> items = bill.getPurchaseReturnBillItems();
         String[][] data = new String[columnNames.length][items.size()];
         for(int i = 0; i < data.length; i++){
             data[i] = toArray(items.get(i));
@@ -125,7 +125,7 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
             , customer.getName(), model, bill.getRemark(), bill.getSum());
     }
     
-    private String[] toArray(PurchaseReturnBillItemsPO item){
+    private String[] toArray(SalesItemsPO item){
         GetCommodityInterface comInfo = new CommodityBL();
         CommodityVO c = comInfo.getCommodity(item.getComId());
         double price = item.getComPrice();
@@ -133,7 +133,7 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
         double sum = price * num;
         return new String[]{c.getId(), c.getName(), c.getType()
                 , c.getStore(), price + "", num + "", sum + ""
-                , item.getRemark()};
+                , item.getComRemark()};
     }
 
 

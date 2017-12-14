@@ -9,8 +9,8 @@ import blservice.billblservice.SalesBillBLService;
 import dataservice.SalesBillDataService;
 import ds_stub.SalesBillDs_stub;
 import po.billpo.BillPO;
-import po.billpo.SalesBillItemsPO;
 import po.billpo.SalesBillPO;
+import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
 import vo.billvo.BillVO;
@@ -151,13 +151,13 @@ public class SalesBillBL implements SalesBillBLService {
 
     private SalesBillPO toPO(SalesBillVO bill){
         MyTableModel model = bill.getModel();
-        ArrayList<SalesBillItemsPO> items = new ArrayList<>();
+        ArrayList<SalesItemsPO> items = new ArrayList<>();
         for(int i = 0; i < model.getRowCount(); i++){
             String[] row = model.getValueAtRow(i);
             int num = Integer.parseInt(row[5]);
             double price = Double.parseDouble(row[4]),
                    sum = Double.parseDouble(row[6]);
-            items.add(new SalesBillItemsPO(row[0], row[7], num, price, sum));
+            items.add(new SalesItemsPO(row[0], row[7], num, price, sum));
         }
         // TODO promotionId not considered here
         return new SalesBillPO(bill.getDate(), bill.getTime()
@@ -170,7 +170,7 @@ public class SalesBillBL implements SalesBillBLService {
     
     private SalesBillVO toVO(SalesBillPO bill){
         String[] columnNames = {"编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
-        ArrayList<SalesBillItemsPO> items = bill.getSalesBillItems();
+        ArrayList<SalesItemsPO> items = bill.getSalesBillItems();
         String[][] data;
         if(items == null){
             data = null;
@@ -199,7 +199,7 @@ public class SalesBillBL implements SalesBillBLService {
             , discount, coupon, sum);
     }
     
-    private String[] getRow(SalesBillItemsPO item){
+    private String[] getRow(SalesItemsPO item){
         String id = item.getComId();
         CommodityVO c = new CommodityBL().getCommodity(id);
         String name = c.getName(),

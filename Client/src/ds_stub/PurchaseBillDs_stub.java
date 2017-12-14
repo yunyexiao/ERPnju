@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import dataservice.PurchaseBillDataService;
 import po.billpo.BillPO;
-import po.billpo.PurchaseBillItemsPO;
+import po.billpo.SalesItemsPO;
 import po.billpo.PurchaseBillPO;
 
 
@@ -16,34 +16,34 @@ public class PurchaseBillDs_stub implements PurchaseBillDataService {
     public PurchaseBillDs_stub() {
         if(BILLS.size() > 0) return;
         
-        ArrayList<PurchaseBillItemsPO> items1 = new ArrayList<>();
-        items1.add(new PurchaseBillItemsPO("000001", "", 50, 100, 5000));
-        items1.add(new PurchaseBillItemsPO("000002", "", 100, 100, 10000));
+        ArrayList<SalesItemsPO> items1 = new ArrayList<>();
+        items1.add(new SalesItemsPO("000001", "", 50, 100, 5000));
+        items1.add(new SalesItemsPO("000002", "", 100, 100, 10000));
         
         BILLS.add(new PurchaseBillPO(
             "2017-12-05", "19:23:55", "12345", null
             , BillPO.PASS, null, null, 15000, items1
         ));
         
-        ArrayList<PurchaseBillItemsPO> items2 = new ArrayList<>();
-        items2.add(new PurchaseBillItemsPO("000003", "", 50, 200, 10000));
+        ArrayList<SalesItemsPO> items2 = new ArrayList<>();
+        items2.add(new SalesItemsPO("000003", "", 50, 200, 10000));
         
         BILLS.add(new PurchaseBillPO(
             "2017-12-01", "08:30:02", "12000", null
             , BillPO.PASS, null, null, 10000, items2
         ));
         
-        ArrayList<PurchaseBillItemsPO> items3 = new ArrayList<>();
-        items3.add(new PurchaseBillItemsPO("000004", "", 100, 100, 10000));
-        items3.add(new PurchaseBillItemsPO("000003", "", 200, 200, 40000));
+        ArrayList<SalesItemsPO> items3 = new ArrayList<>();
+        items3.add(new SalesItemsPO("000004", "", 100, 100, 10000));
+        items3.add(new SalesItemsPO("000003", "", 200, 200, 40000));
         
         BILLS.add(new PurchaseBillPO(
             "2017-12-08", "11:24:51", "32100", null
             , BillPO.COMMITED, null, "rarara", 50000, items3
         ));
         
-        ArrayList<PurchaseBillItemsPO> items4 = new ArrayList<>();
-        items4.add(new PurchaseBillItemsPO("000002", "", 30, 100, 3000));
+        ArrayList<SalesItemsPO> items4 = new ArrayList<>();
+        items4.add(new SalesItemsPO("000002", "", 30, 100, 3000));
         
         BILLS.add(new PurchaseBillPO(
             "2017-12-09", "12:08:21", "98765", null

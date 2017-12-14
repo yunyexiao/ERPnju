@@ -51,7 +51,7 @@ public class BillShowBL implements BillShowService {
 	@Override
 	public ChangeBillVO getChangeBill(String id) {
 		ChangeBillPO bill = billDs.getChangeBill(id);
-		return BillTools.getChangeBill(bill);
+		return BillTools.toChangeBillVO(bill);
 	}
 
 }

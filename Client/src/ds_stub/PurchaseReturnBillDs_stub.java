@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import dataservice.PurchaseReturnBillDataService;
 import po.billpo.BillPO;
-import po.billpo.PurchaseReturnBillItemsPO;
+import po.billpo.SalesItemsPO;
 import po.billpo.PurchaseReturnBillPO;
 
 
@@ -15,25 +15,25 @@ public class PurchaseReturnBillDs_stub implements PurchaseReturnBillDataService 
         = new ArrayList<>();
     
     static{
-        ArrayList<PurchaseReturnBillItemsPO> items1 = new ArrayList<>();
-        items1.add(new PurchaseReturnBillItemsPO("000001", "", 20, 50.0, 1000.0));
-        items1.add(new PurchaseReturnBillItemsPO("000002", "", 40, 60.0, 2400.0));
+        ArrayList<SalesItemsPO> items1 = new ArrayList<>();
+        items1.add(new SalesItemsPO("000001", "", 20, 50.0, 1000.0));
+        items1.add(new SalesItemsPO("000002", "", 40, 60.0, 2400.0));
         BILLS.add(new PurchaseReturnBillPO(
             "2017-12-03", "21:03:17", "01324", "0002"
             , BillPO.PASS, "000001", "", 3400.0, items1
         ));
 
-        ArrayList<PurchaseReturnBillItemsPO> items2 = new ArrayList<>();
-        items2.add(new PurchaseReturnBillItemsPO("000003", "", 10, 60.0, 600.0));
-        items2.add(new PurchaseReturnBillItemsPO("000004", "", 50, 80.0, 4000.0));
+        ArrayList<SalesItemsPO> items2 = new ArrayList<>();
+        items2.add(new SalesItemsPO("000003", "", 10, 60.0, 600.0));
+        items2.add(new SalesItemsPO("000004", "", 50, 80.0, 4000.0));
         BILLS.add(new PurchaseReturnBillPO(
             "2017-12-13", "18:33:47", "01921", "0007"
             , BillPO.COMMITED, "000003", "", 4600.0, items2
         ));
 
-        ArrayList<PurchaseReturnBillItemsPO> items3 = new ArrayList<>();
-        items3.add(new PurchaseReturnBillItemsPO("000001", "", 50, 100.0, 5000.0));
-        items3.add(new PurchaseReturnBillItemsPO("000004", "", 70, 300.0, 21000.0));
+        ArrayList<SalesItemsPO> items3 = new ArrayList<>();
+        items3.add(new SalesItemsPO("000001", "", 50, 100.0, 5000.0));
+        items3.add(new SalesItemsPO("000004", "", 70, 300.0, 21000.0));
         BILLS.add(new PurchaseReturnBillPO(
             "2017-11-23", "14:38:47", "21171", "0007"
             , BillPO.PASS, "000002", "", 26000.0, items3
