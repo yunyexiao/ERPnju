@@ -15,9 +15,10 @@ import vo.billvo.ChangeBillVO;
 public class ChangeBillBL implements ChangeBillBLService {
 
 	private ChangeBillDataService changeBillDS;
-	private static boolean isOver = true;
+	private boolean isOver = true;
 	
-	public ChangeBillBL() {
+	public ChangeBillBL(boolean isOver) {
+		this.isOver = isOver;
 		changeBillDS = Rmi.flag ? Rmi.getRemote(ChangeBillDataService.class) : new ChangeBillDs_stub();
 	}
 	
@@ -68,9 +69,5 @@ public class ChangeBillBL implements ChangeBillBLService {
 			e.printStackTrace();
 			return null;
 		}
-	}
-
-	public static void setOver(boolean isOver) {
-		ChangeBillBL.isOver = isOver;
 	}
 }
