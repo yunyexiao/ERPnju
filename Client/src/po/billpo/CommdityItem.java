@@ -1,6 +1,8 @@
 package po.billpo;
 
-public class CommdityItem {
+import java.io.Serializable;
+
+public class CommdityItem implements Serializable{
 
 	private String commodityId;
 	private double price;

@@ -1,8 +1,9 @@
 package po.billpo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CashCostBillPO extends BillPO {
+public class CashCostBillPO extends BillPO implements Serializable{
 
 	private String accountId;
 	private ArrayList<CashCostItem> cashcostList;
@@ -19,5 +20,10 @@ public class CashCostBillPO extends BillPO {
 	
 	public ArrayList<CashCostItem> getCashcostList() {
 		return cashcostList;
+	}
+
+	@Override
+	public String getAllId() {
+		return "XJFYD-" + this.getDate() + "-" + this.getId();
 	}
 }

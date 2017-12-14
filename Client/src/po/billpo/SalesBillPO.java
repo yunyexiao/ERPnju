@@ -111,4 +111,10 @@ public class SalesBillPO extends BillPO implements Serializable{
 		 return salesBillItems;
 	 }
 
+
+	@Override
+	public String getAllId() {
+		return "XSD-" + this.getDate() + "-" + this.getId();
+	}
+
 }

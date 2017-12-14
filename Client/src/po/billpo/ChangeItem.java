@@ -1,6 +1,8 @@
 package po.billpo;
 
-public class ChangeItem {
+import java.io.Serializable;
+
+public class ChangeItem implements Serializable{
 
 	private String commodityId;
 	private int originalValue;

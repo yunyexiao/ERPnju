@@ -12,9 +12,6 @@ import java.util.ArrayList;
 
 public class SalesReturnBillPO extends BillPO implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3028188485729244517L;
 	private String customerId, salesManName,remark, originalSBId;
 	private double originalSum, returnSum;
@@ -87,6 +84,11 @@ public class SalesReturnBillPO extends BillPO implements Serializable{
 
 	public void setOriginalSBId(String originalSBId) {
 		this.originalSBId = originalSBId;
+	}
+
+	@Override
+	public String getAllId() {
+		return "XSTHD-" + this.getDate() + "-" + this.getId();
 	}
 	
 }

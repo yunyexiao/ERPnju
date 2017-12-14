@@ -77,7 +77,6 @@ class LeftButtonPanel extends JPanel{
 		}
 		
 		ActionListener closeListener = new ActionListener(){
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 mainWindow.changePanel();

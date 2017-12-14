@@ -8,7 +8,6 @@ import dataservice.CashCostBillDataService;
 import ds_stub.CashCostBillDs_stub;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
-import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.billvo.CashCostBillVO;
 
@@ -63,7 +62,7 @@ public class CashCostBillBL implements CashCostBillBLService {
 	public CashCostBillVO getBill(String id) {
 		try{
             CashCostBillPO bill = cashCostBillDataService.getBillById(id);
-            return toVO(bill);
+            return BillTools.toCashCostBillVO(bill);
         }catch(RemoteException e){
             e.printStackTrace();
             return null;
@@ -81,22 +80,5 @@ public class CashCostBillBL implements CashCostBillBLService {
         return new CashCostBillPO(bill.getDate(), bill.getTime()
             , bill.getId(), bill.getOperator(), bill.getState()
             , bill.getAccountId(), items);
-    }
-
-    private CashCostBillVO toVO(CashCostBillPO bill){
-        String[] columnNames = {"条目名", "金额", "备注"};
-        ArrayList<CashCostItem> items = bill.getCashcostList();
-        String[][] data = new String[columnNames.length][items.size()];
-        for(int i = 0; i < data.length; i++){
-            data[i] = toArray(items.get(i));
-        }
-        MyTableModel model = new MyTableModel(data, columnNames);
-        CashCostBillVO cashCostBillVO = new CashCostBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator()
-                , bill.getState(), bill.getAccountId(), model);
-        return cashCostBillVO;
-    }
-    
-    private String[] toArray(CashCostItem item){
-        return new String[]{item.getName(), Double.toString(item.getMoney()), item.getRemark()};
     }
 }

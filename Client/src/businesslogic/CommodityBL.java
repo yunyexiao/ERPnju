@@ -23,7 +23,7 @@ import vo.UserVO;
  */
 public class CommodityBL implements CommodityBLService, GetCommodityInterface{
     
-    private CommodityDataService commodityDs = Rmi.flag ? commodityDs = Rmi.getRemote(CommodityDataService.class) : new CommodityDs_stub();//;
+    private CommodityDataService commodityDs = Rmi.flag ? Rmi.getRemote(CommodityDataService.class) : new CommodityDs_stub();//;
     private GetCategoryInterface categoryInfo = new CategoryBL();
     private AddLogInterface addLog;
     private static final String[] columnNames = {"商品编号", "名称", "型号", "库存", "数量", "警戒值"
@@ -72,12 +72,14 @@ public class CommodityBL implements CommodityBLService, GetCommodityInterface{
             }else if(type.contains("名称")){
                 list = commodityDs.getCommoditysBy("ComName", key, true);
             }
-            String[][] data = new String[list.size()][columnNames.length];
-            for(int i = 0; i < list.size(); i++){
-                data[i] = getLine(list.get(i));
+            if (list != null) {
+                String[][] data = new String[list.size()][columnNames.length];
+                for(int i = 0; i < list.size(); i++){
+                    data[i] = getLine(list.get(i));
+                }
+                if (addLog != null) addLog.add("搜索商品", "搜索方式："+type+"  搜索关键词："+key);
+                return new MyTableModel(data, columnNames);
             }
-            if (addLog != null) addLog.add("搜索商品", "搜索方式："+type+"  搜索关键词："+key);
-            return new MyTableModel(data, columnNames);
         }catch(RemoteException e){
             e.printStackTrace();
         }
