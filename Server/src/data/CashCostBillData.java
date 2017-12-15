@@ -65,8 +65,6 @@ public class CashCostBillData extends UnicastRemoteObject implements CashCostBil
 	public String getNewId() throws RemoteException {
 		// TODO Auto-generated method stub
 		String newId=SQLQueryHelper.getNewBillIdByDay(tableName,idName);
-		newId="XJFYD-"+newId;
-		
 		return newId;
 		
 	}
