@@ -83,7 +83,7 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 	        // TODO date time id not considered
 	        return receiptBillDataService.saveBill(new ReceiptBillPO(
 	            bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), BillPO.PASS,
-	            bill.getCustomerId(), items
+	            bill.getCustomerId(), items, -bill.getSum()
 	        ));
 	    }catch(RemoteException e){
 	        e.printStackTrace();
@@ -101,14 +101,16 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 
 	private ReceiptBillPO toPO(ReceiptBillVO bill){
         ArrayList<TransferItem> items = new ArrayList<>();
+        double sum = 0;
         for(int i = 0; i < bill.getTableModel().getRowCount(); i++){
             String[] row = bill.getTableModel().getValueAtRow(i);
             double price = Double.parseDouble(row[1]);
             items.add(new TransferItem(row[0], price, row[2]));
+            sum += price;
         }
 
         return new ReceiptBillPO(bill.getDate(), bill.getTime()
             , bill.getId(), bill.getOperator(), bill.getState()
-            , bill.getCustomerId(), items);
+            , bill.getCustomerId(), items, sum);
     }
 }

@@ -81,7 +81,7 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
 	            new TransferItem(i.getAccountId(), -i.getMoney(), i.getRemark())));
 	        PaymentBillPO offset = new PaymentBillPO(
 	            bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator()
-	            , BillPO.PASS, bill.getCustomerId(), items);
+	            , BillPO.PASS, bill.getCustomerId(), items, -bill.getSum());
 	        return paymentBillDataService.saveBill(offset);
 	    }catch(RemoteException e){
 	        e.printStackTrace();
@@ -99,14 +99,16 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
 
 	private PaymentBillPO toPO(PaymentBillVO bill){
         ArrayList<TransferItem> items = new ArrayList<>();
+        double sum = 0;
         for(int i = 0; i < bill.getTableModel().getRowCount(); i++){
             String[] row = bill.getTableModel().getValueAtRow(i);
             double price = Double.parseDouble(row[1]);
             items.add(new TransferItem(row[0], price, row[2]));
+            sum += price;
         }
 
         return new PaymentBillPO(bill.getDate(), bill.getTime()
             , bill.getId(), bill.getOperator(), bill.getState()
-            , bill.getCustomerId(), items);
+            , bill.getCustomerId(), items, sum);
     }
 }

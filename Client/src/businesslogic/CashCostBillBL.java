@@ -82,7 +82,7 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
             // TODO date time id not defined
             CashCostBillPO offset = new CashCostBillPO(
                 bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator()
-                , BillPO.PASS, bill.getAccountId(), items);
+                , BillPO.PASS, bill.getAccountId(), items, -bill.getSum());
             return cashCostBillDataService.saveBill(offset);
 	    }catch(RemoteException e){
 	        e.printStackTrace();
@@ -100,14 +100,16 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
 
     private CashCostBillPO toPO(CashCostBillVO bill){
         ArrayList<CashCostItem> items = new ArrayList<>();
+        double sum = 0;
         for(int i = 0; i < bill.getTableModel().getRowCount(); i++){
             String[] row = bill.getTableModel().getValueAtRow(i);
             double price = Double.parseDouble(row[1]);
             items.add(new CashCostItem(row[0], price, row[2]));
+            sum += price;
         }
 
         return new CashCostBillPO(bill.getDate(), bill.getTime()
             , bill.getId(), bill.getOperator(), bill.getState()
-            , bill.getAccountId(), items);
+            , bill.getAccountId(), items, sum);
     }
 }
