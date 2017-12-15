@@ -15,8 +15,8 @@ public class BillOperationBL implements BillOperationService {
         services = new HashMap<>();
         services.put("XJFYD", new CashCostBillBL());
         // TODO to synchronize with develop
-        services.put("BYD", new ChangeBillBL());
-        services.put("BSD", new ChangeBillBL());
+        services.put("BYD", new ChangeBillBL(true));
+        services.put("BSD", new ChangeBillBL(false));
         services.put("FKD", new PaymentBillBL());
         services.put("JHD", new PurchaseBillBL());
         services.put("JHTHD", new PurchaseReturnBillBL());

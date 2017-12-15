@@ -8,8 +8,8 @@ import blservice.SalesDetailsBLService;
 import blservice.infoservice.GetCommodityInterface;
 import dataservice.BillSearchDataService;
 import ds_stub.BillSearchDs_stub;
-import po.billpo.SalesBillItemsPO;
 import po.billpo.SalesBillPO;
+import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
 
@@ -45,7 +45,7 @@ public class SalesDetailsBL implements SalesDetailsBLService {
     
     private LinkedList<Item> toLinkedList(SalesBillPO bill, String commodityId, String store){
         String date = bill.getDate();
-        ArrayList<SalesBillItemsPO> billItems = bill.getSalesBillItems();
+        ArrayList<SalesItemsPO> billItems = bill.getSalesBillItems();
         LinkedList<Item> items = new LinkedList<>();
         billItems.forEach(i -> {
             if(isValid(i, commodityId, store)){
@@ -55,7 +55,7 @@ public class SalesDetailsBL implements SalesDetailsBLService {
         return items;
     }
     
-    private boolean isValid(SalesBillItemsPO item, String commodityId, String store){
+    private boolean isValid(SalesItemsPO item, String commodityId, String store){
         boolean idValid = commodityId == null || 
                         item.getComId().equals(commodityId);
         boolean storeValid = store == null || 

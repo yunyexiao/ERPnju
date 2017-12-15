@@ -15,11 +15,13 @@ public class SalesReturnBillPO extends BillPO implements Serializable{
 	private static final long serialVersionUID = 3028188485729244517L;
 	private String customerId, salesManName,remark, originalSBId;
 	private double originalSum, returnSum;
-	private ArrayList<SalesReturnBillItemsPO> salesReturnBillItems;
+	private ArrayList<SalesItemsPO> salesBillItems;
+	
+	public SalesReturnBillPO(){};
 	
 	public SalesReturnBillPO(String date, String time, String id, String operatorId, int state, String customerId,
 			String salesManName, String remark, String originalSBId, double originalSum, double returnSum,
-			ArrayList<SalesReturnBillItemsPO> salesReturnBillItems) {
+			ArrayList<SalesItemsPO> salesBillItems) {
 		super(date, time, id, operatorId, state);
 		this.customerId = customerId;
 		this.salesManName = salesManName;
@@ -27,7 +29,7 @@ public class SalesReturnBillPO extends BillPO implements Serializable{
 		this.originalSBId = originalSBId;
 		this.originalSum = originalSum;
 		this.returnSum = returnSum;
-		this.salesReturnBillItems = salesReturnBillItems;
+		this.salesBillItems = salesBillItems;
 	}
 		
 	public String getCustomerId() {
@@ -70,12 +72,12 @@ public class SalesReturnBillPO extends BillPO implements Serializable{
 		this.returnSum = returnSum;
 	}
 
-	public ArrayList<SalesReturnBillItemsPO> getSalesReturnBillItems() {
-		return salesReturnBillItems;
+	public ArrayList<SalesItemsPO> getSalesReturnBillItems() {
+		return salesBillItems;
 	}
 
-	public void setSalesReturnBillItems(ArrayList<SalesReturnBillItemsPO> salesReturnBillItems) {
-		this.salesReturnBillItems = salesReturnBillItems;
+	public void setSalesReturnBillItems(ArrayList<SalesItemsPO> salesBillItems) {
+		this.salesBillItems = salesBillItems;
 	}
 
 	public String getOriginalSBId() {
@@ -90,5 +92,4 @@ public class SalesReturnBillPO extends BillPO implements Serializable{
 	public String getAllId() {
 		return "XSTHD-" + this.getDate() + "-" + this.getId();
 	}
-	
 }

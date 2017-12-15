@@ -5,13 +5,10 @@ import java.util.TreeMap;
 
 import blservice.InventoryDynamicBLService;
 import blservice.infoservice.GetCommodityInterface;
-import po.billpo.PurchaseBillItemsPO;
 import po.billpo.PurchaseBillPO;
-import po.billpo.PurchaseReturnBillItemsPO;
 import po.billpo.PurchaseReturnBillPO;
-import po.billpo.SalesBillItemsPO;
 import po.billpo.SalesBillPO;
-import po.billpo.SalesReturnBillItemsPO;
+import po.billpo.SalesItemsPO;
 import po.billpo.SalesReturnBillPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
@@ -39,10 +36,14 @@ public class InventoryDynamicBL implements InventoryDynamicBLService {
             = new SalesReturnBillBL().getBillPOsByDate(from, to);
 
         ItemMap items = new ItemMap();
-        purchaseBills.forEach(b-> b.getPurchaseBillItems().forEach(i-> items.addItem(i)));
-        purchaseReturnBills.forEach(b-> b.getPurchaseReturnBillItems().forEach(i-> items.addItem(i)));
-        salesBills.forEach(b-> b.getSalesBillItems().forEach(i -> items.addItem(i)));
-        salesReturnBills.forEach(b-> b.getSalesReturnBillItems().forEach(i-> items.addItem(i)));
+        purchaseBills.forEach(b-> b.getPurchaseBillItems().forEach(
+            i-> items.addItem(i, SalesType.PURCHASE)));
+        purchaseReturnBills.forEach(b-> b.getPurchaseReturnBillItems().forEach(
+            i-> items.addItem(i, SalesType.PURCHASE_RETURN)));
+        salesBills.forEach(b-> b.getSalesBillItems().forEach(
+            i -> items.addItem(i, SalesType.SALES)));
+        salesReturnBills.forEach(b-> b.getSalesReturnBillItems().forEach(
+            i-> items.addItem(i, SalesType.SALES_RETURN)));
 
         return items.toModel();
     }
@@ -56,10 +57,8 @@ public class InventoryDynamicBL implements InventoryDynamicBLService {
 
         private static final GetCommodityInterface COMMODITYBL = new CommodityBL();
         private String id, name, type, store;
-        private int purchaseNum, purchaseReturnNum, salesNum, salesReturnNum
-                    , importNum, exportNum, totalNum;
-        private double purchaseSum, purchaseReturnSum, salesSum, salesReturnSum
-                    , importSum, exportSum, totalSum;
+        private int[] nums;
+        private double[] sums;
         
         public Item(String id){
             this.id = id;
@@ -67,43 +66,30 @@ public class InventoryDynamicBL implements InventoryDynamicBLService {
             this.name = commodity.getName();
             this.type = commodity.getType();
             this.store = commodity.getStore();
+            nums = new int[7];
+            sums = new double[7];
         }
         
-        public void addPurchase(int num, double sum){
-            purchaseNum += num;
-            purchaseSum += sum;
-        }
-        
-        public void addPurchaseReturn(int num, double sum){
-            purchaseReturnNum += num;
-            purchaseReturnSum += sum;
-        }
-        
-        public void addSales(int num, double sum){
-            salesNum += num;
-            salesSum += sum;
-        }
-        
-        public void addSalesReturn(int num, double sum){
-            salesReturnNum += num;
-            salesReturnSum += sum;
+        public void addItem(int num, double sum, SalesType type){
+            nums[type.n] += num;
+            sums[type.n] += sum;
         }
         
         private void summary(){
-            importNum = purchaseNum + salesReturnNum;
-            exportNum = salesNum + purchaseReturnNum;
-            importSum = purchaseSum + salesReturnSum;
-            exportSum = salesSum + purchaseReturnSum;
-            totalNum = importNum - exportNum;
-            totalSum = importSum - exportSum;
+            nums[4] = nums[0] + nums[3];
+            nums[5] = nums[1] + nums[2];
+            nums[6] = nums[5] - nums[4];
+            sums[4] = sums[0] + sums[3];
+            sums[5] = sums[1] + sums[2];
+            sums[6] = sums[5] - sums[4];
         }
         
         public String[] toStringArray(){
             summary();
-            return new String[]{id, name, type, store, purchaseNum + "", purchaseSum + ""
-                    , purchaseReturnNum + "", purchaseReturnSum + "", salesNum + "", salesSum + ""
-                    , salesReturnNum + "", salesReturnSum + "", importNum + "", importSum + ""
-                    , exportNum + "", exportSum + "", totalNum + "", totalSum + ""};
+            return new String[]{id, name, type, store, nums[0] + "", sums[0] + ""
+                    , nums[1] + "", sums[1] + "", nums[2] + "", sums[2] + ""
+                    , nums[3] + "", sums[3] + "", nums[4] + "", sums[4] + ""
+                    , nums[5] + "", sums[5] + "", nums[6] + "", sums[6] + ""};
         }
 
     }
@@ -116,46 +102,13 @@ public class InventoryDynamicBL implements InventoryDynamicBLService {
             map = new TreeMap<>();
         }
         
-        public void addItem(PurchaseBillItemsPO billItem){
+        public void addItem(SalesItemsPO billItem, SalesType type){
             String id = billItem.getComId();
             if(map.containsKey(id)){
-                map.get(id).addPurchase(billItem.getComQuantity(), billItem.getComSum());
+                map.get(id).addItem(billItem.getComQuantity(), billItem.getComSum(), type);
             } else {
                 Item item = new Item(id);
-                item.addPurchase(billItem.getComQuantity(), billItem.getComSum());
-                map.put(id, item);
-            }
-        }
-        
-        public void addItem(PurchaseReturnBillItemsPO billItem){
-            String id = billItem.getComId();
-            if(map.containsKey(id)){
-                map.get(id).addPurchaseReturn(billItem.getComQuantity(), billItem.getComSum());
-            } else {
-                Item item = new Item(id);
-                item.addPurchaseReturn(billItem.getComQuantity(), billItem.getComSum());
-                map.put(id, item);
-            }
-        }
-        
-        public void addItem(SalesBillItemsPO billItem){
-            String id = billItem.getComId();
-            if(map.containsKey(id)){
-                map.get(id).addSales(billItem.getComQuantity(), billItem.getComSum());
-            } else {
-                Item item = new Item(id);
-                item.addSales(billItem.getComQuantity(), billItem.getComSum());
-                map.put(id, item);
-            }
-        }
-        
-        public void addItem(SalesReturnBillItemsPO billItem){
-            String id = billItem.getComId();
-            if(map.containsKey(id)){
-                map.get(id).addSalesReturn(billItem.getComQuantity(), billItem.getComSum());
-            } else {
-                Item item = new Item(id);
-                item.addSalesReturn(billItem.getComQuantity(), billItem.getComSum());
+                item.addItem(billItem.getComQuantity(), billItem.getComSum(), type);
                 map.put(id, item);
             }
         }
@@ -168,6 +121,14 @@ public class InventoryDynamicBL implements InventoryDynamicBLService {
             return new MyTableModel(data, columnNames);
         }
 
+    }
+
+    private enum SalesType{
+        PURCHASE(0), PURCHASE_RETURN(1), SALES(2), SALES_RETURN(3);
+        int n;
+        SalesType(int n){
+            this.n = n;
+        }
     }
 
 }

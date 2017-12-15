@@ -10,7 +10,7 @@ import blservice.billblservice.SalesReturnBillBLService;
 import dataservice.SalesReturnBillDataService;
 import ds_stub.SalesReturnBillDs_stub;
 import po.billpo.BillPO;
-import po.billpo.SalesReturnBillItemsPO;
+import po.billpo.SalesItemsPO;
 import po.billpo.SalesReturnBillPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
@@ -99,9 +99,9 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
     public boolean offsetBill(String id){
         try{
             SalesReturnBillPO bill = salesReturnBillDs.getBillById(id);
-            ArrayList<SalesReturnBillItemsPO> items = new ArrayList<>();
-            bill.getSalesReturnBillItems().forEach(i -> items.add(new SalesReturnBillItemsPO(
-                i.getComId(), i.getRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
+            ArrayList<SalesItemsPO> items = new ArrayList<>();
+            bill.getSalesReturnBillItems().forEach(i -> items.add(new SalesItemsPO(
+                i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
             // TODO date time id not defined
             return salesReturnBillDs.saveBill(new SalesReturnBillPO(
@@ -135,7 +135,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
         int state = bill.getState();
         double originalSum = bill.getOriginalSum(),
                returnSum = bill.getSum();
-        ArrayList<SalesReturnBillItemsPO> items = new ArrayList<>();
+        ArrayList<SalesItemsPO> items = new ArrayList<>();
         MyTableModel model = bill.getModel();
         for(int i = 0; i < model.getRowCount(); i++){
             items.add(getItem(model.getValueAtRow(i)));
@@ -161,7 +161,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
                sum = bill.getReturnSum();
         String[] columnName = {"商品编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
         String[][] data = new String[columnName.length][];
-        ArrayList<SalesReturnBillItemsPO> items = bill.getSalesReturnBillItems();
+        ArrayList<SalesItemsPO> items = bill.getSalesReturnBillItems();
         for(int i = 0; i < items.size(); i++){
             data[i] = getArray(items.get(i));
         }
@@ -171,22 +171,22 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
             , originalSBId, discountRate, originalSum, sum);
     }
 
-    private SalesReturnBillItemsPO getItem(String[] data){
+    private SalesItemsPO getItem(String[] data){
         String id = data[0], remark = data[7];
         int num = Integer.parseInt(data[5]);
         double price = Double.parseDouble(data[4]),
                sum = Double.parseDouble(data[6]);
-        return new SalesReturnBillItemsPO(
+        return new SalesItemsPO(
             id, remark, num, price, sum);
     }
 
-    private String[] getArray(SalesReturnBillItemsPO item){
+    private String[] getArray(SalesItemsPO item){
         String id = item.getComId();
         CommodityVO commodity = new CommodityBL().getCommodity(id);
         String name = commodity.getName(),
                type = commodity.getType(),
                store = commodity.getStore(),
-               remark = item.getRemark();
+               remark = item.getComRemark();
         double price = item.getComPrice(), 
                sum = item.getComSum();
         int num = item.getComQuantity();

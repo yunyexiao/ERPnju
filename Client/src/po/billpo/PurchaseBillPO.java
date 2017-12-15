@@ -16,10 +16,12 @@ public class PurchaseBillPO extends BillPO implements Serializable{
 	
 	private String  supplierId,remark;
 	private double sum;
-	private ArrayList<PurchaseBillItemsPO> purchaseBillItems;
+	private ArrayList<SalesItemsPO> purchaseBillItems;
+	
+	public PurchaseBillPO(){};
 	
 	public PurchaseBillPO(String date, String time, String id, String operatorId, int state, String supplierId,
-			String remark, double sum, ArrayList<PurchaseBillItemsPO> purchaseBillItems) {
+			String remark, double sum, ArrayList<SalesItemsPO> purchaseBillItems) {
 		super(date, time, id, operatorId, state);
 		this.supplierId = supplierId;
 		this.remark = remark;
@@ -53,11 +55,11 @@ public class PurchaseBillPO extends BillPO implements Serializable{
 		this.sum = sum;
 	}
 
-	public ArrayList<PurchaseBillItemsPO> getPurchaseBillItems() {
+	public ArrayList<SalesItemsPO> getPurchaseBillItems() {
 		return purchaseBillItems;
 	}
 
-	public void setPurchaseBillItems(ArrayList<PurchaseBillItemsPO> purchaseBillItems) {
+	public void setPurchaseBillItems(ArrayList<SalesItemsPO> purchaseBillItems) {
 		this.purchaseBillItems = purchaseBillItems;
 	}
 
@@ -65,5 +67,4 @@ public class PurchaseBillPO extends BillPO implements Serializable{
 	public String getAllId() {
 		return "JHD-" + this.getDate() + "-" + this.getId();
 	}
-	
 }

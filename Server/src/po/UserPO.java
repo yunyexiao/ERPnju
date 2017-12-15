@@ -10,7 +10,8 @@ import java.io.Serializable;
  */
 public class UserPO implements Serializable{
     
-    /**
+
+	/**
      * auto-generated UID
      */
     private static final long serialVersionUID = 6831754628172855841L;
@@ -19,18 +20,23 @@ public class UserPO implements Serializable{
     private boolean isExist;
     
     public UserPO(){}
+    
+    
+    public UserPO(String userId, String userName, String userPwd, String userSex, String userTelNumber, int userAge,
+			int userRank, int usertype, boolean isExist) {
+		super();
+		this.userId = userId;
+		this.userName = userName;
+		this.userPwd = userPwd;
+		this.userSex = userSex;
+		this.userTelNumber = userTelNumber;
+		this.userAge = userAge;
+		this.userRank = userRank;
+		this.usertype = usertype;
+		this.isExist = isExist;
+	}
 
-    public UserPO(String userId, String userName, String userPwd, String userSex, 
-        String userTelNumber, int usertype, int userRank, int userAge){
-        this.userId = userId;
-        this.userName = userName;
-        this.userPwd = userPwd;
-        this.userRank = userRank;
-        this.userSex = userSex;
-        this.userTelNumber = userTelNumber;
-        this.usertype = usertype;
-        this.userAge = userAge;
-    }
+
     
     public String getUserId() {
         return userId;
@@ -123,5 +129,6 @@ public class UserPO implements Serializable{
     	}
     	return "д╛хо";
     }
+
     
 }

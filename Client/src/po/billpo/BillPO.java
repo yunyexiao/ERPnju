@@ -23,6 +23,7 @@ public abstract class BillPO implements Serializable{
 	 * @param id 每一天之内的编号
 	 * @param operator 操作人员的id
 	 */
+	public BillPO(){};
 	public BillPO(String date, String time, String id, String operator, int state) {
 		this.date = date;
 		this.time = time;

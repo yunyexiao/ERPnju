@@ -10,8 +10,8 @@ import blservice.billblservice.PurchaseBillBLService;
 import dataservice.PurchaseBillDataService;
 import ds_stub.PurchaseBillDs_stub;
 import po.billpo.BillPO;
-import po.billpo.PurchaseBillItemsPO;
 import po.billpo.PurchaseBillPO;
+import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
 import vo.CustomerVO;
@@ -132,9 +132,9 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
     public boolean offsetBill(String id){
         try{
             PurchaseBillPO bill = purchaseBillDs.getBillById(id);
-            ArrayList<PurchaseBillItemsPO> items = new ArrayList<>();
-            bill.getPurchaseBillItems().forEach(i -> items.add(new PurchaseBillItemsPO(
-                i.getComId(), i.getRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
+            ArrayList<SalesItemsPO> items = new ArrayList<>();
+            bill.getPurchaseBillItems().forEach(i -> items.add(new SalesItemsPO(
+                i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
             // TODO date time id not defined
             return purchaseBillDs.saveBill(new PurchaseBillPO(
@@ -168,13 +168,13 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
     }
 
     private PurchaseBillPO toPO(PurchaseBillVO bill){
-        ArrayList<PurchaseBillItemsPO> items = new ArrayList<>();
+        ArrayList<SalesItemsPO> items = new ArrayList<>();
         for(int i = 0; i < bill.getModel().getRowCount(); i++){
             String[] row = bill.getModel().getValueAtRow(i);
             int num = Integer.parseInt(row[5]);
             double price = Double.parseDouble(row[4]),
                    sum = Double.parseDouble(row[6]);
-            items.add(new PurchaseBillItemsPO(
+            items.add(new SalesItemsPO(
                 row[0], row[7], num, price, sum));
         }
         return new PurchaseBillPO(bill.getDate(), bill.getTime()
@@ -185,7 +185,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
 
     private PurchaseBillVO toVO(PurchaseBillPO bill){
         String[] columnNames = {"商品编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
-        ArrayList<PurchaseBillItemsPO> items = bill.getPurchaseBillItems();
+        ArrayList<SalesItemsPO> items = bill.getPurchaseBillItems();
         String[][] data = new String[items.size()][];
         for(int i = 0; i < data.length; i++){
             data[i] = toArray(items.get(i));
@@ -198,12 +198,12 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
             , model, bill.getRemark(), bill.getSum());
     }
     
-    private String[] toArray(PurchaseBillItemsPO item){
+    private String[] toArray(SalesItemsPO item){
         CommodityVO commodity = new CommodityBL().getCommodity(item.getComId());
         return new String[]{item.getComId(), commodity.getName()
                 , commodity.getType(), commodity.getStore()
                 , item.getComPrice() + "", item.getComQuantity() + ""
-                , item.getComSum() + "", item.getRemark()};
+                , item.getComSum() + "", item.getComRemark()};
     }
 
     private MyTableModel toModel(ArrayList<PurchaseBillPO> bills){

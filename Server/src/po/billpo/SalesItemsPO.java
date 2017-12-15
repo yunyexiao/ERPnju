@@ -9,14 +9,14 @@ import java.io.Serializable;
  * @author Íò¼Îö©
  */
 
-public class SalesBillItemsPO implements Serializable{
+public class SalesItemsPO implements Serializable{
 	private static final long serialVersionUID = -7983830700017283896L;
 	
 	private String comId, comRemark;
 	private int comQuantity;
 	private double comPrice,comSum;
 	
-    public SalesBillItemsPO(String comId, String comRemark, int comQuantity, double comPrice, double comSum) {
+    public SalesItemsPO(String comId, String comRemark, int comQuantity, double comPrice, double comSum) {
 		super();
 		this.comId = comId;
 		this.comRemark = comRemark;

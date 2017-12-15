@@ -11,17 +11,17 @@ import java.util.ArrayList;
  */
 
 public class PurchaseReturnBillPO extends BillPO implements Serializable{
-/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 2578319197720284508L;
 	
 	private String  supplierId,remark;
 	private double sum;
-	private ArrayList<PurchaseReturnBillItemsPO> purchaseReturnBillItems;
+	private ArrayList<SalesItemsPO> purchaseReturnBillItems;
+	
+	public PurchaseReturnBillPO(){};
 	
 	public PurchaseReturnBillPO(String date, String time, String id, String operatorId, int state, String supplierId,
-			String remark, double sum, ArrayList<PurchaseReturnBillItemsPO> purchaseReturnBillItems) {
+			String remark, double sum, ArrayList<SalesItemsPO> purchaseReturnBillItems) {
 		super(date, time, id, operatorId, state);
 		this.supplierId = supplierId;
 		this.remark = remark;
@@ -50,12 +50,16 @@ public class PurchaseReturnBillPO extends BillPO implements Serializable{
 		this.sum = sum;
 	}
 
-	public ArrayList<PurchaseReturnBillItemsPO> getPurchaseReturnBillItems() {
+	public ArrayList<SalesItemsPO> getPurchaseReturnBillItems() {
 		return purchaseReturnBillItems;
 	}
 
-	public void setPurchaseReturnBillItems(ArrayList<PurchaseReturnBillItemsPO> purchaseReturnBillItems) {
+	public void setPurchaseReturnBillItems(ArrayList<SalesItemsPO> purchaseReturnBillItems) {
 		this.purchaseReturnBillItems = purchaseReturnBillItems;
 	}
 
+	@Override
+	public String getAllId() {
+		return "JHTHD-" + this.getDate() + "-" + this.getId();
+	}
 }
