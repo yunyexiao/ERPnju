@@ -37,6 +37,7 @@ import presentation.component.MyTableModel;
 import presentation.component.choosewindow.AccountChooseWin;
 import presentation.component.choosewindow.CustomerChooseWin;
 import presentation.component.choosewindow.UserChooseWin;
+import presentation.tools.ExcelExporter;
 import presentation.tools.Timetools;
 import vo.AccountVO;
 import vo.CustomerVO;
@@ -210,11 +211,13 @@ public class ViewBisinessHistoryPanel implements PanelInterface {
         // TODO icons not added
         JButton searchButton = new JButton("搜索");
         searchButton.addActionListener(e -> search());
+        JButton exportButton = new JButton("导出为Excel");
+        exportButton.addActionListener(e -> ExcelExporter.export((MyTableModel)table.getModel()));
         JButton closeButton = new JButton("关闭");
         closeButton.addActionListener(closeListener);
         
         double[][] size = {
-                {20.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, -1.0},
+                {20.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, -1.0},
                 {10.0, -2.0, 10.0, -2.0, -1.0}
         };
         JPanel panel = new JPanel(new TableLayout(size));
@@ -224,7 +227,8 @@ public class ViewBisinessHistoryPanel implements PanelInterface {
         panel.add(operatorPanel, "3 3");
         panel.add(storePanel, "5 1");
         panel.add(searchButton, "7 1");
-        panel.add(closeButton, "9 1");
+        panel.add(exportButton, "9 1");
+        panel.add(closeButton, "11 1");
         return panel;
     }
 
