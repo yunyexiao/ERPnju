@@ -16,6 +16,14 @@ import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesReturnBillPO;
 import presentation.component.MyTableModel;
+import vo.billvo.CashCostBillVO;
+import vo.billvo.ChangeBillVO;
+import vo.billvo.PaymentBillVO;
+import vo.billvo.PurchaseBillVO;
+import vo.billvo.PurchaseReturnBillVO;
+import vo.billvo.ReceiptBillVO;
+import vo.billvo.SalesBillVO;
+import vo.billvo.SalesReturnBillVO;
 
 /**
  * @author ã¢Ò¶Ïö
@@ -219,6 +227,48 @@ public class BillSearchBL implements BillSearchBLService {
             e.printStackTrace();
             return null;
         }
+    }
+
+
+    @Override
+    public ChangeBillVO findInventoryBillById(String id) {
+        String pref = id.split("-")[0];
+        return new ChangeBillBL("BYD".equals(pref)).getBill(id);
+    }
+
+    @Override
+    public PurchaseBillVO findPurchaseBillById(String id) {
+        return new PurchaseBillBL().getBill(id);
+    }
+
+    @Override
+    public PurchaseReturnBillVO findPurchaseReturnBillById(String id) {
+        return new PurchaseReturnBillBL().getBill(id);
+    }
+
+    @Override
+    public SalesBillVO findSalesBillById(String id) {
+        return new SalesBillBL().getBill(id);
+    }
+
+    @Override
+    public SalesReturnBillVO findSalesReturnBillById(String id) {
+        return new SalesReturnBillBL().getBill(id);
+    }
+
+    @Override
+    public CashCostBillVO findCashCostBillById(String id) {
+        return new CashCostBillBL().getBill(id);
+    }
+
+    @Override
+    public PaymentBillVO findPaymentBillById(String id) {
+        return new PaymentBillBL().getBill(id);
+    }
+
+    @Override
+    public ReceiptBillVO findReceiptBillById(String id) {
+        return new ReceiptBillBL().getBill(id);
     }
 
 }

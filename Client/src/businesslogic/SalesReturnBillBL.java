@@ -160,8 +160,8 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
                originalSum = bill.getOriginalSum(),
                sum = bill.getReturnSum();
         String[] columnName = {"商品编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
-        String[][] data = new String[columnName.length][];
         ArrayList<SalesItemsPO> items = bill.getSalesReturnBillItems();
+        String[][] data = new String[items.size()][];
         for(int i = 0; i < items.size(); i++){
             data[i] = getArray(items.get(i));
         }

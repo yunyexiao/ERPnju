@@ -142,7 +142,7 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
     private PurchaseReturnBillVO toVO(PurchaseReturnBillPO bill){
         String[] columnNames = {"商品编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
         ArrayList<SalesItemsPO> items = bill.getPurchaseReturnBillItems();
-        String[][] data = new String[columnNames.length][items.size()];
+        String[][] data = new String[items.size()][columnNames.length];
         for(int i = 0; i < data.length; i++){
             data[i] = toArray(items.get(i));
         }
