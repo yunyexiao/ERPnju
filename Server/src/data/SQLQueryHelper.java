@@ -1,10 +1,27 @@
 package data;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
 
 public class SQLQueryHelper {
+	
+	public static boolean add(String tableName, Object... values) {
+		try {
+			Statement s = DataHelper.getInstance().createStatement();
+			String str = "INSERT INTO " + tableName + " VALUES ('";
+			for (int i = 0; i < values.length; i++){
+				if(i == 0) str += values[i];
+				else str += "','" + values[i];
+			} 
+			if(s.executeUpdate(str + "')") > 0) return true;
+			else return false;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 	
 	//获取单据类id,不加标识
 	public static String getNewBillIdByDay(String tableName,String idName){
