@@ -65,7 +65,7 @@ public class ViewBisinessHistoryPanel implements PanelInterface {
     private LFPanel storePanel;
     private IdNamePanel operatorPanel, customerPanel, accountPanel;
     private JComboBox<ChoiceItem> choiceBox;
-    private JTable table;
+    protected JTable table;
     /** 
      * 在用户切换单据种类时跟着改变，
      * 库存类: storePanel， 销售类及收款付款单: customerPanel， 现金费用单: accountPanel
@@ -240,7 +240,7 @@ public class ViewBisinessHistoryPanel implements PanelInterface {
         return sp;
     }
 
-    private JPanel getEastPanel(){
+    protected JPanel getEastPanel(){
         JButton viewButton = new JButton("查看具体内容");
         viewButton.addActionListener(e -> viewDetails());
         double[][] size = {{10.0, -2.0, -1.0}, {10.0, -2.0, -1.0}};
@@ -330,7 +330,7 @@ public class ViewBisinessHistoryPanel implements PanelInterface {
         };
     }
 
-    private void search(){
+    protected void search(){
         String from = fromPanel.getText(), to = toPanel.getText();
         if(!Timetools.checkDate(from, to)){
             new InfoWindow("请输入正确的日期段@_@");
@@ -343,13 +343,22 @@ public class ViewBisinessHistoryPanel implements PanelInterface {
     }
     
     private void viewDetails(){
-        generateBillViewer(false);
+        int index = table.getSelectedRow();
+        if(index < 0){
+            new InfoWindow("请选择一张单据查看@_@");
+            return;
+        }
+        String id = table.getValueAt(index, 0).toString();
+        generateBillViewer(id, false);
     }
     
-    protected void generateBillViewer(boolean editable){
-        int index = choiceBox.getSelectedIndex(), selectedRow = table.getSelectedRow();
-        if(selectedRow < 0) return;
-        String id = table.getModel().getValueAt(selectedRow, 0).toString();
+    /**
+     * 用于生成单据具体内容的窗口<br>
+     * 该类的子类{@code BusinessHistoryPanel}中使用了该方法用于红冲并复制
+     * @param editable 该单据是否可编辑，若可编辑即为红冲并复制功能，若不可编辑则为查看功能
+     */
+    protected void generateBillViewer(String id, boolean editable){
+        int index = choiceBox.getSelectedIndex();
         GetUserInterface userInfo = new UserBL();
         ChoiceItem selectedItem = choiceBox.getItemAt(index);
         BillVO bill = selectedItem.getBill(id);

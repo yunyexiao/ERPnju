@@ -109,7 +109,7 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
         };
     }
 
-    private PurchaseReturnBillVO getBill(int state){
+    public PurchaseReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
         String date = getDate(), id = getId();
         String operater = operatorField.getText()

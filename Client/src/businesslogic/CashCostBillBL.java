@@ -10,6 +10,7 @@ import ds_stub.CashCostBillDs_stub;
 import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
+import presentation.tools.Timetools;
 import rmi.Rmi;
 import vo.billvo.BillVO;
 import vo.billvo.CashCostBillVO;
@@ -79,9 +80,8 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
             ArrayList<CashCostItem> items = new ArrayList<>();
             bill.getCashcostList().forEach(i -> items.add
                 (new CashCostItem(i.getName(), -i.getMoney(), i.getRemark())));
-            // TODO date time id not defined
             CashCostBillPO offset = new CashCostBillPO(
-                bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator()
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator()
                 , BillPO.PASS, bill.getAccountId(), items, -bill.getSum());
             return cashCostBillDataService.saveBill(offset);
 	    }catch(RemoteException e){

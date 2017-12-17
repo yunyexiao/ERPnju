@@ -21,7 +21,7 @@ public class AnalysisDriver {
             }
         });
 
-        frame.add(new ViewBisinessHistoryPanel(e->frame.dispose()).getPanel());
+        frame.add(new BusinessHistoryPanel(e->frame.dispose()).getPanel());
         frame.pack();
         frame.setVisible(true);
     }

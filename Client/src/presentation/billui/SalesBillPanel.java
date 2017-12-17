@@ -138,7 +138,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	 * 获得单据VO
 	 * @return
 	 */
-	private SalesBillVO getBill(int state) {
+	public SalesBillVO getBill(int state) {
 		if (isCorrectable()) {
 		    String date = getDate(), id = getId();
 		    String operater = operatorField.getText()
