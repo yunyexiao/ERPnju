@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import bl_stub.CustomerBL_stub;
+import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseReturnBillBLService;
 import blservice.infoservice.GetCommodityInterface;
 import dataservice.PurchaseReturnBillDataService;
@@ -13,12 +14,14 @@ import po.billpo.BillPO;
 import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
+import presentation.tools.Timetools;
 import vo.CommodityVO;
 import vo.CustomerVO;
+import vo.billvo.BillVO;
 import vo.billvo.PurchaseReturnBillVO;
 
 
-public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
+public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOperationService {
     
     private PurchaseReturnBillDataService purchaseReturnBillDs;
 
@@ -95,6 +98,37 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
         }
     }
 
+    @Override
+    public boolean offsetBill(String id){
+        try{
+            PurchaseReturnBillPO bill = purchaseReturnBillDs.getBillById(id);
+            ArrayList<SalesItemsPO> items = new ArrayList<>();
+            bill.getPurchaseReturnBillItems().forEach(i -> items.add(new SalesItemsPO(
+                i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
+            )));
+            return purchaseReturnBillDs.saveBill(new PurchaseReturnBillPO(
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS, 
+                bill.getSupplierId(), bill.getRemark(), -bill.getSum(), items
+            ));
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean copyBill(BillVO bill){
+        if(bill instanceof PurchaseReturnBillVO){
+            PurchaseReturnBillVO old = (PurchaseReturnBillVO) bill;
+            PurchaseReturnBillVO copy = new PurchaseReturnBillVO(
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+                BillVO.PASS, old.getCustomerId(), old.getCustomerName(), old.getModel(), old.getRemark(), old.getSum()
+            );
+            return saveBill(copy);
+        }
+        return false;
+    }
+
     private PurchaseReturnBillPO toPO(PurchaseReturnBillVO bill){
         ArrayList<SalesItemsPO> items = new ArrayList<>();
         for(int i = 0; i < bill.getModel().getRowCount(); i++){
@@ -113,7 +147,7 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService {
     private PurchaseReturnBillVO toVO(PurchaseReturnBillPO bill){
         String[] columnNames = {"商品编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
         ArrayList<SalesItemsPO> items = bill.getPurchaseReturnBillItems();
-        String[][] data = new String[columnNames.length][items.size()];
+        String[][] data = new String[items.size()][columnNames.length];
         for(int i = 0; i < data.length; i++){
             data[i] = toArray(items.get(i));
         }

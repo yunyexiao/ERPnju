@@ -236,7 +236,7 @@ public class ChangeBillPanel extends BillPanel {
 		return true;
 	}
 
-	private ChangeBillVO getBill() {
+	public ChangeBillVO getBill() {
 		if (! isCorrectable()) {
 			return null;
 		}

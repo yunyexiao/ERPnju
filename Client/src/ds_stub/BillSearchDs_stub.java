@@ -17,16 +17,16 @@ public class BillSearchDs_stub implements BillSearchDataService {
         items1.add(new SalesItemsPO("000002", "", 100, 100, 10000));
         
         result.add(new PurchaseBillPO(
-            "2017-12-05", "19:23:55", "12345", null
-            , BillPO.PASS, null, null, 15000, items1
+            "2017-12-05", "19:23:55", "12345", "0002"
+            , BillPO.PASS, "000001", null, 15000, items1
         ));
         
         ArrayList<SalesItemsPO> items2 = new ArrayList<>();
         items2.add(new SalesItemsPO("000003", "", 50, 200, 10000));
         
         result.add(new PurchaseBillPO(
-            "2017-12-01", "08:30:02", "12000", null
-            , BillPO.PASS, null, null, 10000, items2
+            "2017-12-01", "08:30:02", "12000", "0007"
+            , BillPO.PASS, "000002", null, 10000, items2
         ));
         return result;
     }
@@ -61,8 +61,8 @@ public class BillSearchDs_stub implements BillSearchDataService {
         items2.add(new SalesItemsPO("000003", "", 50, 200, 10000));
         
         result.add(new SalesBillPO(
-            "2017-12-01", "08:30:02", "12000", null, BillPO.PASS
-            , null, null, null, null, 10000, 1000, 1000, 8000, items2
+            "2017-12-01", "08:30:02", "12000", "0002", BillPO.PASS
+            , "000003", null, null, null, 10000, 1000, 1000, 8000, items2
         ));
         
         ArrayList<SalesItemsPO> items3 = new ArrayList<>();
@@ -70,8 +70,8 @@ public class BillSearchDs_stub implements BillSearchDataService {
         items3.add(new SalesItemsPO("000003", "", 200, 200, 40000));
         
         result.add(new SalesBillPO(
-            "2017-12-08", "11:24:51", "32100", null, BillPO.COMMITED
-            , null, "rarara", null, "12300", 50000, 1000, 1000, 48000, items3
+            "2017-12-08", "11:24:51", "32100", "0007", BillPO.COMMITED
+            , "000003", "rarara", null, "12300", 50000, 1000, 1000, 48000, items3
         ));
         return result;
     }

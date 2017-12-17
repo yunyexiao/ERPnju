@@ -1,4 +1,7 @@
 package blservice.billblservice;
+
+import vo.billvo.BillVO;
+
 /**
  * 财务人员使用的接口
  * @author 钱美缘
@@ -17,5 +20,5 @@ public interface BillOperationService {
 	 * @param billId 单据编号
 	 * @return
 	 */
-	public boolean copyBill(String billId);
+	public boolean copyBill(BillVO bill);
 }

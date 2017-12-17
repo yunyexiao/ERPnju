@@ -3,15 +3,19 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import blservice.billblservice.BillOperationService;
 import blservice.billblservice.CashCostBillBLService;
 import dataservice.CashCostBillDataService;
 import ds_stub.CashCostBillDs_stub;
+import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
+import presentation.tools.Timetools;
 import rmi.Rmi;
+import vo.billvo.BillVO;
 import vo.billvo.CashCostBillVO;
 
-public class CashCostBillBL implements CashCostBillBLService {
+public class CashCostBillBL implements CashCostBillBLService, BillOperationService{
 
 	private CashCostBillDataService cashCostBillDataService;
 	
@@ -69,16 +73,48 @@ public class CashCostBillBL implements CashCostBillBLService {
         }
 	}
 	
+	@Override
+	public boolean offsetBill(String id){
+	    try{
+            CashCostBillPO bill = cashCostBillDataService.getBillById(id);
+            ArrayList<CashCostItem> items = new ArrayList<>();
+            bill.getCashcostList().forEach(i -> items.add
+                (new CashCostItem(i.getName(), -i.getMoney(), i.getRemark())));
+            CashCostBillPO offset = new CashCostBillPO(
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator()
+                , BillPO.PASS, bill.getAccountId(), items, -bill.getSum());
+            return cashCostBillDataService.saveBill(offset);
+	    }catch(RemoteException e){
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+	
+	@Override
+	public boolean copyBill(BillVO bill){
+	    if(bill instanceof CashCostBillVO){
+	        CashCostBillVO oldOne = (CashCostBillVO) bill;
+	        CashCostBillVO newOne = new CashCostBillVO(
+	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), 
+	            oldOne.getOperator(), BillVO.PASS, oldOne.getAccountId(), oldOne.getTableModel()
+	        );
+	        return saveBill(newOne);
+	    }
+	    return false;
+	}
+
     private CashCostBillPO toPO(CashCostBillVO bill){
         ArrayList<CashCostItem> items = new ArrayList<>();
+        double sum = 0;
         for(int i = 0; i < bill.getTableModel().getRowCount(); i++){
             String[] row = bill.getTableModel().getValueAtRow(i);
             double price = Double.parseDouble(row[1]);
             items.add(new CashCostItem(row[0], price, row[2]));
+            sum += price;
         }
 
         return new CashCostBillPO(bill.getDate(), bill.getTime()
             , bill.getId(), bill.getOperator(), bill.getState()
-            , bill.getAccountId(), items);
+            , bill.getAccountId(), items, sum);
     }
 }

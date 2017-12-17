@@ -24,6 +24,7 @@ public final class ExcelExporter {
     private ExcelExporter() {}
     
     public static void export(MyTableModel model){
+        if(model == null) return;
         String path = openFileChooser();
         if(path == null) return;
         if(export(model, path)){
@@ -34,6 +35,7 @@ public final class ExcelExporter {
     }
     
     public static boolean export(MyTableModel model, String path){
+        if(model == null) return false;
         HSSFWorkbook workbook = toExcel(model);
         return saveExcel(workbook, path);
     }

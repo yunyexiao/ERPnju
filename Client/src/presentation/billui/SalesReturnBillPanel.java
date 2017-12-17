@@ -170,7 +170,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         finalSumField.setValue(0.0);
     }
 
-    private SalesReturnBillVO getBill(int state){
+    public SalesReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
         String date = getDate(), id = getId();
         String operater = operatorField.getText()
