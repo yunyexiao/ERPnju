@@ -34,6 +34,7 @@ import presentation.dataui.categoryui.CategoryDataPanel;
 import presentation.dataui.commodityui.CommodityDataPanel;
 import presentation.dataui.customerui.CustomerDataPanel;
 import presentation.dataui.userui.UserDataPanel;
+import presentation.initui.InitPanel;
 import presentation.logui.LogPanel;
 import vo.UserType;
 import vo.UserVO;
@@ -109,7 +110,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("查看销售明细表", new Listener_stub());
 			addButton("查看经营状况表", new Listener_stub());
 			addButton("查看经营历程表", new Listener_stub());
-			addButton("期初建账", new Listener_stub());
+			addButton("期初建账", e -> mw.changePanel(new InitPanel(mw)));
 			addButton("查看日志", e -> mw.changePanel(new LogPanel(mw)));		
 			addButton("退出", new CloseListener());
 		}
