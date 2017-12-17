@@ -10,54 +10,23 @@ import java.io.Serializable;
  */
 public class AccountPO implements Serializable {
 
-    /**
-     * auto-generated UID
-     */
     private static final long serialVersionUID = -1081165244939370285L;
-    
     private String id, name;
-    double money;
-
+    private double money;
 	private boolean isExist;
-
-    public AccountPO() {}
     
-    public AccountPO(String id, String name, double money) {
+    public AccountPO(String id, String name, double money, boolean isExist) {
         this.id = id;
         this.name = name;
         this.money = money;
+        this.isExist = isExist;
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() {return id;}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public String getName() {return name;}
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getMoney() {
-        return money;
-    }
-
-    public void setMoney(double money) {
-        this.money = money;
-    }
+    public double getMoney() {return money;}
     
-    public void setExistFlag(boolean flag) {
-    	this.isExist = flag;
-    }
-    
-    public boolean getExistFlag() {
-    	return this.isExist;
-    }
-
+    public boolean getExistFlag() {return isExist;}
 }

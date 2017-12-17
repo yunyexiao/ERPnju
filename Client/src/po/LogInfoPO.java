@@ -2,12 +2,9 @@ package po;
 
 import java.io.Serializable;
 
-public class LogInfoPO implements Serializable {
-
-	private String time;
-	private String operatorId;
-	private String operation;
-	private String detail;
+public class LogInfoPO implements Serializable{
+	private static final long serialVersionUID = 5301482844230269082L;
+	private String time, operatorId, operation, detail;
 	
 	public LogInfoPO(String time, String operatorId, String operation, String detail) {
 		this.time = time;
@@ -16,19 +13,11 @@ public class LogInfoPO implements Serializable {
 		this.detail = detail;
 	}
 	
-	public String getTime() {
-		return time;
-	}
+	public String getTime() {return time;}
 	
-	public String getOperatorId() {
-		return operatorId;
-	}
+	public String getOperatorId() {return operatorId;}
 	
-	public String getOperation() {
-		return operation;
-	}
+	public String getOperation() {return operation;}
 	
-	public String getDetail() {
-		return detail;
-	}
+	public String getDetail() {return detail;}
 }
