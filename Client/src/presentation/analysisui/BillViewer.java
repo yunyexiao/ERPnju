@@ -57,7 +57,7 @@ class BillViewer {
     }
     
     /**
-     * 红冲并复制，直接生效
+     * 红冲并复制，直接生效，注意直接生效这一点是由{@code BillOperationService}决定的
      */
     private void copyBill(){
         try{

@@ -57,7 +57,7 @@ import vo.billvo.SalesReturnBillVO;
  * 查看经营历程表的面板，仅仅实现查看功能，不支持红冲等操作
  * @author 恽叶霄
  */
-public class ViewBisinessHistoryPanel implements PanelInterface {
+public class ViewBusinessHistoryPanel implements PanelInterface {
     
     private BillSearchBLService billSearchBl;
     private JPanel panel;
@@ -177,7 +177,7 @@ public class ViewBisinessHistoryPanel implements PanelInterface {
             }
     };
 
-    public ViewBisinessHistoryPanel(ActionListener closeListener) {
+    public ViewBusinessHistoryPanel(ActionListener closeListener) {
         billSearchBl = new BillSearchBL();
         panel = new JPanel(new BorderLayout());
         panel.add(getNorthPanel(closeListener), BorderLayout.NORTH);

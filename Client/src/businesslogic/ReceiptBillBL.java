@@ -10,6 +10,7 @@ import ds_stub.ReceiptBillDs_stub;
 import po.billpo.BillPO;
 import po.billpo.ReceiptBillPO;
 import po.billpo.TransferItem;
+import presentation.tools.Timetools;
 import vo.billvo.BillVO;
 import vo.billvo.ReceiptBillVO;
 
@@ -80,9 +81,8 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 	        bill.getTransferList().forEach(i -> items.add(new TransferItem(
 	            i.getAccountId(), -i.getMoney(), i.getRemark()
 	        )));
-	        // TODO date time id not considered
 	        return receiptBillDataService.saveBill(new ReceiptBillPO(
-	            bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), BillPO.PASS,
+	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
 	            bill.getCustomerId(), items, -bill.getSum()
 	        ));
 	    }catch(RemoteException e){
@@ -94,7 +94,12 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 	@Override
 	public boolean copyBill(BillVO bill){
 	    if(bill instanceof ReceiptBillVO){
-	        return saveBill((ReceiptBillVO) bill);
+	        ReceiptBillVO old = (ReceiptBillVO) bill;
+	        ReceiptBillVO copy = new ReceiptBillVO(
+	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+	            BillVO.PASS, old.getCustomerId(), old.getTableModel()
+	        );
+	        return saveBill(copy);
 	    }
 	    return false;
 	}

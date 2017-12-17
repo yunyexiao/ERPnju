@@ -14,6 +14,7 @@ import po.billpo.BillPO;
 import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
+import presentation.tools.Timetools;
 import vo.CommodityVO;
 import vo.CustomerVO;
 import vo.billvo.BillVO;
@@ -105,9 +106,8 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
             bill.getPurchaseReturnBillItems().forEach(i -> items.add(new SalesItemsPO(
                 i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
-            // TODO date time id not defined
             return purchaseReturnBillDs.saveBill(new PurchaseReturnBillPO(
-                bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), BillPO.PASS, 
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS, 
                 bill.getSupplierId(), bill.getRemark(), -bill.getSum(), items
             ));
         }catch(RemoteException e){
@@ -119,7 +119,12 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
     @Override
     public boolean copyBill(BillVO bill){
         if(bill instanceof PurchaseReturnBillVO){
-            return saveBill((PurchaseReturnBillVO) bill);
+            PurchaseReturnBillVO old = (PurchaseReturnBillVO) bill;
+            PurchaseReturnBillVO copy = new PurchaseReturnBillVO(
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+                BillVO.PASS, old.getCustomerId(), old.getCustomerName(), old.getModel(), old.getRemark(), old.getSum()
+            );
+            return saveBill(copy);
         }
         return false;
     }

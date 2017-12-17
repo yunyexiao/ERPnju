@@ -16,7 +16,7 @@ import presentation.component.InfoWindow;
  * 除了实现基本的单据查看，还实现了红冲以及红冲并复制的功能，红冲、红冲并复制均是直接生效，这一点由BillOperationService决定
  * @author 恽叶霄
  */
-public class BusinessHistoryPanel extends ViewBisinessHistoryPanel {
+public class BusinessHistoryPanel extends ViewBusinessHistoryPanel {
     
     private BillOperationService billOperationBl;
 

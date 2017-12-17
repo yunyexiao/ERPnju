@@ -13,6 +13,7 @@ import po.billpo.BillPO;
 import po.billpo.PurchaseBillPO;
 import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
+import presentation.tools.Timetools;
 import vo.CommodityVO;
 import vo.CustomerVO;
 import vo.billvo.BillVO;
@@ -136,9 +137,8 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
             bill.getPurchaseBillItems().forEach(i -> items.add(new SalesItemsPO(
                 i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
-            // TODO date time id not defined
             return purchaseBillDs.saveBill(new PurchaseBillPO(
-                bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), BillPO.PASS,
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
                 bill.getSupplierId(), bill.getRemark(), -bill.getSum(), items
             ));
         }catch(RemoteException e){
@@ -150,7 +150,12 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
     @Override
     public boolean copyBill(BillVO bill){
         if(bill instanceof PurchaseBillVO){
-            return saveBill((PurchaseBillVO) bill);
+            PurchaseBillVO old = (PurchaseBillVO) bill;
+            PurchaseBillVO copy = new PurchaseBillVO(
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+                BillVO.PASS, old.getCustomerId(), old.getCustomerName(), old.getModel(), old.getRemark(), old.getSum()
+            );
+            return saveBill(copy);
         }
         return false;
     }

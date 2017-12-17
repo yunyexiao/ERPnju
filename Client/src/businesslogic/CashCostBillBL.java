@@ -93,7 +93,12 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
 	@Override
 	public boolean copyBill(BillVO bill){
 	    if(bill instanceof CashCostBillVO){
-	        return saveBill((CashCostBillVO)bill);
+	        CashCostBillVO oldOne = (CashCostBillVO) bill;
+	        CashCostBillVO newOne = new CashCostBillVO(
+	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), 
+	            oldOne.getOperator(), BillVO.PASS, oldOne.getAccountId(), oldOne.getTableModel()
+	        );
+	        return saveBill(newOne);
 	    }
 	    return false;
 	}

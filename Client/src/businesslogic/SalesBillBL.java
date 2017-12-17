@@ -13,6 +13,7 @@ import po.billpo.BillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
+import presentation.tools.Timetools;
 import vo.CommodityVO;
 import vo.billvo.BillVO;
 import vo.billvo.SalesBillVO;
@@ -148,7 +149,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService {
                 i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
             return salesBillDs.saveBill(new SalesBillPO(
-                bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), BillPO.PASS,
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
                 bill.getCustomerId(), bill.getSalesManName(), bill.getRemark(), bill.getPromotionId(),
                 -bill.getBeforeDiscount(), -bill.getDiscount(), -bill.getCoupon(), -bill.getAfterDiscount(), items
             ));
@@ -161,7 +162,13 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService {
     @Override
     public boolean copyBill(BillVO bill){
         if(bill instanceof SalesBillVO){
-            return saveBill((SalesBillVO) bill);
+            SalesBillVO old = (SalesBillVO) bill;
+            SalesBillVO copy = new SalesBillVO(
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+                BillVO.PASS, old.getCustomerId(), old.getCustomerName(), old.getModel(),
+                old.getRemark(), old.getBeforeDiscount(), old.getDiscount(), old.getCoupon(), old.getSum()
+            );
+            return saveBill(copy);
         }
         return false;
     }

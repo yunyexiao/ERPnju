@@ -11,6 +11,7 @@ import po.billpo.BillPO;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
 import presentation.component.MyTableModel;
+import presentation.tools.Timetools;
 import rmi.Rmi;
 import vo.billvo.BillVO;
 import vo.billvo.ChangeBillVO;
@@ -81,9 +82,8 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService{
             ArrayList<ChangeItem> items = new ArrayList<>();
             bill.getCommodityList().forEach(i -> items.add(new ChangeItem(
                 i.getCommodityId(), i.getChangedValue(), i.getOriginalValue())));
-            // TODO date time id not defined
             ChangeBillPO offset = new ChangeBillPO(
-                bill.getDate(), bill.getTime(), bill.getId()
+                Timetools.getDate(), Timetools.getTime(), this.getNewId()
                 , bill.getOperator(), BillPO.PASS, bill.getFlag(), items);
             return changeBillDS.saveBill(offset);
 	    }catch(RemoteException e){
@@ -95,7 +95,12 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService{
 	@Override
 	public boolean copyBill(BillVO bill){
 	    if(bill instanceof ChangeBillVO){
-	        return saveBill((ChangeBillVO) bill);
+	        ChangeBillVO old = (ChangeBillVO) bill;
+	        ChangeBillVO copy = new ChangeBillVO(
+	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+	            BillVO.PASS, old.getFlag(), old.getTableModel()
+	        );
+	        return saveBill(copy);
 	    }
 	    return false;
 	}
