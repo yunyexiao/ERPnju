@@ -5,20 +5,23 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
-import blservice.billblservice.BillShowService;
+import blservice.billblservice.BillBLService;
 import dataservice.BillDataService;
 import ds_stub.BillDs_stub;
 import po.billpo.BillPO;
 import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.UserVO;
+import vo.billvo.CashCostBillVO;
 import vo.billvo.ChangeBillVO;
+import vo.billvo.PaymentBillVO;
 import vo.billvo.PurchaseBillVO;
 import vo.billvo.PurchaseReturnBillVO;
+import vo.billvo.ReceiptBillVO;
 import vo.billvo.SalesBillVO;
 import vo.billvo.SalesReturnBillVO;
 
-public class BillShowBL implements BillShowService {
+public class BillBL implements BillBLService {
 
 	private BillDataService billDs = Rmi.flag ? Rmi.getRemote(BillDataService.class) : new BillDs_stub();
 	
@@ -69,6 +72,18 @@ public class BillShowBL implements BillShowService {
 	}
 
 	public SalesReturnBillVO getSalesReturnBill(String id) {
-		return BillTools.toSalesReturnBillVO(billDs.getSalesReturnBill(id));
+		return BillTools.toSalesReturnBillVO(billDs.getSalesReturnBill(id), this);
+	}
+	
+	public CashCostBillVO getCashCostBill(String id) {
+		return BillTools.toCashCostBillVO(billDs.getCashCostBillPO(id));
+	}
+	
+	public PaymentBillVO getPaymentBill(String id) {
+		return BillTools.toPaymentBillVO(billDs.getPaymentBillPO(id));
+	}
+	
+	public ReceiptBillVO getReceiptBill(String id) {
+		return BillTools.toReceiptBillVO(billDs.getReceiptBillPO(id));
 	}
 }
