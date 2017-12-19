@@ -14,8 +14,8 @@ public class UserPO implements Serializable{
     private int userAge, userRank, usertype;
     private boolean isExist;
     
-    public UserPO(String userId, String userName, String userPwd, String userSex, String userTelNumber, int userAge,
-			int userRank, int usertype, boolean isExist) {
+    public UserPO(String userId, String userName, String userPwd, String userSex, 
+            String userTelNumber, int usertype, int userRank, int userAge, boolean isExist) {
 		this.userId = userId;
 		this.userName = userName;
 		this.userPwd = userPwd;
@@ -39,7 +39,7 @@ public class UserPO implements Serializable{
 
     public String getUserTelNumber() {return userTelNumber;}
     
-    public int getUsertype() { return usertype;}
+    public int getUsertype() {return usertype;}
 
     public int getUserAge() {return userAge;}
     
