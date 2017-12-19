@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import bl_stub.CustomerBL_stub;
+import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseBillBLService;
 import dataservice.PurchaseBillDataService;
 import ds_stub.PurchaseBillDs_stub;
@@ -12,14 +13,16 @@ import po.billpo.BillPO;
 import po.billpo.PurchaseBillPO;
 import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
+import presentation.tools.Timetools;
 import vo.CommodityVO;
 import vo.CustomerVO;
+import vo.billvo.BillVO;
 import vo.billvo.PurchaseBillVO;
 
 /**
  * @author ã¢Ò¶Ïö
  */
-public class PurchaseBillBL implements PurchaseBillBLService {
+public class PurchaseBillBL implements PurchaseBillBLService, BillOperationService{
     
     private PurchaseBillDataService purchaseBillDs;
 
@@ -126,6 +129,37 @@ public class PurchaseBillBL implements PurchaseBillBLService {
         }
     }
     
+    @Override
+    public boolean offsetBill(String id){
+        try{
+            PurchaseBillPO bill = purchaseBillDs.getBillById(id);
+            ArrayList<SalesItemsPO> items = new ArrayList<>();
+            bill.getPurchaseBillItems().forEach(i -> items.add(new SalesItemsPO(
+                i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
+            )));
+            return purchaseBillDs.saveBill(new PurchaseBillPO(
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
+                bill.getSupplierId(), bill.getRemark(), -bill.getSum(), items
+            ));
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean copyBill(BillVO bill){
+        if(bill instanceof PurchaseBillVO){
+            PurchaseBillVO old = (PurchaseBillVO) bill;
+            PurchaseBillVO copy = new PurchaseBillVO(
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+                BillVO.PASS, old.getCustomerId(), old.getCustomerName(), old.getModel(), old.getRemark(), old.getSum()
+            );
+            return saveBill(copy);
+        }
+        return false;
+    }
+
     /**
      * This method is not intended for personal use
      */

@@ -33,7 +33,7 @@ public class ChangeBillPanel extends BillPanel {
 	private JButton deleteButton;
 	private JTextField billIdField, operaterField;
 	private JRadioButton overButton, lostButton;
-	private ChangeBillBLService changeBillBL;
+	private ChangeBillBLService changeBillBL = new ChangeBillBL(true);
 	
 	/**
 	 * 新建单据界面
@@ -52,7 +52,7 @@ public class ChangeBillPanel extends BillPanel {
 	 */
 	public ChangeBillPanel(UserVO user, ChangeBillVO bill, ActionListener closeListener) {
 		super(user, closeListener);
-		ChangeBillBL.setOver(bill.getFlag());
+		changeBillBL = new ChangeBillBL(bill.getFlag());
 		billIdField.setText(bill.getAllId());
 		overButton.setEnabled(false);
 		lostButton.setEnabled(false);
@@ -66,7 +66,6 @@ public class ChangeBillPanel extends BillPanel {
 	
 	@Override
 	protected void initBillPanel() {
-		changeBillBL = new ChangeBillBL();
 		try{
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 		}catch(Exception e){
@@ -237,7 +236,7 @@ public class ChangeBillPanel extends BillPanel {
 		return true;
 	}
 
-	private ChangeBillVO getBill() {
+	public ChangeBillVO getBill() {
 		if (! isCorrectable()) {
 			return null;
 		}
@@ -246,7 +245,7 @@ public class ChangeBillPanel extends BillPanel {
 	}
 	
 	private void setBillId(boolean isOver) {
-		ChangeBillBL.setOver(isOver);
+		changeBillBL = new ChangeBillBL(isOver);
 		billIdField.setText((isOver?"BYD-":"BSD-")+Timetools.getDate()+"-"+changeBillBL.getNewId());
 	}
 }

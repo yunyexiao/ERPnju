@@ -12,7 +12,6 @@ public class AnalysisDriver {
 
     public AnalysisDriver() {
         JFrame frame = new JFrame();
-        frame.setSize(800, 600);
         frame.setLocation(100, 100);
         frame.addWindowListener(new WindowAdapter(){
             @Override
@@ -22,7 +21,8 @@ public class AnalysisDriver {
             }
         });
 
-        frame.add(new SalesDetailsPanel().getPanel());
+        frame.add(new BusinessHistoryPanel(e->frame.dispose()).getPanel());
+        frame.pack();
         frame.setVisible(true);
     }
     

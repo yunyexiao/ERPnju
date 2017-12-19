@@ -68,7 +68,7 @@ public class PurchaseBillPanel extends CommonSaleBillPanel {
         };
     }
 
-    private PurchaseBillVO getBill(int state){
+    public PurchaseBillVO getBill(int state){
         if(!isCorrectable()) return null;
         String date = getDate();
         String id = getId()

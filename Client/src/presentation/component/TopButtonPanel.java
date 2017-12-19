@@ -1,7 +1,6 @@
 package presentation.component;
 
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
@@ -13,6 +12,8 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import layout.TableLayout;
+
 /**
  * JPanel顶部放置JButton并统一图片和文字格式的JPanel
  * @author 钱美缘
@@ -21,12 +22,13 @@ import javax.swing.JPanel;
 public class TopButtonPanel {
 	private JPanel panel = new JPanel();
 	private ArrayList<DateChooser> dateChooserArray = new ArrayList<DateChooser>();
-	//private ArrayList<JButton> buttonArray = new ArrayList<JButton>();
 	
 	public TopButtonPanel() {
-		FlowLayout f = new FlowLayout();
-		f.setAlignment(FlowLayout.LEFT);
-		panel.setLayout(f);
+		double p = TableLayout.PREFERRED;
+		double b = 5;
+		panel.setLayout(new TableLayout(new double[][]{
+			{b,p,b,p,b,p,b,p,b,p,b,p,b,p,b,p}, 
+			{5,TableLayout.FILL,5}}));
 		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	}
 	/**
@@ -34,9 +36,6 @@ public class TopButtonPanel {
 	 * @return 返回JPanel
 	 */
 	public JPanel getPanel() {
-		//if (buttonArray.size() != panel.getComponentCount()) {
-		//	for (JButton button: buttonArray) panel.add(button);
-		//}
 		return panel;
 	}
 	/**
@@ -49,8 +48,7 @@ public class TopButtonPanel {
 		JButton button = new JButton(text, icon);
 		button.setFont(new Font("宋体",Font.BOLD,14));
 		button.addActionListener(listener);
-		panel.add(button);
-		//buttonArray.add(button);
+		panel.add(button, (panel.getComponentCount() * 2 + 1) +" 1");
 	}
 	/**
 	 * 向Panel内增加一个选择日期的空间，使用html标签分两行显示<br/>

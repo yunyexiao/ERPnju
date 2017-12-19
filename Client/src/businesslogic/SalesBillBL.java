@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import bl_stub.CustomerBL_stub;
+import blservice.billblservice.BillOperationService;
 import blservice.billblservice.SalesBillBLService;
 import dataservice.SalesBillDataService;
 import ds_stub.SalesBillDs_stub;
@@ -12,6 +13,7 @@ import po.billpo.BillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
+import presentation.tools.Timetools;
 import vo.CommodityVO;
 import vo.billvo.BillVO;
 import vo.billvo.SalesBillVO;
@@ -19,7 +21,7 @@ import vo.billvo.SalesBillVO;
 /**
  * @author ã¢Ò¶Ïö
  */
-public class SalesBillBL implements SalesBillBLService {
+public class SalesBillBL implements SalesBillBLService, BillOperationService {
     
     private SalesBillDataService salesBillDs;
     
@@ -136,6 +138,39 @@ public class SalesBillBL implements SalesBillBLService {
             e.printStackTrace();
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public boolean offsetBill(String id){
+        try{
+            SalesBillPO bill = salesBillDs.getBillById(id);
+            ArrayList<SalesItemsPO> items = new ArrayList<>();
+            bill.getSalesBillItems().forEach(i -> items.add(new SalesItemsPO(
+                i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
+            )));
+            return salesBillDs.saveBill(new SalesBillPO(
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
+                bill.getCustomerId(), bill.getSalesManName(), bill.getRemark(), bill.getPromotionId(),
+                -bill.getBeforeDiscount(), -bill.getDiscount(), -bill.getCoupon(), -bill.getAfterDiscount(), items
+            ));
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean copyBill(BillVO bill){
+        if(bill instanceof SalesBillVO){
+            SalesBillVO old = (SalesBillVO) bill;
+            SalesBillVO copy = new SalesBillVO(
+                Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+                BillVO.PASS, old.getCustomerId(), old.getCustomerName(), old.getModel(),
+                old.getRemark(), old.getBeforeDiscount(), old.getDiscount(), old.getCoupon(), old.getSum()
+            );
+            return saveBill(copy);
+        }
+        return false;
     }
 
     private MyTableModel toModel(ArrayList<SalesBillPO> bills){

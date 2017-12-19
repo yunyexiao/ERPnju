@@ -9,22 +9,13 @@ import java.io.Serializable;
  * @author ã¢Ò¶Ïö
  */
 public class UserPO implements Serializable{
-    
-
-	/**
-     * auto-generated UID
-     */
     private static final long serialVersionUID = 6831754628172855841L;
     private String userId, userName, userPwd ,userSex, userTelNumber;
     private int userAge, userRank, usertype;
     private boolean isExist;
     
-    public UserPO(){}
-    
-    
     public UserPO(String userId, String userName, String userPwd, String userSex, String userTelNumber, int userAge,
 			int userRank, int usertype, boolean isExist) {
-		super();
 		this.userId = userId;
 		this.userName = userName;
 		this.userPwd = userPwd;
@@ -36,79 +27,23 @@ public class UserPO implements Serializable{
 		this.isExist = isExist;
 	}
 
+    public String getUserId() {return userId;}
 
+    public String getUserName() {return userName;}
+
+    public String getUserPwd() {return userPwd;}
     
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserPwd() {
-        return userPwd;
-    }
+    public int getUserRank() {return userRank;}
     
-    public int getUserRank() {
-        return userRank;
-    }
+    public String getUserSex() {return userSex;}
 
-    public void setUserPwd(String userPwd) {
-        this.userPwd = userPwd;
-    }
-
-    public String getUserSex() {
-        return userSex;
-    }
-
-    public void setUserSex(String userSex) {
-        this.userSex = userSex;
-    }
-
-    public String getUserTelNumber() {
-        return userTelNumber;
-    }
-
-    public void setUserTelNumber(String userTelNumber) {
-        this.userTelNumber = userTelNumber;
-    }
-
-    public int getUsertype() {
-        return usertype;
-    }
-
-    public void setUsertype(int usertype) {
-        this.usertype = usertype;
-    }
+    public String getUserTelNumber() {return userTelNumber;}
     
-    public void setUserRank(int userRank) {
-        this.userRank = userRank;
-    }
+    public int getUsertype() { return usertype;}
 
-    public int getUserAge() {
-        return userAge;
-    }
-
-    public void setUserAge(int userAge) {
-        this.userAge = userAge;
-    }
+    public int getUserAge() {return userAge;}
     
-    public void setExistFlag(boolean flag) {
-    	this.isExist = flag;
-    }
-    
-    public boolean getExistFlag() {
-    	return this.isExist;
-    }
+    public boolean getExistFlag() {return isExist;}
     
     public class UserType{
         public static final int STORE_KEEPER = 0;
@@ -129,6 +64,4 @@ public class UserPO implements Serializable{
     	}
     	return "Ä¬ÈÏ";
     }
-
-    
 }
