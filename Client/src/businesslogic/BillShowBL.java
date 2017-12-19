@@ -9,11 +9,14 @@ import blservice.billblservice.BillShowService;
 import dataservice.BillDataService;
 import ds_stub.BillDs_stub;
 import po.billpo.BillPO;
-import po.billpo.ChangeBillPO;
 import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.UserVO;
 import vo.billvo.ChangeBillVO;
+import vo.billvo.PurchaseBillVO;
+import vo.billvo.PurchaseReturnBillVO;
+import vo.billvo.SalesBillVO;
+import vo.billvo.SalesReturnBillVO;
 
 public class BillShowBL implements BillShowService {
 
@@ -50,8 +53,22 @@ public class BillShowBL implements BillShowService {
 
 	@Override
 	public ChangeBillVO getChangeBill(String id) {
-		ChangeBillPO bill = billDs.getChangeBill(id);
-		return BillTools.toChangeBillVO(bill);
+		return BillTools.toChangeBillVO(billDs.getChangeBill(id));
+	}
+	
+	public PurchaseBillVO getPurchaseBill(String id) {
+		return BillTools.toPurchaseBillVO(billDs.getPurchaseBill(id));
 	}
 
+	public PurchaseReturnBillVO getPurchaseReturnBill(String id) {
+		return BillTools.toPurchaseReturnBillVO(billDs.getPurchaseReturnBill(id));
+	}
+	
+	public SalesBillVO getSalesBill(String id) {
+		return BillTools.toSalesBillVO(billDs.getSalesBill(id));
+	}
+
+	public SalesReturnBillVO getSalesReturnBill(String id) {
+		return BillTools.toSalesReturnBillVO(billDs.getSalesReturnBill(id));
+	}
 }
