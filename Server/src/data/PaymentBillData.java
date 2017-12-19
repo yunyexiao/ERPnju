@@ -65,8 +65,6 @@ public class PaymentBillData extends UnicastRemoteObject implements PaymentBillD
 	public String getNewId() throws RemoteException {
 		
 		String newId=SQLQueryHelper.getNewBillIdByDay(billTableName,billIdName);
-		newId="FKD-"+newId; 
-		
 		return newId;		
 	}
 

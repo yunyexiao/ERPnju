@@ -19,7 +19,6 @@ import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.PurchaseBillVO;
 import vo.billvo.PurchaseReturnBillVO;
-import vo.billvo.SalesBillVO;
 
 /**
  * 进货退货单面板
@@ -37,7 +36,7 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
         this.operatorField.setText(user.getName());
     }
 
-    public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener, SalesBillVO saleBill) {
+    public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener, PurchaseReturnBillVO saleBill) {
         super(user, closeListener, saleBill);
     }
 
@@ -110,7 +109,7 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
         };
     }
 
-    private PurchaseReturnBillVO getBill(int state){
+    public PurchaseReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
         String date = getDate(), id = getId();
         String operater = operatorField.getText()

@@ -49,7 +49,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         super(user, closeListener);
         billIdField.setText(bill.getAllId());
         operatorField.setText(userInfo.getUser(bill.getOperator()).getName());
-        timeLabel.setText(bill.getTime());
+//        timeLabel.setText(bill.getTime());
         customerIdField.setText(bill.getCustomerId());
         customerNameField.setText(bill.getCustomerName());
         remarkField.setText(bill.getRemark());

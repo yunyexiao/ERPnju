@@ -74,9 +74,7 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 	@Override
 	public String getNewId() throws RemoteException {
 		
-		String newId=SQLQueryHelper.getNewBillIdByDay(billTableName,billIdName);
-		newId="XSD-"+newId;
-		
+		String newId=SQLQueryHelper.getNewBillIdByDay(billTableName,billIdName);	
 		return newId;		
 	}
 
