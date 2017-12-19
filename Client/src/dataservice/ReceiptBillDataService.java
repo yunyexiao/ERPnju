@@ -1,10 +1,11 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import po.billpo.ReceiptBillPO;
 
-public interface ReceiptBillDataService {
+public interface ReceiptBillDataService extends Remote{
 
 	public boolean saveBill(ReceiptBillPO bill) throws RemoteException;
 

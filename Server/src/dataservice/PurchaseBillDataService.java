@@ -8,7 +8,6 @@ import po.billpo.PurchaseBillPO;
 
 
 public interface PurchaseBillDataService extends Remote{
-    
     boolean saveBill(PurchaseBillPO purchaseBill) throws RemoteException;
     
     boolean deleteBill(String id) throws RemoteException;
@@ -20,6 +19,4 @@ public interface PurchaseBillDataService extends Remote{
 	public ArrayList<PurchaseBillPO> getBillsBy(String field, String key, boolean isFuzzy) throws RemoteException;
 	
 	public ArrayList<PurchaseBillPO> getBillByDate(String from, String to) throws RemoteException;
-
-
 }

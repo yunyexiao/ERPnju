@@ -1,10 +1,11 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import po.billpo.ChangeBillPO;
 
-public interface ChangeBillDataService {
+public interface ChangeBillDataService extends Remote{
 
 	public ChangeBillPO getBillById(String id) throws RemoteException;
 	

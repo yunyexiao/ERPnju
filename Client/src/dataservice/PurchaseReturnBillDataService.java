@@ -1,11 +1,12 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import po.billpo.PurchaseReturnBillPO;
 
-public interface PurchaseReturnBillDataService {
+public interface PurchaseReturnBillDataService extends Remote{
     
     boolean saveBill(PurchaseReturnBillPO purchaseReturnBill) throws RemoteException;
     
