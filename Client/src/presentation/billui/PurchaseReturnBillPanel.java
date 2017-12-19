@@ -28,6 +28,7 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     
     private PurchaseReturnBillBLService purchaseReturnBl = new PurchaseReturnBillBL_stub();
     private JTextField originalPBIdField;
+    private JButton purchaseBillChooseButton, customerChooseButton;
     private PurchaseBillVO originalPB;
 
     public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener) {
@@ -58,9 +59,9 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
         customerNameField.setEditable(false);
         originalPBIdField = new JTextField(15);
         originalPBIdField.setEditable(false);
-        JButton purchaseBillChooseButton = new JButton("选择源进货单");
+        purchaseBillChooseButton = new JButton("选择源进货单");
         purchaseBillChooseButton.addActionListener(e -> handleChoosePb());
-        JButton customerChooseButton = new JButton("选择");
+        customerChooseButton = new JButton("选择");
         customerChooseButton.addActionListener(e -> handleChooseCustomer());
         
         double[][] size = {
@@ -89,7 +90,7 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
             if(response == 1) return;
             clear();
             billIdField.setText(purchaseReturnBl.getNewId());
-            operatorField.setText(getUser().getName());
+            operatorField.setText(user.getName());
         };
     }
 
@@ -123,10 +124,9 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     }
 
     private void handleChoosePb(){
-        if(!editable) return;
         String customerId = customerIdField.getText();
         if(customerId.length() == 0){
-            new InfoWindow("请先选择进货商^_^");
+            new InfoWindow("请先选择进货商");
             return;
         }
         originalPB = new PurchaseBillChooseWin(customerId).getPurchaseBill();
@@ -138,6 +138,10 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
 	protected void handleChooseCustomer() {
 		handleChooseCustomer(true);
 	}
-
-
+	@Override
+	protected void setEditable(boolean b) {
+		super.setEditable(b);
+		purchaseBillChooseButton.setEnabled(b);
+		customerChooseButton.setEnabled(b);
+	}
 }

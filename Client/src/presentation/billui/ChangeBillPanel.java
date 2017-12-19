@@ -86,7 +86,7 @@ public class ChangeBillPanel extends BillPanel {
 		billIdField = new JTextField("");
 		setBillId(true);
 		billIdField.setEditable(false);
-		operaterField = new JTextField(getUser().getName());
+		operaterField = new JTextField(user.getName());
 		operaterField.setEditable(false);
 		headPanel.setLayout(new TableLayout(firstPanelSize));
 		headPanel.add(new JLabel("µ¥¾Ý±àºÅ"), "1,1");

@@ -40,7 +40,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 	public ReceiptOrPaymentBillPanel(UserVO user, ActionListener closeListener) {
 		super(user, closeListener);
         this.billIdField.setText(receiptBillBL.getNewId());
-		this.operaterField.setText(this.getUser().getName());
+		this.operaterField.setText(user.getName());
 	}
 
 	public ReceiptOrPaymentBillPanel(UserVO user, ReceiptBillVO bill, ActionListener closeListener) {

@@ -30,25 +30,27 @@ import vo.billvo.SalesBillVO;
 public class SalesBillPanel extends CommonSaleBillPanel {
 	
 	private SalesBillBLService saleBillBL = new SaleBillBL_stub();
-	
 	private DoubleField discountField, couponField, afterDiscountField;
+	private JButton sumButton;
 	private JTextArea promotionInfoArea;
 	
 	public SalesBillPanel(UserVO user, ActionListener closeListener) {
 		super(user, closeListener);
 
 		billIdField.setText(saleBillBL.getNewId());
-		operatorField.setText(this.getUser().getName());
+		operatorField.setText(user.getName());
 	}
 
-	public SalesBillPanel(UserVO user, SalesBillVO bill, ActionListener closeListener) {
+	public SalesBillPanel(UserVO user, ActionListener closeListener, SalesBillVO bill) {
 		super(user, closeListener, bill);
-		if(!editable){
-		    discountField.setEditable(false);
-		    couponField.setEditable(false);
-		}
 	}
 	
+	@Override
+	protected void setEditable(boolean b) {
+		super.setEditable(b);
+		discountField.setEditable(false);
+	    couponField.setEditable(false);
+	}
 	@Override
 	protected ActionListener getNewActionListener() {
 		return e -> {
@@ -56,7 +58,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
             if(response == 1)return;
             clear();
             billIdField.setText(saleBillBL.getNewId());
-            operatorField.setText(this.getUser().getName());
+            operatorField.setText(user.getName());
 		};
 	}
 
@@ -81,9 +83,9 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	    if(!super.isCorrectable()) return false;
 	    try{
 	        int discount = Integer.parseInt(discountField.getText());
-	        if(getUser().getRank() == 0 && discount > 1000)
+	        if(user.getRank() == 0 && discount > 1000)
 	            return false;
-	        if(getUser().getRank() == 1 && discount > 5000)
+	        if(user.getRank() == 1 && discount > 5000)
 	            return false;
 	        Integer.parseInt(couponField.getText());
 	        return true;
@@ -107,7 +109,6 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	@Override
 	protected void sumUp(){
 	    // TODO promotions haven't been considered
-	    if(!editable) return;
 	    double before = 0, after = 0;
 	    super.sumUp();
         before = sumField.getValue();
@@ -168,7 +169,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	}
 	
 	private JPanel getTailPanel(){
-	    JButton sumButton = new JButton("合计");
+	    sumButton = new JButton("合计");
 	    sumButton.addActionListener(e -> sumUp());
 
 		sumField = new DoubleField(10);

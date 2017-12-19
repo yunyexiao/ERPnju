@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 import layout.TableLayout;
 import presentation.PanelInterface;
 import presentation.component.TopButtonPanel;
-import vo.BillVO;
 import vo.UserVO;
 
 /**
@@ -76,9 +75,6 @@ public abstract class BillPanel implements PanelInterface {
 	 */
 	abstract protected boolean isCorrectable();
 	
-	public UserVO getUser() {
-		return user;
-	}
 	@Override
 	public boolean close() {
 		return true;
