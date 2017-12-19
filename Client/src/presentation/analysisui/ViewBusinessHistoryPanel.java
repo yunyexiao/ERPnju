@@ -15,8 +15,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import blservice.billblservice.BillBLService;
 import blservice.billblservice.BillSearchBLService;
 import blservice.infoservice.GetUserInterface;
+import businesslogic.BillBL;
 import businesslogic.BillSearchBL;
 import businesslogic.UserBL;
 import layout.TableLayout;
@@ -60,6 +62,7 @@ import vo.billvo.SalesReturnBillVO;
 public class ViewBusinessHistoryPanel implements PanelInterface {
     
     private BillSearchBLService billSearchBl;
+    private BillBLService billBL;
     private JPanel panel;
     private DateChoosePanel fromPanel, toPanel;
     private LFPanel storePanel;
@@ -83,7 +86,7 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
                     return billSearchBl.filterInventoryBills(from, to, getStore(), operatorId, true);
                 }
                 public JPanel getTypePanel() { return storePanel; }
-                public BillVO getBill(String id) { return billSearchBl.findInventoryBillById(id); }
+                public BillVO getBill(String id) { return billBL.getChangeBill(id); }
                 public Class<? extends BillPanel> getPanelClass() { return ChangeBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return ChangeBillVO.class; }
             },
@@ -94,7 +97,7 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
                     return billSearchBl.filterInventoryBills(from, to, getStore(), operatorId, false);
                 }
                 public JPanel getTypePanel() { return storePanel; }
-                public BillVO getBill(String id) { return billSearchBl.findInventoryBillById(id); }
+                public BillVO getBill(String id) { return billBL.getChangeBill(id);}
                 public Class<? extends BillPanel> getPanelClass() { return ChangeBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return ChangeBillVO.class; }
             },
@@ -105,8 +108,8 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
                     return billSearchBl.filterCashCostBills(from, to, getAccountId(), operatorId);
                 }
                 public JPanel getTypePanel() { return accountPanel; }
-                public BillVO getBill(String id) { return billSearchBl.findCashCostBillById(id); }
-                public Class<? extends BillPanel> getPanelClass() { return CashCostBillPanel.class; }
+                public BillVO getBill(String id) { return billBL.getCashCostBill(id); }
+                public Class<? extends BillPanel> getPanelClass() {return CashCostBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return CashCostBillVO.class; }
             },
             new ChoiceItem("¸¶¿îµ¥"){
@@ -116,7 +119,7 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
                     return billSearchBl.filterPaymentBills(from, to, getCustomerId(), operatorId);
                 }
                 public JPanel getTypePanel() { return customerPanel; }
-                public BillVO getBill(String id) { return billSearchBl.findPaymentBillById(id); }
+                public BillVO getBill(String id) { return billBL.getPaymentBill(id); }
                 public Class<? extends BillPanel> getPanelClass() { return ReceiptOrPaymentBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return PaymentBillVO.class; }
             },
@@ -127,7 +130,7 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
                     return billSearchBl.filterReceiptBills(from, to, getCustomerId(), operatorId);
                 }
                 public JPanel getTypePanel() { return customerPanel; }
-                public BillVO getBill(String id) { return billSearchBl.findReceiptBillById(id); }
+                public BillVO getBill(String id) { return billBL.getReceiptBill(id); }
                 public Class<? extends BillPanel> getPanelClass() { return ReceiptOrPaymentBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return ReceiptBillVO.class; }
             },
@@ -138,7 +141,7 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
                     return billSearchBl.filterPurchaseBills(from, to, getCustomerId(), operatorId);
                 }
                 public JPanel getTypePanel() { return customerPanel; }
-                public BillVO getBill(String id) { return billSearchBl.findPurchaseBillById(id); }
+                public BillVO getBill(String id) { return billBL.getPurchaseBill(id); }
                 public Class<? extends BillPanel> getPanelClass() { return PurchaseBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return PurchaseBillVO.class; }
             },
@@ -149,7 +152,7 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
                     return billSearchBl.filterPurchaseReturnBills(from, to, getCustomerId(), operatorId);
                 }
                 public JPanel getTypePanel() { return customerPanel; }
-                public BillVO getBill(String id) { return billSearchBl.findPurchaseReturnBillById(id); }
+                public BillVO getBill(String id) { return billBL.getPurchaseReturnBill(id); }
                 public Class<? extends BillPanel> getPanelClass() { return PurchaseReturnBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return PurchaseReturnBillVO.class; }
             },
@@ -160,7 +163,7 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
                     return billSearchBl.filterSalesBills(from, to, getCustomerId(), operatorId);
                 }
                 public JPanel getTypePanel() { return customerPanel; }
-                public BillVO getBill(String id) { return billSearchBl.findSalesBillById(id); }
+                public BillVO getBill(String id) { return billBL.getSalesBill(id); }
                 public Class<? extends BillPanel> getPanelClass() { return SalesBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return SalesBillVO.class; }
             },
@@ -171,7 +174,7 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
                     return billSearchBl.filterSalesReturnBills(from, to, getCustomerId(), operatorId);
                 }
                 public JPanel getTypePanel() { return customerPanel; }
-                public BillVO getBill(String id) { return billSearchBl.findSalesReturnBillById(id); }
+                public BillVO getBill(String id) { return billBL.getSalesReturnBill(id); }
                 public Class<? extends BillPanel> getPanelClass() { return SalesReturnBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return SalesReturnBillVO.class; }
             }
@@ -179,6 +182,7 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
 
     public ViewBusinessHistoryPanel(ActionListener closeListener) {
         billSearchBl = new BillSearchBL();
+        billBL = new BillBL();
         panel = new JPanel(new BorderLayout());
         panel.add(getNorthPanel(closeListener), BorderLayout.NORTH);
         panel.add(getCenterPanel(), BorderLayout.CENTER);

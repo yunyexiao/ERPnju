@@ -1,6 +1,8 @@
 package presentation.component.choosewindow;
 
+import blservice.billblservice.BillBLService;
 import blservice.billblservice.SalesBillBLService;
+import businesslogic.BillBL;
 import businesslogic.SalesBillBL;
 import presentation.component.MyTableModel;
 import vo.billvo.SalesBillVO;
@@ -9,6 +11,7 @@ import vo.billvo.SalesBillVO;
 public class SalesBillChooseWin extends BillChooseWin {
     
     private SalesBillBLService salesBillBl;
+    private BillBLService billBL;
     private SalesBillVO bill;
 
     public SalesBillChooseWin(String customerId) {
@@ -19,6 +22,7 @@ public class SalesBillChooseWin extends BillChooseWin {
     @Override
     protected void initBLService() {
         salesBillBl = new SalesBillBL();
+        billBL = new BillBL();
     }
 
     @Override
@@ -38,7 +42,7 @@ public class SalesBillChooseWin extends BillChooseWin {
 
     @Override
     protected void setBill(String id) {
-        bill = salesBillBl.getBill(id);
+        bill = billBL.getSalesBill(id);
     }
     
     public SalesBillVO getSalesBill(){
