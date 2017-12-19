@@ -63,17 +63,6 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
     }
 	
 	@Override
-	public CashCostBillVO getBill(String id) {
-		try{
-            CashCostBillPO bill = cashCostBillDataService.getBillById(id);
-            return BillTools.toCashCostBillVO(bill);
-        }catch(RemoteException e){
-            e.printStackTrace();
-            return null;
-        }
-	}
-	
-	@Override
 	public boolean offsetBill(String id){
 	    try{
             CashCostBillPO bill = cashCostBillDataService.getBillById(id);

@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import bl_stub.CustomerBL_stub;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.SalesReturnBillBLService;
 import dataservice.SalesReturnBillDataService;
@@ -14,9 +13,8 @@ import po.billpo.SalesItemsPO;
 import po.billpo.SalesReturnBillPO;
 import presentation.component.MyTableModel;
 import presentation.tools.Timetools;
-import vo.CommodityVO;
+import rmi.Rmi;
 import vo.billvo.BillVO;
-import vo.billvo.SalesBillVO;
 import vo.billvo.SalesReturnBillVO;
 
 
@@ -25,7 +23,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
     private SalesReturnBillDataService salesReturnBillDs;
     
     public SalesReturnBillBL(){
-        salesReturnBillDs = new SalesReturnBillDs_stub();
+        salesReturnBillDs = Rmi.flag ? Rmi.getRemote(SalesReturnBillDataService.class) : new SalesReturnBillDs_stub();
     }
 
     @Override
@@ -76,17 +74,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
             return false;
         }
     }
-
-    @Override
-    public SalesReturnBillVO getBill(String id) {
-        try{
-            return toVO(salesReturnBillDs.getBillById(id));
-        }catch(RemoteException e){
-            e.printStackTrace();
-            return null;
-        }
-    }
-
+    
     public ArrayList<SalesReturnBillPO> getBillPOsByDate(String from, String to){
         try{
             return salesReturnBillDs.getBillsByDate(from, to);
@@ -151,31 +139,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
             , originalSum, returnSum, items);
     }
     
-    private SalesReturnBillVO toVO(SalesReturnBillPO bill){
-        String date = bill.getDate(),
-               time = bill.getTime(),
-               id = bill.getId(),
-               operator = bill.getOperator();
-        int state = bill.getState();
-        String customerId = bill.getCustomerId(),
-               customerName = new CustomerBL_stub()
-                   .getCustomer(customerId).getName(),
-               remark = bill.getRemark(),
-               originalSBId = bill.getOriginalSBId();
-        double discountRate = getDiscountRate(originalSBId),
-               originalSum = bill.getOriginalSum(),
-               sum = bill.getReturnSum();
-        String[] columnName = {"商品编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
-        ArrayList<SalesItemsPO> items = bill.getSalesReturnBillItems();
-        String[][] data = new String[items.size()][];
-        for(int i = 0; i < items.size(); i++){
-            data[i] = getArray(items.get(i));
-        }
-        MyTableModel model = new MyTableModel(data, columnName);
-        return new SalesReturnBillVO(date, time, id, operator
-            , state, customerId, customerName, model, remark
-            , originalSBId, discountRate, originalSum, sum);
-    }
+    
 
     private SalesItemsPO getItem(String[] data){
         String id = data[0], remark = data[7];
@@ -186,25 +150,6 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
             id, remark, num, price, sum);
     }
 
-    private String[] getArray(SalesItemsPO item){
-        String id = item.getComId();
-        CommodityVO commodity = new CommodityBL().getCommodity(id);
-        String name = commodity.getName(),
-               type = commodity.getType(),
-               store = commodity.getStore(),
-               remark = item.getComRemark();
-        double price = item.getComPrice(), 
-               sum = item.getComSum();
-        int num = item.getComQuantity();
-        return new String[]{
-                id, name, type, store, price + ""
-                , num + "", sum + "", remark
-        };
-    }
-
-    private double getDiscountRate(String salesBillId){
-        SalesBillVO salesBill = new SalesBillBL().getBill(salesBillId);
-        return salesBill.getSum() / salesBill.getBeforeDiscount();
-    }
+    
 
 }

@@ -11,6 +11,7 @@ import po.billpo.BillPO;
 import po.billpo.PaymentBillPO;
 import po.billpo.TransferItem;
 import presentation.tools.Timetools;
+import rmi.Rmi;
 import vo.billvo.BillVO;
 import vo.billvo.PaymentBillVO;
 
@@ -19,7 +20,7 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
 	private PaymentBillDataService paymentBillDataService;
 	
 	public PaymentBillBL() {
-		paymentBillDataService = new PaymentBillDs_stub();//Rmi.getRemote(ReceiptBillDataService.class);
+		paymentBillDataService = Rmi.flag ? Rmi.getRemote(PaymentBillDataService.class) : new PaymentBillDs_stub();
 	}
 	
 	@Override
@@ -61,18 +62,7 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
             return false;
         }
 	}
-
-	@Override
-	public PaymentBillVO getBill(String id) {
-		try{
-            PaymentBillPO bill = paymentBillDataService.getBillById(id);
-            return BillTools.toPaymentBillVO(bill);
-        }catch(RemoteException e){
-            e.printStackTrace();
-            return null;
-        }
-	}
-
+	
 	@Override
 	public boolean offsetBill(String id){
 	    try{

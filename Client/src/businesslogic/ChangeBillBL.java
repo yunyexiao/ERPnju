@@ -64,18 +64,6 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService{
 	}
 
 	@Override
-	public ChangeBillVO getBill(String id) {
-		ChangeBillPO bill;
-		try {
-			bill = changeBillDS.getBillById(id);
-			return BillTools.toChangeBillVO(bill);
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	@Override
 	public boolean offsetBill(String id){
 	    try{
             ChangeBillPO bill = changeBillDS.getBillById(id);
