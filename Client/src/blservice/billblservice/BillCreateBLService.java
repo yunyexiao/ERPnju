@@ -1,6 +1,6 @@
 package blservice.billblservice;
 
-public interface BillBLService {
+public interface BillCreateBLService {
 
 	/**
 	 * 返回完整的Id[XXX-yyyyMMdd-00000]
