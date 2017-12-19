@@ -42,34 +42,34 @@ public class BillDs_stub implements BillDataService {
 		ArrayList<ChangeItem> commodityList = new ArrayList<ChangeItem>();
 		commodityList.add(new ChangeItem("000002", 100, 80));
 		commodityList.add(new ChangeItem("000003", 20, 10));
-		return new ChangeBillPO("20171103", "16:19:31","00001","0001", BillPO.SAVED, false, commodityList);
+		return new ChangeBillPO("20171103", "16:19:31","00001","0001", BillPO.PASS, false, commodityList);
 	}
 	@Override
 	public PurchaseBillPO getPurchaseBill(String id) {
 		ArrayList<SalesItemsPO> items1 = new ArrayList<>();
         items1.add(new SalesItemsPO("000001", "", 50, 100, 5000));
         items1.add(new SalesItemsPO("000002", "", 100, 100, 10000));
-        return new PurchaseBillPO( "20171205", "19:23:55", "12345", null, BillPO.PASS, null, null, 15000, items1);
+        return new PurchaseBillPO( "20171205", "19:23:55", "00002", "0002", BillPO.PASS, "000002", "beizhu", 15000, items1);
 	}
 	@Override
 	public PurchaseReturnBillPO getPurchaseReturnBill(String id) {
 		ArrayList<SalesItemsPO> items2 = new ArrayList<>();
         items2.add(new SalesItemsPO("000003", "", 10, 60.0, 600.0));
         items2.add(new SalesItemsPO("000004", "", 50, 80.0, 4000.0));
-        return new PurchaseReturnBillPO("20171213", "18:33:47", "01921", "0007", BillPO.COMMITED, "000003", "", 4600.0, items2);
+        return new PurchaseReturnBillPO("20171213", "18:33:47", "01921", "0002", BillPO.PASS, "000001", "", 4600.0, items2);
 	}
 	@Override
 	public SalesBillPO getSalesBill(String id) {
 		ArrayList<SalesItemsPO> items3 = new ArrayList<>();
         items3.add(new SalesItemsPO("000004", "", 100, 100, 10000));
         items3.add(new SalesItemsPO("000003", "", 200, 200, 40000));
-        return new SalesBillPO("20171208", "11:24:51", "32100", null, BillPO.COMMITED, null, "rarara", null, "12300", 50000, 1000, 1000, 48000, items3);
+        return new SalesBillPO("20171208", "11:24:51", "32100", "0002", BillPO.PASS, "000004", "rarara", null, "12300", 50000, 1000, 1000, 48000, items3);
 	}
 	@Override
 	public SalesReturnBillPO getSalesReturnBill(String id) {
 		ArrayList<SalesItemsPO> items1 = new ArrayList<>();
         items1.add(new SalesItemsPO("000001", "", 100, 50.0, 5000.0));
         items1.add(new SalesItemsPO("000002", "", 20, 100.0, 2000.0));
-        return new SalesReturnBillPO("20171209", "21:03:23", "00123", "0002", BillPO.PASS,"000001", "", "", "00012", 7000.0, 6800.0, items1);
+        return new SalesReturnBillPO("20171209", "21:03:23", "00123", "0002", BillPO.PASS,"000003", "", "", "00012", 7000.0, 6800.0, items1);
 	}
 }
