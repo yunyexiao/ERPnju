@@ -41,7 +41,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		operatorField.setText(this.getUser().getName());
 	}
 
-	public SalesBillPanel(UserVO user, SalesBillVO bill, ActionListener closeListener) {
+	public SalesBillPanel(UserVO user, ActionListener closeListener,  SalesBillVO bill) {
 		super(user, closeListener, bill);
 		if(!editable){
 		    discountField.setEditable(false);

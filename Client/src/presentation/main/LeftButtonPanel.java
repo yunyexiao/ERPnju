@@ -19,6 +19,7 @@ import businesslogic.CommodityBL;
 import businesslogic.CustomerBL;
 import businesslogic.UserBL;
 import layout.TableLayout;
+import presentation.analysisui.ViewBusinessHistoryPanel;
 import presentation.bill.BillExaminePanel;
 import presentation.billui.CashCostBillPanel;
 import presentation.billui.ChangeBillPanel;
@@ -109,17 +110,17 @@ class LeftButtonPanel extends JPanel{
 			addButton("制定现金费用单", e -> mw.changePanel(new CashCostBillPanel(user, closeListener)));
 			addButton("查看销售明细表", new Listener_stub());
 			addButton("查看经营状况表", new Listener_stub());
-			addButton("查看经营历程表", new Listener_stub());
+			addButton("查看经营历程表", e -> mw.changePanel(new ViewBusinessHistoryPanel(closeListener)));
 			addButton("期初建账", e -> mw.changePanel(new InitPanel(mw)));
 			addButton("查看日志", e -> mw.changePanel(new LogPanel(mw)));		
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.GM) {
-			addButton("审批单据", e -> mw.changePanel(new BillExaminePanel(mw)));
+			addButton("审批单据", e -> mw.changePanel(new BillExaminePanel(mw,closeListener)));
 			addButton("制定促销策略", new Listener_stub());
 			addButton("查看销售明细表", new Listener_stub());
 			addButton("查看经营状况表", new Listener_stub());
-			addButton("查看经营历程表", new Listener_stub());
+			addButton("查看经营历程表", e -> mw.changePanel(new ViewBusinessHistoryPanel(closeListener)));
 			addButton("查看日志", e -> mw.changePanel(new LogPanel(mw)));		
 			addButton("退出", new CloseListener());
 		}

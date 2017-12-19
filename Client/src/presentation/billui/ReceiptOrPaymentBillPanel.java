@@ -26,6 +26,7 @@ import presentation.component.choosewindow.CustomerChooseWin;
 import vo.CustomerVO;
 import vo.UserVO;
 import vo.billvo.BillVO;
+import vo.billvo.PaymentBillVO;
 import vo.billvo.ReceiptBillVO;
 
 public class ReceiptOrPaymentBillPanel extends BillPanel {
@@ -43,7 +44,15 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 		this.operaterField.setText(this.getUser().getName());
 	}
 
-	public ReceiptOrPaymentBillPanel(UserVO user, ReceiptBillVO bill, ActionListener closeListener) {
+	public ReceiptOrPaymentBillPanel(UserVO user, ActionListener closeListener, ReceiptBillVO bill) {
+		super(user, closeListener);
+		billIdField.setText(bill.getAllId());
+        operaterField.setText(bill.getOperator());
+        customerIdField.setText(bill.getCustomerId());
+        transferListTable.setModel(bill.getTableModel());
+	}
+	
+	public ReceiptOrPaymentBillPanel(UserVO user, ActionListener closeListener, PaymentBillVO bill) {
 		super(user, closeListener);
 		billIdField.setText(bill.getAllId());
         operaterField.setText(bill.getOperator());

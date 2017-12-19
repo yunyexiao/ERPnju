@@ -50,7 +50,7 @@ public class ChangeBillPanel extends BillPanel {
 	 * @param bill
 	 * @param closeListener
 	 */
-	public ChangeBillPanel(UserVO user, ChangeBillVO bill, ActionListener closeListener) {
+	public ChangeBillPanel(UserVO user, ActionListener closeListener, ChangeBillVO bill) {
 		super(user, closeListener);
 		changeBillBL = new ChangeBillBL(bill.getFlag());
 		billIdField.setText(bill.getAllId());

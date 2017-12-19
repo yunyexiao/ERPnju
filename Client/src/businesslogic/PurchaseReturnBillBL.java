@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import bl_stub.CustomerBL_stub;
+import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseReturnBillBLService;
 import blservice.infoservice.GetCommodityInterface;
 import dataservice.PurchaseReturnBillDataService;
 import ds_stub.PurchaseReturnBillDs_stub;
 import po.billpo.BillPO;
+import po.billpo.PaymentBillPO;
 import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
@@ -18,10 +20,11 @@ import presentation.tools.Timetools;
 import vo.CommodityVO;
 import vo.CustomerVO;
 import vo.billvo.BillVO;
+import vo.billvo.PaymentBillVO;
 import vo.billvo.PurchaseReturnBillVO;
 
 
-public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOperationService {
+public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOperationService, BillExamineService {
     
     private PurchaseReturnBillDataService purchaseReturnBillDs;
 
@@ -169,6 +172,34 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
                 , c.getStore(), price + "", num + "", sum + ""
                 , item.getComRemark()};
     }
+
+	@Override
+	public boolean examineBill(String billId) {
+        try{
+            PurchaseReturnBillPO billPO = purchaseReturnBillDs.getBillById(billId);
+            PurchaseReturnBillVO billVO = toVO(billPO);
+            billPO.setState(3);
+            billVO.setState(3);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
+
+	@Override
+	public boolean notPassBill(String billId) {
+        try{
+            PurchaseReturnBillPO billPO = purchaseReturnBillDs.getBillById(billId);
+            PurchaseReturnBillVO billVO = toVO(billPO);
+            billPO.setState(4);
+            billVO.setState(4);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
 
 
 }

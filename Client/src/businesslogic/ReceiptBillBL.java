@@ -3,18 +3,21 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.ReceiptBillBLService;
 import dataservice.ReceiptBillDataService;
 import ds_stub.ReceiptBillDs_stub;
 import po.billpo.BillPO;
+import po.billpo.PurchaseReturnBillPO;
 import po.billpo.ReceiptBillPO;
 import po.billpo.TransferItem;
 import presentation.tools.Timetools;
 import vo.billvo.BillVO;
+import vo.billvo.PurchaseReturnBillVO;
 import vo.billvo.ReceiptBillVO;
 
-public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService{
+public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService, BillExamineService{
 
 	private ReceiptBillDataService receiptBillDataService;
 	
@@ -118,4 +121,32 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
             , bill.getId(), bill.getOperator(), bill.getState()
             , bill.getCustomerId(), items, sum);
     }
+
+	@Override
+	public boolean examineBill(String billId) {
+        try{
+            ReceiptBillPO billPO = receiptBillDataService.getBillById(billId);
+            ReceiptBillVO billVO = BillTools.toReceiptBillVO(billPO);
+            billPO.setState(3);
+            billVO.setState(3);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
+
+	@Override
+	public boolean notPassBill(String billId) {
+        try{
+            ReceiptBillPO billPO = receiptBillDataService.getBillById(billId);
+            ReceiptBillVO billVO = BillTools.toReceiptBillVO(billPO);
+            billPO.setState(4);
+            billVO.setState(4);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
 }

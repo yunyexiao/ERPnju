@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import bl_stub.CustomerBL_stub;
+import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.SalesReturnBillBLService;
 import dataservice.SalesReturnBillDataService;
 import ds_stub.SalesReturnBillDs_stub;
 import po.billpo.BillPO;
+import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
 import po.billpo.SalesReturnBillPO;
 import presentation.component.MyTableModel;
@@ -20,7 +22,7 @@ import vo.billvo.SalesBillVO;
 import vo.billvo.SalesReturnBillVO;
 
 
-public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperationService{
+public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperationService, BillExamineService{
     
     private SalesReturnBillDataService salesReturnBillDs;
     
@@ -206,5 +208,33 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
         SalesBillVO salesBill = new SalesBillBL().getBill(salesBillId);
         return salesBill.getSum() / salesBill.getBeforeDiscount();
     }
+
+	@Override
+	public boolean examineBill(String billId) {
+        try{
+            SalesReturnBillPO billPO = salesReturnBillDs.getBillById(billId);
+            SalesReturnBillVO billVO = toVO(billPO);
+            billPO.setState(3);
+            billVO.setState(3);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
+
+	@Override
+	public boolean notPassBill(String billId) {
+        try{
+            SalesReturnBillPO billPO = salesReturnBillDs.getBillById(billId);
+            SalesReturnBillVO billVO = toVO(billPO);
+            billPO.setState(4);
+            billVO.setState(4);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
 
 }

@@ -5,23 +5,26 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import bl_stub.CustomerBL_stub;
+import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.SalesBillBLService;
 import dataservice.SalesBillDataService;
 import ds_stub.SalesBillDs_stub;
 import po.billpo.BillPO;
+import po.billpo.ReceiptBillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
 import presentation.tools.Timetools;
 import vo.CommodityVO;
 import vo.billvo.BillVO;
+import vo.billvo.ReceiptBillVO;
 import vo.billvo.SalesBillVO;
 
 /**
  * @author ã¢Ò¶Ïö
  */
-public class SalesBillBL implements SalesBillBLService, BillOperationService {
+public class SalesBillBL implements SalesBillBLService, BillOperationService, BillExamineService {
     
     private SalesBillDataService salesBillDs;
     
@@ -248,5 +251,33 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService {
                 id, name, type, store, price, num, sum, remark
         };
     }
+
+	@Override
+	public boolean examineBill(String billId) {
+        try{
+            SalesBillPO billPO = salesBillDs.getBillById(billId);
+            SalesBillVO billVO = toVO(billPO);
+            billPO.setState(3);
+            billVO.setState(3);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
+
+	@Override
+	public boolean notPassBill(String billId) {
+        try{
+            SalesBillPO billPO = salesBillDs.getBillById(billId);
+            SalesBillVO billVO = toVO(billPO);
+            billPO.setState(4);
+            billVO.setState(4);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
 
 }
