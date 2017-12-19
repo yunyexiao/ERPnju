@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import dataservice.BillDataService;
 import po.UserPO;
 import po.billpo.BillPO;
+import po.billpo.CashCostBillPO;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
+import po.billpo.PaymentBillPO;
 import po.billpo.PurchaseBillPO;
 import po.billpo.PurchaseReturnBillPO;
+import po.billpo.ReceiptBillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
 import po.billpo.SalesReturnBillPO;
@@ -71,5 +74,23 @@ public class BillDs_stub implements BillDataService {
         items1.add(new SalesItemsPO("000001", "", 100, 50.0, 5000.0));
         items1.add(new SalesItemsPO("000002", "", 20, 100.0, 2000.0));
         return new SalesReturnBillPO("20171209", "21:03:23", "00123", "0002", BillPO.PASS,"000003", "", "", "00012", 7000.0, 6800.0, items1);
+	}
+
+	@Override
+	public CashCostBillPO getCashCostBillPO(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PaymentBillPO getPaymentBillPO(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ReceiptBillPO getReceiptBillPO(String id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
