@@ -28,7 +28,7 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     
     private PurchaseReturnBillBLService purchaseReturnBl = new PurchaseReturnBillBL_stub();
     private JTextField originalPBIdField;
-    private JButton purchaseBillChooseButton, customerChooseButton;
+    private JButton purchaseBillChooseButton;
     private PurchaseBillVO originalPB;
 
     public PurchaseReturnBillPanel(UserVO user, ActionListener closeListener) {

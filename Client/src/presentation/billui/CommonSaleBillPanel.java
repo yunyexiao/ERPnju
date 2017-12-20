@@ -22,7 +22,6 @@ import presentation.tools.DoubleField;
 import presentation.tools.InputCheck;
 import vo.CustomerVO;
 import vo.UserVO;
-import vo.billvo.BillVO;
 import vo.billvo.MarketBillVO;
 
 /**
@@ -34,7 +33,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 
     protected JTextField billIdField, operatorField, customerIdField, customerNameField, remarkField;
     protected DoubleField sumField;
-    private JButton customerChooseButton, goodsChooseButton, goodsDeleteButton;
+    protected JButton customerChooseButton, goodsChooseButton, goodsDeleteButton;
 	protected JTable goodsListTable;
 	
 	private GetUserInterface userInfo = new UserBL();
@@ -44,7 +43,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
     }
     
     public CommonSaleBillPanel(UserVO user, ActionListener closeListener, MarketBillVO bill){
-        super(user, closeListener);
+        super(user, closeListener, bill);
         billIdField.setText(bill.getAllId());
         operatorField.setText(userInfo.getUser(bill.getOperator()).getName());
         customerIdField.setText(bill.getCustomerId());
@@ -52,7 +51,6 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         remarkField.setText(bill.getRemark());
         sumField.setText(bill.getSum() + "");
         goodsListTable.setModel(bill.getModel());
-        if (bill.getState() == BillVO.PASS) setEditable(false);
     }
 
     @Override
@@ -78,8 +76,9 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         else return true;
         return false;
     }
-
+    @Override
     protected void setEditable(boolean b) {
+    	super.setEditable(b);
     	customerChooseButton.setEnabled(b);
     	goodsChooseButton.setEnabled(b);
     	goodsDeleteButton.setEnabled(b);

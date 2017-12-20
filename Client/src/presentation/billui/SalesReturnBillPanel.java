@@ -32,7 +32,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     private SalesBillVO originalSB;
     private JTextField originalSBIdField;
     private DoubleField discountRateField, finalSumField;
-    private JButton salesBillChooseButton, customerChooseButton;
+    private JButton salesBillChooseButton;
 
     public SalesReturnBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
