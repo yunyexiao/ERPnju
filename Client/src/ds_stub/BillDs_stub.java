@@ -88,7 +88,7 @@ public class BillDs_stub implements BillDataService {
 		items1.add(new CashCostItem("香蕉君", 10000, "买香蕉"));
 		items1.add(new CashCostItem("魔男", 12345, "去幻想♂乡"));
 		items1.add(new CashCostItem("亚非拉", 1234567, "有了金坷垃，才能种庄稼！"));
-		return new CashCostBillPO("2017-12-07", "11:03:23", "00023", "0003", BillPO.COMMITED,"6209111100001111", items1, 22345);
+		return new CashCostBillPO("20171207", "11:03:23", "00023", "0003", BillPO.COMMITED,"6209111100001111", items1, 22345);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class BillDs_stub implements BillDataService {
         items1.add(new TransferItem("110", 10000, "赎金"));
 		items1.add(new TransferItem("119", 12345, "大保健费用"));
 		items1.add(new TransferItem("404", 127, "该内容涉嫌违规，已被删除"));
-		return new PaymentBillPO("2017-12-06", "23:19:16", "23333", "0003", BillPO.COMMITED,"000002",  items1, 227);
+		return new PaymentBillPO("20171206", "23:19:16", "23333", "0003", BillPO.COMMITED,"000002",  items1, 227);
 	}
 
 	@Override
@@ -105,6 +105,6 @@ public class BillDs_stub implements BillDataService {
 		ArrayList<TransferItem> items1 = new ArrayList<>();
         items1.add(new TransferItem("110", 10000, "赎金"));
         items1.add(new TransferItem("路边社", 100, "无"));
-		return new ReceiptBillPO("2017-12-05", "07:10:11", "00123", "0002", BillPO.COMMITED,"000001",  items1, 22345);
+		return new ReceiptBillPO("20171205", "07:10:11", "00123", "0002", BillPO.COMMITED,"000001",  items1, 22345);
 	}
 }

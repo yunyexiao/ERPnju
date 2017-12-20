@@ -15,10 +15,10 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-import bl_stub.PaymentBillBL_stub;
-import bl_stub.ReceiptBillBL_stub;
 import blservice.billblservice.PaymentBillBLService;
 import blservice.billblservice.ReceiptBillBLService;
+import businesslogic.PaymentBillBL;
+import businesslogic.ReceiptBillBL;
 import layout.TableLayout;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
@@ -31,10 +31,11 @@ import vo.billvo.ReceiptBillVO;
 
 public class ReceiptOrPaymentBillPanel extends BillPanel {
 
-	private ReceiptBillBLService receiptBillBL = new ReceiptBillBL_stub();
-	private PaymentBillBLService paymentBillBL = new PaymentBillBL_stub();
+	private ReceiptBillBLService receiptBillBL = new ReceiptBillBL();
+	private PaymentBillBLService paymentBillBL = new PaymentBillBL();
 
 	private JTextField billIdField, customerIdField, customerNameField, operaterField, sumField;
+	private JButton customerChooseButton, transferChooseButton, transferDeleteButton;
 	private JTable transferListTable;
 	private JRadioButton receiptButton, paymentButton;
 	
@@ -45,32 +46,35 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 	}
 
 	public ReceiptOrPaymentBillPanel(UserVO user, ActionListener closeListener, ReceiptBillVO bill) {
-		super(user, closeListener);
+		super(user, closeListener, bill);
+		receiptButton.setSelected(true);
 		billIdField.setText(bill.getAllId());
         operaterField.setText(bill.getOperator());
         customerIdField.setText(bill.getCustomerId());
         transferListTable.setModel(bill.getTableModel());
+        sumUp();
 	}
 	
 	public ReceiptOrPaymentBillPanel(UserVO user, ActionListener closeListener, PaymentBillVO bill) {
-		super(user, closeListener);
+		super(user, closeListener, bill);
+		paymentButton.setSelected(true);
 		billIdField.setText(bill.getAllId());
         operaterField.setText(bill.getOperator());
         customerIdField.setText(bill.getCustomerId());
         transferListTable.setModel(bill.getTableModel());
+        sumUp();
 	}
 	
 	@Override
 	protected void initBillPanel() {
 		try{
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");//Nimbus风格，jdk6 update10版本以后的才会出现
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		
 		JScrollPane transferListPane;
 		JPanel headPanel, customerInfoPanel,centerPanel,transferButtonPanel;
-		JButton customerChooseButton, transferChooseButton, transferDeleteButton;
 		
 		headPanel=new JPanel();
 		double firstPanelSize[][]={
@@ -168,7 +172,16 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 		billPanel.add(customerInfoPanel, "0,2");
 		billPanel.add(centerPanel,"0,3");
 	}
-
+	@Override
+	protected void setEditable(boolean b) {
+		super.setEditable(b);
+		customerChooseButton.setEnabled(b);
+		transferChooseButton.setEnabled(b);
+		transferDeleteButton.setEnabled(b);
+		receiptButton.setEnabled(b);
+		paymentButton.setEnabled(b);
+	}
+	
 	private void addItem(){
         String[] newRow = new InputTransferItemInfoWin().getRowData();
         if(newRow != null) {

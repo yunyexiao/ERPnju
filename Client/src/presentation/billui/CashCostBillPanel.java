@@ -29,6 +29,7 @@ public class CashCostBillPanel extends BillPanel {
 	private CashCostBillBLService cashCostBillBL = new CashCostBillBL();
 	
 	private JTextField billIdField, operatorField, accountIdField, sumField;
+	private JButton accountChooseButton, itemChooseButton, itemDeleteButton;
 	private JTable itemListTable;
 	
 	public CashCostBillPanel(UserVO user, ActionListener closeListener) {
@@ -38,11 +39,12 @@ public class CashCostBillPanel extends BillPanel {
 	}
 
 	public CashCostBillPanel(UserVO user, ActionListener closeListener, CashCostBillVO cashCostBill) {
-		super(user, closeListener);
+		super(user, closeListener, cashCostBill);
         billIdField.setText(cashCostBill.getAllId());
         operatorField.setText(cashCostBill.getOperator());
         accountIdField.setText(cashCostBill.getAccountId());
         itemListTable.setModel(cashCostBill.getTableModel());
+        sumUp();
 	}
 	
 	@Override
@@ -55,7 +57,6 @@ public class CashCostBillPanel extends BillPanel {
 		
 		JScrollPane itemListPane;
 		JPanel headPanel, accountInfoPanel, centerPanel, itemButtonPanel;
-		JButton accountChooseButton, itemChooseButton, itemDeleteButton;
 		
 		double firstPanelSize[][]={
 				{20,55,5,TableLayout.PREFERRED,20,55,5,TableLayout.PREFERRED,TableLayout.FILL},
@@ -195,7 +196,6 @@ public class CashCostBillPanel extends BillPanel {
             if (bill != null && cashCostBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
         };
 	}
-
 	@Override
 	protected boolean isCorrectable() {
 		if (itemListTable.getRowCount() == 0) new InfoWindow("没有选择条目");
@@ -203,7 +203,13 @@ public class CashCostBillPanel extends BillPanel {
 		else return true;
 		return false;
 	}
-
+	@Override
+	protected void setEditable(boolean b) {
+		super.setEditable(b);
+		accountChooseButton.setEnabled(b);
+		itemChooseButton.setEnabled(b);
+		itemDeleteButton.setEnabled(b);
+	}
 	/**
 	 * 获得单据VO
 	 * @return
