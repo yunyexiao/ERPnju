@@ -6,6 +6,7 @@ import dataservice.BillDataService;
 import po.UserPO;
 import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
+import po.billpo.CashCostItem;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
 import po.billpo.PaymentBillPO;
@@ -15,6 +16,7 @@ import po.billpo.ReceiptBillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
 import po.billpo.SalesReturnBillPO;
+import po.billpo.TransferItem;
 
 public class BillDs_stub implements BillDataService {
 
@@ -32,10 +34,14 @@ public class BillDs_stub implements BillDataService {
 			commodityList.add(new ChangeItem("000002", 60, 80));
 			list.add(new ChangeBillPO("20171105", "11:19:31","00001","0001", BillPO.SAVED, true, commodityList));
 		} else if (user.getUsertype() == UserPO.UserType.SALESMAN) {
-			list.add(getPurchaseBill(""));
-			list.add(getPurchaseReturnBill(""));
-			list.add(getSalesBill(""));
-			list.add(getSalesReturnBill(""));
+			list.add(getPurchaseBill(null));
+			list.add(getPurchaseReturnBill(null));
+			list.add(getSalesBill(null));
+			list.add(getSalesReturnBill(null));
+		} else if (user.getUsertype() == UserPO.UserType.ACCOUNTANT) {
+			list.add(getCashCostBill(null));
+			list.add(getPaymentBill(null));
+			list.add(getReceiptBill(null));
 		}
 		return list;
 	}
@@ -77,20 +83,28 @@ public class BillDs_stub implements BillDataService {
 	}
 
 	@Override
-	public CashCostBillPO getCashCostBillPO(String id) {
-		// TODO Auto-generated method stub
-		return null;
+	public CashCostBillPO getCashCostBill(String id) {
+		ArrayList<CashCostItem> items1 = new ArrayList<>();
+		items1.add(new CashCostItem("香蕉君", 10000, "买香蕉"));
+		items1.add(new CashCostItem("魔男", 12345, "去幻想♂乡"));
+		items1.add(new CashCostItem("亚非拉", 1234567, "有了金坷垃，才能种庄稼！"));
+		return new CashCostBillPO("2017-12-07", "11:03:23", "00023", "0003", BillPO.COMMITED,"6209111100001111", items1, 22345);
 	}
 
 	@Override
-	public PaymentBillPO getPaymentBillPO(String id) {
-		// TODO Auto-generated method stub
-		return null;
+	public PaymentBillPO getPaymentBill(String id) {
+		ArrayList<TransferItem> items1 = new ArrayList<>();
+        items1.add(new TransferItem("110", 10000, "赎金"));
+		items1.add(new TransferItem("119", 12345, "大保健费用"));
+		items1.add(new TransferItem("404", 127, "该内容涉嫌违规，已被删除"));
+		return new PaymentBillPO("2017-12-06", "23:19:16", "23333", "0003", BillPO.COMMITED,"000002",  items1, 227);
 	}
 
 	@Override
-	public ReceiptBillPO getReceiptBillPO(String id) {
-		// TODO Auto-generated method stub
-		return null;
+	public ReceiptBillPO getReceiptBill(String id) {
+		ArrayList<TransferItem> items1 = new ArrayList<>();
+        items1.add(new TransferItem("110", 10000, "赎金"));
+        items1.add(new TransferItem("路边社", 100, "无"));
+		return new ReceiptBillPO("2017-12-05", "07:10:11", "00123", "0002", BillPO.COMMITED,"000001",  items1, 22345);
 	}
 }
