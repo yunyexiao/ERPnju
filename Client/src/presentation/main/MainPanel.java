@@ -18,9 +18,11 @@ import blservice.billblservice.BillBLService;
 import businesslogic.BillBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
+import presentation.billui.CashCostBillPanel;
 import presentation.billui.ChangeBillPanel;
 import presentation.billui.PurchaseBillPanel;
 import presentation.billui.PurchaseReturnBillPanel;
+import presentation.billui.ReceiptOrPaymentBillPanel;
 import presentation.billui.SalesBillPanel;
 import presentation.billui.SalesReturnBillPanel;
 import presentation.component.MyTableModel;
@@ -86,6 +88,12 @@ public class MainPanel implements PanelInterface {
 					mainWindow.changePanel(new SalesBillPanel(user, closeListener, billBL.getSalesBill(info[1])));
 				} else if ("XSTHD".equals(type)) {
 					mainWindow.changePanel(new SalesReturnBillPanel(user, closeListener, billBL.getSalesReturnBill(info[1])));
+				} else if ("XJFYD".equals(type)) {
+					mainWindow.changePanel(new CashCostBillPanel(user, closeListener, billBL.getCashCostBill(info[1])));
+				} else if ("FKD".equals(type)) {
+					mainWindow.changePanel(new ReceiptOrPaymentBillPanel(user, closeListener, billBL.getPaymentBill(info[1])));
+				} else if ("SKD".equals(type)) {
+					mainWindow.changePanel(new ReceiptOrPaymentBillPanel(user, closeListener, billBL.getReceiptBill(info[1])));
 				}
 			});
 			double forthPanelSize[][]={
