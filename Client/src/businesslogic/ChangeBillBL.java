@@ -3,6 +3,7 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.ChangeBillBLService;
 import dataservice.ChangeBillDataService;
@@ -16,7 +17,7 @@ import rmi.Rmi;
 import vo.billvo.BillVO;
 import vo.billvo.ChangeBillVO;
 
-public class ChangeBillBL implements ChangeBillBLService, BillOperationService{
+public class ChangeBillBL implements ChangeBillBLService, BillOperationService, BillExamineService{
 
 	private ChangeBillDataService changeBillDS;
 	private boolean isOver = true;
@@ -91,6 +92,34 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService{
 	        return saveBill(copy);
 	    }
 	    return false;
+	}
+
+	@Override
+	public boolean examineBill(String billId) {
+        try{
+            ChangeBillPO billPO = changeBillDS.getBillById(billId);
+            ChangeBillVO billVO = BillTools.toChangeBillVO(billPO);
+            billPO.setState(3);
+            billVO.setState(3);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
+
+	@Override
+	public boolean notPassBill(String billId) {
+        try{
+            ChangeBillPO billPO = changeBillDS.getBillById(billId);
+            ChangeBillVO billVO = BillTools.toChangeBillVO(billPO);
+            billPO.setState(4);
+            billVO.setState(4);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
 	}
 
 }

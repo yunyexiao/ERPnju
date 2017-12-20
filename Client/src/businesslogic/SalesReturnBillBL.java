@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.SalesReturnBillBLService;
 import dataservice.SalesReturnBillDataService;
@@ -18,7 +19,7 @@ import vo.billvo.BillVO;
 import vo.billvo.SalesReturnBillVO;
 
 
-public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperationService{
+public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperationService, BillExamineService{
     
     private SalesReturnBillDataService salesReturnBillDs;
     
@@ -150,6 +151,27 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
             id, remark, num, price, sum);
     }
 
-    
+	@Override
+	public boolean examineBill(String billId) {
+        try{
+            SalesReturnBillVO billVO = BillTools.toSalesReturnBillVO(salesReturnBillDs.getBillById(billId), new BillBL());
+            billVO.setState(3);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
 
+	@Override
+	public boolean notPassBill(String billId) {
+        try{
+        	SalesReturnBillVO billVO = BillTools.toSalesReturnBillVO(salesReturnBillDs.getBillById(billId), new BillBL());
+            billVO.setState(4);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
 }

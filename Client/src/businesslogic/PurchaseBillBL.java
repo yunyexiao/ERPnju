@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseBillBLService;
 import dataservice.PurchaseBillDataService;
@@ -20,7 +21,7 @@ import vo.billvo.PurchaseBillVO;
 /**
  * @author ã¢Ò¶Ïö
  */
-public class PurchaseBillBL implements PurchaseBillBLService, BillOperationService{
+public class PurchaseBillBL implements PurchaseBillBLService, BillOperationService, BillExamineService{
     
     private PurchaseBillDataService purchaseBillDs;
 
@@ -147,6 +148,30 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
         return false;
     }
 
+    @Override
+    public boolean examineBill(String id){
+        try{
+            PurchaseBillVO billVO = BillTools.toPurchaseBillVO(purchaseBillDs.getBillById(id));
+            billVO.setState(3);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean notPassBill(String id){
+        try{
+            PurchaseBillVO billVO = BillTools.toPurchaseBillVO(purchaseBillDs.getBillById(id));
+            billVO.setState(4);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
     /**
      * This method is not intended for personal use
      */

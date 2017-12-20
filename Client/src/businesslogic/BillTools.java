@@ -178,7 +178,7 @@ public class BillTools {
 	public static CashCostBillVO toCashCostBillVO(CashCostBillPO bill) {
 		String[] columnNames = {"条目名", "金额", "备注"};
         ArrayList<CashCostItem> items = bill.getCashcostList();
-        String[][] data = new String[columnNames.length][items.size()];
+        String[][] data = new String[items.size()][columnNames.length];
         for(int i = 0; i < data.length; i++){
         	CashCostItem item = items.get(i);
             data[i] =  new String[]{item.getName(), Double.toString(item.getMoney()), item.getRemark()};
@@ -192,7 +192,7 @@ public class BillTools {
 	public static PaymentBillVO toPaymentBillVO(PaymentBillPO bill) {
         String[] columnNames = {"银行账户", "转账金额", "备注"};
         ArrayList<TransferItem> items = bill.getTransferList();
-        String[][] data = new String[columnNames.length][items.size()];
+        String[][] data = new String[items.size()][columnNames.length];
         for(int i = 0; i < data.length; i++){
         	TransferItem item = items.get(i);
             data[i] = new String[]{item.getAccountId(), Double.toString(item.getMoney()), item.getRemark()};
@@ -207,7 +207,7 @@ public class BillTools {
 	public static ReceiptBillVO toReceiptBillVO(ReceiptBillPO bill){
         String[] columnNames = {"银行账户", "转账金额", "备注"};
         ArrayList<TransferItem> items = bill.getTransferList();
-        String[][] data = new String[columnNames.length][items.size()];
+        String[][] data = new String[items.size()][columnNames.length];
         for(int i = 0; i < data.length; i++){
         	TransferItem item = items.get(i);
         	data[i] = new String[]{item.getAccountId(), Double.toString(item.getMoney()), item.getRemark()};

@@ -1,5 +1,7 @@
 package blservice.billblservice;
 
+import vo.billvo.BillVO;
+
 public interface BillExamineService {
 
 	/**
@@ -9,4 +11,5 @@ public interface BillExamineService {
 	 */
 	public boolean examineBill(String billId);
 	
+	public boolean notPassBill(String billId);
 }

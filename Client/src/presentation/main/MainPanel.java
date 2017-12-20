@@ -77,7 +77,7 @@ public class MainPanel implements PanelInterface {
 				String[] info = tabelModel.getValueAtRow(table.getSelectedRow());
 				String type = info[1].split("-")[0];
 				if ("BYD".equals(type) || "BSD".equals(type)) {
-					mainWindow.changePanel(new ChangeBillPanel(user, billBL.getChangeBill(info[1]),closeListener));
+					mainWindow.changePanel(new ChangeBillPanel(user, closeListener, billBL.getChangeBill(info[1])));
 				} else if ("JHD".equals(type)) {
 					mainWindow.changePanel(new PurchaseBillPanel(user, closeListener, billBL.getPurchaseBill(info[1])));
 				} else if ("JHTHD".equals(type)) {

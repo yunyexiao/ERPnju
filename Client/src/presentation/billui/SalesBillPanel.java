@@ -41,7 +41,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		operatorField.setText(user.getName());
 	}
 
-	public SalesBillPanel(UserVO user, ActionListener closeListener, SalesBillVO bill) {
+	public SalesBillPanel(UserVO user, ActionListener closeListener,  SalesBillVO bill) {
 		super(user, closeListener, bill);
 	}
 	

@@ -3,7 +3,6 @@ package blservice.billblservice;
 import presentation.component.MyTableModel;
 
 public interface BillSearchBLService {
-    
     MyTableModel filterInventoryBills(String from, String to, String store, String operatorId, boolean isOver);
     
     MyTableModel filterPurchaseBills(String from, String to, String customerId, String operatorId);

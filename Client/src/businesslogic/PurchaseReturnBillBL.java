@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseReturnBillBLService;
 import dataservice.PurchaseReturnBillDataService;
@@ -17,7 +18,7 @@ import vo.billvo.BillVO;
 import vo.billvo.PurchaseReturnBillVO;
 
 
-public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOperationService {
+public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOperationService, BillExamineService {
     
     private PurchaseReturnBillDataService purchaseReturnBillDs;
 
@@ -128,4 +129,28 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
             , bill.getId(), bill.getOperator(), bill.getState()
             , bill.getCustomerId(), bill.getRemark(), bill.getSum(), items);
     }
+
+	@Override
+	public boolean examineBill(String billId) {
+        try{
+            PurchaseReturnBillVO billVO = BillTools.toPurchaseReturnBillVO(purchaseReturnBillDs.getBillById(billId));
+            billVO.setState(3);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
+
+	@Override
+	public boolean notPassBill(String billId) {
+        try{
+        	 PurchaseReturnBillVO billVO = BillTools.toPurchaseReturnBillVO(purchaseReturnBillDs.getBillById(billId));
+             billVO.setState(4);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
 }

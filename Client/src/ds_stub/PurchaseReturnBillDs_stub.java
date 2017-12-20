@@ -38,6 +38,22 @@ public class PurchaseReturnBillDs_stub implements PurchaseReturnBillDataService 
             "2017-11-23", "14:38:47", "21171", "0007"
             , BillPO.PASS, "000002", "", 26000.0, items3
         ));
+        
+        ArrayList<SalesItemsPO> items4 = new ArrayList<>();
+        items4.add(new SalesItemsPO("000003", "", 10, 60.0, 600.0));
+        items4.add(new SalesItemsPO("000004", "", 50, 80.0, 4000.0));
+        BILLS.add(new PurchaseReturnBillPO(
+                "2017-12-02", "18:33:47", "01921", "0007"
+                , BillPO.COMMITED, "000003", "", 4600.0, items2
+            ));
+        
+        ArrayList<SalesItemsPO> items5 = new ArrayList<>();
+        items5.add(new SalesItemsPO("000001", "", 50, 100.0, 5000.0));
+        items5.add(new SalesItemsPO("000004", "", 70, 300.0, 21000.0));
+        BILLS.add(new PurchaseReturnBillPO(
+                "2017-12-02", "19:38:47", "21171", "0007"
+                , BillPO.COMMITED, "000002", "", 26000.0, items3
+            ));
     }
 
     @Override
@@ -67,7 +83,7 @@ public class PurchaseReturnBillDs_stub implements PurchaseReturnBillDataService 
     @Override
     public PurchaseReturnBillPO getBillById(String id) throws RemoteException {
         System.out.println("Purchase Return Bill found in database: " + id);
-        return BILLS.get(0);
+        return BILLS.get(4);
     }
 
     @Override
