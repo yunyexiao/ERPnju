@@ -134,7 +134,7 @@ public class BillTools {
             , discount, coupon, sum);
     }
     
-	public static SalesReturnBillVO toSalesReturnBillVO(SalesReturnBillPO bill){
+	public static SalesReturnBillVO toSalesReturnBillVO(SalesReturnBillPO bill, BillBL billBL){
         String date = bill.getDate(),
                time = bill.getTime(),
                id = bill.getId(),
@@ -145,8 +145,9 @@ public class BillTools {
                    .getCustomer(customerId).getName(),
                remark = bill.getRemark(),
                originalSBId = bill.getOriginalSBId();
-        double discountRate = getDiscountRate(originalSBId),
-               originalSum = bill.getOriginalSum(),
+        SalesBillVO salesBill = billBL.getSalesBill(originalSBId);
+        double discountRate = salesBill.getSum() / salesBill.getBeforeDiscount();
+        double originalSum = bill.getOriginalSum(),
                sum = bill.getReturnSum();
         String[] columnName = {"商品编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
         ArrayList<SalesItemsPO> items = bill.getSalesReturnBillItems();
@@ -168,12 +169,6 @@ public class BillTools {
             , state, customerId, customerName, model, remark
             , originalSBId, discountRate, originalSum, sum);
     }
-	
-	private static double getDiscountRate(String salesBillId){
-        SalesBillVO salesBill = new SalesBillBL().getBill(salesBillId);
-        return salesBill.getSum() / salesBill.getBeforeDiscount();
-    }
-	
 	
 	/**
 	 * 现金费用单据PO向VO的转换

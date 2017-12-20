@@ -14,11 +14,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import blservice.billblservice.BillShowService;
-import businesslogic.BillShowBL;
+import blservice.billblservice.BillBLService;
+import businesslogic.BillBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
 import presentation.billui.ChangeBillPanel;
+import presentation.billui.PurchaseBillPanel;
+import presentation.billui.PurchaseReturnBillPanel;
+import presentation.billui.SalesBillPanel;
+import presentation.billui.SalesReturnBillPanel;
 import presentation.component.MyTableModel;
 import vo.UserType;
 import vo.UserVO;
@@ -34,7 +38,7 @@ import vo.UserVO;
 public class MainPanel implements PanelInterface {
 
 	private final double[][] size = {{0.88,0.12},{0.4, 0.6}};
-	private BillShowService billShowBL;
+	private BillBLService billBL;
 	private JPanel panel= new JPanel(new TableLayout(size)); 
 	private JPanel infoPanel = new JPanel();
 	private JLabel infoLabel;
@@ -42,7 +46,7 @@ public class MainPanel implements PanelInterface {
 
 	public MainPanel(MainWindow mainWindow) {
 		UserVO user = mainWindow.getUser();
-		billShowBL = new BillShowBL();
+		billBL = new BillBL();
 		
 		infoPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		String htmltxt = "<html><span style=\"font-size:32px;\">欢迎使用灯具进销存管理系统:</span><br/> "
@@ -54,7 +58,7 @@ public class MainPanel implements PanelInterface {
 		infoPanel.setOpaque(false);
 		
 		if (user.getType() != UserType.ADMIN) {
-			MyTableModel tabelModel = billShowBL.getBillTable(user);
+			MyTableModel tabelModel = billBL.getBillTable(user);
 			table = new JTable(tabelModel);
 			table.getTableHeader().setReorderingAllowed(false);
 			JScrollPane scrollPane = new JScrollPane(table);
@@ -73,9 +77,15 @@ public class MainPanel implements PanelInterface {
 				String[] info = tabelModel.getValueAtRow(table.getSelectedRow());
 				String type = info[1].split("-")[0];
 				if ("BYD".equals(type) || "BSD".equals(type)) {
-					mainWindow.changePanel(new ChangeBillPanel(user, billShowBL.getChangeBill(info[1]),closeListener));
+					mainWindow.changePanel(new ChangeBillPanel(user, billBL.getChangeBill(info[1]),closeListener));
 				} else if ("JHD".equals(type)) {
-					
+					mainWindow.changePanel(new PurchaseBillPanel(user, closeListener, billBL.getPurchaseBill(info[1])));
+				} else if ("JHTHD".equals(type)) {
+					mainWindow.changePanel(new PurchaseReturnBillPanel(user, closeListener, billBL.getPurchaseReturnBill(info[1])));
+				} else if ("XSD".equals(type)) {
+					mainWindow.changePanel(new SalesBillPanel(user, closeListener, billBL.getSalesBill(info[1])));
+				} else if ("XSTHD".equals(type)) {
+					mainWindow.changePanel(new SalesReturnBillPanel(user, closeListener, billBL.getSalesReturnBill(info[1])));
 				}
 			});
 			double forthPanelSize[][]={
