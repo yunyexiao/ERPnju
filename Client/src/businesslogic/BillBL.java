@@ -108,7 +108,7 @@ public class BillBL implements BillBLService {
 	
 	public CashCostBillVO getCashCostBill(String id) {
 		try {
-			return BillTools.toCashCostBillVO(billDs.getCashCostBillPO(id));
+			return BillTools.toCashCostBillVO(billDs.getCashCostBill(id));
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return null;
@@ -117,7 +117,7 @@ public class BillBL implements BillBLService {
 	
 	public PaymentBillVO getPaymentBill(String id) {
 		try {
-			return BillTools.toPaymentBillVO(billDs.getPaymentBillPO(id));
+			return BillTools.toPaymentBillVO(billDs.getPaymentBill(id));
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return null;
@@ -126,7 +126,7 @@ public class BillBL implements BillBLService {
 	
 	public ReceiptBillVO getReceiptBill(String id) {
 		try {
-			return BillTools.toReceiptBillVO(billDs.getReceiptBillPO(id));
+			return BillTools.toReceiptBillVO(billDs.getReceiptBill(id));
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return null;
