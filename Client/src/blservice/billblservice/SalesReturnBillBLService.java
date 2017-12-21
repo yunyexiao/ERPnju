@@ -2,12 +2,9 @@ package blservice.billblservice;
 
 import vo.billvo.SalesReturnBillVO;
 
-public interface SalesReturnBillBLService extends BillBLService {
+public interface SalesReturnBillBLService extends BillCreateBLService {
     
     boolean saveBill(SalesReturnBillVO bill);
     
     boolean updateBill(SalesReturnBillVO bill);
-    
-    SalesReturnBillVO getBill(String id);
-
 }

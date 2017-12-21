@@ -15,6 +15,7 @@ public class CustomerDs_stub implements CustomerDataService {
 			result.add(new CustomerPO("000001","清流","11011011011","deep dark ♂ fantasy","qinliu@google.com","223300","Van",5,0,4000,0,0,true));
 			result.add(new CustomerPO("000002","浊流","11011011000","幻想♂乡","zhuoliu@163.com","223301","比利",4,0,4000,200,1000,true));
 			result.add(new CustomerPO("000003","中流","11011011101","新日暮里","zhongliu@qq.com","223302","木吉",3,1,3000,1000,1000,true));
+			result.add(new CustomerPO("000004","电子流","10011011101","新日暮里","e_flow@bilibili.com","223302","木吉",3,1,3000,1000,1000,true));
 		}
 	}
 	@Override

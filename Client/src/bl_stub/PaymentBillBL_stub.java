@@ -29,11 +29,4 @@ public class PaymentBillBL_stub implements PaymentBillBLService {
         System.out.println(bill.getId() + " has been updated");
         return true;
     }
-
-    @Override
-    public PaymentBillVO getBill(String id) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

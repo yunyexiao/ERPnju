@@ -51,6 +51,10 @@ public abstract class BillPO implements Serializable{
 	public int getState() {
 		return state;
 	}
+	
+	public void setState(int n) {
+		state = n;
+	}
 	/**
 	 * 修改此处名称->修改MainPanel中能否删除的判断
 	 * @return 单据状态的中文名称

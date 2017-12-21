@@ -30,11 +30,4 @@ public class ReceiptBillBL_stub implements ReceiptBillBLService {
         System.out.println(bill.getId() + " has been updated");
         return true;
     }
-
-    @Override
-    public ReceiptBillVO getBill(String id) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

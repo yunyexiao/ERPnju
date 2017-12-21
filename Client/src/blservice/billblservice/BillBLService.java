@@ -1,16 +1,33 @@
 package blservice.billblservice;
 
+import presentation.component.MyTableModel;
+import vo.UserVO;
+import vo.billvo.CashCostBillVO;
+import vo.billvo.ChangeBillVO;
+import vo.billvo.PaymentBillVO;
+import vo.billvo.PurchaseBillVO;
+import vo.billvo.PurchaseReturnBillVO;
+import vo.billvo.ReceiptBillVO;
+import vo.billvo.SalesBillVO;
+import vo.billvo.SalesReturnBillVO;
+
 public interface BillBLService {
 
-	/**
-	 * 返回完整的Id[XXX-yyyyMMdd-00000]
-	 * @return 下一条单据的Id
-	 */
-	public String getNewId();
-	/**
-	 * 删除一张单据（已提交状态的单据不能删除）
-	 * @param id 需要删除的单据id[应该是一个完整的id]
-	 * @return 是否删除成功
-	 */
-	public boolean deleteBill(String id);
+	public MyTableModel getBillTable(UserVO user);
+	
+	public ChangeBillVO getChangeBill(String id);
+	
+	public PurchaseBillVO getPurchaseBill(String id);
+	
+	public PurchaseReturnBillVO getPurchaseReturnBill(String id);
+	
+	public SalesBillVO getSalesBill(String id);
+	
+	public SalesReturnBillVO getSalesReturnBill(String id);
+	
+	public CashCostBillVO getCashCostBill(String id);
+	
+	public PaymentBillVO getPaymentBill(String id);
+	
+	public ReceiptBillVO getReceiptBill(String id);
 }

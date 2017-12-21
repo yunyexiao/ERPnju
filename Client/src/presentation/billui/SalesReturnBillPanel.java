@@ -32,6 +32,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     private SalesBillVO originalSB;
     private JTextField originalSBIdField;
     private DoubleField discountRateField, finalSumField;
+    private JButton salesBillChooseButton;
 
     public SalesReturnBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
@@ -45,7 +46,14 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         this.originalSBIdField.setText(bill.getOriginalSBId());
         this.finalSumField.setText(bill.getSum() + "");
     }
-    
+
+	@Override
+	protected void setEditable(boolean b) {
+		super.setEditable(b);
+		salesBillChooseButton.setEnabled(b);
+		customerChooseButton.setEnabled(b);
+	}
+	
     @Override
     protected JPanel getCustomerPanel(){
         customerIdField = new JTextField(10);
@@ -56,7 +64,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         originalSBIdField.setEditable(false);
         discountRateField = new DoubleField(1.0, 5, 1.0);
         discountRateField.setEditable(false);
-        JButton salesBillChooseButton = new JButton("选择源销售单");
+        salesBillChooseButton = new JButton("选择源销售单");
         salesBillChooseButton.addActionListener(e -> handleChooseSb());
         double[][] size = {
                 {20,45,5,70,12,100,5,60,10.0, -2.0, 10.0, -2.0
@@ -64,7 +72,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
                 {8, 25, -1.0}
         };
         JPanel customerPanel = new JPanel(new TableLayout(size));
-		JButton customerChooseButton = new JButton("选择");
+		customerChooseButton = new JButton("选择");
 		customerChooseButton.addActionListener(e -> handleChooseCustomer());
 		customerPanel.add(new JLabel(getObjectType()),"1,1");
 		customerPanel.add(customerIdField,"3,1");
@@ -121,7 +129,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
             if(response == 1) return;
             clear();
             billIdField.setText(saleReturnBl.getNewId());
-            operatorField.setText(getUser().getName());
+            operatorField.setText(user.getName());
         };
     }
 
@@ -143,7 +151,6 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
 
     @Override
     protected void sumUp(){
-        if(!editable) return;
         super.sumUp();
         double discountRate = discountRateField.getValue(),
                originalSum = sumField.getValue(),
@@ -153,7 +160,6 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
 
     @Override
     protected void handleAddItem(){
-        if(!editable) return;
         String[] newRow = new InputCommodityInfoWin().getRowData();
         if(newRow == null || newRow[5].equals("0")) return;
         // check if the sales bill contains that commodity, also check the amount
@@ -188,7 +194,6 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     }
 
     private void handleChooseSb(){
-        if(!editable) return;
         String customerId = customerIdField.getText();
         if(customerId.length() == 0){
             new InfoWindow("请先选择销售商^_^");

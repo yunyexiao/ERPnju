@@ -22,7 +22,6 @@ import presentation.tools.DoubleField;
 import presentation.tools.InputCheck;
 import vo.CustomerVO;
 import vo.UserVO;
-import vo.billvo.BillVO;
 import vo.billvo.MarketBillVO;
 
 /**
@@ -34,33 +33,24 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 
     protected JTextField billIdField, operatorField, customerIdField, customerNameField, remarkField;
     protected DoubleField sumField;
+    protected JButton customerChooseButton, goodsChooseButton, goodsDeleteButton;
 	protected JTable goodsListTable;
-	protected JLabel timeLabel;
-	protected boolean editable;
 	
 	private GetUserInterface userInfo = new UserBL();
 
     public CommonSaleBillPanel(UserVO user, ActionListener closeListener) {
         super(user, closeListener);
-        this.editable = true;
     }
     
     public CommonSaleBillPanel(UserVO user, ActionListener closeListener, MarketBillVO bill){
-        super(user, closeListener);
+        super(user, closeListener, bill);
         billIdField.setText(bill.getAllId());
         operatorField.setText(userInfo.getUser(bill.getOperator()).getName());
-//        timeLabel.setText(bill.getTime());
         customerIdField.setText(bill.getCustomerId());
         customerNameField.setText(bill.getCustomerName());
         remarkField.setText(bill.getRemark());
         sumField.setText(bill.getSum() + "");
         goodsListTable.setModel(bill.getModel());
-        if(bill.getState() == BillVO.COMMITED || bill.getState() == BillVO.PASS){
-            editable = false;
-            remarkField.setEditable(false);
-        } else {
-            editable = true;
-        }
     }
 
     @Override
@@ -86,36 +76,19 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         else return true;
         return false;
     }
-
+    @Override
+    protected void setEditable(boolean b) {
+    	super.setEditable(b);
+    	customerChooseButton.setEnabled(b);
+    	goodsChooseButton.setEnabled(b);
+    	goodsDeleteButton.setEnabled(b);
+    	remarkField.setEditable(b);
+    }
+    
     abstract protected String getObjectType();
     
     abstract protected String getTableTitle();
     
-    private void initNorth(){
-        double[][] size = {{-1.0}, {-1.0, -1.0}};
-        JPanel northPanel = new JPanel(new TableLayout(size));
-        northPanel.add(getHeader(), "0 0");
-        northPanel.add(getCustomerPanel(), "0 1");
-        
-        billPanel.add(northPanel, BorderLayout.NORTH);
-    }
-    
-    private JPanel getHeader(){
-        billIdField = new JTextField(15);
-        billIdField.setEditable(false);
-        operatorField = new JTextField(10);
-        operatorField.setEditable(false);
-		double size[][]={
-				{20,-2.0,5,-2.0,20,-2.0,5,-2.0,20.0,-2.0,5.0,-2.0,TableLayout.FILL},
-				{12,25,TableLayout.FILL}
-		};
-	    JPanel headPanel = new JPanel(new TableLayout(size));
-		headPanel.add(new JLabel("单据编号"),"1,1");
-		headPanel.add(billIdField,"3,1");
-		headPanel.add(new JLabel("操作人"),"5,1");
-		headPanel.add(operatorField,"7,1");
-		return headPanel;
-    }
     
     protected JPanel getCustomerPanel(){
         customerIdField = new JTextField(10);
@@ -127,7 +100,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 				{8,25,TableLayout.FILL}
 		};
 		JPanel customerInfoPanel=new JPanel(new TableLayout(size));
-		JButton customerChooseButton = new JButton("选择");
+		customerChooseButton = new JButton("选择");
 		customerChooseButton.addActionListener(e -> handleChooseCustomer());
 		customerInfoPanel.add(new JLabel(getObjectType()),"1,1");
 		customerInfoPanel.add(customerIdField,"3,1");
@@ -137,38 +110,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 		return customerInfoPanel;
     }
     
-    private void initCenter(){
-        String[] goodsListAttributes={"商品编号","名称","型号","仓库","单价","数量","金额","备注"};
-		goodsListTable = new JTable(new MyTableModel(null, goodsListAttributes));
-		JScrollPane goodsListPane = new JScrollPane(goodsListTable);
-
-		double size[][]={
-				{20,-1.0},
-				{10,25,5,TableLayout.FILL}
-		};
-		JPanel centerPanel = new JPanel(new TableLayout(size));
-		centerPanel.add(new JLabel(getTableTitle()),"1,1");
-		centerPanel.add(goodsListPane, "1,3");
-		
-		billPanel.add(centerPanel, BorderLayout.CENTER);
-    }
-   
-    private void initEast(){
-        double size[][]={
-                {20,TableLayout.PREFERRED,TableLayout.FILL},
-                {40.0,25,10,25,10,25,10,TableLayout.FILL},
-        };
-        JPanel goodsButtonPanel = new JPanel(new TableLayout(size));
-        JButton goodsChooseButton=new JButton("选择商品", new ImageIcon("resource/AddButton.png"));
-        goodsChooseButton.addActionListener(e -> handleAddItem());
-        JButton goodsDeleteButton=new JButton("删除商品", new ImageIcon("resource/DeleteButton.png"));
-        goodsDeleteButton.addActionListener(e -> deleteItem());
-
-        goodsButtonPanel.add(goodsChooseButton, "1,1");
-        goodsButtonPanel.add(goodsDeleteButton, "1,3");
-
-        billPanel.add(goodsButtonPanel, BorderLayout.EAST);
-    }
+    
     
     protected void initSouth(){
         remarkField = new JTextField(10);
@@ -188,24 +130,13 @@ public abstract class CommonSaleBillPanel extends BillPanel {
     }
     
     protected void handleAddItem(){
-        if(!editable) return;
         String[] newRow = new InputCommodityInfoWin().getRowData();
         if (newRow != null && !newRow[5].equals("0")) {
             addItem(newRow);
         } 
     }
     
-    private void deleteItem(){
-        if(!editable) return;
-	    int row = goodsListTable.getSelectedRow();
-	    if(row >= 0) {
-	    	((MyTableModel)goodsListTable.getModel()).removeRow(goodsListTable.getSelectedRow());
-	    	sumUp();
-	    } else new InfoWindow("请选择删除的商品");
-    }
-
     protected void handleChooseCustomer(boolean isPurchase){
-        if(!editable) return;
         CustomerVO c = new CustomerChooseWin().getCustomer();
         if(c == null) return;
         if (c.getType() == (isPurchase?0:1)) {
@@ -262,7 +193,65 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         sumUp();
        
     }
+    
+    private void initNorth(){
+        double[][] size = {{-1.0}, {-1.0, -1.0}};
+        JPanel northPanel = new JPanel(new TableLayout(size));
+        northPanel.add(getHeader(), "0 0");
+        northPanel.add(getCustomerPanel(), "0 1");
+        
+        billPanel.add(northPanel, BorderLayout.NORTH);
+    }
+    
+    private void initCenter(){
+        String[] goodsListAttributes={"商品编号","名称","型号","仓库","单价","数量","金额","备注"};
+		goodsListTable = new JTable(new MyTableModel(null, goodsListAttributes));
+		JScrollPane goodsListPane = new JScrollPane(goodsListTable);
 
+		double size[][]={
+				{20,-1.0},
+				{10,25,5,TableLayout.FILL}
+		};
+		JPanel centerPanel = new JPanel(new TableLayout(size));
+		centerPanel.add(new JLabel(getTableTitle()),"1,1");
+		centerPanel.add(goodsListPane, "1,3");
+		
+		billPanel.add(centerPanel, BorderLayout.CENTER);
+    }
+   
+    private void initEast(){
+        double size[][]={
+                {20,TableLayout.PREFERRED,TableLayout.FILL},
+                {40.0,25,10,25,10,25,10,TableLayout.FILL},
+        };
+        JPanel goodsButtonPanel = new JPanel(new TableLayout(size));
+        goodsChooseButton=new JButton("选择商品", new ImageIcon("resource/AddButton.png"));
+        goodsChooseButton.addActionListener(e -> handleAddItem());
+        goodsDeleteButton=new JButton("删除商品", new ImageIcon("resource/DeleteButton.png"));
+        goodsDeleteButton.addActionListener(e -> deleteItem());
+
+        goodsButtonPanel.add(goodsChooseButton, "1,1");
+        goodsButtonPanel.add(goodsDeleteButton, "1,3");
+
+        billPanel.add(goodsButtonPanel, BorderLayout.EAST);
+    }
+    private JPanel getHeader(){
+        billIdField = new JTextField(15);
+        billIdField.setEditable(false);
+        operatorField = new JTextField(10);
+        operatorField.setEditable(false);
+		double size[][]={
+				{20,-2.0,5,-2.0,20,-2.0,5,-2.0,20.0,-2.0,5.0,-2.0,TableLayout.FILL},
+				{12,25,TableLayout.FILL}
+		};
+	    JPanel headPanel = new JPanel(new TableLayout(size));
+		headPanel.add(new JLabel("单据编号"),"1,1");
+		headPanel.add(billIdField,"3,1");
+		headPanel.add(new JLabel("操作人"),"5,1");
+		headPanel.add(operatorField,"7,1");
+		return headPanel;
+    }
+    
     private int getRowIndex(MyTableModel model, String comId){
         for(int i = 0; i < model.getRowCount(); i++){
             String[] row = model.getValueAtRow(i);
@@ -273,4 +262,11 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         return -1;
     }
 
+    private void deleteItem(){
+	    int row = goodsListTable.getSelectedRow();
+	    if(row >= 0) {
+	    	((MyTableModel)goodsListTable.getModel()).removeRow(goodsListTable.getSelectedRow());
+	    	sumUp();
+	    } else new InfoWindow("请选择删除的商品");
+    }
 }

@@ -1,11 +1,12 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import po.billpo.SalesBillPO;
 
-public interface SalesBillDataService {
+public interface SalesBillDataService extends Remote{
 
 	/**
 	 * 每一种单据都对应一个BillData

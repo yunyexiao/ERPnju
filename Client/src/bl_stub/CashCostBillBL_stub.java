@@ -27,11 +27,4 @@ public class CashCostBillBL_stub implements CashCostBillBLService {
         System.out.println(bill.getId() + " has been saved");
         return true;
 	}
-
-	@Override
-	public CashCostBillVO getBill(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

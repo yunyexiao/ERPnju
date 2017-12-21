@@ -1,10 +1,12 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import po.billpo.ChangeBillPO;
 
-public interface ChangeBillDataService {
+public interface ChangeBillDataService extends Remote{
 
 	public ChangeBillPO getBillById(String id) throws RemoteException;
 	
@@ -17,5 +19,7 @@ public interface ChangeBillDataService {
 	 * @return
 	 */
 	public String getNewId(boolean isOver) throws RemoteException;
+	
+	ArrayList<ChangeBillPO> getBillsByDate(String from, String to) throws RemoteException;
 	
 }

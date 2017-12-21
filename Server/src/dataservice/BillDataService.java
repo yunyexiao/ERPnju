@@ -29,9 +29,9 @@ public interface BillDataService extends Remote{
 	
 	public SalesReturnBillPO getSalesReturnBill(String id) throws RemoteException;
 	
-	public CashCostBillPO getCashCostBill(String id) throws RemoteException;
+	public CashCostBillPO getCashCostBillPO(String id) throws RemoteException;
 	
-	public PaymentBillPO getPaymentBill(String id) throws RemoteException;
+	public PaymentBillPO getPaymentBillPO(String id) throws RemoteException;
 	
-	public ReceiptBillPO getReceiptBill(String id) throws RemoteException;
+	public ReceiptBillPO getReceiptBillPO(String id) throws RemoteException;
 }

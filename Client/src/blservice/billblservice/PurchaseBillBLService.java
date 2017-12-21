@@ -3,13 +3,11 @@ package blservice.billblservice;
 import presentation.component.MyTableModel;
 import vo.billvo.PurchaseBillVO;
 
-public interface PurchaseBillBLService extends BillBLService {
+public interface PurchaseBillBLService extends BillCreateBLService {
     
     boolean saveBill(PurchaseBillVO bill);
     
     boolean updateBill(PurchaseBillVO bill);
-    
-    PurchaseBillVO getBill(String id);
     
     MyTableModel getFinishedBills(String customerId);
     

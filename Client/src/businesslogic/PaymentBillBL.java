@@ -2,7 +2,9 @@ package businesslogic;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
+import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PaymentBillBLService;
 import dataservice.PaymentBillDataService;
@@ -11,31 +13,40 @@ import po.billpo.BillPO;
 import po.billpo.PaymentBillPO;
 import po.billpo.TransferItem;
 import presentation.tools.Timetools;
+import rmi.Rmi;
 import vo.billvo.BillVO;
 import vo.billvo.PaymentBillVO;
 
-public class PaymentBillBL implements PaymentBillBLService, BillOperationService{
+public class PaymentBillBL implements PaymentBillBLService, BillOperationService, BillExamineService{
 
 	private PaymentBillDataService paymentBillDataService;
 	
 	public PaymentBillBL() {
-		paymentBillDataService = new PaymentBillDs_stub();//Rmi.getRemote(ReceiptBillDataService.class);
+		paymentBillDataService = Rmi.flag ? Rmi.getRemote(PaymentBillDataService.class) : new PaymentBillDs_stub();
 	}
 	
 	@Override
 	public String getNewId() {
-		 try {
-	    		return paymentBillDataService.getNewId();
-	        } catch (RemoteException e) {
-	            e.printStackTrace();
-	            return null;
-	        }
+        try {
+        	Calendar c = Calendar.getInstance();
+            String date = c.get(Calendar.YEAR) + ""
+                        + c.get(Calendar.MONTH) + ""
+                        + c.get(Calendar.DATE);
+            return "FKD-" + date + "-" + paymentBillDataService.getNewId();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
 	}
 
 	@Override
 	public boolean deleteBill(String id) {
 		try{
-			return paymentBillDataService.deleteBill(id);
+            PaymentBillPO bill = paymentBillDataService.getBillById(id);
+            if(bill.getState() == BillPO.PASS) return false;
+            
+            int length = id.length();
+            return paymentBillDataService.deleteBill(id.substring(length - 5, length));
 		}catch(RemoteException e){
 			e.printStackTrace();
 			return false;
@@ -61,18 +72,7 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
             return false;
         }
 	}
-
-	@Override
-	public PaymentBillVO getBill(String id) {
-		try{
-            PaymentBillPO bill = paymentBillDataService.getBillById(id);
-            return BillTools.toPaymentBillVO(bill);
-        }catch(RemoteException e){
-            e.printStackTrace();
-            return null;
-        }
-	}
-
+	
 	@Override
 	public boolean offsetBill(String id){
 	    try{
@@ -118,4 +118,32 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
             , bill.getId(), bill.getOperator(), bill.getState()
             , bill.getCustomerId(), items, sum);
     }
+
+	@Override
+	public boolean examineBill(String billId) {
+        try{
+            PaymentBillPO billPO = paymentBillDataService.getBillById(billId);
+            PaymentBillVO billVO = BillTools.toPaymentBillVO(billPO);
+            billPO.setState(3);
+            billVO.setState(3);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
+
+	@Override
+	public boolean notPassBill(String billId) {
+        try{
+            PaymentBillPO billPO = paymentBillDataService.getBillById(billId);
+            PaymentBillVO billVO = BillTools.toPaymentBillVO(billPO);
+            billPO.setState(4);
+            billVO.setState(4);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
 }

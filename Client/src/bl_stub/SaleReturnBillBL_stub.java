@@ -30,10 +30,4 @@ public class SaleReturnBillBL_stub implements SalesReturnBillBLService {
         System.out.println("sale return bill updated: " + bill.getAllId());
         return true;
     }
-
-    @Override
-    public SalesReturnBillVO getBill(String id) {
-        return null;
-    }
-
 }

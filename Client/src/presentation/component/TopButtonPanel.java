@@ -77,4 +77,17 @@ public class TopButtonPanel {
 		}
 		return result;
 	}
+	/**
+	 * 将按钮栏设置为不可用，最后一个按钮除外（一般是关闭按钮）
+	 * @param b
+	 */
+	public void setEnable(Boolean b) {
+		int n = panel.getComponentCount();
+		for(int i = 0; i < n; i++) {
+			panel.getComponent(i).setEnabled(b);
+		}
+		panel.getComponent(n-1).setEnabled(true);
+		panel.updateUI();
+		panel.repaint();
+	}
 }
