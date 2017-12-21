@@ -10,11 +10,11 @@ public class BillSearchData implements BillSearchDataService{
 
 	@Override
 	public ArrayList<PurchaseBillPO> searchPurchaseBills(String fromDate, String toDate, String customerId,
-			String operatorId) throws RemoteException {
+			String operatorId,int state) throws RemoteException {
 
 		ArrayList<PurchaseBillPO> bills=new ArrayList<PurchaseBillPO>();
 		String sql=assembleSQL("PurchaseBill", fromDate, toDate, 
-				"PBSupplierID", customerId, "PBOperatorID", operatorId,"PBCondition");
+				"PBSupplierID", customerId, "PBOperatorID", operatorId,"PBCondition",state);
 			
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
@@ -57,11 +57,11 @@ public class BillSearchData implements BillSearchDataService{
 
 	@Override
 	public ArrayList<PurchaseReturnBillPO> searchPurchaseReturnBills(String fromDate, String toDate, String customerId,
-			String operatorId) throws RemoteException {
+			String operatorId,int state) throws RemoteException {
 
 		ArrayList<PurchaseReturnBillPO> bills=new ArrayList<PurchaseReturnBillPO>();
 		String sql=assembleSQL("PurchaseReturnBill", fromDate, toDate, 
-				"PRBSupplierID", customerId, "PRBOperatorID", operatorId,"PRBCondition");
+				"PRBSupplierID", customerId, "PRBOperatorID", operatorId,"PRBCondition",state);
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery(sql);
@@ -102,11 +102,11 @@ public class BillSearchData implements BillSearchDataService{
 	}
 
 	@Override
-	public ArrayList<SalesBillPO> searchSalesBills(String fromDate, String toDate, String customerId, String operatorId)
+	public ArrayList<SalesBillPO> searchSalesBills(String fromDate, String toDate, String customerId, String operatorId,int state)
 			throws RemoteException {
 		ArrayList<SalesBillPO> bills=new ArrayList<SalesBillPO>();
 		String sql=assembleSQL("SalesBill", fromDate, toDate, 
-				"SBCustomerID", customerId, "SBOperatorID", operatorId,"SBCondition");
+				"SBCustomerID", customerId, "SBOperatorID", operatorId,"SBCondition",state);
 		
 		try{
 			
@@ -155,11 +155,11 @@ public class BillSearchData implements BillSearchDataService{
 
 	@Override
 	public ArrayList<SalesReturnBillPO> searchSalesReturnBills(String fromDate, String toDate, String customerId,
-			String operatorId) throws RemoteException {
+			String operatorId,int state) throws RemoteException {
 		
 		ArrayList<SalesReturnBillPO> bills=new ArrayList<SalesReturnBillPO>();
 		String sql=assembleSQL("SalesReturnBill", fromDate, toDate, 
-				"SRBCustomerID", customerId, "SRBOperatorID", operatorId,"SRBCondition");
+				"SRBCustomerID", customerId, "SRBOperatorID", operatorId,"SRBCondition",state);
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery(sql);
@@ -204,10 +204,10 @@ public class BillSearchData implements BillSearchDataService{
 
 	@Override
 	public ArrayList<CashCostBillPO> searchCashCostBills(String fromDate, String toDate, String customerId,
-			String operatorId) throws RemoteException {
+			String operatorId,int state) throws RemoteException {
 		ArrayList<CashCostBillPO> bills=new ArrayList<CashCostBillPO>();
 		String sql=assembleSQL("CashCostBill", fromDate, toDate, 
-				"CCBAccountID", customerId, "CCBOperatorID", operatorId,"CCBCondition");
+				"CCBAccountID", customerId, "CCBOperatorID", operatorId,"CCBCondition",state);
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery(sql);
@@ -247,11 +247,11 @@ public class BillSearchData implements BillSearchDataService{
 
 	@Override
 	public ArrayList<PaymentBillPO> searchPaymentBills(String fromDate, String toDate, String customerId,
-			String operatorId) throws RemoteException {
+			String operatorId, int state) throws RemoteException {
 		
 		ArrayList<PaymentBillPO> bills=new ArrayList<PaymentBillPO>();
 		String sql=assembleSQL("PaymentBill", fromDate, toDate, 
-				"PBCustomerID", customerId, "PBOperatorID", operatorId,"PBCondition");
+				"PBCustomerID", customerId, "PBOperatorID", operatorId,"PBCondition",state);
 		
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
@@ -294,10 +294,10 @@ public class BillSearchData implements BillSearchDataService{
 
 	@Override
 	public ArrayList<ReceiptBillPO> searchReceiptBills(String fromDate, String toDate, String customerId,
-			String operatorId) throws RemoteException {
+			String operatorId, int state) throws RemoteException {
 		ArrayList<ReceiptBillPO> bills=new ArrayList<ReceiptBillPO>();
 		String sql=assembleSQL("ReceiptBill", fromDate, toDate, 
-				"RBCustomerID", customerId, "RBOperatorID", operatorId,"RBCondition");
+				"RBCustomerID", customerId, "RBOperatorID", operatorId,"RBCondition",state);
 		
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
@@ -340,10 +340,11 @@ public class BillSearchData implements BillSearchDataService{
 	
 		@Override
 	public ArrayList<ChangeBillPO> searchChangeBills(String fromDate, String toDate, String store, String operatorId,
-			boolean isOver) throws RemoteException {
+			boolean isOver,int state) throws RemoteException {
 			
 			ArrayList<ChangeBillPO> bills=new ArrayList<ChangeBillPO>();
-			
+		
+					
 			try{
 				
 			if(isOver){
@@ -351,7 +352,7 @@ public class BillSearchData implements BillSearchDataService{
 					String sql="SELECT * FROM InventoryOverflowBill WHERE generateTime>'"+fromDate
 							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
 							+"') AND IOBOperatorID='"+operatorId
-							+"' AND IOBCondition=3;";
+							+"' AND IOBCondition="+state+";";
 					bills=getChangeBills(sql,true);
 			    }
 				else if(store!=null&&operatorId==null){
@@ -360,14 +361,14 @@ public class BillSearchData implements BillSearchDataService{
 							+ " WHERE IORComID=ComID AND IOBID=IORID AND ComStore='"+store
 							+"' AND generateTime>'"+fromDate
 							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
-							+"' AND IOBCondition=3;";
+							+"' AND IOBCondition="+state+";";
 					bills=getChangeBills(sql,true);
 				}
 				
 				else if(store==null&&operatorId==null){
 					String sql="SELECT * FROM InventoryOverflowBill WHERE generateTime>'"+fromDate
 							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
-							+"' AND IOBCondition=3;";
+							+"' AND IOBCondition="+state+";";
 					bills=getChangeBills(sql,true);
 				}
 				else if(store!=null&&operatorId!=null){
@@ -377,7 +378,7 @@ public class BillSearchData implements BillSearchDataService{
 							+"' AND IOBOperatorID='"+operatorId
 							+"' AND generateTime>'"+fromDate
 							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
-							+"' AND IOBCondition=3;";
+							+"' AND IOBCondition=3"+state+";";
 					bills=getChangeBills(sql,true);					
 				}
 
@@ -388,7 +389,7 @@ public class BillSearchData implements BillSearchDataService{
 					String sql="SELECT * FROM InventoryLostBill WHERE generateTime>'"+fromDate
 							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
 							+"') AND ILBOperatorID='"+operatorId
-							+"' AND ILBCondition=3;";
+							+"' AND ILBCondition="+state+";";
 					bills=getChangeBills(sql,false);
 				}
 				else if(store!=null&&operatorId==null){
@@ -397,14 +398,14 @@ public class BillSearchData implements BillSearchDataService{
 							+ " WHERE ILRComID=ComID AND ILBID=ILRID AND ComStore='"+store
 							+"' AND generateTime>'"+fromDate
 							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
-							+"' AND ILBCondition=3;";
+							+"' AND ILBCondition="+state+";";
 					bills=getChangeBills(sql,false);													
 				}
 				
 				else if(store==null&&operatorId==null){
 					String sql="SELECT * FROM InventoryLostBill WHERE generateTime>'"+fromDate
 							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
-							+"' AND ILBCondition=3;";
+							+"' AND ILBCondition="+state+";";
 					
 					bills=getChangeBills(sql,false);
 				}
@@ -415,7 +416,7 @@ public class BillSearchData implements BillSearchDataService{
 							+"' AND ILBOperatorID='"+operatorId
 							+"' AND generateTime>'"+fromDate
 							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
-							+"' AND ILBCondition=3;";
+							+"' AND ILBCondition="+state+";";
 					
 					bills=getChangeBills(sql,false);
 				}		
@@ -429,28 +430,28 @@ public class BillSearchData implements BillSearchDataService{
 
 	private String assembleSQL(String tableName, String fromDate, String toDate, 
 			String optional1_Name, String optional1, String optional2_Name, String optional2,
-			String condition_Name){
+			String condition_Name,int condition){
 		String sql="";
 		if(optional1==null&&optional2!=null)
 			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
 			        +"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate
 			        +"') AND "+optional2_Name+"='"+optional2
-			        +"' AND "+condition_Name+"=3;";
+			        +"' AND "+condition_Name+"="+condition+";";
 		else if(optional1!=null&&optional2==null)
 			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
 					+"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate+
 					"') AND "+optional1_Name+"='"+optional1
-					+"' AND "+condition_Name+"=3;";
+					+"' AND "+condition_Name+"="+condition+";";
 		else if(optional1==null&&optional2==null)
 			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
 			        +"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate
-			        +"' AND "+condition_Name+"=3;";
+			        +"' AND "+condition_Name+"="+condition+";";
 		else if(optional1!=null&&optional2!=null)
 			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
 			        +"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate+
 			        "') AND "+optional1_Name+"='"+optional1
 			        +"' AND "+optional2_Name+"='"+optional2
-			        +"' AND "+condition_Name+"=3;";
+			        +"' AND "+condition_Name+"="+condition+";";
 
 		return sql;
 		
@@ -522,5 +523,6 @@ public class BillSearchData implements BillSearchDataService{
 		}		
 		return bills;		
 	}
+
 
 }
