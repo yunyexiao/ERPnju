@@ -8,6 +8,7 @@ import blservice.infoservice.GetCustomerInterface;
 import blservice.infoservice.GetUserInterface;
 import dataservice.BillSearchDataService;
 import ds_stub.BillSearchDs_stub;
+import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.ChangeBillPO;
 import po.billpo.PaymentBillPO;
@@ -35,7 +36,7 @@ public class BillSearchBL implements BillSearchBLService {
     @Override
     public MyTableModel filterInventoryBills(String from, String to, String store, String operatorId, boolean isOver) {
         try{
-            ArrayList<ChangeBillPO> bills = billSearchDs.searchChangeBills(from, to, store, operatorId); 
+            ArrayList<ChangeBillPO> bills = billSearchDs.searchChangeBills(from, to, store, operatorId, isOver, BillPO.PASS); 
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名"};
             String[][] data = new String[bills.size()][];
             String pref = isOver ? "BYD-" : "BSD-";
@@ -57,7 +58,7 @@ public class BillSearchBL implements BillSearchBLService {
     @Override
     public MyTableModel filterPurchaseBills(String from, String to, String customerId, String operatorId) {
         try{
-            ArrayList<PurchaseBillPO> bills = billSearchDs.searchPurchaseBills(from, to, customerId, operatorId);
+            ArrayList<PurchaseBillPO> bills = billSearchDs.searchPurchaseBills(from, to, customerId, operatorId, BillPO.PASS);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "进货商编号", "进货商姓名", "交易额", "备注"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
@@ -81,7 +82,7 @@ public class BillSearchBL implements BillSearchBLService {
     @Override
     public MyTableModel filterPurchaseReturnBills(String from, String to, String customerId, String operatorId) {
         try{
-            ArrayList<PurchaseReturnBillPO> bills = billSearchDs.searchPurchaseReturnBills(from, to, customerId, operatorId);
+            ArrayList<PurchaseReturnBillPO> bills = billSearchDs.searchPurchaseReturnBills(from, to, customerId, operatorId, BillPO.PASS);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "进货商编号", "进货商姓名", "交易额", "备注"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
@@ -105,7 +106,7 @@ public class BillSearchBL implements BillSearchBLService {
     @Override
     public MyTableModel filterSalesBills(String from, String to, String customerId, String operatorId) {
         try{
-            ArrayList<SalesBillPO> bills = billSearchDs.searchSalesBills(from, to, customerId, operatorId);
+            ArrayList<SalesBillPO> bills = billSearchDs.searchSalesBills(from, to, customerId, operatorId, BillPO.PASS);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "销售商编号", "销售商姓名", "交易额", "备注"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
@@ -129,7 +130,7 @@ public class BillSearchBL implements BillSearchBLService {
     @Override
     public MyTableModel filterSalesReturnBills(String from, String to, String customerId, String operatorId) {
         try{
-            ArrayList<SalesReturnBillPO> bills = billSearchDs.searchSalesReturnBills(from, to, customerId, operatorId);
+            ArrayList<SalesReturnBillPO> bills = billSearchDs.searchSalesReturnBills(from, to, customerId, operatorId, BillPO.PASS);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "销售商编号", "销售商姓名", "交易额", "备注"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
@@ -153,7 +154,7 @@ public class BillSearchBL implements BillSearchBLService {
     @Override
     public MyTableModel filterCashCostBills(String from, String to, String accountId, String operatorId) {
         try{
-            ArrayList<CashCostBillPO> bills = billSearchDs.searchCashCostBills(from, to, accountId, operatorId);
+            ArrayList<CashCostBillPO> bills = billSearchDs.searchCashCostBills(from, to, accountId, operatorId, BillPO.PASS);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "银行账户", "总额"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
@@ -176,7 +177,7 @@ public class BillSearchBL implements BillSearchBLService {
     @Override
     public MyTableModel filterPaymentBills(String from, String to, String customerId, String operatorId) {
         try{
-            ArrayList<PaymentBillPO> bills = billSearchDs.searchPaymentBills(from, to, customerId, operatorId);
+            ArrayList<PaymentBillPO> bills = billSearchDs.searchPaymentBills(from, to, customerId, operatorId, BillPO.PASS);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "客户编号", "客户姓名", "总额"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
@@ -200,7 +201,7 @@ public class BillSearchBL implements BillSearchBLService {
     @Override
     public MyTableModel filterReceiptBills(String from, String to, String customerId, String operatorId) {
         try{
-            ArrayList<PaymentBillPO> bills = billSearchDs.searchPaymentBills(from, to, customerId, operatorId);
+            ArrayList<PaymentBillPO> bills = billSearchDs.searchPaymentBills(from, to, customerId, operatorId, BillPO.PASS);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "客户编号", "客户姓名", "总额"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){

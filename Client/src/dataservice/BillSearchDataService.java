@@ -28,7 +28,7 @@ public interface BillSearchDataService extends Remote{
         , String customerId, String operatorId, int state) throws RemoteException;
 
     ArrayList<CashCostBillPO> searchCashCostBills(String fromDate, String toDate
-        , String customerId, String operatorId, int state) throws RemoteException;
+        , String accountId, String operatorId, int state) throws RemoteException;
 
     ArrayList<ChangeBillPO> searchChangeBills(String fromDate, String toDate
         , String store, String operatorId, boolean isOver,int state) throws RemoteException;
