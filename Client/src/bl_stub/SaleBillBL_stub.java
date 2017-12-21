@@ -29,13 +29,6 @@ public class SaleBillBL_stub implements SalesBillBLService {
 		System.out.println(bill.getAllId() + " has been updated");
 		return true;
 	}
-
-	@Override
-	public SalesBillVO getBill(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
     @Override
     public MyTableModel getFinishedBills() {
         // TODO Auto-generated method stub

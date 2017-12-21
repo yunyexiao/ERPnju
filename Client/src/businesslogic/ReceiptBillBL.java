@@ -3,6 +3,7 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.ReceiptBillBLService;
 import dataservice.ReceiptBillDataService;
@@ -11,15 +12,16 @@ import po.billpo.BillPO;
 import po.billpo.ReceiptBillPO;
 import po.billpo.TransferItem;
 import presentation.tools.Timetools;
+import rmi.Rmi;
 import vo.billvo.BillVO;
 import vo.billvo.ReceiptBillVO;
 
-public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService{
+public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService, BillExamineService{
 
 	private ReceiptBillDataService receiptBillDataService;
 	
 	public ReceiptBillBL() {
-		receiptBillDataService = new ReceiptBillDs_stub();//Rmi.getRemote(ReceiptBillDataService.class);
+		receiptBillDataService = Rmi.flag ? Rmi.getRemote(ReceiptBillDataService.class) : new ReceiptBillDs_stub();
 	}
 	
 	@Override
@@ -61,18 +63,7 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
             return false;
         }
 	}
-
-	@Override
-	public ReceiptBillVO getBill(String id) {
-		try{
-            ReceiptBillPO bill = receiptBillDataService.getBillById(id);
-            return BillTools.toReceiptBillVO(bill);
-        }catch(RemoteException e){
-            e.printStackTrace();
-            return null;
-        }
-	}
-
+	
 	@Override
 	public boolean offsetBill(String id){
 	    try{
@@ -118,4 +109,32 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
             , bill.getId(), bill.getOperator(), bill.getState()
             , bill.getCustomerId(), items, sum);
     }
+
+	@Override
+	public boolean examineBill(String billId) {
+        try{
+            ReceiptBillPO billPO = receiptBillDataService.getBillById(billId);
+            ReceiptBillVO billVO = BillTools.toReceiptBillVO(billPO);
+            billPO.setState(3);
+            billVO.setState(3);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
+
+	@Override
+	public boolean notPassBill(String billId) {
+        try{
+            ReceiptBillPO billPO = receiptBillDataService.getBillById(billId);
+            ReceiptBillVO billVO = BillTools.toReceiptBillVO(billPO);
+            billPO.setState(4);
+            billVO.setState(4);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
 }

@@ -22,15 +22,15 @@ public class PurchaseBillDs_stub implements PurchaseBillDataService {
         
         BILLS.add(new PurchaseBillPO(
             "2017-12-05", "19:23:55", "12345", "0007"
-            , BillPO.PASS, null, null, 15000, items1
+            , BillPO.COMMITED, "000001", "fa¡áq", 15000, items1
         ));
         
         ArrayList<SalesItemsPO> items2 = new ArrayList<>();
         items2.add(new SalesItemsPO("000003", "", 50, 200, 10000));
         
         BILLS.add(new PurchaseBillPO(
-            "2017-12-01", "08:30:02", "12000", "0002"
-            , BillPO.PASS, null, null, 10000, items2
+            "2017-12-05", "21:30:02", "12000", "0002"
+            , BillPO.COMMITED, "000002", "hello susie", 10000, items2
         ));
         
         ArrayList<SalesItemsPO> items3 = new ArrayList<>();
@@ -39,7 +39,7 @@ public class PurchaseBillDs_stub implements PurchaseBillDataService {
         
         BILLS.add(new PurchaseBillPO(
             "2017-12-08", "11:24:51", "32100", "0002"
-            , BillPO.COMMITED, null, "rarara", 50000, items3
+            , BillPO.COMMITED, "000003", "rarara", 50000, items3
         ));
         
         ArrayList<SalesItemsPO> items4 = new ArrayList<>();
@@ -47,7 +47,7 @@ public class PurchaseBillDs_stub implements PurchaseBillDataService {
         
         BILLS.add(new PurchaseBillPO(
             "2017-12-09", "12:08:21", "98765", "0007"
-            , BillPO.SAVED, null, "°Â¶÷", 3000, items4
+            , BillPO.SAVED, "000004", "°Â¶÷", 3000, items4
         ));
     }
 

@@ -48,7 +48,7 @@ public class PurchaseBillPanel extends CommonSaleBillPanel {
             if(response == 1)return;
             clear();
             billIdField.setText(purchaseBl.getNewId());
-            operatorField.setText(this.getUser().getName());
+            operatorField.setText(user.getName());
         };
     }
 

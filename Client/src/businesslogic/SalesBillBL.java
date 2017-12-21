@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import bl_stub.CustomerBL_stub;
+import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.SalesBillBLService;
 import dataservice.SalesBillDataService;
@@ -14,19 +14,19 @@ import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
 import presentation.tools.Timetools;
-import vo.CommodityVO;
+import rmi.Rmi;
 import vo.billvo.BillVO;
 import vo.billvo.SalesBillVO;
 
 /**
  * @author 恽叶霄
  */
-public class SalesBillBL implements SalesBillBLService, BillOperationService {
+public class SalesBillBL implements SalesBillBLService, BillOperationService, BillExamineService {
     
     private SalesBillDataService salesBillDs;
     
     public SalesBillBL(){
-        salesBillDs = new SalesBillDs_stub();
+        salesBillDs = Rmi.flag ? Rmi.getRemote(SalesBillDataService.class) : new SalesBillDs_stub();
     }
 
     @Override
@@ -75,16 +75,6 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService {
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
-        }
-    }
-
-    @Override
-    public SalesBillVO getBill(String id) {
-        try{
-            return toVO(salesBillDs.getBillById(id));
-        }catch(RemoteException e){
-            e.printStackTrace();
-            return null;
         }
     }
     
@@ -203,50 +193,27 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService {
             , items);
     }
     
-    private SalesBillVO toVO(SalesBillPO bill){
-        String[] columnNames = {"编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
-        ArrayList<SalesItemsPO> items = bill.getSalesBillItems();
-        String[][] data;
-        if(items == null){
-            data = null;
-        }else{
-            data = new String[items.size()][];
-            for(int i = 0; i < data.length; i++){
-                data[i] = getRow(items.get(i));
-            }
+	@Override
+	public boolean examineBill(String billId) {
+        try{
+            SalesBillVO billVO = BillTools.toSalesBillVO(salesBillDs.getBillById(billId));
+            billVO.setState(3);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
         }
-        MyTableModel model = new MyTableModel(data, columnNames);
-        String date = bill.getDate(),
-               time = bill.getTime(),
-               id = bill.getId(),
-               operatorId = bill.getOperator(),
-               cusId = bill.getCustomerId(),
-               cusName = new CustomerBL_stub().getCustomer(cusId)
-                           .getName(),
-               remark = bill.getRemark();
-        int state = bill.getState();
-        double sum = bill.getAfterDiscount(),
-               beforeDiscount = bill.getBeforeDiscount(),
-               discount = bill.getDiscount(),
-               coupon = bill.getCoupon();
-        return new SalesBillVO(date, time, id, operatorId, state
-            , cusId, cusName, model, remark, beforeDiscount
-            , discount, coupon, sum);
-    }
-    
-    private String[] getRow(SalesItemsPO item){
-        String id = item.getComId();
-        CommodityVO c = new CommodityBL().getCommodity(id);
-        String name = c.getName(),
-               type = c.getType(),
-               store = c.getStore(),
-               price = item.getComPrice() + "",
-               num = item.getComQuantity() + "",
-               sum = item.getComSum() + "",
-               remark = item.getComRemark();
-        return new String[]{
-                id, name, type, store, price, num, sum, remark
-        };
-    }
+	}
 
+	@Override
+	public boolean notPassBill(String billId) {
+        try{
+        	SalesBillVO billVO = BillTools.toSalesBillVO(salesBillDs.getBillById(billId));
+            billVO.setState(4);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
 }

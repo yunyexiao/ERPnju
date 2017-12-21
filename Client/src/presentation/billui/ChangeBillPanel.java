@@ -50,7 +50,7 @@ public class ChangeBillPanel extends BillPanel {
 	 * @param bill
 	 * @param closeListener
 	 */
-	public ChangeBillPanel(UserVO user, ChangeBillVO bill, ActionListener closeListener) {
+	public ChangeBillPanel(UserVO user, ActionListener closeListener, ChangeBillVO bill) {
 		super(user, closeListener);
 		changeBillBL = new ChangeBillBL(bill.getFlag());
 		billIdField.setText(bill.getAllId());
@@ -86,7 +86,7 @@ public class ChangeBillPanel extends BillPanel {
 		billIdField = new JTextField("");
 		setBillId(true);
 		billIdField.setEditable(false);
-		operaterField = new JTextField(getUser().getName());
+		operaterField = new JTextField(user.getName());
 		operaterField.setEditable(false);
 		headPanel.setLayout(new TableLayout(firstPanelSize));
 		headPanel.add(new JLabel("µ¥¾Ý±àºÅ"), "1,1");

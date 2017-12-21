@@ -30,11 +30,4 @@ public class PurchaseReturnBillBL_stub implements PurchaseReturnBillBLService {
         System.out.println("purchase return bill updated: " + bill.getId());
         return true;
     }
-
-    @Override
-    public PurchaseReturnBillVO getBill(String id) {
-        // TODO
-        return null;
-    }
-
 }

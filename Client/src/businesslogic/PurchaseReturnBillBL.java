@@ -4,29 +4,26 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import bl_stub.CustomerBL_stub;
+import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseReturnBillBLService;
-import blservice.infoservice.GetCommodityInterface;
 import dataservice.PurchaseReturnBillDataService;
 import ds_stub.PurchaseReturnBillDs_stub;
 import po.billpo.BillPO;
 import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesItemsPO;
-import presentation.component.MyTableModel;
 import presentation.tools.Timetools;
-import vo.CommodityVO;
-import vo.CustomerVO;
+import rmi.Rmi;
 import vo.billvo.BillVO;
 import vo.billvo.PurchaseReturnBillVO;
 
 
-public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOperationService {
+public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOperationService, BillExamineService {
     
     private PurchaseReturnBillDataService purchaseReturnBillDs;
 
     public PurchaseReturnBillBL() {
-        purchaseReturnBillDs = new PurchaseReturnBillDs_stub();
+        purchaseReturnBillDs = Rmi.flag ? Rmi.getRemote(PurchaseReturnBillDataService.class) : new PurchaseReturnBillDs_stub();
     }
 
     @Override
@@ -75,17 +72,6 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
-        }
-    }
-
-    @Override
-    public PurchaseReturnBillVO getBill(String id) {
-        try{
-            PurchaseReturnBillPO bill = purchaseReturnBillDs.getBillById(id);
-            return toVO(bill);
-        }catch(RemoteException e){
-            e.printStackTrace();
-            return null;
         }
     }
     
@@ -144,31 +130,27 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
             , bill.getCustomerId(), bill.getRemark(), bill.getSum(), items);
     }
 
-    private PurchaseReturnBillVO toVO(PurchaseReturnBillPO bill){
-        String[] columnNames = {"商品编号", "名称", "型号", "库存", "单价", "数量", "总价", "备注"};
-        ArrayList<SalesItemsPO> items = bill.getPurchaseReturnBillItems();
-        String[][] data = new String[items.size()][columnNames.length];
-        for(int i = 0; i < data.length; i++){
-            data[i] = toArray(items.get(i));
+	@Override
+	public boolean examineBill(String billId) {
+        try{
+            PurchaseReturnBillVO billVO = BillTools.toPurchaseReturnBillVO(purchaseReturnBillDs.getBillById(billId));
+            billVO.setState(3);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
         }
-        MyTableModel model = new MyTableModel(data, columnNames);
-        // TODO replace the stub with the real one
-        CustomerVO customer = new CustomerBL_stub().getCustomer(bill.getSupplierId());
-        return new PurchaseReturnBillVO(bill.getDate(), bill.getTime(), bill.getId()
-            , bill.getOperator(), bill.getState(), bill.getSupplierId()
-            , customer.getName(), model, bill.getRemark(), bill.getSum());
-    }
-    
-    private String[] toArray(SalesItemsPO item){
-        GetCommodityInterface comInfo = new CommodityBL();
-        CommodityVO c = comInfo.getCommodity(item.getComId());
-        double price = item.getComPrice();
-        int num = item.getComQuantity();
-        double sum = price * num;
-        return new String[]{c.getId(), c.getName(), c.getType()
-                , c.getStore(), price + "", num + "", sum + ""
-                , item.getComRemark()};
-    }
+	}
 
-
+	@Override
+	public boolean notPassBill(String billId) {
+        try{
+        	 PurchaseReturnBillVO billVO = BillTools.toPurchaseReturnBillVO(purchaseReturnBillDs.getBillById(billId));
+             billVO.setState(4);
+            return saveBill(billVO);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return false;
+        }
+	}
 }
