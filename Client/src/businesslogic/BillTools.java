@@ -2,10 +2,8 @@ package businesslogic;
 
 import java.util.ArrayList;
 
-import bl_stub.CustomerBL_stub;
 //import blservice.infoservice.GetCategoryInterface;
 import blservice.infoservice.GetCommodityInterface;
-import blservice.infoservice.GetCustomerInterface;
 import blservice.infoservice.GetUserInterface;
 import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
@@ -22,7 +20,6 @@ import po.billpo.SalesReturnBillPO;
 import po.billpo.TransferItem;
 import presentation.component.MyTableModel;
 import vo.CommodityVO;
-import vo.CustomerVO;
 import vo.billvo.CashCostBillVO;
 import vo.billvo.ChangeBillVO;
 import vo.billvo.PaymentBillVO;
@@ -35,8 +32,6 @@ import vo.billvo.SalesReturnBillVO;
 public class BillTools {
 	
 	private static GetCommodityInterface commodityInfo = new CommodityBL();
-	//private static GetCategoryInterface categoryInfo = new CategoryBL();
-	private static GetCustomerInterface customerInfo = new CustomerBL();
 	private static GetUserInterface userInfo = new UserBL();
 
 	/**
@@ -70,10 +65,8 @@ public class BillTools {
                     , item.getComSum() + "", item.getComRemark()};
         }
         MyTableModel model = new MyTableModel(data, columnNames);
-        CustomerVO supplier = customerInfo.getCustomer(bill.getSupplierId());
         return new PurchaseBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator()
-            , bill.getState(), bill.getSupplierId(), supplier.getName()
-            , model, bill.getRemark(), bill.getSum());
+            , bill.getState(), bill.getSupplierId(), model, bill.getRemark(), bill.getSum());
     }
 	
 	public static PurchaseReturnBillVO toPurchaseReturnBillVO(PurchaseReturnBillPO bill){
@@ -89,10 +82,8 @@ public class BillTools {
             data[i] = new String[]{c.getId(), c.getName(), c.getType(), c.getStore(), price + "", num + "", sum + "", item.getComRemark()};
         }
         MyTableModel model = new MyTableModel(data, columnNames);
-        CustomerVO customer = customerInfo.getCustomer(bill.getSupplierId());
         return new PurchaseReturnBillVO(bill.getDate(), bill.getTime(), bill.getId()
-            , bill.getOperator(), bill.getState(), bill.getSupplierId()
-            , customer.getName(), model, bill.getRemark(), bill.getSum());
+            , bill.getOperator(), bill.getState(), bill.getSupplierId(), model, bill.getRemark(), bill.getSum());
     }
 	
 	public static SalesBillVO toSalesBillVO(SalesBillPO bill){
@@ -121,8 +112,6 @@ public class BillTools {
                id = bill.getId(),
                operatorId = bill.getOperator(),
                cusId = bill.getCustomerId(),
-               cusName = new CustomerBL_stub().getCustomer(cusId)
-                           .getName(),
                remark = bill.getRemark();
         int state = bill.getState();
         double sum = bill.getAfterDiscount(),
@@ -130,8 +119,7 @@ public class BillTools {
                discount = bill.getDiscount(),
                coupon = bill.getCoupon();
         return new SalesBillVO(date, time, id, operatorId, state
-            , cusId, cusName, model, remark, beforeDiscount
-            , discount, coupon, sum);
+            , cusId, model, remark, beforeDiscount, discount, coupon, sum);
     }
     
 	public static SalesReturnBillVO toSalesReturnBillVO(SalesReturnBillPO bill, BillBL billBL){
@@ -141,8 +129,6 @@ public class BillTools {
                operator = bill.getOperator();
         int state = bill.getState();
         String customerId = bill.getCustomerId(),
-               customerName = new CustomerBL_stub()
-                   .getCustomer(customerId).getName(),
                remark = bill.getRemark(),
                originalSBId = bill.getOriginalSBId();
         SalesBillVO salesBill = billBL.getSalesBill(originalSBId);
@@ -166,8 +152,7 @@ public class BillTools {
         }
         MyTableModel model = new MyTableModel(data, columnName);
         return new SalesReturnBillVO(date, time, id, operator
-            , state, customerId, customerName, model, remark
-            , originalSBId, discountRate, originalSum, sum);
+            , state, customerId, model, remark, originalSBId, discountRate, originalSum, sum);
     }
 	
 	/**
