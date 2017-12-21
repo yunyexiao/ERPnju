@@ -26,8 +26,9 @@ import vo.CommodityVO;
 import vo.UserVO;
 import vo.billvo.ChangeBillVO;
 
-public class ChangeBillPanel extends BillPanel {
+public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 
+	private UserVO user;
 	private JTable table;
 	private JButton addButton;
 	private JButton deleteButton;
@@ -40,8 +41,10 @@ public class ChangeBillPanel extends BillPanel {
 	 * @param user
 	 * @param closeListener
 	 */
-	public ChangeBillPanel(UserVO user, ActionListener closeListener) {
-		super(user, closeListener);
+	public ChangeBillPanel(UserVO user) {
+		this.user = user;
+		initBillPanel();
+		operaterField.setText(user.getName());
 	}
 
 	/**
@@ -50,8 +53,9 @@ public class ChangeBillPanel extends BillPanel {
 	 * @param bill
 	 * @param closeListener
 	 */
-	public ChangeBillPanel(UserVO user, ActionListener closeListener, ChangeBillVO bill) {
-		super(user, closeListener);
+	public ChangeBillPanel(UserVO user, ChangeBillVO bill) {
+		this.user = user;
+		initBillPanel();
 		changeBillBL = new ChangeBillBL(bill.getFlag());
 		billIdField.setText(bill.getAllId());
 		overButton.setEnabled(false);
@@ -64,8 +68,7 @@ public class ChangeBillPanel extends BillPanel {
 		table.setModel(tableModel);
 	}
 	
-	@Override
-	protected void initBillPanel() {
+	private void initBillPanel() {
 		try{
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 		}catch(Exception e){
@@ -76,7 +79,7 @@ public class ChangeBillPanel extends BillPanel {
 				{TableLayout.FILL},
 				{0.08,0.07,0.5,0.175,0.175}	
 		};
-		billPanel.setLayout(new TableLayout(mainPanelSize));
+		this.setLayout(new TableLayout(mainPanelSize));
 		
 		JPanel headPanel = new JPanel();
 		double firstPanelSize[][]={
@@ -86,7 +89,7 @@ public class ChangeBillPanel extends BillPanel {
 		billIdField = new JTextField("");
 		setBillId(true);
 		billIdField.setEditable(false);
-		operaterField = new JTextField(user.getName());
+		operaterField = new JTextField();
 		operaterField.setEditable(false);
 		headPanel.setLayout(new TableLayout(firstPanelSize));
 		headPanel.add(new JLabel("单据编号"), "1,1");
@@ -140,9 +143,9 @@ public class ChangeBillPanel extends BillPanel {
 		tablePanel.add(tablePane, "1,3");
 		tablePanel.add(buttonPanel, "3,3");
 		
-		billPanel.add(headPanel, "0,0");
-		billPanel.add(choosePanel, "0,1");
-		billPanel.add(tablePanel, "0,2");
+		this.add(headPanel, "0,0");
+		this.add(choosePanel, "0,1");
+		this.add(tablePanel, "0,2");
 
 		addButton.addActionListener(new ActionListener() {
 			@Override
@@ -174,53 +177,7 @@ public class ChangeBillPanel extends BillPanel {
 		deleteButton.addMouseListener(new InfoAdapter("删除选中的一行"));
 	}
 
-	@Override
-	protected ActionListener getNewActionListener() {
-		return new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				setBillId(true);
-				overButton.setSelected(true);
-				String[] headers = {"商品id", "商品名称", "库存数量", "实际数量"};
-				MyTableModel tableModel = new MyTableModel(null, headers);
-				tableModel.setEditable(new int[]{3});
-				table.setModel(tableModel);
-			}
-		};
-	}
-
-	@Override
-	protected ActionListener getSaveActionListener() {
-		return new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				ChangeBillVO bill = getBill();
-				if (bill != null) {
-					bill.setState(ChangeBillVO.SAVED);
-					if (changeBillBL.saveBill(bill)) new InfoWindow("单据保存成功");
-					else new InfoWindow("单据保存失败");
-				}
-			}
-		};
-	}
-
-	@Override
-	protected ActionListener getCommitActionListener() {
-		return new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				ChangeBillVO bill = getBill();
-				if (bill != null) {
-					bill.setState(ChangeBillVO.COMMITED);
-					if (changeBillBL.saveBill(bill)) new InfoWindow("单据提交成功");
-					else new InfoWindow("单据提交失败");
-				}
-			}
-		};
-	}
-
-	@Override
-	protected boolean isCorrectable() {
+	private boolean isCorrectable() {
 		if (table.getRowCount() == 0) {new InfoWindow("没有选择商品");return false;}
 		for(int i = 0; i < table.getRowCount(); i++) {
 			int a = Integer.parseInt((String)table.getValueAt(i, 2));
@@ -247,5 +204,41 @@ public class ChangeBillPanel extends BillPanel {
 	private void setBillId(boolean isOver) {
 		changeBillBL = new ChangeBillBL(isOver);
 		billIdField.setText((isOver?"BYD-":"BSD-")+Timetools.getDate()+"-"+changeBillBL.getNewId());
+	}
+
+	@Override
+	public void newAction() {
+		setBillId(true);
+		overButton.setSelected(true);
+		String[] headers = {"商品id", "商品名称", "库存数量", "实际数量"};
+		MyTableModel tableModel = new MyTableModel(null, headers);
+		tableModel.setEditable(new int[]{3});
+		table.setModel(tableModel);
+	}
+
+	@Override
+	public void saveAction() {
+		ChangeBillVO bill = getBill();
+		if (bill != null) {
+			bill.setState(ChangeBillVO.SAVED);
+			if (changeBillBL.saveBill(bill)) new InfoWindow("单据保存成功");
+			else new InfoWindow("单据保存失败");
+		}
+	}
+
+	@Override
+	public void commitAction() {
+		ChangeBillVO bill = getBill();
+		if (bill != null) {
+			bill.setState(ChangeBillVO.COMMITED);
+			if (changeBillBL.saveBill(bill)) new InfoWindow("单据提交成功");
+			else new InfoWindow("单据提交失败");
+		}
+	}
+
+	@Override
+	public void setEditable(boolean b) {
+		// TODO Auto-generated method stub
+		
 	}
 }

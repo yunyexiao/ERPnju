@@ -21,13 +21,7 @@ import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.analysisui.ViewBusinessHistoryPanel;
 import presentation.bill.BillExaminePanel;
-import presentation.billui.CashCostBillPanel;
-import presentation.billui.ChangeBillPanel;
-import presentation.billui.PurchaseBillPanel;
-import presentation.billui.PurchaseReturnBillPanel;
-import presentation.billui.ReceiptOrPaymentBillPanel;
-import presentation.billui.SalesBillPanel;
-import presentation.billui.SalesReturnBillPanel;
+import presentation.billui.BillPanelHelper;
 import presentation.component.InfoAdapter;
 import presentation.component.Listener_stub;
 import presentation.dataui.accountui.AccountDataPanel;
@@ -86,28 +80,30 @@ class LeftButtonPanel extends JPanel{
 		    
 		};
 		
+		BillPanelHelper.user = user;
+		BillPanelHelper.closeListener = closeListener;
 		// 修改按钮处------------------------------
 		if (type == UserType.KEEPER) {
 			addButton("商品分类管理", e -> mw.changePanel(new CategoryDataPanel(new CategoryBL(user), closeListener)));
 			addButton("商品管理", e -> mw.changePanel(new CommodityDataPanel(new CommodityBL(user), closeListener)));
 			addButton("库存查看", new Listener_stub());
 			addButton("库存盘点", new Listener_stub());
-			addButton("报溢/报损", e -> mw.changePanel(new ChangeBillPanel(user, closeListener)));
+			addButton("报溢/报损", e -> mw.changePanel(BillPanelHelper.create("ChangeBill")));
 			addButton("退出", new CloseListener());
 			
 		}
 		else if (type == UserType.SALESMAN) {
 			addButton("客户管理", e -> mw.changePanel(new CustomerDataPanel(user, new CustomerBL(user), closeListener)));
-			addButton("制定进货单", e -> mw.changePanel(new PurchaseBillPanel(mainWindow.getUser(), closeListener)));
-			addButton("制定进货退货单", e -> mw.changePanel(new PurchaseReturnBillPanel(mainWindow.getUser(), closeListener)));
-			addButton("制定销售单", e -> mw.changePanel(new SalesBillPanel(user, closeListener)));
-			addButton("制定销售退货单", e -> mw.changePanel(new SalesReturnBillPanel(mainWindow.getUser(), closeListener)));
+			addButton("制定进货单", e -> mw.changePanel(BillPanelHelper.create("PurchaseBill")));
+			addButton("制定进货退货单", e -> mw.changePanel(BillPanelHelper.create("PurchaseReturnBill")));
+			addButton("制定销售单", e -> mw.changePanel(BillPanelHelper.create("SalesBill")));
+			addButton("制定销售退货单", e -> mw.changePanel(BillPanelHelper.create("SalesReturnBill")));
 			addButton("退出", new CloseListener());
 		}
 		else if (type == UserType.ACCOUNTANT) {
 			addButton("账户管理", e -> mw.changePanel(new AccountDataPanel(user, new AccountBL(user), closeListener)));
-			addButton("制定收付款单", e -> mw.changePanel(new ReceiptOrPaymentBillPanel(user, closeListener)));
-			addButton("制定现金费用单", e -> mw.changePanel(new CashCostBillPanel(user, closeListener)));
+			addButton("制定收付款单", e -> mw.changePanel(BillPanelHelper.create("ReceiptOrPaymentBill")));
+			addButton("制定现金费用单", e -> mw.changePanel(BillPanelHelper.create("CashCostBill")));
 			addButton("查看销售明细表", new Listener_stub());
 			addButton("查看经营状况表", new Listener_stub());
 			addButton("查看经营历程表", e -> mw.changePanel(new ViewBusinessHistoryPanel(closeListener)));

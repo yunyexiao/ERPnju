@@ -18,6 +18,7 @@ import blservice.billblservice.BillBLService;
 import businesslogic.BillBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
+import presentation.billui.BillPanelHelper;
 import presentation.billui.CashCostBillPanel;
 import presentation.billui.ChangeBillPanel;
 import presentation.billui.PurchaseBillPanel;
@@ -75,26 +76,11 @@ public class MainPanel implements PanelInterface {
 			JPanel buttonPanel=new JPanel();
 			JButton billChangeButton = new JButton("修改单据", new ImageIcon("resource/FreshButton.png"));
 			JButton billDeleteButton = new JButton("删除单据", new ImageIcon("resource/DeleteButton.png"));
+			BillPanelHelper.user = user;
+			BillPanelHelper.closeListener = closeListener;
 			billChangeButton.addActionListener(e->{
 				String[] info = tabelModel.getValueAtRow(table.getSelectedRow());
-				String type = info[1].split("-")[0];
-				if ("BYD".equals(type) || "BSD".equals(type)) {
-					mainWindow.changePanel(new ChangeBillPanel(user, closeListener, billBL.getChangeBill(info[1])));
-				} else if ("JHD".equals(type)) {
-					mainWindow.changePanel(new PurchaseBillPanel(user, closeListener, billBL.getPurchaseBill(info[1])));
-				} else if ("JHTHD".equals(type)) {
-					mainWindow.changePanel(new PurchaseReturnBillPanel(user, closeListener, billBL.getPurchaseReturnBill(info[1])));
-				} else if ("XSD".equals(type)) {
-					mainWindow.changePanel(new SalesBillPanel(user, closeListener, billBL.getSalesBill(info[1])));
-				} else if ("XSTHD".equals(type)) {
-					mainWindow.changePanel(new SalesReturnBillPanel(user, closeListener, billBL.getSalesReturnBill(info[1])));
-				} else if ("XJFYD".equals(type)) {
-					mainWindow.changePanel(new CashCostBillPanel(user, closeListener, billBL.getCashCostBill(info[1])));
-				} else if ("FKD".equals(type)) {
-					mainWindow.changePanel(new ReceiptOrPaymentBillPanel(user, closeListener, billBL.getPaymentBill(info[1])));
-				} else if ("SKD".equals(type)) {
-					mainWindow.changePanel(new ReceiptOrPaymentBillPanel(user, closeListener, billBL.getReceiptBill(info[1])));
-				}
+				mainWindow.changePanel(BillPanelHelper.create(billBL.getBill(info[1])));
 			});
 			double forthPanelSize[][]={
 					{10,TableLayout.FILL,10},

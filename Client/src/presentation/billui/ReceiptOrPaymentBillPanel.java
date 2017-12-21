@@ -1,6 +1,5 @@
 package presentation.billui;
 
-import java.awt.event.ActionListener;
 import java.util.Calendar;
 
 import javax.swing.ButtonGroup;
@@ -17,8 +16,12 @@ import javax.swing.UIManager;
 
 import blservice.billblservice.PaymentBillBLService;
 import blservice.billblservice.ReceiptBillBLService;
+import blservice.infoservice.GetCustomerInterface;
+import blservice.infoservice.GetUserInterface;
+import businesslogic.CustomerBL;
 import businesslogic.PaymentBillBL;
 import businesslogic.ReceiptBillBL;
+import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
@@ -29,34 +32,42 @@ import vo.billvo.BillVO;
 import vo.billvo.PaymentBillVO;
 import vo.billvo.ReceiptBillVO;
 
-public class ReceiptOrPaymentBillPanel extends BillPanel {
+public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterface {
 
 	private ReceiptBillBLService receiptBillBL = new ReceiptBillBL();
 	private PaymentBillBLService paymentBillBL = new PaymentBillBL();
 
+	private UserVO user;
 	private JTextField billIdField, customerIdField, customerNameField, operaterField, sumField;
 	private JButton customerChooseButton, transferChooseButton, transferDeleteButton;
 	private JTable transferListTable;
 	private JRadioButton receiptButton, paymentButton;
 	
-	public ReceiptOrPaymentBillPanel(UserVO user, ActionListener closeListener) {
-		super(user, closeListener);
+	private GetUserInterface userInfo = new UserBL();
+	private GetCustomerInterface customerInfo = new CustomerBL();
+	
+	public ReceiptOrPaymentBillPanel(UserVO user) {
+		this.user = user;
+		initBillPanel();
         this.billIdField.setText(receiptBillBL.getNewId());
 		this.operaterField.setText(user.getName());
 	}
 
-	public ReceiptOrPaymentBillPanel(UserVO user, ActionListener closeListener, ReceiptBillVO bill) {
-		super(user, closeListener, bill);
+	public ReceiptOrPaymentBillPanel(UserVO user, ReceiptBillVO bill) {
+		this.user = user;
+		initBillPanel();
 		receiptButton.setSelected(true);
 		billIdField.setText(bill.getAllId());
-        operaterField.setText(bill.getOperator());
+		operaterField.setText(userInfo.getUser(bill.getOperator()).getName());
         customerIdField.setText(bill.getCustomerId());
+        customerNameField.setText(customerInfo.getCustomer(bill.getCustomerId()).getName());
         transferListTable.setModel(bill.getTableModel());
         sumUp();
 	}
 	
-	public ReceiptOrPaymentBillPanel(UserVO user, ActionListener closeListener, PaymentBillVO bill) {
-		super(user, closeListener, bill);
+	public ReceiptOrPaymentBillPanel(UserVO user, PaymentBillVO bill) {
+		this.user = user;
+		initBillPanel();
 		paymentButton.setSelected(true);
 		billIdField.setText(bill.getAllId());
         operaterField.setText(bill.getOperator());
@@ -65,8 +76,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
         sumUp();
 	}
 	
-	@Override
-	protected void initBillPanel() {
+	private void initBillPanel() {
 		try{
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 		}catch(Exception e){
@@ -166,15 +176,14 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 				{TableLayout.FILL},
 				{0.08,0.08,0.08,0.6}	
 		};
-		billPanel.setLayout(new TableLayout(mainPanelSize));
-		billPanel.add(headPanel, "0,0");
-		billPanel.add(choosePanel, "0,1");
-		billPanel.add(customerInfoPanel, "0,2");
-		billPanel.add(centerPanel,"0,3");
+		this.setLayout(new TableLayout(mainPanelSize));
+		this.add(headPanel, "0,0");
+		this.add(choosePanel, "0,1");
+		this.add(customerInfoPanel, "0,2");
+		this.add(centerPanel,"0,3");
 	}
-	@Override
-	protected void setEditable(boolean b) {
-		super.setEditable(b);
+	
+	public void setEditable(boolean b) {
 		customerChooseButton.setEnabled(b);
 		transferChooseButton.setEnabled(b);
 		transferDeleteButton.setEnabled(b);
@@ -231,39 +240,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
         sumField.setText("0.0");
     }
 	
-	@Override
-	protected ActionListener getNewActionListener() {
-		 return e -> {
-			 int response = JOptionPane.showConfirmDialog(null, "放弃当前未保存的工作新建一张单据？","警告",JOptionPane.YES_NO_OPTION);
-			 if (response == 0) {
-				 clear();
-			 }
-	     };
-	}
-
-	
-	@Override
-	protected ActionListener getSaveActionListener() {
-		 return e -> {
-	            ReceiptBillVO bill = getBill(BillVO.SAVED);
-	            if(bill != null && receiptBillBL.saveBill(bill)){
-	                JOptionPane.showMessageDialog(null, "单据已保存。");
-	            }
-	        };
-	}
-
-	@Override
-	protected ActionListener getCommitActionListener() {
-		return e -> {
-            ReceiptBillVO bill = getBill(BillVO.COMMITED);
-            if(bill != null && receiptBillBL.saveBill(bill)){
-                JOptionPane.showMessageDialog(null, "单据已提交。");
-            }
-        };
-	}
-
-	@Override
-	protected boolean isCorrectable() {
+	private boolean isCorrectable() {
 		if (transferListTable.getRowCount() == 0) new InfoWindow("没有选择转账条目");
 		else if ("".equals(customerIdField.getText())) new InfoWindow("请选择客户");
 		else return true;
@@ -284,7 +261,7 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
                     + c.get(Calendar.MINUTE) + ""
                     + c.get(Calendar.SECOND);
         String id = billIdField.getText()
-             , operater = operaterField.getText()
+             , operater = user.getId()
              , customerId = customerIdField.getText();
         MyTableModel model = (MyTableModel)transferListTable.getModel();
         ReceiptBillVO receiptBillVO= new ReceiptBillVO(date, time, id, operater, state, customerId, model); 
@@ -294,5 +271,29 @@ public class ReceiptOrPaymentBillPanel extends BillPanel {
 	private void setBillId(boolean isReceipt) {
 		if (isReceipt) billIdField.setText(receiptBillBL.getNewId());
 		else billIdField.setText(paymentBillBL.getNewId());
+	}
+
+	@Override
+	public void newAction() {
+		int response = JOptionPane.showConfirmDialog(null, "放弃当前未保存的工作新建一张单据？","警告",JOptionPane.YES_NO_OPTION);
+		 if (response == 0) {
+			 clear();
+		 }
+	}
+
+	@Override
+	public void saveAction() {
+		ReceiptBillVO bill = getBill(BillVO.SAVED);
+        if(bill != null && receiptBillBL.saveBill(bill)){
+            JOptionPane.showMessageDialog(null, "单据已保存。");
+        }
+	}
+
+	@Override
+	public void commitAction() {
+		ReceiptBillVO bill = getBill(BillVO.COMMITED);
+        if(bill != null && receiptBillBL.saveBill(bill)){
+            JOptionPane.showMessageDialog(null, "单据已提交。");
+        }
 	}
 }

@@ -1,7 +1,5 @@
 package presentation.billui;
 
-import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -24,22 +22,25 @@ import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.CashCostBillVO;
 
-public class CashCostBillPanel extends BillPanel {
+public class CashCostBillPanel extends JPanel implements BillPanelInterface {
 
 	private CashCostBillBLService cashCostBillBL = new CashCostBillBL();
+	private UserVO user;
 	
 	private JTextField billIdField, operatorField, accountIdField, sumField;
 	private JButton accountChooseButton, itemChooseButton, itemDeleteButton;
 	private JTable itemListTable;
 	
-	public CashCostBillPanel(UserVO user, ActionListener closeListener) {
-		super(user, closeListener);
+	public CashCostBillPanel(UserVO user) {
+		this.user = user;
+		initBillPanel();
         this.billIdField.setText(cashCostBillBL.getNewId());
         this.operatorField.setText(user.getName());
 	}
 
-	public CashCostBillPanel(UserVO user, ActionListener closeListener, CashCostBillVO cashCostBill) {
-		super(user, closeListener, cashCostBill);
+	public CashCostBillPanel(UserVO user, CashCostBillVO cashCostBill) {
+		this.user = user;
+		initBillPanel();
         billIdField.setText(cashCostBill.getAllId());
         operatorField.setText(cashCostBill.getOperator());
         accountIdField.setText(cashCostBill.getAccountId());
@@ -47,8 +48,7 @@ public class CashCostBillPanel extends BillPanel {
         sumUp();
 	}
 	
-	@Override
-	protected void initBillPanel() {
+	private void initBillPanel() {
 		try{
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");//Nimbus风格，jdk6 update10版本以后的才会出现
 		}catch(Exception e){
@@ -122,10 +122,10 @@ public class CashCostBillPanel extends BillPanel {
 				{TableLayout.FILL},
 				{0.08, 0.08, 0.6, TableLayout.FILL}
 		};
-		billPanel.setLayout(new TableLayout(mainPanelSize));
-		billPanel.add(headPanel, "0,0");
-		billPanel.add(accountInfoPanel, "0,1");
-		billPanel.add(centerPanel, "0,2");
+		this.setLayout(new TableLayout(mainPanelSize));
+		this.add(headPanel, "0,0");
+		this.add(accountInfoPanel, "0,1");
+		this.add(centerPanel, "0,2");
 
 	}
 
@@ -152,7 +152,7 @@ public class CashCostBillPanel extends BillPanel {
         accountIdField.setText(a.getNumber());
     }
     
-    protected void sumUp(){
+    private void sumUp(){
 	    MyTableModel model = (MyTableModel)this.itemListTable.getModel();
         double total = 0;
 	    for(int i = 0; i < model.getRowCount(); i++){
@@ -160,63 +160,46 @@ public class CashCostBillPanel extends BillPanel {
 	    }
 	    sumField.setText(Double.toString(total));
     }
-    
-    protected void clear(){
-        billIdField.setText(cashCostBillBL.getNewId());
-        accountIdField.setText("");
-        sumField.setText("0.0");
-        MyTableModel model = (MyTableModel) itemListTable.getModel();
-        while(model.getRowCount() > 0){
-            model.removeRow(0);
-        }
-    }
-    
-	@Override
-	protected ActionListener getNewActionListener() {
-		return e -> {
-            int response = JOptionPane.showConfirmDialog(
-                null, "确认要新建一张现金费用单吗？", "提示", JOptionPane.YES_NO_OPTION);
-            if(response == 1)return;
-            clear();
-        };
-	}
-	
-	@Override
-	protected ActionListener getSaveActionListener() {
-		return e ->{
-            CashCostBillVO bill = getBill(BillVO.SAVED);
-            if (bill != null && cashCostBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已保存。");
-        };
-	}
-
-	@Override
-	protected ActionListener getCommitActionListener() {
-		return e ->{
-            CashCostBillVO bill = getBill(BillVO.COMMITED);
-            if (bill != null && cashCostBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
-        };
-	}
-	@Override
-	protected boolean isCorrectable() {
-		if (itemListTable.getRowCount() == 0) new InfoWindow("没有选择条目");
-		else if ("".equals(accountIdField.getText())) new InfoWindow("没有选择账户");
-		else return true;
-		return false;
-	}
-	@Override
-	protected void setEditable(boolean b) {
-		super.setEditable(b);
-		accountChooseButton.setEnabled(b);
-		itemChooseButton.setEnabled(b);
-		itemDeleteButton.setEnabled(b);
-	}
 	/**
 	 * 获得单据VO
 	 * @return
 	 */
 	public CashCostBillVO getBill(int state) {
-		if (! isCorrectable()) return null;
-		Timetools.check();
-		return new CashCostBillVO(Timetools.getDate(), Timetools.getTime(), cashCostBillBL.getNewId(), operatorField.getText(), state, accountIdField.getText(),(MyTableModel) itemListTable.getModel());
+		if (itemListTable.getRowCount() == 0) new InfoWindow("没有选择条目");
+		else if ("".equals(accountIdField.getText())) new InfoWindow("没有选择账户");
+		else {
+			Timetools.check();
+			return new CashCostBillVO(Timetools.getDate(), Timetools.getTime(), cashCostBillBL.getNewId(), user.getId(), state, accountIdField.getText(),(MyTableModel) itemListTable.getModel());
+		}
+		return null;
+	}
+	@Override
+	public void setEditable(boolean b) {
+		accountChooseButton.setEnabled(b);
+		itemChooseButton.setEnabled(b);
+		itemDeleteButton.setEnabled(b);
+	}
+	@Override
+	public void newAction() {
+		int response = JOptionPane.showConfirmDialog(null, "确认要新建一张现金费用单吗？", "提示", JOptionPane.YES_NO_OPTION);
+        if(response == 1)return;
+        billIdField.setText(cashCostBillBL.getNewId());
+        accountIdField.setText("");
+        sumField.setText("0.0");
+        MyTableModel model = (MyTableModel) itemListTable.getModel();
+        while(model.getRowCount() > 0)  model.removeRow(0);
+	}
+
+	@Override
+	public void saveAction() {
+        CashCostBillVO bill = getBill(BillVO.SAVED);
+        if (bill != null && cashCostBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已保存。");
+    
+	}
+
+	@Override
+	public void commitAction() {
+		CashCostBillVO bill = getBill(BillVO.COMMITED);
+        if (bill != null && cashCostBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
 	}
 }
