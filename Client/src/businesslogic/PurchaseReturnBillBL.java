@@ -108,7 +108,7 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
             PurchaseReturnBillVO old = (PurchaseReturnBillVO) bill;
             PurchaseReturnBillVO copy = new PurchaseReturnBillVO(
                 Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
-                BillVO.PASS, old.getCustomerId(), old.getCustomerName(), old.getModel(), old.getRemark(), old.getSum()
+                BillVO.PASS, old.getCustomerId(), old.getModel(), old.getRemark(), old.getSum()
             );
             return saveBill(copy);
         }

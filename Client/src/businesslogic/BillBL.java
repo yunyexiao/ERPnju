@@ -13,6 +13,7 @@ import po.billpo.BillPO;
 import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.UserVO;
+import vo.billvo.BillVO;
 import vo.billvo.CashCostBillVO;
 import vo.billvo.ChangeBillVO;
 import vo.billvo.PaymentBillVO;
@@ -130,6 +131,23 @@ public class BillBL implements BillBLService {
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	@Override
+	public BillVO getBill(String id) {
+		String type = id.split("-")[0];
+		switch (type) {
+		case "BYD" : return getChangeBill(id);
+		case "BSD" : return getChangeBill(id);
+		case "JHD" : return getPurchaseBill(id);
+		case "JHTHD" : return getPurchaseReturnBill(id);
+		case "XSD" : return getSalesBill(id);
+		case "XSTHD" : return getSalesReturnBill(id);
+		case "XJFYD" : return getCashCostBill(id);
+		case "FKD" : return getPaymentBill(id);
+		case "SKD" : return getReceiptBill(id);
+		default : return null;
 		}
 	}
 }

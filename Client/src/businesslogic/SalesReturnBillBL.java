@@ -7,6 +7,7 @@ import java.util.Calendar;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.SalesReturnBillBLService;
+import blservice.infoservice.GetCustomerInterface;
 import dataservice.SalesReturnBillDataService;
 import ds_stub.SalesReturnBillDs_stub;
 import po.billpo.BillPO;
@@ -22,6 +23,7 @@ import vo.billvo.SalesReturnBillVO;
 public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperationService, BillExamineService{
     
     private SalesReturnBillDataService salesReturnBillDs;
+    private GetCustomerInterface customerInfo = new CustomerBL();
     
     public SalesReturnBillBL(){
         salesReturnBillDs = Rmi.flag ? Rmi.getRemote(SalesReturnBillDataService.class) : new SalesReturnBillDs_stub();
@@ -110,7 +112,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
             SalesReturnBillVO old = (SalesReturnBillVO) bill;
             SalesReturnBillVO copy = new SalesReturnBillVO(
                 Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
-                BillVO.PASS, old.getCustomerId(), old.getCustomerName(), old.getModel(), old.getRemark(), 
+                BillVO.PASS, old.getCustomerId(), old.getModel(), old.getRemark(), 
                 old.getOriginalSBId(), old.getDiscountRate(), old.getOriginalSum(), old.getSum()
             );
             return saveBill(copy);
@@ -124,7 +126,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
                id = bill.getId(),
                operatorId = bill.getOperator(),
                customerId = bill.getCustomerId(),
-               salesManName = bill.getCustomerName(),
+               salesManName = customerInfo.getCustomer(bill.getCustomerId()).getSalesman(),
                remark = bill.getRemark(),
                originalSBId = bill.getOriginalSBId();
         int state = bill.getState();

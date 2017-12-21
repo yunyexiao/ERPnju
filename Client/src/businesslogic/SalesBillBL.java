@@ -7,6 +7,7 @@ import java.util.Calendar;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.SalesBillBLService;
+import blservice.infoservice.GetCustomerInterface;
 import dataservice.SalesBillDataService;
 import ds_stub.SalesBillDs_stub;
 import po.billpo.BillPO;
@@ -24,6 +25,7 @@ import vo.billvo.SalesBillVO;
 public class SalesBillBL implements SalesBillBLService, BillOperationService, BillExamineService {
     
     private SalesBillDataService salesBillDs;
+    private GetCustomerInterface customerInfo = new CustomerBL();
     
     public SalesBillBL(){
         salesBillDs = Rmi.flag ? Rmi.getRemote(SalesBillDataService.class) : new SalesBillDs_stub();
@@ -155,7 +157,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
             SalesBillVO old = (SalesBillVO) bill;
             SalesBillVO copy = new SalesBillVO(
                 Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
-                BillVO.PASS, old.getCustomerId(), old.getCustomerName(), old.getModel(),
+                BillVO.PASS, old.getCustomerId(), old.getModel(),
                 old.getRemark(), old.getBeforeDiscount(), old.getDiscount(), old.getCoupon(), old.getSum()
             );
             return saveBill(copy);
@@ -187,8 +189,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
         // TODO promotionId not considered here
         return new SalesBillPO(bill.getDate(), bill.getTime()
             , bill.getId(), bill.getOperator(), bill.getState()
-            , bill.getCustomerId(), bill.getCustomerName()
-            , bill.getRemark(), "", bill.getBeforeDiscount()
+            , bill.getCustomerId(), customerInfo.getCustomer(bill.getCustomerId()).getSalesman(), bill.getRemark(), "", bill.getBeforeDiscount()
             , bill.getDiscount(), bill.getCoupon(), bill.getSum()
             , items);
     }

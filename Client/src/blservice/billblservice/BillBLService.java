@@ -2,6 +2,7 @@ package blservice.billblservice;
 
 import presentation.component.MyTableModel;
 import vo.UserVO;
+import vo.billvo.BillVO;
 import vo.billvo.CashCostBillVO;
 import vo.billvo.ChangeBillVO;
 import vo.billvo.PaymentBillVO;
@@ -14,6 +15,8 @@ import vo.billvo.SalesReturnBillVO;
 public interface BillBLService {
 
 	public MyTableModel getBillTable(UserVO user);
+	
+	public BillVO getBill(String id);
 	
 	public ChangeBillVO getChangeBill(String id);
 	

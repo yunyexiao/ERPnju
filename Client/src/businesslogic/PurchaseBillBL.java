@@ -141,7 +141,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
             PurchaseBillVO old = (PurchaseBillVO) bill;
             PurchaseBillVO copy = new PurchaseBillVO(
                 Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
-                BillVO.PASS, old.getCustomerId(), old.getCustomerName(), old.getModel(), old.getRemark(), old.getSum()
+                BillVO.PASS, old.getCustomerId(), old.getModel(), old.getRemark(), old.getSum()
             );
             return saveBill(copy);
         }
