@@ -15,20 +15,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import blservice.billblservice.BillBLService;
+import blservice.billblservice.BillOperationService;
 import businesslogic.BillBL;
+import businesslogic.BillOperationBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
 import presentation.billui.BillPanelHelper;
-import presentation.billui.CashCostBillPanel;
-import presentation.billui.ChangeBillPanel;
-import presentation.billui.PurchaseBillPanel;
-import presentation.billui.PurchaseReturnBillPanel;
-import presentation.billui.ReceiptOrPaymentBillPanel;
-import presentation.billui.SalesBillPanel;
-import presentation.billui.SalesReturnBillPanel;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import vo.UserType;
 import vo.UserVO;
+import vo.billvo.BillVO;
 
 /**
  * 主界面（单据管理）界面类，分两种情况<br/>
@@ -42,6 +39,7 @@ public class MainPanel implements PanelInterface {
 
 	private final double[][] size = {{0.88,0.12},{0.4, 0.6}};
 	private BillBLService billBL;
+	private BillOperationService billOperationBL;
 	private JPanel panel= new JPanel(new TableLayout(size)); 
 	private JPanel infoPanel = new JPanel();
 	private JLabel infoLabel;
@@ -50,6 +48,7 @@ public class MainPanel implements PanelInterface {
 	public MainPanel(MainWindow mainWindow) {
 		UserVO user = mainWindow.getUser();
 		billBL = new BillBL();
+		billOperationBL = new BillOperationBL();
 		
 		infoPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		String htmltxt = "<html><span style=\"font-size:32px;\">欢迎使用灯具进销存管理系统:</span><br/> "
@@ -81,6 +80,18 @@ public class MainPanel implements PanelInterface {
 			billChangeButton.addActionListener(e->{
 				String[] info = tabelModel.getValueAtRow(table.getSelectedRow());
 				mainWindow.changePanel(BillPanelHelper.create(billBL.getBill(info[1])));
+			});
+			billDeleteButton.addActionListener(e->{
+				String info = (String) tabelModel.getValueAt(table.getSelectedRow(), 1);
+				BillVO bill = billBL.getBill(info);
+				if (bill.getState() == BillVO.SAVED) {
+					if (billOperationBL.deleteBill(info)) {
+						table.setModel(billBL.getBillTable(user));
+						new InfoWindow("删除成功");
+					} else new InfoWindow("删除失败");
+				} else {
+					new InfoWindow("该状态单据无法删除");
+				}
 			});
 			double forthPanelSize[][]={
 					{10,TableLayout.FILL,10},

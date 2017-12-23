@@ -36,4 +36,9 @@ public class BillOperationBL implements BillOperationService {
         return services.get(key).copyBill(bill);
     }
 
+    @Override
+    public boolean deleteBill(String billId) {
+    	String key = billId.split("-")[0];
+        return services.get(key).deleteBill(billId);
+    }
 }
