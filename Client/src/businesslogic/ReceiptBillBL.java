@@ -27,7 +27,7 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 	@Override
 	public String getNewId() {
 		 try {
-	    		return receiptBillDataService.getNewId();
+	    		return "SKD-"+Timetools.getDate()+"-"+receiptBillDataService.getNewId();
 	        } catch (RemoteException e) {
 	            e.printStackTrace();
 	            return null;
