@@ -18,11 +18,14 @@ import blservice.billblservice.BillBLService;
 import blservice.billblservice.BillOperationService;
 import businesslogic.BillBL;
 import businesslogic.BillOperationBL;
+import businesslogic.UserBL;
 import layout.TableLayout;
+import po.UserPO;
 import presentation.PanelInterface;
 import presentation.billui.BillPanelHelper;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
+import presentation.dataui.userui.UpdateUserWindow;
 import vo.UserType;
 import vo.UserVO;
 import vo.billvo.BillVO;
@@ -42,6 +45,7 @@ public class MainPanel implements PanelInterface {
 	private BillOperationService billOperationBL;
 	private JPanel panel= new JPanel(new TableLayout(size)); 
 	private JPanel infoPanel = new JPanel();
+	private JPanel bPanel = new JPanel();
 	private JLabel infoLabel;
 	private JTable table;
 
@@ -58,6 +62,17 @@ public class MainPanel implements PanelInterface {
 		infoPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		infoPanel.add(infoLabel);
 		infoPanel.setOpaque(false);
+		
+		bPanel.setLayout(new TableLayout(
+				new double[][]{{TableLayout.FILL, TableLayout.PREFERRED, TableLayout.FILL},
+					{TableLayout.PREFERRED, TableLayout.FILL}}));
+		JButton changeButton = new JButton("修改个人信息");
+		changeButton.addActionListener(e->{
+			new UpdateUserWindow(new UserBL(user), new String[]{
+					user.getId(),user.getName(),user.getType().getName(),user.getRankName(),user.getPwd(),user.getSex(),""+user.getAge(),user.getTelNumber()}, true);
+		});
+		bPanel.add(changeButton, "1,0");
+		bPanel.setOpaque(false);
 		
 		if (user.getType() != UserType.ADMIN) {
 			MyTableModel tabelModel = billBL.getBillTable(user);
@@ -110,6 +125,7 @@ public class MainPanel implements PanelInterface {
 		}
 		panel.setVisible(true);
 		panel.add(infoPanel, "0,0,1,0");
+		panel.add(bPanel, "1,0");
 	}
 
 	@Override
