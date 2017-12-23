@@ -50,7 +50,7 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
     
     private UserType type = UserType.KEEPER;
 
-    public ViewBusinessHistoryPanel(ActionListener closeListener) {
+    public ViewBusinessHistoryPanel(UserVO user, ActionListener closeListener) {
         billSearchBl = new BillSearchBL();
         billBL = new BillBL();
         billOperationBl = new BillOperationBL();
@@ -59,8 +59,8 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
         TopButtonPanel buttonPanel = new TopButtonPanel();
         buttonPanel.addButton("ËÑË÷", new ImageIcon("resource/SearchData.png"), e->search());
 		buttonPanel.addButton("µ¼³ö", new ImageIcon("resource/Export.png"), e->ExcelExporter.export((MyTableModel)table.getModel()));
-		buttonPanel.addButton("ºì³å", new ImageIcon("resource/Offset.png"), e->offsetBill());
-		buttonPanel.addButton("ºì³å²¢¸´ÖÆ", new ImageIcon("resource/OffsetCopy.png"), e->copyBill());
+		if (user.getType() != UserType.GM) buttonPanel.addButton("ºì³å", new ImageIcon("resource/Offset.png"), e->offsetBill());
+		if (user.getType() != UserType.GM) buttonPanel.addButton("ºì³å²¢¸´ÖÆ", new ImageIcon("resource/OffsetCopy.png"), e->copyBill());
 		buttonPanel.addButton("¹Ø±Õ", new ImageIcon("resource/Close.png"), closeListener);
 		
 		table = new JTable();
