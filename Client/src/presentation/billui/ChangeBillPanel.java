@@ -44,6 +44,7 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 	public ChangeBillPanel(UserVO user) {
 		this.user = user;
 		initBillPanel();
+		
 		operaterField.setText(user.getName());
 	}
 
@@ -203,7 +204,7 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 	
 	private void setBillId(boolean isOver) {
 		changeBillBL = new ChangeBillBL(isOver);
-		billIdField.setText((isOver?"BYD-":"BSD-")+Timetools.getDate()+"-"+changeBillBL.getNewId());
+		billIdField.setText(changeBillBL.getNewId());
 	}
 
 	@Override

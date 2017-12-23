@@ -4,7 +4,6 @@ import blservice.AccountBLService;
 import blservice.infoservice.GetAccountInterface;
 import presentation.component.MyTableModel;
 import vo.AccountVO;
-import vo.CustomerVO;
 
 public class AccountBL_stub implements AccountBLService, GetAccountInterface {
 

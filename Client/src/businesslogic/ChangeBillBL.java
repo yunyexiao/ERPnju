@@ -30,7 +30,7 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
 	@Override
 	public String getNewId() {
 		try {
-			return changeBillDS.getNewId(isOver);
+			return (isOver?"BYD-":"BSD-")+Timetools.getDate()+"-"+changeBillDS.getNewId(isOver);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return "";

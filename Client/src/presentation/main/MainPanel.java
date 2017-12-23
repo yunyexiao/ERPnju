@@ -20,7 +20,6 @@ import businesslogic.BillBL;
 import businesslogic.BillOperationBL;
 import businesslogic.UserBL;
 import layout.TableLayout;
-import po.UserPO;
 import presentation.PanelInterface;
 import presentation.billui.BillPanelHelper;
 import presentation.component.InfoWindow;
