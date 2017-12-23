@@ -1,5 +1,6 @@
 package presentation.dataui.userui;
 
+import java.awt.Component;
 import java.util.Enumeration;
 
 import javax.swing.AbstractButton;
@@ -25,6 +26,7 @@ import vo.UserVO;
 @SuppressWarnings("serial")
 class InputUserPanel extends JPanel {
 
+	private JPanel typePanel;
     private JTextField userIdTextField, userNameTextField, userKeyTextField, userAgeTextField, userTelTextField;
     private ButtonGroup sexButtonGroup, typeButtonGroup;
     private JComboBox<String> rankComboBox;
@@ -81,7 +83,7 @@ class InputUserPanel extends JPanel {
 		typeAdminRadioButton.addActionListener(e -> defaultType());
 		
 		typeKeeperRadioButton.setSelected(true);
-		JPanel typePanel = new JPanel();
+		typePanel = new JPanel();
 		typePanel.add(typeAdminRadioButton);
 		typePanel.add(typeKeeperRadioButton);
 		typePanel.add(typeSalesmanRadioButton);
@@ -151,6 +153,13 @@ class InputUserPanel extends JPanel {
 		}
 		return null;
 	    
+	}
+	/**
+	 * 防止用户更改种类和权限
+	 */
+	protected void lock() {
+		rankComboBox.setEnabled(false);;
+		for (Component c : typePanel.getComponents()) c.setEnabled(false);
 	}
 	
 	private UserType getSelectedType(){
