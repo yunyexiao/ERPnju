@@ -27,6 +27,7 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 	public CommodityPO findById(String id) throws RemoteException {
 		try{
 			ResultSet r=SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
+			r.next();
 			return getCommodityPO(r);		
 		}catch(Exception e){
 			e.printStackTrace();

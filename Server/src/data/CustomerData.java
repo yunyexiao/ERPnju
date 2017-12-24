@@ -28,6 +28,7 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 	public CustomerPO findById(String id) throws RemoteException {
 		try{
 			ResultSet r=SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
+			r.next();
 			return getCustomerPO(r);
 		}catch(Exception e){
 			e.printStackTrace();

@@ -29,6 +29,7 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 		try{
 			Statement s1 = DataHelper.getInstance().createStatement();
 			ResultSet r = s1.executeQuery("SELECT CateName, FatherID FROM CategoryInfo WHERE CateID = " + id +";");
+			r.next();
 			return getCategoryPO(r);
 		}catch(Exception e){
 			e.printStackTrace();

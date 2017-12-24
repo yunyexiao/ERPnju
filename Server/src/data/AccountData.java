@@ -29,6 +29,7 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 	public AccountPO findById(String id) throws RemoteException {
 		try{
 			ResultSet r = SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
+			r.next();
 			return getAccountPO(r);
 		}catch(Exception e){
 			e.printStackTrace();
