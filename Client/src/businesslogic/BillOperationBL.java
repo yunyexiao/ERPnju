@@ -41,4 +41,10 @@ public class BillOperationBL implements BillOperationService {
     	String key = billId.split("-")[0];
         return services.get(key).deleteBill(billId);
     }
+
+	@Override
+	public BillVO getBillById(String billId) {
+		String key = billId.split("-")[0];
+		return services.get(key).getBillById(billId);
+	}
 }

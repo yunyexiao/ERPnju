@@ -141,4 +141,14 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
             return false;
         }
 	}
+
+	@Override
+	public BillVO getBillById(String id) {
+		try {
+			return BillTools.toPaymentBillVO(paymentBillDataService.getBillById(id));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

@@ -122,4 +122,14 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
         }
 	}
 
+	@Override
+	public BillVO getBillById(String billId) {
+		try {
+			return BillTools.toChangeBillVO(changeBillDS.getBillById(billId));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }

@@ -27,4 +27,6 @@ public interface BillOperationService {
 	 * @return ÊÇ·ñÉ¾³ý³É¹¦
 	 */
 	public boolean deleteBill(String billId);
+	
+	public BillVO getBillById(String billId);
 }

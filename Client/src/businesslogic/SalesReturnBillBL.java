@@ -156,7 +156,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
 	@Override
 	public boolean examineBill(String billId) {
         try{
-            SalesReturnBillVO billVO = BillTools.toSalesReturnBillVO(salesReturnBillDs.getBillById(billId), new BillBL());
+            SalesReturnBillVO billVO = BillTools.toSalesReturnBillVO(salesReturnBillDs.getBillById(billId));
             billVO.setState(3);
             return saveBill(billVO);
         }catch(RemoteException e){
@@ -168,12 +168,22 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
 	@Override
 	public boolean notPassBill(String billId) {
         try{
-        	SalesReturnBillVO billVO = BillTools.toSalesReturnBillVO(salesReturnBillDs.getBillById(billId), new BillBL());
+        	SalesReturnBillVO billVO = BillTools.toSalesReturnBillVO(salesReturnBillDs.getBillById(billId));
             billVO.setState(4);
             return saveBill(billVO);
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
         }
+	}
+
+	@Override
+	public BillVO getBillById(String billId) {
+		try {
+			return BillTools.toSalesReturnBillVO(salesReturnBillDs.getBillById(billId));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

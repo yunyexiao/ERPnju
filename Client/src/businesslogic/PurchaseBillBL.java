@@ -211,5 +211,15 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
         return new MyTableModel(data, columnNames);
     }
 
+	@Override
+	public BillVO getBillById(String billId) {
+		try {
+			return BillTools.toPurchaseBillVO(purchaseBillDs.getBillById(billId));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 
 }

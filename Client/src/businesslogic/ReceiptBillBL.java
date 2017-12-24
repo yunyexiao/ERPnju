@@ -137,4 +137,14 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
             return false;
         }
 	}
+
+	@Override
+	public BillVO getBillById(String billId) {
+		try {
+			return BillTools.toReceiptBillVO(receiptBillDataService.getBillById(billId));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

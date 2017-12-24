@@ -153,4 +153,14 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
             return false;
         }
 	}
+
+	@Override
+	public BillVO getBillById(String billId) {
+		try {
+			return BillTools.toCashCostBillVO(cashCostBillDataService.getBillById(billId));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

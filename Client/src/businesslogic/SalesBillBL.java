@@ -217,4 +217,14 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
             return false;
         }
 	}
+
+	@Override
+	public BillVO getBillById(String billId) {
+		try {
+			return BillTools.toSalesBillVO(salesBillDs.getBillById(billId));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

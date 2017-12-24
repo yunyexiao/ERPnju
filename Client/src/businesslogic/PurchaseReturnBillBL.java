@@ -153,4 +153,14 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
             return false;
         }
 	}
+
+	@Override
+	public BillVO getBillById(String billId) {
+		try {
+			return BillTools.toPurchaseReturnBillVO(purchaseReturnBillDs.getBillById(billId));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
