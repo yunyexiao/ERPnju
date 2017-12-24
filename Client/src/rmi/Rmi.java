@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
  */
 public class Rmi {
 	
-	public static boolean flag = false;
+	public static boolean flag = true;
 	/**
 	 * 获取服务器远程对象
 	 * @warning 禁止使用其他非数据层接口，否则服务器无注册对象
@@ -25,7 +25,7 @@ public class Rmi {
 			System.out.println(c.getName());
             @SuppressWarnings("unchecked")
 			//XXX 修改服务器地址处
-            T r =(T) Naming.lookup("rmi://172.25.178.176:8887/" + c.getName());
+            T r =(T) Naming.lookup("rmi://127.0.0.1:8887/" + c.getName());
             return r;
         } catch (NotBoundException e) {
             e.printStackTrace();
