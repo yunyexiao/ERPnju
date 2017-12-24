@@ -1,11 +1,15 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import po.UserPO;
 import po.billpo.*;
 
-public interface BillSearchDataService {
+public interface BillSearchDataService extends Remote{
+	 ArrayList<BillPO> getBillList(UserPO user) throws RemoteException;
+	
 	 ArrayList<PurchaseBillPO> searchPurchaseBills(String fromDate, String toDate, String customerId, String operatorId) throws RemoteException;;
 	
 	 ArrayList<PurchaseReturnBillPO> searchPurchaseReturnBills(String fromDate, String toDate, String customerId, String operatorId) throws RemoteException;

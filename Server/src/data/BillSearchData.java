@@ -5,6 +5,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import dataservice.BillSearchDataService;
+import po.UserPO;
 import po.billpo.*;
 public class BillSearchData implements BillSearchDataService{
 
@@ -654,6 +655,12 @@ public class BillSearchData implements BillSearchDataService{
 
 		return sql;
 		
+	}
+
+	@Override
+	public ArrayList<BillPO> getBillList(UserPO user) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
