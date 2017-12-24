@@ -9,39 +9,47 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import blservice.LogBLService;
-import businesslogic.LogBL_stub;
+import businesslogic.LogBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
 import presentation.component.CloseListener;
 import presentation.component.TopButtonPanel;
 import presentation.main.MainWindow;
 
+/**
+ * 查看日志使用的Panel
+ * @author 钱美缘
+ *
+ */
 public class LogPanel implements PanelInterface {
 	
-	private static double[][] size = {{TableLayout.FILL},{0.1,TableLayout.FILL}};
-	private JPanel panel = new JPanel(new TableLayout(size));
-	private LogBLService logBL = new LogBL_stub();
+	private JPanel panel;
+	private LogBLService logBL;
 
 	public LogPanel(MainWindow mw) {
-		TopButtonPanel buttonPanel = new TopButtonPanel();
+		logBL = new LogBL(mw.getUser());
+		
+		double[][] size = {{TableLayout.FILL},{0.1,TableLayout.FILL}};
+		panel = new JPanel(new TableLayout(size));
 		
 		JTable table = new JTable(logBL.getLogInfo());
+		table.getTableHeader().setResizingAllowed(false);
+		table.getTableHeader().setReorderingAllowed(false);
 		JScrollPane scrollPane = new JScrollPane(table);
+		panel.add(scrollPane, "0,1");
 		
 		class SearchListener implements ActionListener{
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String[] re = buttonPanel.getCalender();
-				table.setModel(logBL.searchByTime(re[0], re[1]));
+				String[] input = new SearchWindow().getInput();
+				table.setModel(logBL.searchByTime(input[0], input[1]));
 			}
 		}
-		buttonPanel.addCalendar("起始日期");
-		buttonPanel.addCalendar("结束日期");
+		
+		TopButtonPanel buttonPanel = new TopButtonPanel();
 		buttonPanel.addButton("查询", new ImageIcon("resource/SearchData.png"), new SearchListener());
 		buttonPanel.addButton("关闭", new ImageIcon("resource/Close.png"), new CloseListener(mw));
-		
 		panel.add(buttonPanel.getPanel(), "0,0");
-		panel.add(scrollPane, "0,1");
 	}
 	
 	@Override

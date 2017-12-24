@@ -7,13 +7,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 
+import bl_stub.CategoryBL_stub;
 import blservice.CategoryBLService;
-import businesslogic.CategoryBL_stub;
 import presentation.PanelInterface;
-import presentation.component.TopButtonPanel;
-import presentation.main.MainWindow;
 import presentation.component.CloseListener;
 import presentation.component.Listener_stub;
+import presentation.component.TopButtonPanel;
+import presentation.main.MainWindow;
 
 /**
  * 商品分类的展示面板。<br>

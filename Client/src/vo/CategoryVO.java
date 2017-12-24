@@ -1,5 +1,7 @@
 package vo;
 
+import po.CategoryPO;
+
 /**
  * 商品分类的VO对象,由父分类编号、编号、名称组成
  * @author 钱美缘
@@ -37,5 +39,14 @@ public class CategoryVO {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	@Override
+	public String toString(){
+	    return name;
+	}
+
+	public CategoryPO toPO(){
+	    return new CategoryPO(id, name, fatherId, true);
 	}
 }
