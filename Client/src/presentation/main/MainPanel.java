@@ -14,10 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import blservice.billblservice.BillBLService;
 import blservice.billblservice.BillOperationService;
-import businesslogic.BillBL;
+import blservice.billblservice.BillSearchBLService;
 import businesslogic.BillOperationBL;
+import businesslogic.BillSearchBL;
 import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
@@ -40,7 +40,7 @@ import vo.billvo.BillVO;
 public class MainPanel implements PanelInterface {
 
 	private final double[][] size = {{0.88,0.12},{0.4, 0.6}};
-	private BillBLService billBL;
+	private BillSearchBLService billSearchBL;
 	private BillOperationService billOperationBL;
 	private JPanel panel= new JPanel(new TableLayout(size)); 
 	private JPanel infoPanel = new JPanel();
@@ -50,7 +50,7 @@ public class MainPanel implements PanelInterface {
 
 	public MainPanel(MainWindow mainWindow) {
 		UserVO user = mainWindow.getUser();
-		billBL = new BillBL();
+		billSearchBL = new BillSearchBL();
 		billOperationBL = new BillOperationBL();
 		
 		infoPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -74,7 +74,7 @@ public class MainPanel implements PanelInterface {
 		bPanel.setOpaque(false);
 		
 		if (user.getType() != UserType.ADMIN) {
-			MyTableModel tabelModel = billBL.getBillTable(user);
+			MyTableModel tabelModel = billSearchBL.getBillTable(user);
 			table = new JTable(tabelModel);
 			table.getTableHeader().setReorderingAllowed(false);
 			JScrollPane scrollPane = new JScrollPane(table);
@@ -93,14 +93,14 @@ public class MainPanel implements PanelInterface {
 			BillPanelHelper.closeListener = closeListener;
 			billChangeButton.addActionListener(e->{
 				String[] info = tabelModel.getValueAtRow(table.getSelectedRow());
-				mainWindow.changePanel(BillPanelHelper.create(billBL.getBill(info[1])));
+				mainWindow.changePanel(BillPanelHelper.create(billOperationBL.getBillById(info[1])));
 			});
 			billDeleteButton.addActionListener(e->{
 				String info = (String) tabelModel.getValueAt(table.getSelectedRow(), 1);
-				BillVO bill = billBL.getBill(info);
+				BillVO bill = billOperationBL.getBillById(info);
 				if (bill.getState() == BillVO.SAVED) {
 					if (billOperationBL.deleteBill(info)) {
-						table.setModel(billBL.getBillTable(user));
+						table.setModel(billSearchBL.getBillTable(user));
 						new InfoWindow("É¾³ý³É¹¦");
 					} else new InfoWindow("É¾³ýÊ§°Ü");
 				} else {

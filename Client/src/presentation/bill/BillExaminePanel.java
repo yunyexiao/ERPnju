@@ -15,23 +15,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import blservice.billblservice.BillBLService;
 import blservice.billblservice.BillSearchBLService;
 import blservice.infoservice.GetUserInterface;
-import businesslogic.BillBL;
 import businesslogic.BillSearchBL;
 import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
-import presentation.billui.BillPanel;
 import presentation.billui.BillPanelInterface;
-import presentation.billui.CashCostBillPanel;
-import presentation.billui.ChangeBillPanel;
-import presentation.billui.PurchaseBillPanel;
-import presentation.billui.PurchaseReturnBillPanel;
-import presentation.billui.ReceiptOrPaymentBillPanel;
-import presentation.billui.SalesBillPanel;
-import presentation.billui.SalesReturnBillPanel;
 import presentation.component.CloseListener;
 import presentation.component.DateChoosePanel;
 import presentation.component.IdNamePanel;
@@ -51,14 +41,6 @@ import vo.CustomerVO;
 import vo.UserType;
 import vo.UserVO;
 import vo.billvo.BillVO;
-import vo.billvo.CashCostBillVO;
-import vo.billvo.ChangeBillVO;
-import vo.billvo.PaymentBillVO;
-import vo.billvo.PurchaseBillVO;
-import vo.billvo.PurchaseReturnBillVO;
-import vo.billvo.ReceiptBillVO;
-import vo.billvo.SalesBillVO;
-import vo.billvo.SalesReturnBillVO;
 
 /**
  * 单据审批面板
@@ -67,7 +49,6 @@ import vo.billvo.SalesReturnBillVO;
 public class BillExaminePanel implements PanelInterface {
     
     private BillSearchBLService billSearchBl;
-    private BillBLService billBL;
 	private static double[][] size = {{TableLayout.FILL,0.1},{0.1, 0.1, TableLayout.FILL}};
 	private JPanel panel = new JPanel(new TableLayout(size));
     private DateChoosePanel fromPanel, toPanel;
@@ -196,7 +177,6 @@ public class BillExaminePanel implements PanelInterface {
 		
 		panel.add(buttonPanel.getPanel(), "0,0");
         billSearchBl = new BillSearchBL();
-        billBL = new BillBL();
         panel.add(getNorthPanel(closeListener), "0,1");
         panel.add(getCenterPanel(), "0,2");
         panel.add(getEastPanel(), "1,2");

@@ -13,10 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import blservice.billblservice.BillBLService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.BillSearchBLService;
-import businesslogic.BillBL;
 import businesslogic.BillOperationBL;
 import businesslogic.BillSearchBL;
 import layout.TableLayout;
@@ -39,7 +37,6 @@ import vo.UserVO;
 public class ViewBusinessHistoryPanel implements PanelInterface {
     
     private BillSearchBLService billSearchBl;
-    private BillBLService billBL;
     private BillOperationService billOperationBl;
     
     private JPanel panel;
@@ -52,7 +49,6 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
 
     public ViewBusinessHistoryPanel(UserVO user, ActionListener closeListener) {
         billSearchBl = new BillSearchBL();
-        billBL = new BillBL();
         billOperationBl = new BillOperationBL();
         
         double[][] size = new double[][]{{TableLayout.FILL},{0.1,0.15,TableLayout.FILL}};
@@ -70,7 +66,7 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
         	public void mouseClicked(MouseEvent e) {
         		if(e.getClickCount() == 2) {
         			int index = table.getSelectedRow();
-        	        new BillViewer(billBL.getBill(table.getValueAt(index, 0).toString()), false);
+        	        new BillViewer(billOperationBl.getBillById(table.getValueAt(index, 0).toString()), false);
         		}
         	}
         });
@@ -190,6 +186,6 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
             new InfoWindow("请选择一张单据进行操作@_@");
             return;
         }
-        new BillViewer(billBL.getBill(table.getValueAt(index, 0).toString()), true);
+        new BillViewer(billOperationBl.getBillById(table.getValueAt(index, 0).toString()), true);
     }
 }

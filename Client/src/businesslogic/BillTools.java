@@ -122,7 +122,7 @@ public class BillTools {
             , cusId, model, remark, beforeDiscount, discount, coupon, sum);
     }
     
-	public static SalesReturnBillVO toSalesReturnBillVO(SalesReturnBillPO bill, BillBL billBL){
+	public static SalesReturnBillVO toSalesReturnBillVO(SalesReturnBillPO bill){
         String date = bill.getDate(),
                time = bill.getTime(),
                id = bill.getId(),
@@ -131,7 +131,8 @@ public class BillTools {
         String customerId = bill.getCustomerId(),
                remark = bill.getRemark(),
                originalSBId = bill.getOriginalSBId();
-        SalesBillVO salesBill = billBL.getSalesBill(originalSBId);
+        SalesBillBL salesBillBL = new SalesBillBL();
+        SalesBillVO salesBill = (SalesBillVO) salesBillBL.getBillById(originalSBId);
         double discountRate = salesBill.getSum() / salesBill.getBeforeDiscount();
         double originalSum = bill.getOriginalSum(),
                sum = bill.getReturnSum();
