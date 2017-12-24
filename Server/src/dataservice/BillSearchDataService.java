@@ -4,6 +4,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import po.UserPO;
+import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.ChangeBillPO;
 import po.billpo.PaymentBillPO;
@@ -38,5 +40,7 @@ public interface BillSearchDataService extends Remote{
 
     ArrayList<ReceiptBillPO> searchReceiptBills(String fromDate, String toDate
         , String customerId, String operatorId,int state) throws RemoteException;
+    
+	public ArrayList<BillPO> getBillList(UserPO user) throws RemoteException;
 
 }

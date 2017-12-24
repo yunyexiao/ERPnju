@@ -3,8 +3,10 @@ package data;
 import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import dataservice.BillSearchDataService;
+import po.UserPO;
 import po.billpo.*;
 
 public class BillSearchData implements BillSearchDataService{
@@ -567,6 +569,50 @@ public class BillSearchData implements BillSearchDataService{
 			return null;
 		}		
 		return bills;		
+	}
+
+	@Override
+	public ArrayList<BillPO> getBillList(UserPO user) throws RemoteException {
+
+		ArrayList<BillPO> bills=new ArrayList<BillPO>();
+
+		Calendar now = Calendar.getInstance(); 
+		String today=now.get(Calendar.YEAR)+"-"+now.get(Calendar.MONTH)+"-"+now.get(Calendar.DAY_OF_MONTH);
+		String start="2000-01-01";
+		String userId=user.getUserId();
+	
+		if(user.getUsertype()==0){
+			try{
+				ArrayList<ChangeBillPO> lostBills=searchChangeBills(start, today, null, userId,false, -1);
+				ArrayList<ChangeBillPO> overflowBills=searchChangeBills(start, today, null, userId, true, -1);
+				bills.addAll(lostBills);
+				bills.addAll(overflowBills);	
+			}catch(Exception e){
+				e.printStackTrace();
+				return null;
+			}
+		}
+		//销售人员
+		else if(user.getUsertype()==1){
+			ArrayList<SalesBillPO> salesBills=searchSalesBills(start, today, null, userId, -1);
+			ArrayList<SalesReturnBillPO> salesReturnBills=searchSalesReturnBills(start, today, null, userId, -1);
+			ArrayList<PurchaseBillPO> purchaseBills=searchPurchaseBills(start, today, null, userId, -1);
+			ArrayList<PurchaseReturnBillPO> purchaseReturnBills=searchPurchaseReturnBills(start, today, null, userId, -1);
+			bills.addAll(purchaseReturnBills);
+			bills.addAll(purchaseBills);
+			bills.addAll(salesReturnBills);
+			bills.addAll(salesBills);
+		}
+		//财务人员
+		else if(user.getUsertype()==2){
+			ArrayList<CashCostBillPO> cashCostBills=searchCashCostBills(start, today, null, userId, -1);
+			ArrayList<PaymentBillPO> paymentBills=searchPaymentBills(start, today, null, userId, -1);
+			ArrayList<ReceiptBillPO> receiptBills=searchReceiptBills(start, today, null, userId, -1);
+			bills.addAll(receiptBills);
+			bills.addAll(cashCostBills);
+			bills.addAll(paymentBills);
+		}
+		return bills;
 	}
 
 
