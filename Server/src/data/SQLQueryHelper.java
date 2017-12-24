@@ -41,7 +41,7 @@ public class SQLQueryHelper {
 			}
 			num++;
 			
-			newId=String.format("%5d", num);
+			newId=String.format("%05d", num);
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
@@ -104,7 +104,7 @@ public class SQLQueryHelper {
 		
 		try{
 			Statement s = DataHelper.getInstance().createStatement();
-			ResultSet r = s.executeQuery("SELECT * FROM "+tableName+" WHERE "+attributeName+"=" + value +";");	 
+			ResultSet r = s.executeQuery("SELECT * FROM "+tableName+" WHERE "+attributeName+"='" + value +"';");	 
 			return r;
 		}catch(Exception e){
 			e.printStackTrace();

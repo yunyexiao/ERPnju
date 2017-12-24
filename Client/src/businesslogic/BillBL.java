@@ -24,7 +24,7 @@ import vo.billvo.SalesReturnBillVO;
 
 public class BillBL implements BillBLService {
 
-	private BillDataService billDs = Rmi.flag ? Rmi.getRemote(BillDataService.class) : new BillDs_stub();
+	private BillDataService billDs = new BillDs_stub();
 	
 	@Override
 	public MyTableModel getBillTable(UserVO user) {

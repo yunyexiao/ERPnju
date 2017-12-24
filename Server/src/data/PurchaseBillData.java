@@ -9,7 +9,7 @@ import dataservice.PurchaseBillDataService;
 import po.billpo.PurchaseBillPO;
 import po.billpo.SalesItemsPO;
 public class PurchaseBillData extends UnicastRemoteObject implements PurchaseBillDataService{
-	protected PurchaseBillData() throws RemoteException {
+	public PurchaseBillData() throws RemoteException {
 		super();
 		// TODO Auto-generated constructor stub
 	}

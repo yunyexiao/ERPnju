@@ -19,7 +19,7 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 	private String billIdName="SBID";
 	private String recordIdName="SRID";
 
-	protected SalesBillData() throws RemoteException {
+	public SalesBillData() throws RemoteException {
 		super();
 		
 	}
