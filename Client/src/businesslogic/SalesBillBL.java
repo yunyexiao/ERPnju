@@ -8,6 +8,7 @@ import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.SalesBillBLService;
 import blservice.infoservice.GetCustomerInterface;
+import businesslogic.inter.AddLogInterface;
 import dataservice.SalesBillDataService;
 import ds_stub.SalesBillDs_stub;
 import po.billpo.BillPO;
@@ -24,12 +25,9 @@ import vo.billvo.SalesBillVO;
  */
 public class SalesBillBL implements SalesBillBLService, BillOperationService, BillExamineService {
     
-    private SalesBillDataService salesBillDs;
+    private SalesBillDataService salesBillDs = Rmi.flag ? Rmi.getRemote(SalesBillDataService.class) : new SalesBillDs_stub();
     private GetCustomerInterface customerInfo = new CustomerBL();
-    
-    public SalesBillBL(){
-        salesBillDs = Rmi.flag ? Rmi.getRemote(SalesBillDataService.class) : new SalesBillDs_stub();
-    }
+    private AddLogInterface addLog = new LogBL();
 
     @Override
     public String getNewId() {
@@ -48,12 +46,14 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
     @Override
     public boolean deleteBill(String id) {
         try{
-            // passed bills cannot be deleted, only can be offsetted
             SalesBillPO bill = salesBillDs.getBillById(id);
             if(bill.getState() == BillPO.PASS) return false;
 
             int length = id.length();
-            return salesBillDs.deleteBill(id.substring(length - 5, length));
+            if (salesBillDs.deleteBill(id.substring(length - 5, length))) {
+            	addLog.add("删除销售单", "删除的销售单单据编号为"+id);
+            	return true;
+            } else return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -62,18 +62,15 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
 
     @Override
     public boolean saveBill(SalesBillVO bill) {
-        try{
-            return salesBillDs.saveBill(toPO(bill));
-        }catch(RemoteException e){
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public boolean updateBill(SalesBillVO bill) {
-        try{
-            return salesBillDs.saveBill(toPO(bill));
+		return saveBill(bill, "保存销售单", "保存的销售单单据编号为"+bill.getAllId());
+	}
+	
+	private boolean saveBill(SalesBillVO bill, String operation, String detail) {
+		try{
+            if (salesBillDs.saveBill(toPO(bill))) {
+            	addLog.add(operation, detail);
+            	return true;
+            } else return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -140,11 +137,14 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
             bill.getSalesBillItems().forEach(i -> items.add(new SalesItemsPO(
                 i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
-            return salesBillDs.saveBill(new SalesBillPO(
+            SalesBillPO offset = new SalesBillPO(
                 Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
                 bill.getCustomerId(), bill.getSalesManName(), bill.getRemark(), bill.getPromotionId(),
-                -bill.getBeforeDiscount(), -bill.getDiscount(), -bill.getCoupon(), -bill.getAfterDiscount(), items
-            ));
+                -bill.getBeforeDiscount(), -bill.getDiscount(), -bill.getCoupon(), -bill.getAfterDiscount(), items);
+            if (salesBillDs.saveBill(offset)) {
+            	addLog.add("红冲销售单", "被红冲的销售单单据编号为"+bill.getAllId());
+            	return true;
+            } else return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -160,7 +160,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
                 BillVO.PASS, old.getCustomerId(), old.getModel(),
                 old.getRemark(), old.getBeforeDiscount(), old.getDiscount(), old.getCoupon(), old.getSum()
             );
-            return saveBill(copy);
+            return saveBill(copy, "红冲并复制销售单", "红冲并复制后新的销售单单据编号为"+copy.getAllId());
         }
         return false;
     }
@@ -199,7 +199,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
         try{
             SalesBillVO billVO = BillTools.toSalesBillVO(salesBillDs.getBillById(billId));
             billVO.setState(3);
-            return saveBill(billVO);
+            return saveBill(billVO, "审核销售单", "通过审核的销售单单据编号为"+billId);
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -211,7 +211,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
         try{
         	SalesBillVO billVO = BillTools.toSalesBillVO(salesBillDs.getBillById(billId));
             billVO.setState(4);
-            return saveBill(billVO);
+            return saveBill(billVO, "审核销售单", "单据编号为"+billId+"的销售单审核未通过");
         }catch(RemoteException e){
             e.printStackTrace();
             return false;

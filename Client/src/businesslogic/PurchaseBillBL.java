@@ -7,6 +7,7 @@ import java.util.Calendar;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseBillBLService;
+import businesslogic.inter.AddLogInterface;
 import dataservice.PurchaseBillDataService;
 import ds_stub.PurchaseBillDs_stub;
 import po.billpo.BillPO;
@@ -23,11 +24,8 @@ import vo.billvo.PurchaseBillVO;
  */
 public class PurchaseBillBL implements PurchaseBillBLService, BillOperationService, BillExamineService{
     
-    private PurchaseBillDataService purchaseBillDs;
-
-    public PurchaseBillBL() {
-        purchaseBillDs = Rmi.flag ? Rmi.getRemote(PurchaseBillDataService.class) : new PurchaseBillDs_stub();
-    }
+    private PurchaseBillDataService purchaseBillDs = Rmi.flag ? Rmi.getRemote(PurchaseBillDataService.class) : new PurchaseBillDs_stub();
+    private AddLogInterface addLog = new LogBL();
 
     @Override
     public String getNewId() {
@@ -46,32 +44,30 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
     @Override
     public boolean deleteBill(String id) {
         try{
-            // passed bills cannot be deleted, only can be offsetted
             PurchaseBillPO bill = purchaseBillDs.getBillById(id);
             if(bill.getState() == BillPO.PASS) return false;
 
             int length = id.length();
-            return purchaseBillDs.deleteBill(id.substring(length - 5, length));
+            if (purchaseBillDs.deleteBill(id.substring(length - 5, length))) {
+            	addLog.add("删除进货单", "删除的进货单单据编号为"+id);
+            	return true;
+            } else return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
         }
     }
-
     @Override
-    public boolean saveBill(PurchaseBillVO bill) {
-        try{
-            return purchaseBillDs.saveBill(toPO(bill));
-        }catch(RemoteException e){
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public boolean updateBill(PurchaseBillVO bill) {
-        try{
-            return purchaseBillDs.saveBill(toPO(bill));
+	public boolean saveBill(PurchaseBillVO bill) {
+		return saveBill(bill, "保存进货单", "保存的进货单单据编号为"+bill.getAllId());
+	}
+	
+    private boolean saveBill(PurchaseBillVO bill, String operation, String detail) {
+    	try{
+            if (purchaseBillDs.saveBill(toPO(bill))) {
+            	addLog.add(operation, detail);
+            	return true;
+            } else return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -125,10 +121,14 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
             bill.getPurchaseBillItems().forEach(i -> items.add(new SalesItemsPO(
                 i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
-            return purchaseBillDs.saveBill(new PurchaseBillPO(
+            PurchaseBillPO offset =new PurchaseBillPO(
                 Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
                 bill.getSupplierId(), bill.getRemark(), -bill.getSum(), items
-            ));
+            );
+            if (purchaseBillDs.saveBill(offset)) {
+            	addLog.add("红冲进货单", "被红冲的进货单单据编号为"+bill.getAllId());
+            	return true;
+            } else return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -143,7 +143,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
                 Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
                 BillVO.PASS, old.getCustomerId(), old.getModel(), old.getRemark(), old.getSum()
             );
-            return saveBill(copy);
+            return saveBill(copy, "红冲并复制进货单", "红冲并复制后新的进货单单据编号为"+copy.getAllId());
         }
         return false;
     }
@@ -153,7 +153,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
         try{
             PurchaseBillVO billVO = BillTools.toPurchaseBillVO(purchaseBillDs.getBillById(id));
             billVO.setState(3);
-            return saveBill(billVO);
+            return saveBill(billVO, "审核进货单", "通过审核的进货单单据编号为"+id);
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -165,7 +165,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
         try{
             PurchaseBillVO billVO = BillTools.toPurchaseBillVO(purchaseBillDs.getBillById(id));
             billVO.setState(4);
-            return saveBill(billVO);
+            return saveBill(billVO, "审核进货单", "单据编号为"+id+"的进货单审核未通过");
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -220,6 +220,4 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
 			return null;
 		}
 	}
-
-
 }
