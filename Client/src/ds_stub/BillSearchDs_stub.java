@@ -9,6 +9,8 @@ import po.billpo.*;
 
 public class BillSearchDs_stub implements BillSearchDataService {
 	ArrayList<BillPO> list = new ArrayList<BillPO>();
+	
+	
 	@Override
 	public ArrayList<BillPO> getBillList(UserPO user) {
 		ArrayList<ChangeItem> commodityList = new ArrayList<ChangeItem>();
