@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -43,7 +44,7 @@ public class InventoryDynamicPanel implements PanelInterface{
                     toDateChooser = DateChooser.getInstance();
         fromDateChooser.register(fromDateField);
         toDateChooser.register(toDateField);
-        JButton searchButton = new JButton("ËÑË÷");
+        JButton searchButton = new JButton("ËÑË÷", new ImageIcon("resource/SearchData.png"));
         searchButton.addActionListener(e -> search());
         
         double[][] size = {

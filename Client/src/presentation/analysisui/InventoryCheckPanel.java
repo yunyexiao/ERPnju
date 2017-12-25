@@ -1,7 +1,9 @@
 package presentation.analysisui;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -19,10 +21,17 @@ public class InventoryCheckPanel implements PanelInterface {
     private JPanel panel;
     private JTable table;
 
-    public InventoryCheckPanel() {
+    public InventoryCheckPanel(ActionListener closeListener) {
         panel = new JPanel(new BorderLayout());
-        initNorth();
-        initCenter();
+        TopButtonPanel northPanel = new TopButtonPanel();
+        northPanel.addButton("导出为Excel表", new ImageIcon("resource/Export.png"), e -> export());
+        panel.add(northPanel.getPanel(), BorderLayout.NORTH);
+        northPanel.addButton("关闭", new ImageIcon("resource/Close.png"), closeListener);
+        
+        table = new JTable(new CommodityBL().update());
+        table.getTableHeader().setReorderingAllowed(false);
+        JScrollPane sp = new JScrollPane(table);
+        panel.add(sp, BorderLayout.CENTER);
     }
 
     @Override
@@ -33,21 +42,6 @@ public class InventoryCheckPanel implements PanelInterface {
     @Override
     public JPanel getPanel() {
         return panel;
-    }
-    
-    private void initNorth(){
-        TopButtonPanel northPanel = new TopButtonPanel();
-        // TODO add an imageicon here
-        northPanel.addButton("导出为Excel表", null, e -> export());
-        panel.add(northPanel.getPanel(), BorderLayout.NORTH);
-    }
-    
-    private void initCenter(){
-        table = new JTable(new CommodityBL().update());
-        table.getTableHeader().setReorderingAllowed(false);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        JScrollPane sp = new JScrollPane(table);
-        panel.add(sp, BorderLayout.CENTER);
     }
     
     private void export(){
