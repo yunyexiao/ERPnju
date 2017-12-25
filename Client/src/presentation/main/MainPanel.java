@@ -49,7 +49,7 @@ public class MainPanel implements PanelInterface {
 	private JTable table;
 
 	public MainPanel(MainWindow mainWindow) {
-		UserVO user = mainWindow.getUser();
+		UserVO user = MainWindow.getUser();
 		billSearchBL = new BillSearchBL();
 		billOperationBL = new BillOperationBL();
 		
@@ -67,7 +67,7 @@ public class MainPanel implements PanelInterface {
 					{TableLayout.PREFERRED, TableLayout.FILL}}));
 		JButton changeButton = new JButton("修改个人信息");
 		changeButton.addActionListener(e->{
-			new UpdateUserWindow(new UserBL(user), new String[]{
+			new UpdateUserWindow(new UserBL(), new String[]{
 					user.getId(),user.getName(),user.getType().getName(),user.getRankName(),user.getPwd(),user.getSex(),""+user.getAge(),user.getTelNumber()}, true);
 		});
 		bPanel.add(changeButton, "1,0");

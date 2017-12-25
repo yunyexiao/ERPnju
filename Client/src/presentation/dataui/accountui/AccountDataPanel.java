@@ -9,17 +9,17 @@ import blservice.AccountBLService;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.dataui.DataPanel;
+import presentation.main.MainWindow;
 import vo.UserVO;
 
 public class AccountDataPanel extends DataPanel{
 
 	private AccountBLService accountBL;
-	private UserVO user;
+	private UserVO user = MainWindow.getUser();
 
-	public AccountDataPanel(UserVO user, AccountBLService accountBL, ActionListener closeListener) {
+	public AccountDataPanel(AccountBLService accountBL, ActionListener closeListener) {
 		super(accountBL, closeListener);
 		this.accountBL = accountBL;
-		this.user = user;
 	}
 
 	@Override
