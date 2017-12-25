@@ -18,19 +18,7 @@ public class UserBL implements UserBLService, GetUserInterface{
 	
 	private UserDataService userDataService = Rmi.flag ? Rmi.getRemote(UserDataService.class) : new UserDs_stub();//
 	private String[] tableHeader = {"用户ID", "用户名", "用户类别", "用户权限", "用户密码", "性别", "年龄", "电话号码"};
-	private AddLogInterface addLog;
-
-	/**
-	 * 如果仅使用GetUserInterface接口请使用此构造方法
-	 */
-	public UserBL() {}
-	/**
-	 * 使用UserBLService的构造方法
-	 * @param user
-	 */
-	public UserBL(UserVO user) {
-		addLog = new LogBL(user);
-	}
+	private AddLogInterface addLog = new LogBL();
 	
 	private String[] getLine(UserPO user) {
 		return new String[]{
@@ -70,9 +58,7 @@ public class UserBL implements UserBLService, GetUserInterface{
 			for (int i = 0; i < list.size(); i++) {
 				data[i] = getLine(list.get(i));
 			}
-			MyTableModel searchTable = new MyTableModel (data, tableHeader);
-			addLog.add("查找用户", type+" : "+key);
-			return searchTable;
+			return new MyTableModel (data, tableHeader);
 		} catch (Exception e) {
 			return new MyTableModel (new String[][]{{}}, tableHeader);
 		}
