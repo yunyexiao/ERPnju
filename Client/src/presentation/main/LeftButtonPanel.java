@@ -20,6 +20,7 @@ import businesslogic.CustomerBL;
 import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.analysisui.ViewBusinessHistoryPanel;
+import presentation.analysisui.ViewBusinessSituationPanel;
 import presentation.bill.BillExaminePanel;
 import presentation.billui.BillPanelHelper;
 import presentation.component.InfoAdapter;
@@ -115,7 +116,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("审批单据", e -> mw.changePanel(new BillExaminePanel(mw,closeListener)));
 			addButton("制定促销策略", new Listener_stub());
 			addButton("查看销售明细表", new Listener_stub());
-			addButton("查看经营状况表", new Listener_stub());
+			addButton("查看经营状况表", e -> mw.changePanel(new ViewBusinessSituationPanel(user, closeListener)));
 			addButton("查看经营历程表", e -> mw.changePanel(new ViewBusinessHistoryPanel(user, closeListener)));
 			addButton("查看日志", e -> mw.changePanel(new LogPanel(mw)));		
 			addButton("退出", new CloseListener());
