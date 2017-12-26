@@ -31,7 +31,7 @@ public class SaleReturnBillData extends UnicastRemoteObject implements SalesRetu
 					+bill.getId()+"','"
 					+bill.getCustomerId()+"','"
 					+bill.getSalesManName()+"','"
-					+bill.getOperatorId()+"','"
+					+bill.getOperator()+"','"
 					+bill.getOriginalSum()+"','"
 					+bill.getReturnSum()+"','"
 					+bill.getRemark()+"',' "

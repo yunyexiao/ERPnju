@@ -32,7 +32,7 @@ public class PaymentBillData extends UnicastRemoteObject implements PaymentBillD
 					+ "('"
 					+bill.getId()+"','"
 					+bill.getCustomerId()+"','"
-					+bill.getOperatorId()+"','"
+					+bill.getOperator()+"','"
 					+bill.getSum()+"','"
 					+bill.getDate()+" "+bill.getTime()+"','"
 					+bill.getState()+"')");

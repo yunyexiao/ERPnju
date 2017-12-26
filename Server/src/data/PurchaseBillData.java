@@ -28,7 +28,7 @@ public class PurchaseBillData extends UnicastRemoteObject implements PurchaseBil
 					+ "('"
 					+purchaseBill.getId()+"','"
 					+purchaseBill.getSupplierId()+"','"
-					+purchaseBill.getOperatorId()+"','"
+					+purchaseBill.getOperator()+"','"
 					+purchaseBill.getSum()+"','"
 					+purchaseBill.getRemark()+"','"
 					+purchaseBill.getState()+"','"

@@ -35,7 +35,7 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 					+bill.getId()+"','"
 					+bill.getCustomerId()+"','"
 					+bill.getSalesManName()+"','"
-					+bill.getOperatorId()+"','"
+					+bill.getOperator()+"','"
 					+bill.getBeforeDiscount()+"','"
 					+bill.getDiscount()+"','"
 					+bill.getCoupon()+"',' "

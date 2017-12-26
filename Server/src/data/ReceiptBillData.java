@@ -30,7 +30,7 @@ public class ReceiptBillData extends UnicastRemoteObject implements ReceiptBillD
 					+ "('"
 					+bill.getId()+"','"
 					+bill.getCustomerId()+"','"
-					+bill.getOperatorId()+"','"
+					+bill.getOperator()+"','"
 					+bill.getSum()+"','"
 					+bill.getDate()+" "+bill.getTime()+"','"
 					+bill.getState()+"')");

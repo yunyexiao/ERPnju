@@ -125,7 +125,7 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
 				Statement s1 = DataHelper.getInstance().createStatement();
 				int r1=s1.executeUpdate("INSERT INTO InventoryOverflowBill VALUES('"
 						+String.format("%8d", bill.getId())+"','"
-						+bill.getOperatorId()+"','"
+						+bill.getOperator()+"','"
 						+bill.getState()+"','"
 						+bill.getDate()+" "+bill.getTime()+"')");
 				
@@ -149,7 +149,7 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
 				int r1=s1.executeUpdate("INSERT INTO InventoryLostBill VALUES"
 						+ "('"
 						+String.format("%8d", bill.getId())+"','"
-						+bill.getOperatorId()+"','"
+						+bill.getOperator()+"','"
 						+bill.getState()+"','"
 						+bill.getDate()+" "+bill.getTime()+"')");
 				

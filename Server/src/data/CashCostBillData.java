@@ -29,7 +29,7 @@ public class CashCostBillData extends UnicastRemoteObject implements CashCostBil
 			int r1=s1.executeUpdate("INSERT INTO CashCostBill VALUES"
 					+ "('"
 					+bill.getId()+"','"
-					+bill.getOperatorId()+"','"
+					+bill.getOperator()+"','"
 					+bill.getAccountId()+"','"
 					+bill.getSum()+"','"
 					+bill.getDate()+" "+bill.getTime()+"','"
