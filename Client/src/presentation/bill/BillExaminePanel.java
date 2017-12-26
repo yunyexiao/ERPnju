@@ -1,7 +1,5 @@
 package presentation.bill;
 
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
@@ -9,35 +7,30 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import blservice.billblservice.BillExamineService;
+import blservice.billblservice.BillOperationService;
 import blservice.billblservice.BillSearchBLService;
-import blservice.infoservice.GetUserInterface;
+import businesslogic.BillExamineBL;
+import businesslogic.BillOperationBL;
 import businesslogic.BillSearchBL;
-import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
-import presentation.billui.BillPanelInterface;
 import presentation.component.CloseListener;
 import presentation.component.DateChoosePanel;
 import presentation.component.IdNamePanel;
 import presentation.component.InfoWindow;
-import presentation.component.LFPanel;
-import presentation.component.Listener_stub;
 import presentation.component.MyTableModel;
 import presentation.component.TopButtonPanel;
-import presentation.component.choosewindow.AccountChooseWin;
-import presentation.component.choosewindow.CustomerChooseWin;
 import presentation.component.choosewindow.UserChooseWin;
 import presentation.main.MainWindow;
 import presentation.tools.ExcelExporter;
 import presentation.tools.Timetools;
-import vo.AccountVO;
-import vo.CustomerVO;
 import vo.UserType;
 import vo.UserVO;
 import vo.billvo.BillVO;
@@ -49,137 +42,46 @@ import vo.billvo.BillVO;
 public class BillExaminePanel implements PanelInterface {
     
     private BillSearchBLService billSearchBl;
-	private static double[][] size = {{TableLayout.FILL,0.1},{0.1, 0.1, TableLayout.FILL}};
-	private JPanel panel = new JPanel(new TableLayout(size));
+    private BillOperationService billOperationBl;
+    private BillExamineService billExamineBl;
+
+	private JPanel panel;
     private DateChoosePanel fromPanel, toPanel;
-    private LFPanel storePanel;
-    private IdNamePanel operatorPanel, customerPanel, accountPanel;
-    private JComboBox<ChoiceItem> choiceBox;
+    private IdNamePanel operatorPanel, choosePanel;
+    private JComboBox<String> choiceBox;
     protected JTable table;
-    /** 
-     * 在用户切换单据种类时跟着改变，
-     * 库存类: storePanel， 销售类及收款付款单: customerPanel， 现金费用单: accountPanel
-     */
-    private JPanel typePanel;
-    /**
-     * 单据种类的选项，每一个选项都有相应的各种操作
-     * @see ChoiceItem
-     */
-    private ChoiceItem[] choices = {/*
-            new ChoiceItem("报溢单"){
-                public boolean validOperator(UserType type) {return type == UserType.KEEPER;}
-                public boolean validCustomer(int type) {return false;}
-                public MyTableModel search(String from, String to, String operatorId, int state) {
-                    return billSearchBl.filterInventoryBills(from, to, getStore(), operatorId, true);
-                }
-                public JPanel getTypePanel() { return storePanel; }
-                public BillVO getBill(String id) { return billBL.getCashCostBill(id); }
-                public BillPanelInterface getPanel() { return ChangeBillPanel.class; }
-                public Class<? extends BillVO> getBillClass() { return ChangeBillVO.class; }
-            },
-            new ChoiceItem("报损单"){
-                public boolean validOperator(UserType type) { return type == UserType.KEEPER; }
-                public boolean validCustomer(int type) { return false; }
-                public MyTableModel search(String from, String to, String operatorId, int state) {
-                    return billSearchBl.filterInventoryBills(from, to, getStore(), operatorId, false);
-                }
-                public JPanel getTypePanel() { return storePanel; }
-                public BillVO getBill(String id) { return billBL.getCashCostBill(id); }
-                public BillPanelInterface getPanel() { return ChangeBillPanel.class; }
-                public Class<? extends BillVO> getBillClass() { return ChangeBillVO.class; }
-            },
-            new ChoiceItem("现金费用单"){
-                public boolean validOperator(UserType type) { return type == UserType.ACCOUNTANT; }
-                public boolean validCustomer(int type) { return false; }
-                public MyTableModel search(String from, String to, String operatorId, int state) {
-                    return billSearchBl.filterCashCostBills(from, to, getAccountId(), operatorId);
-                }
-                public JPanel getTypePanel() { return accountPanel; }
-                public BillVO getBill(String id) { return billBL.getCashCostBill(id); }
-                public BillPanelInterface getPanel() { return CashCostBillPanel.class; }
-                public Class<? extends BillVO> getBillClass() { return CashCostBillVO.class; }
-            },
-            new ChoiceItem("付款单"){
-                public boolean validOperator(UserType type) { return type == UserType.ACCOUNTANT; }
-                public boolean validCustomer(int type) { return true; }
-                public MyTableModel search(String from, String to, String operatorId, int state) {
-                    return billSearchBl.filterPaymentBills(from, to, getCustomerId(), operatorId);
-                }
-                public JPanel getTypePanel() { return customerPanel; }
-                public BillVO getBill(String id) { return billBL.getPaymentBill(id); }
-                public BillPanelInterface getPanel() { return ReceiptOrPaymentBillPanel.class; }
-                public Class<? extends BillVO> getBillClass() { return PaymentBillVO.class; }
-            },
-            new ChoiceItem("收款单"){
-                public boolean validOperator(UserType type) { return type == UserType.ACCOUNTANT; }
-                public boolean validCustomer(int type) { return true; }
-                public MyTableModel search(String from, String to, String operatorId, int state) {
-                    return billSearchBl.filterReceiptBills(from, to, getCustomerId(), operatorId);
-                }
-                public JPanel getTypePanel() { return customerPanel; }
-                public BillVO getBill(String id) { return billBL.getReceiptBill(id); }
-                public BillPanelInterface getPanel() { return ReceiptOrPaymentBillPanel.class; }
-                public Class<? extends BillVO> getBillClass() { return ReceiptBillVO.class; }
-            },
-            new ChoiceItem("进货单"){
-                public boolean validOperator(UserType type) { return type == UserType.SALESMAN; }
-                public boolean validCustomer(int type) { return type == 0; }
-                public MyTableModel search(String from, String to, String operatorId, int state) {
-                    return billSearchBl.filterPurchaseBills(from, to, getCustomerId(), operatorId);
-                }
-                public JPanel getTypePanel() { return customerPanel; }
-                public BillVO getBill(String id) { return billBL.getPurchaseBill(id); }
-                public BillPanelInterface getPanel() { return PurchaseBillPanel.class; }
-                public Class<? extends BillVO> getBillClass() { return PurchaseBillVO.class; }
-            },
-            new ChoiceItem("进货退货单"){
-                public boolean validOperator(UserType type) { return type == UserType.SALESMAN; }
-                public boolean validCustomer(int type) { return type == 0; }
-                public MyTableModel search(String from, String to, String operatorId, int state) {
-                    return billSearchBl.filterPurchaseReturnBills(from, to, getCustomerId(), operatorId);
-                }
-                public JPanel getTypePanel() { return customerPanel; }
-                public BillVO getBill(String id) { return billBL.getPurchaseReturnBill(id); }
-                public BillPanelInterface getPanel() { return PurchaseReturnBillPanel.class; }
-                public Class<? extends BillVO> getBillClass() { return PurchaseReturnBillVO.class; }
-            },
-            new ChoiceItem("销售单"){
-                public boolean validOperator(UserType type) { return type == UserType.SALESMAN; }
-                public boolean validCustomer(int type) { return type == 1; }
-                public MyTableModel search(String from, String to, String operatorId, int state) {
-                    return billSearchBl.filterSalesBills(from, to, getCustomerId(), operatorId);
-                }
-                public JPanel getTypePanel() { return customerPanel; }
-                public BillVO getBill(String id) { return billBL.getSalesBill(id); }
-                public BillPanelInterface getPanel() { return SalesBillPanel.class; }
-                public Class<? extends BillVO> getBillClass() { return SalesBillVO.class; }
-            },
-            new ChoiceItem("销售退货单"){
-                public boolean validOperator(UserType type) { return type == UserType.SALESMAN; }
-                public boolean validCustomer(int type) { return type == 1; }
-                public MyTableModel search(String from, String to, String operatorId, int state) {
-                    return billSearchBl.filterSalesReturnBills(from, to, getCustomerId(), operatorId);
-                }
-                public JPanel getTypePanel() { return customerPanel; }
-                public BillVO getBill(String id) { return billBL.getSalesReturnBill(id); }
-                public BillPanelInterface getPanel() { return SalesReturnBillPanel.class; }
-                public Class<? extends BillVO> getBillClass() { return SalesReturnBillVO.class; }
-            }*/
-    };
+    
+    private UserType type = UserType.KEEPER;
 
     public BillExaminePanel(MainWindow mainWindow, ActionListener closeListener) {
+        billSearchBl = new BillSearchBL();
+        billOperationBl = new BillOperationBL();
+
+        double[][] size = new double[][]{{TableLayout.FILL},{0.1,0.15,TableLayout.FILL}};
     	TopButtonPanel buttonPanel = new TopButtonPanel();
-    	buttonPanel.addButton("审核", new ImageIcon("resource/Examine.png"), new Listener_stub());
-		buttonPanel.addButton("红冲", new ImageIcon("resource/Offset.png"), new Listener_stub());
-		buttonPanel.addButton("红冲并复制", new ImageIcon("resource/OffsetCopy.png"), new Listener_stub());
+        buttonPanel.addButton("搜索", new ImageIcon("resource/SearchData.png"), e->search());
+    	buttonPanel.addButton("通过", new ImageIcon("resource/Examine.png"), e->pass());
+    	buttonPanel.addButton("不通过", new ImageIcon("resource/NotPass.png"), e->notPass());
 		buttonPanel.addButton("导出为Excel", new ImageIcon("resource/Save.png"), e -> ExcelExporter.export((MyTableModel)table.getModel()));
 		buttonPanel.addButton("关闭", new ImageIcon("resource/Close.png"), new CloseListener(mainWindow));
 		
+		table = new JTable();
+        JScrollPane sp = new JScrollPane(table);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.addMouseListener(new MouseAdapter() {
+        	public void mouseClicked(MouseEvent e) {
+        		if(e.getClickCount() == 2) {
+        			int index = table.getSelectedRow();
+        	        new BillViewer(billOperationBl.getBillById(table.getValueAt(index, 0).toString()), false);
+        		}
+        	}
+        });
+        
+        panel = new JPanel(new TableLayout(size));
 		panel.add(buttonPanel.getPanel(), "0,0");
-        billSearchBl = new BillSearchBL();
         panel.add(getNorthPanel(closeListener), "0,1");
-        panel.add(getCenterPanel(), "0,2");
-        panel.add(getEastPanel(), "1,2");
+        panel.add(sp, "0,2");
+ 
     }
 
     @Override
@@ -195,19 +97,12 @@ public class BillExaminePanel implements PanelInterface {
     private JPanel getNorthPanel(ActionListener closeListener) {
         fromPanel = new DateChoosePanel("开始时间");
         toPanel = new DateChoosePanel("结束时间");
-        choiceBox = new JComboBox<>(choices);
+        choiceBox = new JComboBox<String>(new String[]{"报溢单","报损单","进货单","进货退货单","销售单","销售退货单","收款单","付款单","现金费用单"});
         choiceBox.addItemListener(e -> itemChanged(e));
         operatorPanel = new IdNamePanel("操作员", 7, 7);
         operatorPanel.addMouseListener(chooseOperator());
-        customerPanel = new IdNamePanel("客户", 7, 7);
-        customerPanel.addMouseListener(chooseCustomer());
-        storePanel = new LFPanel("库存", 14);
-        typePanel = storePanel;
-        accountPanel = new IdNamePanel("账户", 7, 7);
-        accountPanel.addMouseListener(chooseAccount());
-        // TODO icons not added
-        JButton searchButton = new JButton("搜索");
-        searchButton.addActionListener(e -> search());
+        choosePanel = new IdNamePanel("商品", 7, 7);
+
 
         
         double[][] size = {
@@ -219,107 +114,43 @@ public class BillExaminePanel implements PanelInterface {
         panel.add(toPanel, "1 3");
         panel.add(choiceBox, "3 1");
         panel.add(operatorPanel, "3 3");
-        panel.add(storePanel, "5 1");
-        panel.add(searchButton, "7 1");
-        return panel;
-    }
-
-    private Component getCenterPanel() {
-        table = new JTable();
-        JScrollPane sp = new JScrollPane(table);
-        table.getTableHeader().setReorderingAllowed(false);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        return sp;
-    }
-
-    protected JPanel getEastPanel(){
-        JButton viewButton = new JButton("查看具体内容");
-        viewButton.addActionListener(e -> viewDetails());
-        double[][] size = {{10.0, -2.0, -1.0}, {10.0, -2.0, -1.0}};
-        JPanel panel = new JPanel(new TableLayout(size));
-        panel.add(viewButton, "1 1");
+        panel.add(choosePanel, "5 1");
         return panel;
     }
 
     private void itemChanged(ItemEvent e){
         if(e.getStateChange() == ItemEvent.DESELECTED) return;
-        JPanel newTypePanel = choiceBox.getItemAt(choiceBox.getSelectedIndex()).getTypePanel();
-        if(!newTypePanel.equals(typePanel)){
-            Container container = typePanel.getParent();
-            container.setVisible(false);
-            container.setLayout(container.getLayout());
-            container.remove(typePanel);
-            container.add(newTypePanel, "5 1");
-            typePanel = newTypePanel;
-            container.setVisible(true);
+        switch ((String)choiceBox.getSelectedItem()) {
+        case "报溢单": choosePanel.setLabelText("商品");type = UserType.KEEPER;break;
+        case "报损单": choosePanel.setLabelText("商品");type = UserType.KEEPER;break;
+        case "进货单": choosePanel.setLabelText("客户");type = UserType.SALESMAN;break;
+        case "进货退货单" : choosePanel.setLabelText("客户");type = UserType.SALESMAN;break;
+        case "销售单" : choosePanel.setLabelText("客户");type = UserType.SALESMAN;break;
+        case "销售退货单" : choosePanel.setLabelText("客户");type = UserType.SALESMAN;break;
+        case "收款单" : choosePanel.setLabelText("账户");type = UserType.ACCOUNTANT;break;
+        case "付款单" : choosePanel.setLabelText("账户");type = UserType.ACCOUNTANT;break;
+        case "现金费用单" : choosePanel.setLabelText("账户");type = UserType.ACCOUNTANT;break;
         }
         operatorPanel.setId(""); 
         operatorPanel.setItsName("");
-        customerPanel.setId("");
-        customerPanel.setItsName("");
+        choosePanel.setId("");
+        choosePanel.setItsName("");
     }
-    
-    private String getStore(){
-        String store = storePanel.getText();
-        return store.length() == 0 ? null : store;
-    }
-    
-    private String getAccountId(){
-        String accountId = accountPanel.getId();
-        return accountId.length() == 0 ? null : accountId;
-    }
-    
-    private String getCustomerId(){
-        String customerId = customerPanel.getId();
-        return customerId.length() == 0 ? null : customerId;
-    }
-    
+
     private MouseListener chooseOperator(){
-        return new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-                UserVO operator = new UserChooseWin().getUser();
-                if(operator == null) return;
-                ChoiceItem selectedItem = choiceBox.getItemAt(choiceBox.getSelectedIndex());
-                if(selectedItem.validOperator(operator.getType())){
-                    operatorPanel.setId(operator.getId());
-                    operatorPanel.setItsName(operator.getName());
-                } else {
-                    new InfoWindow("请选择正确的操作员@_@");
-                    return;
-                }
-            }
-        };
-    }
-    
-    private MouseListener chooseCustomer(){
-        return new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-                CustomerVO customer = new CustomerChooseWin().getCustomer();
-                if(customer == null) return;
-                ChoiceItem selectedItem = choiceBox.getItemAt(choiceBox.getSelectedIndex());
-                if(selectedItem.validCustomer(customer.getType())){
-                    customerPanel.setId(customer.getId());
-                    customerPanel.setItsName(customer.getName());
-                } else {
-                    new InfoWindow("请选择正确的客户@_@");
-                    return;
-                }
-            }
-        };
-    }
-    
-    private MouseListener chooseAccount(){
-        return new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-                AccountVO account = new AccountChooseWin().getAccount();
-                if(account == null) return;
-                accountPanel.setId(account.getNumber());
-                accountPanel.setItsName(account.getName());
-            }
-        };
+    	 return new MouseAdapter(){
+             @Override
+             public void mouseClicked(MouseEvent e){
+                 UserVO operator = new UserChooseWin().getUser();
+                 if(operator == null) return;
+                 if(type == operator.getType()){
+                     operatorPanel.setId(operator.getId());
+                     operatorPanel.setItsName(operator.getName());
+                 } else {
+                     new InfoWindow("请选择正确的操作员");
+                 }
+             }
+         };
     }
 
     protected void search(){
@@ -330,67 +161,48 @@ public class BillExaminePanel implements PanelInterface {
         }
         String operatorId = operatorPanel.getId();
         operatorId = operatorId.length() == 0 ? null : operatorId;
-        ChoiceItem selectedItem = choiceBox.getItemAt(choiceBox.getSelectedIndex());
-        table.setModel(selectedItem.search(from, to, operatorId, 3));
+        String chooseId = choosePanel.getId();
+        chooseId = chooseId.length() == 0 ? null : chooseId;
+        switch ((String)choiceBox.getSelectedItem()) {
+        case "报溢单": table.setModel(billSearchBl.filterInventoryBills(from, to, chooseId, operatorId, true, BillVO.COMMITED));break;
+        case "报损单": table.setModel(billSearchBl.filterInventoryBills(from, to, chooseId, operatorId, false, BillVO.COMMITED));break;
+        case "进货单": table.setModel(billSearchBl.filterPurchaseBills(from, to, chooseId, operatorId, BillVO.COMMITED));break;
+        case "进货退货单" : table.setModel(billSearchBl.filterPurchaseReturnBills(from, to, chooseId, operatorId, BillVO.COMMITED));break;
+        case "销售单" : table.setModel(billSearchBl.filterSalesBills(from, to, chooseId, operatorId, BillVO.COMMITED));break;
+        case "销售退货单" : table.setModel(billSearchBl.filterSalesReturnBills(from, to, chooseId, operatorId, BillVO.COMMITED));break;
+        case "收款单" : table.setModel(billSearchBl.filterReceiptBills(from, to, chooseId, operatorId, BillVO.COMMITED));break;
+        case "付款单" : table.setModel(billSearchBl.filterPaymentBills(from, to, chooseId, operatorId, BillVO.COMMITED));break;
+        case "现金费用单" : table.setModel(billSearchBl.filterCashCostBills(from, to, chooseId, operatorId, BillVO.COMMITED));break;
+        }
     }
     
-    private void viewDetails(){
+    private void pass() {
+    	billExamineBl = new BillExamineBL();
         int index = table.getSelectedRow();
         if(index < 0){
-            new InfoWindow("请选择一张单据查看@_@");
+            new InfoWindow("请选择一张单据审批@_@");
             return;
         }
         String id = table.getValueAt(index, 0).toString();
-        generateBillViewer(id, true);
-    }
-    
-    /**
-     * 用于生成单据具体内容的窗口<br>
-     * 该类的子类{@code BusinessHistoryPanel}中使用了该方法用于红冲并复制
-     * @param editable 该单据是否可编辑，若可编辑即为红冲并复制功能，若不可编辑则为查看功能
-     */
-    protected void generateBillViewer(String id, boolean editable){
-        int index = choiceBox.getSelectedIndex();
-        GetUserInterface userInfo = new UserBL();
-        ChoiceItem selectedItem = choiceBox.getItemAt(index);
-        BillVO bill = selectedItem.getBill(id);
-        BillPanelInterface panelType = selectedItem.getPanel();
-        Class<? extends BillVO> billType = selectedItem.getBillClass();
-        if(editable) bill.setState(BillVO.SAVED);
-        //new BillViewer(panelType, billType, userInfo.getUser(bill.getOperator()), bill);
-    }
-    
-    /**
-     * 单据种类的选项卡<br>
-     * 自带一些判断逻辑，搜索逻辑，以及获取相关信息的逻辑，详见内部定义的抽象方法
-     */
-    private abstract class ChoiceItem{
-
-        private String info;
-        
-        private ChoiceItem(String info){
-            this.info = info;
+        if(billExamineBl.examineBill(id)){
+            JOptionPane.showMessageDialog(null, "通过单据审批^_^");
+        }else {
+            JOptionPane.showMessageDialog(null, "操作失败，请重试@_@");
         }
-        
-        public abstract boolean validOperator(UserType type);
-        
-        public abstract boolean validCustomer(int type);
-        
-        public abstract MyTableModel search(String from, String to, String operatorId, int state);
-        
-        public abstract JPanel getTypePanel();
-        
-        public abstract BillVO getBill(String id);
-        
-        public abstract BillPanelInterface getPanel();
-        
-        public abstract Class<? extends BillVO> getBillClass();
-        
-        @Override
-        public String toString(){
-            return info;
-        }
-
     }
     
+    private void notPass() {
+    	billExamineBl = new BillExamineBL();
+        int index = table.getSelectedRow();
+        if(index < 0){
+            new InfoWindow("请选择一张单据审批@_@");
+            return;
+        }
+        String id = table.getValueAt(index, 0).toString();
+        if (billExamineBl.notPassBill(id)) {
+        	JOptionPane.showMessageDialog(null, "不通过单据审批^_^");
+        }else {
+            JOptionPane.showMessageDialog(null, "操作失败，请重试@_@");
+        }
+    }
 }
