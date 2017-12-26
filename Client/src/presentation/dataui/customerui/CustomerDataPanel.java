@@ -29,7 +29,6 @@ public class CustomerDataPanel extends DataPanel{
 	            public void actionPerformed(ActionEvent e) {
 	                new AddCustomerWindow(user.getRank(), customerBL);
 	                updateTable();
-	        		TableTools.autoFit(table);
 	            }
 	        };
 	}
@@ -59,7 +58,6 @@ public class CustomerDataPanel extends DataPanel{
                 MyTableModel model = new SearchCustomerWindow(customerBL).getModel();
                 if(model != null) {
                 	table.setModel(model);
-            		TableTools.autoFit(table);
                 }
             }
         };
