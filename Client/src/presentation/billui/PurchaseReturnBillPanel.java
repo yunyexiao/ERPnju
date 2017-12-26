@@ -1,15 +1,13 @@
 package presentation.billui;
 
-import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import bl_stub.PurchaseReturnBillBL_stub;
 import blservice.billblservice.PurchaseReturnBillBLService;
+import businesslogic.PurchaseReturnBillBL;
 import layout.TableLayout;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
@@ -26,7 +24,7 @@ import vo.billvo.PurchaseReturnBillVO;
  */
 public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     
-    private PurchaseReturnBillBLService purchaseReturnBl = new PurchaseReturnBillBL_stub();
+    private PurchaseReturnBillBLService purchaseReturnBl = new PurchaseReturnBillBL();
     private JTextField originalPBIdField;
     private JButton purchaseBillChooseButton;
     private PurchaseBillVO originalPB;

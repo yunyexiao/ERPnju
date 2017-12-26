@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import bl_stub.SaleBillBL_stub;
 import blservice.billblservice.SalesBillBLService;
+import businesslogic.SalesBillBL;
 import layout.TableLayout;
 import presentation.component.MyTableModel;
 import presentation.tools.DoubleField;
@@ -28,7 +28,7 @@ import vo.billvo.SalesBillVO;
  */
 public class SalesBillPanel extends CommonSaleBillPanel {
 	
-	private SalesBillBLService saleBillBL = new SaleBillBL_stub();
+	private SalesBillBLService saleBillBL = new SalesBillBL();
 	private DoubleField discountField, couponField, afterDiscountField;
 	private JButton sumButton;
 	private JTextArea promotionInfoArea;
