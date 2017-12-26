@@ -25,31 +25,17 @@ public class SaleReturnBillData extends UnicastRemoteObject implements SalesRetu
 	public boolean saveBill(SalesReturnBillPO bill) throws RemoteException {
 		ArrayList<SalesItemsPO> items=bill.getSalesReturnBillItems();
 		try{
-			Statement s1 = DataHelper.getInstance().createStatement();
-			int r1=s1.executeUpdate("INSERT INTO SalesReturnBill VALUES"
-					+ "('"
-					+bill.getId()+"','"
-					+bill.getCustomerId()+"','"
-					+bill.getSalesManName()+"','"
-					+bill.getOperator()+"','"
-					+bill.getOriginalSum()+"','"
-					+bill.getReturnSum()+"','"
-					+bill.getRemark()+"',' "
-					+bill.getOriginalSBId()+"','"
-					+bill.getDate()+" "+bill.getTime()+"','"
-					+bill.getState()+"')");
-			
+			boolean b1 = SQLQueryHelper.add(billTableName, bill.getId()
+					,bill.getCustomerId(),bill.getSalesManName(),bill.getOperator(),bill.getOriginalSum()
+					,bill.getReturnSum(),bill.getRemark()
+					,bill.getOriginalSBId(),bill.getDate() + " "+bill.getTime(),bill.getState());
+			boolean b2 = true;
 			for(int i=0;i<items.size();i++){
-			Statement s2 = DataHelper.getInstance().createStatement();
-			int r2=s2.executeUpdate("INSERT INTO SalesReturnRecord VALUES ('"
-					+bill.getId()+"','"
-					+items.get(i).getComId()+"','"
-					+items.get(i).getComQuantity()+"','"
-					+items.get(i).getComSum()+"','"
-					+items.get(i).getComRemark()+"','"
-					+items.get(i).getComPrice()+"')");
+				b2 = b2 && SQLQueryHelper.add(recordTableName, bill.getAllId()
+						,items.get(i).getComId(),items.get(i).getComQuantity(),items.get(i).getComSum()
+						,items.get(i).getComRemark(),items.get(i).getComPrice());
 			}
-			if(r1>0)return true;
+			if(b1 && b2) return true;
 		}catch(Exception e){
 			  e.printStackTrace();
 			   return false;

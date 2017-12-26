@@ -2,14 +2,11 @@ package data;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import dataservice.PaymentBillDataService;
-import po.billpo.TransferItem;
-import po.billpo.CashCostBillPO;
-import po.billpo.CashCostItem;
 import po.billpo.PaymentBillPO;
+import po.billpo.TransferItem;
 public class PaymentBillData extends UnicastRemoteObject implements PaymentBillDataService{
 	
 	private String billTableName="PaymentBill";
@@ -19,7 +16,6 @@ public class PaymentBillData extends UnicastRemoteObject implements PaymentBillD
 
 	public PaymentBillData() throws RemoteException {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -27,25 +23,15 @@ public class PaymentBillData extends UnicastRemoteObject implements PaymentBillD
 
 		ArrayList<TransferItem> items=bill.getTransferList();
 		try{
-			Statement s1 = DataHelper.getInstance().createStatement();
-			int r1=s1.executeUpdate("INSERT INTO PaymentBill VALUES"
-					+ "('"
-					+bill.getId()+"','"
-					+bill.getCustomerId()+"','"
-					+bill.getOperator()+"','"
-					+bill.getSum()+"','"
-					+bill.getDate()+" "+bill.getTime()+"','"
-					+bill.getState()+"')");
-			
+			boolean b1 = SQLQueryHelper.add(billTableName, bill.getId()
+					,bill.getCustomerId(),bill.getOperator(),bill.getSum()
+					,bill.getDate() + " "+bill.getTime(),bill.getState());
+			boolean b2 = true;
 			for(int i=0;i<items.size();i++){
-			Statement s2 = DataHelper.getInstance().createStatement();
-			int r2=s2.executeUpdate("INSERT INTO PaymentRecord VALUES ('"
-					+bill.getId()+"','"
-					+items.get(i).getAccountId()+"','"
-					+items.get(i).getMoney()+"','"
-					+items.get(i).getRemark()+"')");
+				b2 = b2 && SQLQueryHelper.add(recordTableName, bill.getAllId()
+						,items.get(i).getAccountId(),items.get(i).getMoney(),items.get(i).getRemark());
 			}
-			if(r1>0)return true;
+			if(b1 && b2) return true;
 		}catch(Exception e){
 			  e.printStackTrace();
 			   return false;

@@ -2,11 +2,9 @@ package data;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import dataservice.ReceiptBillDataService;
-import po.billpo.PaymentBillPO;
 import po.billpo.ReceiptBillPO;
 import po.billpo.TransferItem;
 public class ReceiptBillData extends UnicastRemoteObject implements ReceiptBillDataService{
@@ -25,25 +23,15 @@ public class ReceiptBillData extends UnicastRemoteObject implements ReceiptBillD
 
 		ArrayList<TransferItem> items=bill.getTransferList();
 		try{
-			Statement s1 = DataHelper.getInstance().createStatement();
-			int r1=s1.executeUpdate("INSERT INTO ReceiptBill VALUES"
-					+ "('"
-					+bill.getId()+"','"
-					+bill.getCustomerId()+"','"
-					+bill.getOperator()+"','"
-					+bill.getSum()+"','"
-					+bill.getDate()+" "+bill.getTime()+"','"
-					+bill.getState()+"')");
-			
-			for(int i=0;i<items.size();i++){
-			Statement s2 = DataHelper.getInstance().createStatement();
-			int r2=s2.executeUpdate("INSERT INTO ReceiptRecord VALUES ('"
-					+bill.getId()+"','"
-					+items.get(i).getAccountId()+"','"
-					+items.get(i).getMoney()+"','"
-					+items.get(i).getRemark()+"')");
+			boolean b1 = SQLQueryHelper.add(billTableName, bill.getId()
+					,bill.getCustomerId(),bill.getOperator(),bill.getSum()
+					,bill.getDate() + " "+bill.getTime(),bill.getState());
+			boolean b2 = true;
+			for(int i = 0; i < items.size(); i++) {
+				b2 = b2 && SQLQueryHelper.add(recordTableName, bill.getAllId()
+						,items.get(i).getAccountId(),items.get(i).getMoney(),items.get(i).getRemark());
 			}
-			if(r1>0)return true;
+			if(b1 && b2) return true;
 		}catch(Exception e){
 			  e.printStackTrace();
 			   return false;
@@ -53,15 +41,12 @@ public class ReceiptBillData extends UnicastRemoteObject implements ReceiptBillD
 
 	@Override
 	public boolean deleteBill(String billid) throws RemoteException {
-		
         boolean res=SQLQueryHelper.getTrueDeleteResult(billTableName, billIdName, billid);
-
 		return res;
 	}
 
 	@Override
 	public String getNewId() throws RemoteException {
-		
 		String newId=SQLQueryHelper.getNewBillIdByDay(billTableName,billIdName);		
 		return newId;		
 	}

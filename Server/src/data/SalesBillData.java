@@ -10,9 +10,6 @@ import dataservice.SalesBillDataService;
 import po.billpo.SalesItemsPO;
 import po.billpo.SalesBillPO;
 public class SalesBillData extends UnicastRemoteObject implements SalesBillDataService{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -952253035895433810L;
 	private String billTableName="SalesBill";
 	private String recordTableName="SalesRecord";
@@ -26,36 +23,19 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 
 	@Override
 	public boolean saveBill(SalesBillPO bill) throws RemoteException {
-		
-		ArrayList<SalesItemsPO> items=bill.getSalesBillItems();
+		ArrayList<SalesItemsPO> items = bill.getSalesBillItems();
 		try{
-			Statement s1 = DataHelper.getInstance().createStatement();
-			int r1=s1.executeUpdate("INSERT INTO SalesBill VALUES"
-					+ "('"
-					+bill.getId()+"','"
-					+bill.getCustomerId()+"','"
-					+bill.getSalesManName()+"','"
-					+bill.getOperator()+"','"
-					+bill.getBeforeDiscount()+"','"
-					+bill.getDiscount()+"','"
-					+bill.getCoupon()+"',' "
-					+bill.getAfterDiscount()+"','"
-					+bill.getRemark()+"','"
-					+bill.getPromotionId()+"','"
-					+bill.getDate()+" "+bill.getTime()+"','"
-					+bill.getState()+"')");
-			
+			boolean b1 = SQLQueryHelper.add(billTableName, bill.getId()
+					,bill.getCustomerId(),bill.getSalesManName(),bill.getOperator(),bill.getBeforeDiscount()
+					,bill.getDiscount(),bill.getCoupon(),bill.getAfterDiscount(),bill.getRemark()
+					,bill.getPromotionId(),bill.getDate() + " "+bill.getTime(),bill.getState());
+			boolean b2 = true;
 			for(int i=0;i<items.size();i++){
-			Statement s2 = DataHelper.getInstance().createStatement();
-			int r2=s2.executeUpdate("INSERT INTO SalesRecord VALUES ('"
-					+bill.getId()+"','"
-					+items.get(i).getComId()+"','"
-					+items.get(i).getComQuantity()+"','"
-					+items.get(i).getComSum()+"','"
-					+items.get(i).getComRemark()+"','"
-					+items.get(i).getComPrice()+"')");
+				b2 = b2 && SQLQueryHelper.add(recordTableName, bill.getAllId()
+						,items.get(i).getComId(),items.get(i).getComQuantity(),items.get(i).getComSum()
+						,items.get(i).getComRemark(),items.get(i).getComPrice());
 			}
-			if(r1>0)return true;
+			if(b1 && b2) return true;
 		}catch(Exception e){
 			  e.printStackTrace();
 			   return false;

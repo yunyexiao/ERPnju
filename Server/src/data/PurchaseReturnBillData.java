@@ -20,33 +20,20 @@ public class PurchaseReturnBillData extends UnicastRemoteObject implements Purch
 	private String idName="PRBID";
 
 	@Override
-	public boolean saveBill(PurchaseReturnBillPO purchaseBill) throws RemoteException {
-		// TODO Auto-generated method stub
-        ArrayList<SalesItemsPO> items=purchaseBill.getPurchaseReturnBillItems();
+	public boolean saveBill(PurchaseReturnBillPO bill) throws RemoteException {
+        ArrayList<SalesItemsPO> items = bill.getPurchaseReturnBillItems();
 		
 		try{
-			Statement s1 = DataHelper.getInstance().createStatement();
-			int r1=s1.executeUpdate("INSERT INTO PurchaseReturnBill VALUES"
-					+ "('"
-					+purchaseBill.getId()+"','"
-					+purchaseBill.getSupplierId()+"','"
-					+purchaseBill.getOperator()+"','"
-					+purchaseBill.getSum()+"','"
-					+purchaseBill.getRemark()+"','"
-					+purchaseBill.getState()+"','"
-					+purchaseBill.getDate()+" "+purchaseBill.getTime()+"')");
-			
+			boolean b1 = SQLQueryHelper.add(tableName, bill.getId()
+					,bill.getSupplierId(),bill.getOperator(),bill.getSum(),bill.getRemark()
+					,bill.getState(),bill.getDate() + " "+bill.getTime());
+			boolean b2 = true;
 			for(int i=0;i<items.size();i++){
-			Statement s2 = DataHelper.getInstance().createStatement();
-			int r2=s2.executeUpdate("INSERT INTO PurchaseReturnRecord VALUES ('"
-					+purchaseBill.getId()+"','"
-					+items.get(i).getComId()+"','"
-					+items.get(i).getComQuantity()+"','"
-					+items.get(i).getComSum()+"','"
-					+items.get(i).getComRemark()+"','"
-					+items.get(i).getComPrice()+"')");
+				b2 = b2 && SQLQueryHelper.add("PurchaseRecord", bill.getAllId()
+						,items.get(i).getComId(),items.get(i).getComQuantity(),items.get(i).getComSum()
+						,items.get(i).getComRemark(),items.get(i).getComPrice());
 			}
-			if(r1>0)return true;
+			if(b1 && b2) return true;
 		}catch(Exception e){
 			  e.printStackTrace();
 			   return false;

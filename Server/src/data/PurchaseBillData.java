@@ -18,36 +18,23 @@ public class PurchaseBillData extends UnicastRemoteObject implements PurchaseBil
 	private String idName="PBID";
 
 	@Override
-	public boolean saveBill(PurchaseBillPO purchaseBill) throws RemoteException {
+	public boolean saveBill(PurchaseBillPO bill) throws RemoteException {
 		
-		ArrayList<SalesItemsPO> items=purchaseBill.getPurchaseBillItems();
-		
+		ArrayList<SalesItemsPO> items = bill.getPurchaseBillItems();
 		try{
-			Statement s1 = DataHelper.getInstance().createStatement();
-			int r1=s1.executeUpdate("INSERT INTO PurchaseBill VALUES"
-					+ "('"
-					+purchaseBill.getId()+"','"
-					+purchaseBill.getSupplierId()+"','"
-					+purchaseBill.getOperator()+"','"
-					+purchaseBill.getSum()+"','"
-					+purchaseBill.getRemark()+"','"
-					+purchaseBill.getState()+"','"
-					+purchaseBill.getDate()+" "+purchaseBill.getTime()+"')");
-			
+			boolean b1 = SQLQueryHelper.add(tableName, bill.getId()
+					,bill.getSupplierId(),bill.getOperator(),bill.getSum(),bill.getRemark()
+					,bill.getState(),bill.getDate() + " "+bill.getTime());
+			boolean b2 = true;
 			for(int i=0;i<items.size();i++){
-			Statement s2 = DataHelper.getInstance().createStatement();
-			int r2=s2.executeUpdate("INSERT INTO PurchaseRecord VALUES ('"
-					+purchaseBill.getId()+"','"
-					+items.get(i).getComId()+"','"
-					+items.get(i).getComQuantity()+"','"
-					+items.get(i).getComSum()+"','"
-					+items.get(i).getComRemark()+"','"
-					+items.get(i).getComPrice()+"')");
+				b2 = b2 && SQLQueryHelper.add("PurchaseRecord", bill.getAllId()
+						,items.get(i).getComId(),items.get(i).getComQuantity(),items.get(i).getComSum()
+						,items.get(i).getComRemark(),items.get(i).getComPrice());
 			}
-			if(r1>0)return true;
+			if(b1 && b2) return true;
 		}catch(Exception e){
-			  e.printStackTrace();
-			   return false;
+			e.printStackTrace();
+			return false;
 		}
 		return false;
 	}
