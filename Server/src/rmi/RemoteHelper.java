@@ -18,7 +18,6 @@ public class RemoteHelper {
 			bind(new CommodityData());
 			bind(new CustomerData());
 			bind(new AccountData());
-			bind(new BillData());
 			bind(new BillSearchData());
 			bind(new CashCostBillData());
 			bind(new ChangeBillData());
