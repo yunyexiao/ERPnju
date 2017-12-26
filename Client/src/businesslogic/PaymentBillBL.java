@@ -90,9 +90,7 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
 	        PaymentBillVO old = (PaymentBillVO) bill;
 	        PaymentBillVO copy = new PaymentBillVO(
 	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), 
-	            old.getOperator(), BillVO.PASS, old.getCustomerId()
-	        );
-	        copy.setTableModel(old.getTableModel());
+	            old.getOperator(), BillVO.PASS, old.getCustomerId(),old.getTableModel());
 	        return saveBill(copy, "红冲并复制付款单", "红冲并复制后新的付款单单据编号为"+copy.getAllId());
 	    }
 	    return false;
