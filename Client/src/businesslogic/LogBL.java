@@ -11,18 +11,20 @@ import dataservice.LogDataService;
 import ds_stub.LogDs_stub;
 import po.LogInfoPO;
 import presentation.component.MyTableModel;
+import presentation.main.MainWindow;
 import rmi.Rmi;
 import vo.UserVO;
 
 public class LogBL implements LogBLService, AddLogInterface {
 
 	private LogDataService logData = Rmi.flag ? Rmi.getRemote(LogDataService.class) : new LogDs_stub();
-	private GetUserInterface getUserInfo;
-	private final UserVO user;
+	private UserVO user;
 	
 	public LogBL(UserVO user) {
-		getUserInfo = new UserBL();
 		this.user = user;
+	}
+	public LogBL() {
+		this.user = MainWindow.getUser();
 	}
 	@Override
 	public MyTableModel getLogInfo() {
@@ -40,6 +42,7 @@ public class LogBL implements LogBLService, AddLogInterface {
 	 * @return 表格模型
 	 */
 	private MyTableModel listToTable(ArrayList<LogInfoPO> list) {
+		GetUserInterface getUserInfo = new UserBL();
 		String[] attributes={"操作时间","操作员","操作类型","详情"};
 		if (list == null) {
 			String[][] info = {{"", "", "", ""}};

@@ -14,10 +14,8 @@ import blservice.InitBLService;
 import businesslogic.InitBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
-import presentation.component.CloseListener;
 import presentation.component.InfoWindow;
 import presentation.component.TopButtonPanel;
-import presentation.main.MainWindow;
 
 public class InitPanel implements PanelInterface {
 
@@ -28,8 +26,8 @@ public class InitPanel implements PanelInterface {
 	private String year;
 	private InitBLService initBL;
 	
-	public InitPanel(MainWindow mw) {
-		initBL = new InitBL(mw.getUser());
+	public InitPanel(ActionListener closeListener) {
+		initBL = new InitBL();
 		year = initBL.getYear();
 		
 		double[][] size = {{TableLayout.FILL},{0.1,TableLayout.FILL}};
@@ -66,7 +64,7 @@ public class InitPanel implements PanelInterface {
 		TopButtonPanel buttonPanel = new TopButtonPanel();
 		buttonPanel.addButton("期初信息查询", new ImageIcon("resource/SearchData.png"), new FindListener());
 		buttonPanel.addButton("期初建账", new ImageIcon("resource/Init.png"), new InitListener());
-		buttonPanel.addButton("关闭", new ImageIcon("resource/Close.png"), new CloseListener(mw));
+		buttonPanel.addButton("关闭", new ImageIcon("resource/Close.png"), closeListener);
 		panel.add(buttonPanel.getPanel(), "0,0");
 		
 		JScrollPane commodityPane = new JScrollPane(commodityTable);

@@ -8,8 +8,6 @@ import javax.swing.JPanel;
 import layout.TableLayout;
 import presentation.PanelInterface;
 import presentation.component.TopButtonPanel;
-import vo.UserVO;
-import vo.billvo.BillVO;
 
 /**
  * 两个构造方法分别对应新建单据和修改单据，其中也包含了两个不同的抽象方法初始化BillPanel(使用getBillPanel得到)<br/>
@@ -20,73 +18,36 @@ import vo.billvo.BillVO;
  * @author 钱美缘
  *
  */
-public abstract class BillPanel implements PanelInterface {
+public class BillPanel implements PanelInterface {
 
-	protected UserVO user;
 	private JPanel panel;
 	private TopButtonPanel buttonPanel;
-	protected JPanel billPanel;
+	private BillPanelInterface billPanel;
 	/**
 	 * 新建一张单据时的构造方法
 	 * @param closeListener MainWindow的关闭Panel监听器
 	 */
-	public BillPanel(UserVO user, ActionListener closeListener) {
-		this.user = user;
-		initPanel(closeListener);
-		initBillPanel();
-	}
-	
-	public BillPanel(UserVO user, ActionListener closeListener, BillVO bill) {
-		this.user = user;
-		initPanel(closeListener);
-		initBillPanel();
-		if (bill.getState() == BillVO.PASS || bill.getState() == BillVO.COMMITED) setEditable(false);
-	}
-	
-	private void initPanel(ActionListener closeListener) {
+	public BillPanel(ActionListener closeListener, BillPanelInterface billPanel) {
+		this.billPanel = billPanel;
 		buttonPanel = new TopButtonPanel();
 		double[][] size = {{TableLayout.FILL},{0.1,TableLayout.FILL}};
 		panel = new JPanel(new TableLayout(size));
-		billPanel = new JPanel();
 		
-		buttonPanel.addButton("新建", new ImageIcon("resource/New.png"), getNewActionListener());
-		buttonPanel.addButton("保存", new ImageIcon("resource/Save.png"), getSaveActionListener());
-		buttonPanel.addButton("提交", new ImageIcon("resource/Commit.png"), getCommitActionListener());
+		buttonPanel.addButton("新建", new ImageIcon("resource/New.png"), e->billPanel.newAction());
+		buttonPanel.addButton("保存", new ImageIcon("resource/Save.png"), e->billPanel.saveAction());
+		buttonPanel.addButton("提交", new ImageIcon("resource/Commit.png"), e->billPanel.commitAction());
 		buttonPanel.addButton("关闭", new ImageIcon("resource/Close.png"), closeListener);
 		
 		panel.add(buttonPanel.getPanel(), "0 0");
-		panel.add(billPanel, "0 1");
+		panel.add((JPanel)billPanel, "0 1");
 	}
-	/**
-	 * 初始化BillPanel的显示部分（除了单据id其他皆为空白）<br/>
-	 */
-	abstract protected void initBillPanel();
-	/**
-	 * 
-	 * @return 获得新建按钮需要绑定的监听器
-	 */
-	abstract protected ActionListener getNewActionListener();
-	/**
-	 * 
-	 * @return 获得保存按钮需要绑定的监听器
-	 */
-	abstract protected ActionListener getSaveActionListener();
-	/**
-	 * 
-	 * @return 获得提交按钮需要绑定的监听器
-	 */
-	abstract protected ActionListener getCommitActionListener();
-	/**
-	 * 
-	 * @return 判断单据填写内容是否正确
-	 */
-	abstract protected boolean isCorrectable();
 	/**
 	 * 设置不可修改的方法
 	 * @param b
 	 */
-	protected void setEditable(boolean b) {
+	public void setEditable(boolean b) {
 		buttonPanel.setEnable(b);
+		billPanel.setEditable(b);
 	}
 	
 	@Override

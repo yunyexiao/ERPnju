@@ -36,7 +36,7 @@ public class UserDataPanel extends DataPanel {
             public void actionPerformed(ActionEvent e) {
                 MyTableModel tableModel = (MyTableModel)table.getModel();
                 if (table.getSelectedRow() != -1) {
-                	new UpdateUserWindow(userBL, tableModel.getValueAtRow(table.getSelectedRow()));
+                	new UpdateUserWindow(userBL, tableModel.getValueAtRow(table.getSelectedRow()),false);
                 	updateTable();
                 } else new InfoWindow("请选择需要修改的用户");
             }

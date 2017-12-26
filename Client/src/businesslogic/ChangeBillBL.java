@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.ChangeBillBLService;
+import businesslogic.inter.AddLogInterface;
 import dataservice.ChangeBillDataService;
 import ds_stub.ChangeBillDs_stub;
 import po.billpo.BillPO;
@@ -19,18 +20,19 @@ import vo.billvo.ChangeBillVO;
 
 public class ChangeBillBL implements ChangeBillBLService, BillOperationService, BillExamineService{
 
-	private ChangeBillDataService changeBillDS;
+	private ChangeBillDataService changeBillDS = Rmi.flag ? Rmi.getRemote(ChangeBillDataService.class) : new ChangeBillDs_stub();
+	private AddLogInterface addLog = new LogBL();
 	private boolean isOver = true;
 	
 	public ChangeBillBL(boolean isOver) {
 		this.isOver = isOver;
-		changeBillDS = Rmi.flag ? Rmi.getRemote(ChangeBillDataService.class) : new ChangeBillDs_stub();
 	}
 	
+	private String getBillName() {return isOver?"报溢单":"报损单";}
 	@Override
 	public String getNewId() {
 		try {
-			return changeBillDS.getNewId(isOver);
+			return (isOver?"BYD-":"BSD-")+Timetools.getDate()+"-"+changeBillDS.getNewId(isOver);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return "";
@@ -40,15 +42,20 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
 	@Override
 	public boolean deleteBill(String id) {
 		try {
-			return changeBillDS.deleteBill(id);
+			if (changeBillDS.deleteBill(id)) {
+            	addLog.add("删除"+getBillName(), "删除的"+getBillName()+"单据编号为"+id);
+            	return true;
+            } else return false;
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
-
 	@Override
 	public boolean saveBill(ChangeBillVO bill) {
+		return saveBill(bill, "保存"+getBillName(), "保存的"+getBillName()+"单据编号为"+bill.getAllId());
+	}
+	private boolean saveBill(ChangeBillVO bill, String operation, String detail) {
 		MyTableModel model = bill.getTableModel();
 		ArrayList<ChangeItem> commodityList = new ArrayList<ChangeItem>();
 		for (int i = 0; i < model.getRowCount(); i++) {
@@ -57,7 +64,10 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
 			commodityList.add(item);
 		}
 		try {
-			return changeBillDS.saveBill(new ChangeBillPO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), bill.getState(), bill.getFlag(), commodityList));
+			if (changeBillDS.saveBill(new ChangeBillPO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), bill.getState(), bill.getFlag(), commodityList))) {
+            	addLog.add(operation, detail);
+            	return true;
+            } else return false;
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return false;
@@ -74,7 +84,10 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
             ChangeBillPO offset = new ChangeBillPO(
                 Timetools.getDate(), Timetools.getTime(), this.getNewId()
                 , bill.getOperator(), BillPO.PASS, bill.getFlag(), items);
-            return changeBillDS.saveBill(offset);
+            if (changeBillDS.saveBill(offset)) {
+            	addLog.add("红冲"+getBillName(), "被红冲的"+getBillName()+"单据编号为"+bill.getAllId());
+            	return true;
+            } else return false;
 	    }catch(RemoteException e){
 	        e.printStackTrace();
 	        return false;
@@ -89,7 +102,7 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
 	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
 	            BillVO.PASS, old.getFlag(), old.getTableModel()
 	        );
-	        return saveBill(copy);
+	        return saveBill(copy, "红冲并复制"+getBillName(), "红冲并复制后新的"+getBillName()+"单据编号为"+copy.getAllId());
 	    }
 	    return false;
 	}
@@ -101,7 +114,7 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
             ChangeBillVO billVO = BillTools.toChangeBillVO(billPO);
             billPO.setState(3);
             billVO.setState(3);
-            return saveBill(billVO);
+            return saveBill(billVO, "审核"+getBillName(), "通过审核的"+getBillName()+"单据编号为"+billId);
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -115,11 +128,21 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
             ChangeBillVO billVO = BillTools.toChangeBillVO(billPO);
             billPO.setState(4);
             billVO.setState(4);
-            return saveBill(billVO);
+            return saveBill(billVO, "审核"+getBillName(), "单据编号为"+billId+"的"+getBillName()+"审核未通过");
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
         }
+	}
+
+	@Override
+	public BillVO getBillById(String billId) {
+		try {
+			return BillTools.toChangeBillVO(changeBillDS.getBillById(billId));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

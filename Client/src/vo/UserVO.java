@@ -68,4 +68,16 @@ public class UserVO {
 		UserPO userPO = new UserPO(id, name, key, sex, telNumber, type.getNum(), rank, age, true);
 		return userPO;
 	}
+
+	public String getRankName() {
+		if (type == UserType.SALESMAN) {
+    		if (rank == 0) return "普通销售员";
+    		if (rank == 1) return "销售经理";
+    	}
+    	else if (type == UserType.ACCOUNTANT) {
+    		if (rank == 0) return "普通财务人员";
+    		if (rank == 1) return "最高权限财务人员";
+    	}
+    	return "默认";
+	}
 }

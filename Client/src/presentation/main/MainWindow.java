@@ -20,12 +20,15 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import businesslogic.LogBL;
+import businesslogic.inter.AddLogInterface;
 import layout.TableLayout;
 import presentation.PanelInterface;
+import rmi.Rmi;
 import vo.UserVO;
 
 public class MainWindow {
-	private UserVO user;
+	private static UserVO user;
 	private PanelInterface innerPanel;
 	
 	private JFrame mainWindow = new JFrame("灯具进销存管理系统-主界面");
@@ -33,9 +36,11 @@ public class MainWindow {
 	private static JLabel infoLabel = new JLabel("就绪", JLabel.CENTER);
 
 	public MainWindow(UserVO user) {
-		this.user = user;
-		innerPanel = new MainPanel(this);
+		MainWindow.user = user;
+		AddLogInterface addLog = new LogBL();
+		addLog.add("用户登录", "登录IP："+Rmi.getIPAddress());
 		
+		innerPanel = new MainPanel(this);
 		buttonPanel = new LeftButtonPanel(this);
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -122,7 +127,7 @@ public class MainWindow {
 	 * 
 	 * @return 返回主窗口保存的UserVO对象
 	 */
-	public UserVO getUser() {
+	public static UserVO getUser() {
 		return user;
 	}
 	/**

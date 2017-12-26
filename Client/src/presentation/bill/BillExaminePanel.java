@@ -15,22 +15,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import blservice.billblservice.BillBLService;
 import blservice.billblservice.BillSearchBLService;
 import blservice.infoservice.GetUserInterface;
-import businesslogic.BillBL;
 import businesslogic.BillSearchBL;
 import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
-import presentation.billui.BillPanel;
-import presentation.billui.CashCostBillPanel;
-import presentation.billui.ChangeBillPanel;
-import presentation.billui.PurchaseBillPanel;
-import presentation.billui.PurchaseReturnBillPanel;
-import presentation.billui.ReceiptOrPaymentBillPanel;
-import presentation.billui.SalesBillPanel;
-import presentation.billui.SalesReturnBillPanel;
+import presentation.billui.BillPanelInterface;
 import presentation.component.CloseListener;
 import presentation.component.DateChoosePanel;
 import presentation.component.IdNamePanel;
@@ -50,14 +41,6 @@ import vo.CustomerVO;
 import vo.UserType;
 import vo.UserVO;
 import vo.billvo.BillVO;
-import vo.billvo.CashCostBillVO;
-import vo.billvo.ChangeBillVO;
-import vo.billvo.PaymentBillVO;
-import vo.billvo.PurchaseBillVO;
-import vo.billvo.PurchaseReturnBillVO;
-import vo.billvo.ReceiptBillVO;
-import vo.billvo.SalesBillVO;
-import vo.billvo.SalesReturnBillVO;
 
 /**
  * 单据审批面板
@@ -66,7 +49,6 @@ import vo.billvo.SalesReturnBillVO;
 public class BillExaminePanel implements PanelInterface {
     
     private BillSearchBLService billSearchBl;
-    private BillBLService billBL;
 	private static double[][] size = {{TableLayout.FILL,0.1},{0.1, 0.1, TableLayout.FILL}};
 	private JPanel panel = new JPanel(new TableLayout(size));
     private DateChoosePanel fromPanel, toPanel;
@@ -83,7 +65,7 @@ public class BillExaminePanel implements PanelInterface {
      * 单据种类的选项，每一个选项都有相应的各种操作
      * @see ChoiceItem
      */
-    private ChoiceItem[] choices = {
+    private ChoiceItem[] choices = {/*
             new ChoiceItem("报溢单"){
                 public boolean validOperator(UserType type) {return type == UserType.KEEPER;}
                 public boolean validCustomer(int type) {return false;}
@@ -92,7 +74,7 @@ public class BillExaminePanel implements PanelInterface {
                 }
                 public JPanel getTypePanel() { return storePanel; }
                 public BillVO getBill(String id) { return billBL.getCashCostBill(id); }
-                public Class<? extends BillPanel> getPanelClass() { return ChangeBillPanel.class; }
+                public BillPanelInterface getPanel() { return ChangeBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return ChangeBillVO.class; }
             },
             new ChoiceItem("报损单"){
@@ -103,7 +85,7 @@ public class BillExaminePanel implements PanelInterface {
                 }
                 public JPanel getTypePanel() { return storePanel; }
                 public BillVO getBill(String id) { return billBL.getCashCostBill(id); }
-                public Class<? extends BillPanel> getPanelClass() { return ChangeBillPanel.class; }
+                public BillPanelInterface getPanel() { return ChangeBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return ChangeBillVO.class; }
             },
             new ChoiceItem("现金费用单"){
@@ -114,7 +96,7 @@ public class BillExaminePanel implements PanelInterface {
                 }
                 public JPanel getTypePanel() { return accountPanel; }
                 public BillVO getBill(String id) { return billBL.getCashCostBill(id); }
-                public Class<? extends BillPanel> getPanelClass() { return CashCostBillPanel.class; }
+                public BillPanelInterface getPanel() { return CashCostBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return CashCostBillVO.class; }
             },
             new ChoiceItem("付款单"){
@@ -125,7 +107,7 @@ public class BillExaminePanel implements PanelInterface {
                 }
                 public JPanel getTypePanel() { return customerPanel; }
                 public BillVO getBill(String id) { return billBL.getPaymentBill(id); }
-                public Class<? extends BillPanel> getPanelClass() { return ReceiptOrPaymentBillPanel.class; }
+                public BillPanelInterface getPanel() { return ReceiptOrPaymentBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return PaymentBillVO.class; }
             },
             new ChoiceItem("收款单"){
@@ -136,7 +118,7 @@ public class BillExaminePanel implements PanelInterface {
                 }
                 public JPanel getTypePanel() { return customerPanel; }
                 public BillVO getBill(String id) { return billBL.getReceiptBill(id); }
-                public Class<? extends BillPanel> getPanelClass() { return ReceiptOrPaymentBillPanel.class; }
+                public BillPanelInterface getPanel() { return ReceiptOrPaymentBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return ReceiptBillVO.class; }
             },
             new ChoiceItem("进货单"){
@@ -147,7 +129,7 @@ public class BillExaminePanel implements PanelInterface {
                 }
                 public JPanel getTypePanel() { return customerPanel; }
                 public BillVO getBill(String id) { return billBL.getPurchaseBill(id); }
-                public Class<? extends BillPanel> getPanelClass() { return PurchaseBillPanel.class; }
+                public BillPanelInterface getPanel() { return PurchaseBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return PurchaseBillVO.class; }
             },
             new ChoiceItem("进货退货单"){
@@ -158,7 +140,7 @@ public class BillExaminePanel implements PanelInterface {
                 }
                 public JPanel getTypePanel() { return customerPanel; }
                 public BillVO getBill(String id) { return billBL.getPurchaseReturnBill(id); }
-                public Class<? extends BillPanel> getPanelClass() { return PurchaseReturnBillPanel.class; }
+                public BillPanelInterface getPanel() { return PurchaseReturnBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return PurchaseReturnBillVO.class; }
             },
             new ChoiceItem("销售单"){
@@ -169,7 +151,7 @@ public class BillExaminePanel implements PanelInterface {
                 }
                 public JPanel getTypePanel() { return customerPanel; }
                 public BillVO getBill(String id) { return billBL.getSalesBill(id); }
-                public Class<? extends BillPanel> getPanelClass() { return SalesBillPanel.class; }
+                public BillPanelInterface getPanel() { return SalesBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return SalesBillVO.class; }
             },
             new ChoiceItem("销售退货单"){
@@ -180,9 +162,9 @@ public class BillExaminePanel implements PanelInterface {
                 }
                 public JPanel getTypePanel() { return customerPanel; }
                 public BillVO getBill(String id) { return billBL.getSalesReturnBill(id); }
-                public Class<? extends BillPanel> getPanelClass() { return SalesReturnBillPanel.class; }
+                public BillPanelInterface getPanel() { return SalesReturnBillPanel.class; }
                 public Class<? extends BillVO> getBillClass() { return SalesReturnBillVO.class; }
-            }
+            }*/
     };
 
     public BillExaminePanel(MainWindow mainWindow, ActionListener closeListener) {
@@ -195,7 +177,6 @@ public class BillExaminePanel implements PanelInterface {
 		
 		panel.add(buttonPanel.getPanel(), "0,0");
         billSearchBl = new BillSearchBL();
-        billBL = new BillBL();
         panel.add(getNorthPanel(closeListener), "0,1");
         panel.add(getCenterPanel(), "0,2");
         panel.add(getEastPanel(), "1,2");
@@ -373,7 +354,7 @@ public class BillExaminePanel implements PanelInterface {
         GetUserInterface userInfo = new UserBL();
         ChoiceItem selectedItem = choiceBox.getItemAt(index);
         BillVO bill = selectedItem.getBill(id);
-        Class<? extends BillPanel> panelType = selectedItem.getPanelClass();
+        BillPanelInterface panelType = selectedItem.getPanel();
         Class<? extends BillVO> billType = selectedItem.getBillClass();
         if(editable) bill.setState(BillVO.SAVED);
         //new BillViewer(panelType, billType, userInfo.getUser(bill.getOperator()), bill);
@@ -401,7 +382,7 @@ public class BillExaminePanel implements PanelInterface {
         
         public abstract BillVO getBill(String id);
         
-        public abstract Class<? extends BillPanel> getPanelClass();
+        public abstract BillPanelInterface getPanel();
         
         public abstract Class<? extends BillVO> getBillClass();
         

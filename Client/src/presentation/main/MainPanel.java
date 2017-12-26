@@ -14,20 +14,20 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import blservice.billblservice.BillBLService;
-import businesslogic.BillBL;
+import blservice.billblservice.BillOperationService;
+import blservice.billblservice.BillSearchBLService;
+import businesslogic.BillOperationBL;
+import businesslogic.BillSearchBL;
+import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
-import presentation.billui.CashCostBillPanel;
-import presentation.billui.ChangeBillPanel;
-import presentation.billui.PurchaseBillPanel;
-import presentation.billui.PurchaseReturnBillPanel;
-import presentation.billui.ReceiptOrPaymentBillPanel;
-import presentation.billui.SalesBillPanel;
-import presentation.billui.SalesReturnBillPanel;
+import presentation.billui.BillPanelHelper;
+import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
+import presentation.dataui.userui.UpdateUserWindow;
 import vo.UserType;
 import vo.UserVO;
+import vo.billvo.BillVO;
 
 /**
  * 主界面（单据管理）界面类，分两种情况<br/>
@@ -40,15 +40,18 @@ import vo.UserVO;
 public class MainPanel implements PanelInterface {
 
 	private final double[][] size = {{0.88,0.12},{0.4, 0.6}};
-	private BillBLService billBL;
+	private BillSearchBLService billSearchBL;
+	private BillOperationService billOperationBL;
 	private JPanel panel= new JPanel(new TableLayout(size)); 
 	private JPanel infoPanel = new JPanel();
+	private JPanel bPanel = new JPanel();
 	private JLabel infoLabel;
 	private JTable table;
 
 	public MainPanel(MainWindow mainWindow) {
-		UserVO user = mainWindow.getUser();
-		billBL = new BillBL();
+		UserVO user = MainWindow.getUser();
+		billSearchBL = new BillSearchBL();
+		billOperationBL = new BillOperationBL();
 		
 		infoPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		String htmltxt = "<html><span style=\"font-size:32px;\">欢迎使用灯具进销存管理系统:</span><br/> "
@@ -59,8 +62,19 @@ public class MainPanel implements PanelInterface {
 		infoPanel.add(infoLabel);
 		infoPanel.setOpaque(false);
 		
+		bPanel.setLayout(new TableLayout(
+				new double[][]{{TableLayout.FILL, TableLayout.PREFERRED, TableLayout.FILL},
+					{TableLayout.PREFERRED, TableLayout.FILL}}));
+		JButton changeButton = new JButton("修改个人信息");
+		changeButton.addActionListener(e->{
+			new UpdateUserWindow(new UserBL(), new String[]{
+					user.getId(),user.getName(),user.getType().getName(),user.getRankName(),user.getPwd(),user.getSex(),""+user.getAge(),user.getTelNumber()}, true);
+		});
+		bPanel.add(changeButton, "1,0");
+		bPanel.setOpaque(false);
+		
 		if (user.getType() != UserType.ADMIN) {
-			MyTableModel tabelModel = billBL.getBillTable(user);
+			MyTableModel tabelModel = billSearchBL.getBillTable(user);
 			table = new JTable(tabelModel);
 			table.getTableHeader().setReorderingAllowed(false);
 			JScrollPane scrollPane = new JScrollPane(table);
@@ -75,25 +89,22 @@ public class MainPanel implements PanelInterface {
 			JPanel buttonPanel=new JPanel();
 			JButton billChangeButton = new JButton("修改单据", new ImageIcon("resource/FreshButton.png"));
 			JButton billDeleteButton = new JButton("删除单据", new ImageIcon("resource/DeleteButton.png"));
+			BillPanelHelper.user = user;
+			BillPanelHelper.closeListener = closeListener;
 			billChangeButton.addActionListener(e->{
 				String[] info = tabelModel.getValueAtRow(table.getSelectedRow());
-				String type = info[1].split("-")[0];
-				if ("BYD".equals(type) || "BSD".equals(type)) {
-					mainWindow.changePanel(new ChangeBillPanel(user, closeListener, billBL.getChangeBill(info[1])));
-				} else if ("JHD".equals(type)) {
-					mainWindow.changePanel(new PurchaseBillPanel(user, closeListener, billBL.getPurchaseBill(info[1])));
-				} else if ("JHTHD".equals(type)) {
-					mainWindow.changePanel(new PurchaseReturnBillPanel(user, closeListener, billBL.getPurchaseReturnBill(info[1])));
-				} else if ("XSD".equals(type)) {
-					mainWindow.changePanel(new SalesBillPanel(user, closeListener, billBL.getSalesBill(info[1])));
-				} else if ("XSTHD".equals(type)) {
-					mainWindow.changePanel(new SalesReturnBillPanel(user, closeListener, billBL.getSalesReturnBill(info[1])));
-				} else if ("XJFYD".equals(type)) {
-					mainWindow.changePanel(new CashCostBillPanel(user, closeListener, billBL.getCashCostBill(info[1])));
-				} else if ("FKD".equals(type)) {
-					mainWindow.changePanel(new ReceiptOrPaymentBillPanel(user, closeListener, billBL.getPaymentBill(info[1])));
-				} else if ("SKD".equals(type)) {
-					mainWindow.changePanel(new ReceiptOrPaymentBillPanel(user, closeListener, billBL.getReceiptBill(info[1])));
+				mainWindow.changePanel(BillPanelHelper.create(billOperationBL.getBillById(info[1])));
+			});
+			billDeleteButton.addActionListener(e->{
+				String info = (String) tabelModel.getValueAt(table.getSelectedRow(), 1);
+				BillVO bill = billOperationBL.getBillById(info);
+				if (bill.getState() == BillVO.SAVED) {
+					if (billOperationBL.deleteBill(info)) {
+						table.setModel(billSearchBL.getBillTable(user));
+						new InfoWindow("删除成功");
+					} else new InfoWindow("删除失败");
+				} else {
+					new InfoWindow("该状态单据无法删除");
 				}
 			});
 			double forthPanelSize[][]={
@@ -113,6 +124,7 @@ public class MainPanel implements PanelInterface {
 		}
 		panel.setVisible(true);
 		panel.add(infoPanel, "0,0,1,0");
+		panel.add(bPanel, "1,0");
 	}
 
 	@Override

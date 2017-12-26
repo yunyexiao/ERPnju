@@ -16,7 +16,8 @@ import po.billpo.SalesBillPO;
 import po.billpo.SalesReturnBillPO;
 
 public interface BillSearchDataService extends Remote{
-    
+	 ArrayList<BillPO> getBillList(UserPO user) throws RemoteException;
+	
     ArrayList<PurchaseBillPO> searchPurchaseBills(String fromDate, String toDate
         , String customerId, String operatorId, int state) throws RemoteException;
 
@@ -40,7 +41,4 @@ public interface BillSearchDataService extends Remote{
 
     ArrayList<ReceiptBillPO> searchReceiptBills(String fromDate, String toDate
         , String customerId, String operatorId,int state) throws RemoteException;
-    
-	public ArrayList<BillPO> getBillList(UserPO user) throws RemoteException;
-
 }

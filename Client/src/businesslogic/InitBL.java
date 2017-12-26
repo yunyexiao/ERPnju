@@ -12,17 +12,11 @@ import po.CommodityPO;
 import po.CustomerPO;
 import presentation.component.MyTableModel;
 import rmi.Rmi;
-import vo.UserVO;
 
 public class InitBL implements InitBLService {
 	
-	private UserVO user;
 	private InitDataService initDs = Rmi.flag ? Rmi.getRemote(InitDataService.class) : new InitDs_stub();
 	private GetCategoryInterface categoryInfo = new CategoryBL();
-
-	public InitBL(UserVO user) {
-		this.user = user;
-	}
 	
 	@Override
 	public String getYear() {

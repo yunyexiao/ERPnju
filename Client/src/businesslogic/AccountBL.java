@@ -10,28 +10,16 @@ import dataservice.AccountDataService;
 import ds_stub.AccountDs_stub;
 import po.AccountPO;
 import presentation.component.MyTableModel;
+import presentation.main.MainWindow;
 import rmi.Rmi;
 import vo.AccountVO;
-import vo.UserVO;
 
 public class AccountBL implements AccountBLService, GetAccountInterface {
 
 	private AccountDataService accountDataService = Rmi.flag ? Rmi.getRemote(AccountDataService.class) : new AccountDs_stub();
-	private AddLogInterface addLog;
+	private AddLogInterface addLog = new LogBL();
 	private String[] tableHeader = {"银行账号", "账户名称", "余额"};
-	private int userRank;
-	
-	/**
-	 * 仅使用GetAccountInterface的构造方法
-	 */
-	public AccountBL() {
-		
-	}
-	
-	public AccountBL(UserVO user) {
-		userRank = user.getRank();
-		addLog = new LogBL(user);
-	}
+	private int userRank = MainWindow.getUser().getRank();
 	
 	private String[] getLine(AccountPO account) {
 		return new String[] {
@@ -71,10 +59,9 @@ public class AccountBL implements AccountBLService, GetAccountInterface {
 				data[i] = getLine(list.get(i));
 			}
 			MyTableModel searchTable = new MyTableModel (data, tableHeader);
-			if (addLog != null) addLog.add("查找账户", "查询条件：" + type + "	查询关键词："+ key);
 			return searchTable;
 		} catch (Exception e) {
-			return null;
+			return new MyTableModel (new String[][]{{}}, tableHeader);
 		}
 	}
 

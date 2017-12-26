@@ -2,11 +2,11 @@ package businesslogic;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseReturnBillBLService;
+import businesslogic.inter.AddLogInterface;
 import dataservice.PurchaseReturnBillDataService;
 import ds_stub.PurchaseReturnBillDs_stub;
 import po.billpo.BillPO;
@@ -20,20 +20,13 @@ import vo.billvo.PurchaseReturnBillVO;
 
 public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOperationService, BillExamineService {
     
-    private PurchaseReturnBillDataService purchaseReturnBillDs;
-
-    public PurchaseReturnBillBL() {
-        purchaseReturnBillDs = Rmi.flag ? Rmi.getRemote(PurchaseReturnBillDataService.class) : new PurchaseReturnBillDs_stub();
-    }
+    private PurchaseReturnBillDataService purchaseReturnBillDs = Rmi.flag ? Rmi.getRemote(PurchaseReturnBillDataService.class) : new PurchaseReturnBillDs_stub();
+    private AddLogInterface addLog = new LogBL();
 
     @Override
     public String getNewId() {
         try{
-            Calendar c = Calendar.getInstance();
-            String date = c.get(Calendar.YEAR) + ""
-                        + c.get(Calendar.MONTH) + ""
-                        + c.get(Calendar.DATE);
-            return "JHTHD-" + date + "-" + purchaseReturnBillDs.getNewId();
+            return "JHTHD-" + Timetools.getDate() + "-" + purchaseReturnBillDs.getNewId();
         }catch(RemoteException e){
             e.printStackTrace();
             return null;
@@ -43,32 +36,29 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
     @Override
     public boolean deleteBill(String id) {
         try{
-            // passed bills cannot be deleted, only can be offsetted
             PurchaseReturnBillPO bill = purchaseReturnBillDs.getBillById(id);
             if(bill.getState() == BillPO.PASS) return false;
             
             int length = id.length();
-            return purchaseReturnBillDs.deleteBill(id.substring(length - 5, length));
+            if (purchaseReturnBillDs.deleteBill(id.substring(length - 5, length))) {
+            	addLog.add("删除进货退货单", "删除的进货退货单单据编号为"+id);
+            	return true;
+            } else return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
         }
     }
-
     @Override
-    public boolean saveBill(PurchaseReturnBillVO bill) {
-        try{
-            return purchaseReturnBillDs.saveBill(toPO(bill));
-        }catch(RemoteException e){
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public boolean updateBill(PurchaseReturnBillVO bill) {
-        try{
-            return purchaseReturnBillDs.saveBill(toPO(bill));
+	public boolean saveBill(PurchaseReturnBillVO bill) {
+		return saveBill(bill, "保存进货退货单", "保存的进货退货单单据编号为"+bill.getAllId());
+	}
+    private boolean saveBill(PurchaseReturnBillVO bill, String operation, String detail) {
+    	try{
+            if (purchaseReturnBillDs.saveBill(toPO(bill))) {
+            	addLog.add(operation, detail);
+            	return true;
+            } else return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -92,10 +82,13 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
             bill.getPurchaseReturnBillItems().forEach(i -> items.add(new SalesItemsPO(
                 i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
-            return purchaseReturnBillDs.saveBill(new PurchaseReturnBillPO(
+            PurchaseReturnBillPO offset = new PurchaseReturnBillPO(
                 Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS, 
-                bill.getSupplierId(), bill.getRemark(), -bill.getSum(), items
-            ));
+                bill.getSupplierId(), bill.getRemark(), -bill.getSum(), items);
+            if (purchaseReturnBillDs.saveBill(offset)) {
+            	addLog.add("红冲进货退货单", "被红冲的进货退货单单据编号为"+bill.getAllId());
+            	return true;
+            } else return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -108,9 +101,9 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
             PurchaseReturnBillVO old = (PurchaseReturnBillVO) bill;
             PurchaseReturnBillVO copy = new PurchaseReturnBillVO(
                 Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
-                BillVO.PASS, old.getCustomerId(), old.getCustomerName(), old.getModel(), old.getRemark(), old.getSum()
+                BillVO.PASS, old.getCustomerId(), old.getModel(), old.getRemark(), old.getSum()
             );
-            return saveBill(copy);
+            return saveBill(copy, "红冲并复制进货退货单", "红冲并复制后新的进货退货单编号为"+copy.getAllId());
         }
         return false;
     }
@@ -135,7 +128,7 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
         try{
             PurchaseReturnBillVO billVO = BillTools.toPurchaseReturnBillVO(purchaseReturnBillDs.getBillById(billId));
             billVO.setState(3);
-            return saveBill(billVO);
+            return saveBill(billVO, "审核进货退货单", "通过审核的进货退货单单据编号为"+billId);
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -145,12 +138,22 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
 	@Override
 	public boolean notPassBill(String billId) {
         try{
-        	 PurchaseReturnBillVO billVO = BillTools.toPurchaseReturnBillVO(purchaseReturnBillDs.getBillById(billId));
-             billVO.setState(4);
-            return saveBill(billVO);
+        	PurchaseReturnBillVO billVO = BillTools.toPurchaseReturnBillVO(purchaseReturnBillDs.getBillById(billId));
+            billVO.setState(4);
+            return saveBill(billVO, "审核进货退货单", "单据编号为"+billId+"的进货退货单审核未通过");
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
         }
+	}
+
+	@Override
+	public BillVO getBillById(String billId) {
+		try {
+			return BillTools.toPurchaseReturnBillVO(purchaseReturnBillDs.getBillById(billId));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

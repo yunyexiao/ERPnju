@@ -1,5 +1,7 @@
 package presentation.component;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JLabel;
@@ -7,6 +9,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import layout.TableLayout;
+import presentation.component.choosewindow.AccountChooseWin;
+import presentation.component.choosewindow.CommodityChooseWin;
+import presentation.component.choosewindow.CustomerChooseWin;
+import vo.AccountVO;
+import vo.CommodityVO;
+import vo.CustomerVO;
 
 /**
  * @author 恽叶霄
@@ -34,6 +42,9 @@ public class IdNamePanel extends JPanel {
         super.add(new JLabel("--"), "3 0");
         super.add(nameField = new JTextField(nameSize), "4 0");
         nameField.setEditable(false);
+        
+        idField.addMouseListener(new ChooseListener());
+        nameField.addMouseListener(new ChooseListener());
     }
     
     public void setLabelText(String text){
@@ -73,4 +84,23 @@ public class IdNamePanel extends JPanel {
         nameField.addMouseListener(l);
     }
 
+    class ChooseListener extends MouseAdapter{
+        public void mouseClicked(MouseEvent e){
+            switch (label.getText()) {
+            case "商品" : 
+            	CommodityVO commodity = new CommodityChooseWin().getCommodity();
+                if(commodity != null) {idField.setText(commodity.getId());nameField.setText(commodity.getName());}
+                break;
+            case "客户" :
+            	CustomerVO customer = new CustomerChooseWin().getCustomer();
+                if(customer != null) {idField.setText(customer.getId());nameField.setText(customer.getName());}
+                break;
+            case "账户" :
+            	AccountVO account = new AccountChooseWin().getAccount();
+                if(account != null) {idField.setText(account.getNumber());nameField.setText(account.getName());}
+                break;
+            }
+        }
+     };
+    
 }

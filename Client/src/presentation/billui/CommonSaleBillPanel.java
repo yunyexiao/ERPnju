@@ -1,7 +1,6 @@
 package presentation.billui;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -12,7 +11,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import blservice.infoservice.GetCustomerInterface;
 import blservice.infoservice.GetUserInterface;
+import businesslogic.CustomerBL;
 import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.component.InfoWindow;
@@ -29,46 +30,48 @@ import vo.billvo.MarketBillVO;
  * 其中销售单由于存在优惠和折扣，还需要额外重写某些方法外，其他只需要实现这里的抽象方法即可。
  * @author 恽叶霄
  */
-public abstract class CommonSaleBillPanel extends BillPanel {
+public abstract class CommonSaleBillPanel extends JPanel implements BillPanelInterface {
 
+	protected UserVO user;
     protected JTextField billIdField, operatorField, customerIdField, customerNameField, remarkField;
     protected DoubleField sumField;
     protected JButton customerChooseButton, goodsChooseButton, goodsDeleteButton;
 	protected JTable goodsListTable;
 	
 	private GetUserInterface userInfo = new UserBL();
+	private GetCustomerInterface customerInfo = new CustomerBL();
 
-    public CommonSaleBillPanel(UserVO user, ActionListener closeListener) {
-        super(user, closeListener);
+    public CommonSaleBillPanel(UserVO user) {
+    	this.user = user;
+		initBillPanel();
     }
     
-    public CommonSaleBillPanel(UserVO user, ActionListener closeListener, MarketBillVO bill){
-        super(user, closeListener, bill);
+    public CommonSaleBillPanel(UserVO user, MarketBillVO bill){
+    	this.user = user;
+		initBillPanel();
         billIdField.setText(bill.getAllId());
         operatorField.setText(userInfo.getUser(bill.getOperator()).getName());
         customerIdField.setText(bill.getCustomerId());
-        customerNameField.setText(bill.getCustomerName());
+        customerNameField.setText(customerInfo.getCustomer(bill.getCustomerId()).getName());
         remarkField.setText(bill.getRemark());
         sumField.setText(bill.getSum() + "");
         goodsListTable.setModel(bill.getModel());
     }
 
-    @Override
-    protected void initBillPanel() {
+    private void initBillPanel() {
 		try{
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");//Nimbus风格，jdk6 update10版本以后的才会出现
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		
-		billPanel.setLayout(new BorderLayout());
+		this.setLayout(new BorderLayout());
 		initNorth();
 		initCenter();
 		initEast();
 		initSouth();
     }
     
-    @Override
     protected boolean isCorrectable(){
         if (customerIdField.getText().length() == 0) new InfoWindow("请选择客户");
         else if (goodsListTable.getModel().getRowCount() == 0) new InfoWindow("列表为空");
@@ -76,9 +79,8 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         else return true;
         return false;
     }
-    @Override
-    protected void setEditable(boolean b) {
-    	super.setEditable(b);
+    
+    public void setEditable(boolean b) {
     	customerChooseButton.setEnabled(b);
     	goodsChooseButton.setEnabled(b);
     	goodsDeleteButton.setEnabled(b);
@@ -126,7 +128,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         southPanel.add(new JLabel("金额合计"), "1 3");
         southPanel.add(sumField, "3 3");
         
-        billPanel.add(southPanel, BorderLayout.SOUTH);
+        this.add(southPanel, BorderLayout.SOUTH);
     }
     
     protected void handleAddItem(){
@@ -164,9 +166,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         remarkField.setEditable(true);
         sumField.setText("0.0");
         MyTableModel model = (MyTableModel) goodsListTable.getModel();
-        while(model.getRowCount() > 0){
-            model.removeRow(0);
-        }
+        while(model.getRowCount() > 0) model.removeRow(0);
     }
 
     protected String getDate(){
@@ -200,7 +200,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         northPanel.add(getHeader(), "0 0");
         northPanel.add(getCustomerPanel(), "0 1");
         
-        billPanel.add(northPanel, BorderLayout.NORTH);
+        this.add(northPanel, BorderLayout.NORTH);
     }
     
     private void initCenter(){
@@ -216,7 +216,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
 		centerPanel.add(new JLabel(getTableTitle()),"1,1");
 		centerPanel.add(goodsListPane, "1,3");
 		
-		billPanel.add(centerPanel, BorderLayout.CENTER);
+		this.add(centerPanel, BorderLayout.CENTER);
     }
    
     private void initEast(){
@@ -233,7 +233,7 @@ public abstract class CommonSaleBillPanel extends BillPanel {
         goodsButtonPanel.add(goodsChooseButton, "1,1");
         goodsButtonPanel.add(goodsDeleteButton, "1,3");
 
-        billPanel.add(goodsButtonPanel, BorderLayout.EAST);
+        this.add(goodsButtonPanel, BorderLayout.EAST);
     }
     private JPanel getHeader(){
         billIdField = new JTextField(15);
