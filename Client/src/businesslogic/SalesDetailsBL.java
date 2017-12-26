@@ -8,6 +8,7 @@ import blservice.SalesDetailsBLService;
 import blservice.infoservice.GetCommodityInterface;
 import dataservice.BillSearchDataService;
 import ds_stub.BillSearchDs_stub;
+import po.billpo.BillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
@@ -28,7 +29,7 @@ public class SalesDetailsBL implements SalesDetailsBLService {
     public MyTableModel filter(String from, String to, String commodityId
         , String store, String customerId, String operatorId) {
         try{
-            ArrayList<SalesBillPO> bills = billSearchDs.searchSalesBills(from, to, customerId, operatorId);
+            ArrayList<SalesBillPO> bills = billSearchDs.searchSalesBills(from, to, customerId, operatorId, BillPO.PASS);
             LinkedList<Item> items = new LinkedList<>();
             bills.forEach(b -> items.addAll(toLinkedList(b, commodityId, store)));
             String[] columnNames = {"销售日期", "商品编号", "商品名称", "商品型号", "数量", "单价", "总额"};

@@ -29,6 +29,7 @@ import presentation.tools.ExcelExporter;
 import presentation.tools.Timetools;
 import vo.UserType;
 import vo.UserVO;
+import vo.billvo.BillVO;
 
 /**
  * 查看经营历程表的面板,除了实现基本的单据查看，还实现了红冲以及红冲并复制的功能，红冲、红冲并复制均是直接生效，这一点由BillOperationService决定
@@ -153,15 +154,15 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
         String chooseId = choosePanel.getId();
         chooseId = chooseId.length() == 0 ? null : chooseId;
         switch ((String)choiceBox.getSelectedItem()) {
-        case "报溢单": table.setModel(billSearchBl.filterInventoryBills(from, to, chooseId, operatorId, true));break;
-        case "报损单": table.setModel(billSearchBl.filterInventoryBills(from, to, chooseId, operatorId, false));break;
-        case "进货单": table.setModel(billSearchBl.filterPurchaseBills(from, to, chooseId, operatorId));break;
-        case "进货退货单" : table.setModel(billSearchBl.filterPurchaseReturnBills(from, to, chooseId, operatorId));break;
-        case "销售单" : table.setModel(billSearchBl.filterSalesBills(from, to, chooseId, operatorId));break;
-        case "销售退货单" : table.setModel(billSearchBl.filterSalesReturnBills(from, to, chooseId, operatorId));break;
-        case "收款单" : table.setModel(billSearchBl.filterReceiptBills(from, to, chooseId, operatorId));break;
-        case "付款单" : table.setModel(billSearchBl.filterPaymentBills(from, to, chooseId, operatorId));break;
-        case "现金费用单" : table.setModel(billSearchBl.filterCashCostBills(from, to, chooseId, operatorId));break;
+        case "报溢单": table.setModel(billSearchBl.filterInventoryBills(from, to, chooseId, operatorId, true, BillVO.PASS));break;
+        case "报损单": table.setModel(billSearchBl.filterInventoryBills(from, to, chooseId, operatorId, false, BillVO.PASS));break;
+        case "进货单": table.setModel(billSearchBl.filterPurchaseBills(from, to, chooseId, operatorId, BillVO.PASS));break;
+        case "进货退货单" : table.setModel(billSearchBl.filterPurchaseReturnBills(from, to, chooseId, operatorId, BillVO.PASS));break;
+        case "销售单" : table.setModel(billSearchBl.filterSalesBills(from, to, chooseId, operatorId, BillVO.PASS));break;
+        case "销售退货单" : table.setModel(billSearchBl.filterSalesReturnBills(from, to, chooseId, operatorId, BillVO.PASS));break;
+        case "收款单" : table.setModel(billSearchBl.filterReceiptBills(from, to, chooseId, operatorId, BillVO.PASS));break;
+        case "付款单" : table.setModel(billSearchBl.filterPaymentBills(from, to, chooseId, operatorId, BillVO.PASS));break;
+        case "现金费用单" : table.setModel(billSearchBl.filterCashCostBills(from, to, chooseId, operatorId, BillVO.PASS));break;
         }
     }
     private void offsetBill(){
