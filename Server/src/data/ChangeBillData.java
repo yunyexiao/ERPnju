@@ -10,7 +10,7 @@ import dataservice.ChangeBillDataService;
 
 public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDataService{
 	
-    protected ChangeBillData() throws RemoteException {
+    public ChangeBillData() throws RemoteException {
 		super();
 
 	}

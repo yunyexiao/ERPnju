@@ -7,8 +7,6 @@ public interface PurchaseBillBLService extends BillCreateBLService {
     
     boolean saveBill(PurchaseBillVO bill);
     
-    boolean updateBill(PurchaseBillVO bill);
-    
     MyTableModel getFinishedBills(String customerId);
     
     MyTableModel search(String type, String key);

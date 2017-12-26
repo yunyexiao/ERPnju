@@ -14,7 +14,6 @@ import ds_stub.CategoryDs_stub;
 import po.CategoryPO;
 import rmi.Rmi;
 import vo.CategoryVO;
-import vo.UserVO;
 
 /**
  * 商品分类的BL<br>
@@ -23,17 +22,7 @@ import vo.UserVO;
 public class CategoryBL implements CategoryBLService, GetCategoryInterface {
     
     private CategoryDataService categoryDs = Rmi.flag ? Rmi.getRemote(CategoryDataService.class) : new CategoryDs_stub();
-    private AddLogInterface addLog;
-
-    /**
-     * 仅使用GetCategoryInterface时的构造方法
-     */
-    public CategoryBL() {}
-    
-    public CategoryBL(UserVO user) {
-        //categoryDs = RemoteHelper.getInstance().getCategoryDataService();
-        addLog = new LogBL(user);
-    }
+    private AddLogInterface addLog = new LogBL();
 
     @Override
     public String getNewId() {
@@ -125,26 +114,8 @@ public class CategoryBL implements CategoryBLService, GetCategoryInterface {
             return null;
         }
     }
-/*  //no use code
-    private void addChildren(ArrayList<CategoryPO> list, DefaultMutableTreeNode fatherNode){
-        String fatherId = ((CategoryVO)fatherNode.getUserObject()).getId();
-        ArrayList<CategoryPO> children = new ArrayList<>();
-        for(CategoryPO category: list)if(category.getFatherId().equals(fatherId)){
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode(new CategoryVO(fatherId
-                , category.getFatherName(), category.getId(), category.getName()));
-            children.add(category);
-            fatherNode.add(node);
-        }
-        for(CategoryPO category: children)list.remove(category);
-        children = null;
-        int count = fatherNode.getChildCount();
-        for(int i = 0; i < count; i++){
-            addChildren(list, (DefaultMutableTreeNode)fatherNode.getChildAt(i));
-        }
-    }
-*/
+    @Override
     public boolean hasContent(String id){
-        //if(hasCommodity(id)) return true;
         try {
             ArrayList<CategoryPO> categories = categoryDs.getAllCategory();
             for(CategoryPO category: categories){
@@ -156,7 +127,6 @@ public class CategoryBL implements CategoryBLService, GetCategoryInterface {
         }
         return false;
     }
-
 	@Override
 	public CategoryVO findById(String id) {
 		try{

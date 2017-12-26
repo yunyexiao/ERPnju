@@ -27,7 +27,6 @@ public class CategoryDs_stub implements CategoryDataService {
 
     @Override
     public CategoryPO findById(String id) throws RemoteException {
-        System.out.println("category found in database: " + id);
         for (int i = 0; i < result.size(); i++) {
         	if (result.get(i).getId().equals(id)) return result.get(i);
         }

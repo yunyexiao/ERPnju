@@ -12,7 +12,6 @@ import blservice.LogBLService;
 import businesslogic.LogBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
-import presentation.component.CloseListener;
 import presentation.component.TopButtonPanel;
 import presentation.main.MainWindow;
 
@@ -26,8 +25,8 @@ public class LogPanel implements PanelInterface {
 	private JPanel panel;
 	private LogBLService logBL;
 
-	public LogPanel(MainWindow mw) {
-		logBL = new LogBL(mw.getUser());
+	public LogPanel(ActionListener closeListener) {
+		logBL = new LogBL(MainWindow.getUser());
 		
 		double[][] size = {{TableLayout.FILL},{0.1,TableLayout.FILL}};
 		panel = new JPanel(new TableLayout(size));
@@ -48,7 +47,7 @@ public class LogPanel implements PanelInterface {
 		
 		TopButtonPanel buttonPanel = new TopButtonPanel();
 		buttonPanel.addButton("≤È—Ø", new ImageIcon("resource/SearchData.png"), new SearchListener());
-		buttonPanel.addButton("πÿ±’", new ImageIcon("resource/Close.png"), new CloseListener(mw));
+		buttonPanel.addButton("πÿ±’", new ImageIcon("resource/Close.png"), closeListener);
 		panel.add(buttonPanel.getPanel(), "0,0");
 	}
 	

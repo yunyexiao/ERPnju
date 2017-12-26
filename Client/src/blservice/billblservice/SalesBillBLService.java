@@ -10,11 +10,6 @@ public interface SalesBillBLService extends BillCreateBLService {
 	 * @return 是否保存成功
 	 */
 	public boolean saveBill(SalesBillVO bill);
-	/**
-	 * 更新数据库中的Bill数据
-	 * @return
-	 */
-	public boolean updateBill(SalesBillVO bill);
 	
 	public MyTableModel search(String type, String key);
 	

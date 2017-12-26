@@ -5,12 +5,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-import data.AccountData;
-import data.CategoryData;
-import data.CommodityData;
-import data.CustomerData;
-import data.LogData;
-import data.UserData;
+import data.*;
 
 public class RemoteHelper {
 
@@ -23,6 +18,17 @@ public class RemoteHelper {
 			bind(new CommodityData());
 			bind(new CustomerData());
 			bind(new AccountData());
+			bind(new BillSearchData());
+			bind(new CashCostBillData());
+			bind(new ChangeBillData());
+			bind(new PaymentBillData());
+			bind(new PurchaseBillData());
+			bind(new PurchaseReturnBillData());
+			bind(new ReceiptBillData());
+			bind(new SaleReturnBillData());
+			bind(new SalesBillData());
+			
+			
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

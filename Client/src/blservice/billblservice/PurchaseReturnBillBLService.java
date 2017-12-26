@@ -5,6 +5,4 @@ import vo.billvo.PurchaseReturnBillVO;
 public interface PurchaseReturnBillBLService extends BillCreateBLService {
     
     boolean saveBill(PurchaseReturnBillVO bill);
-    
-    boolean updateBill(PurchaseReturnBillVO bill);
 }

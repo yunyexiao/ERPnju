@@ -15,7 +15,7 @@ public class ReceiptBillData extends UnicastRemoteObject implements ReceiptBillD
 	private String billIdName="RBID";
 	private String recordIdName="RRID";
 
-	protected ReceiptBillData() throws RemoteException {
+	public ReceiptBillData() throws RemoteException {
 		super();
 		// TODO Auto-generated constructor stub
 	}

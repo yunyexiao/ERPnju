@@ -29,6 +29,7 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 	public UserPO findById(String id) throws RemoteException {
 		try {
 			ResultSet r = SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
+			r.next();
 			return getUserPO(r);
 		}
 		catch(Exception e) {
@@ -108,14 +109,15 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 
 	private UserPO getUserPO(ResultSet r) {
 		try {
+			System.out.println(r.getInt("SUDept"));
 			return new UserPO(r.getString("SUID"),
 					r.getString("SUName"),
 					r.getString("SUPwd"),
 					r.getString("SUSex"),
 					r.getString("SUTel"),
-					Calendar.getInstance().get(Calendar.YEAR)-r.getInt("SUBirth"),
-					r.getInt("SURank"),
 					r.getInt("SUDept"),
+					r.getInt("SURank"),
+					Calendar.getInstance().get(Calendar.YEAR)-r.getInt("SUBirth"),
 					r.getBoolean("SUIsExist"));
 		} catch (SQLException e) {
 			e.printStackTrace();

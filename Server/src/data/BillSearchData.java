@@ -5,9 +5,11 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import dataservice.BillSearchDataService;
+import po.UserPO;
 import po.billpo.*;
-public class BillSearchData implements BillSearchDataService{
 
+public class BillSearchData implements BillSearchDataService{
+	//查找所有状态的单据传state参数-1；
 	@Override
 	public ArrayList<PurchaseBillPO> searchPurchaseBills(String fromDate, String toDate, String customerId,
 			String operatorId,int state) throws RemoteException {
@@ -343,80 +345,92 @@ public class BillSearchData implements BillSearchDataService{
 			boolean isOver,int state) throws RemoteException {
 			
 			ArrayList<ChangeBillPO> bills=new ArrayList<ChangeBillPO>();
-		
-					
+			String operator1=" AND IOBOperatorID='";
+			String operator2=" AND ILBOperatorID='";
+			
+			if(operatorId==null)
+			{
+				operator1=null;
+				operator2=null;
+			}
+							
 			try{
 				
 			if(isOver){
-				if(store==null&&operatorId!=null){
+				if(store==null&&state!=-1){
 					String sql="SELECT * FROM InventoryOverflowBill WHERE generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
-							+"') AND IOBOperatorID='"+operatorId
+							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
+							+operator1+operatorId
 							+"' AND IOBCondition="+state+";";
 					bills=getChangeBills(sql,true);
 			    }
-				else if(store!=null&&operatorId==null){
+				else if(store!=null&&state!=-1){
 					String sql="SELECT DISTINCT IOBID, IOBOperatorID, IOBCondition, generateTime"
 							+ " FROM InventoryOverflowRecord, CommodityInfo, InventoryOverflowBill"
-							+ " WHERE IORComID=ComID AND IOBID=IORID AND ComStore='"+store
+							+ " WHERE IORComID=ComID AND IOBID=IORID"
+							+ " AND ComStore='"+store
 							+"' AND generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
+							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
+							+operator1+operatorId
 							+"' AND IOBCondition="+state+";";
 					bills=getChangeBills(sql,true);
 				}
 				
-				else if(store==null&&operatorId==null){
+				else if(store==null&&state==-1){
 					String sql="SELECT * FROM InventoryOverflowBill WHERE generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
-							+"' AND IOBCondition="+state+";";
+							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
+							+operator1+operatorId+"';";
 					bills=getChangeBills(sql,true);
 				}
-				else if(store!=null&&operatorId!=null){
+				else if(store!=null&&state==-1){
 					String sql="SELECT DISTINCT IOBID, IOBOperatorID, IOBCondition, generateTime"
 							+ " FROM InventoryOverflowRecord, CommodityInfo, InventoryOverflowBill"
-							+ " WHERE IORComID=ComID AND IOBID=IORID AND ComStore='"+store
-							+"' AND IOBOperatorID='"+operatorId
+							+ " WHERE IORComID=ComID AND IOBID=IORID"
+							+ " AND ComStore='"+store
+							+operator1+operatorId
 							+"' AND generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
-							+"' AND IOBCondition=3"+state+";";
+							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"');";
+					
 					bills=getChangeBills(sql,true);					
 				}
 
 			}
 			else if(!isOver){
 				
-				if(store==null&&operatorId!=null){
+				if(store==null&&state!=-1){
 					String sql="SELECT * FROM InventoryLostBill WHERE generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
-							+"') AND ILBOperatorID='"+operatorId
+							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
+							+operator2+operatorId
 							+"' AND ILBCondition="+state+";";
 					bills=getChangeBills(sql,false);
 				}
-				else if(store!=null&&operatorId==null){
+				else if(store!=null&&state!=-1){
 					String sql="SELECT DISTINCT ILBID, ILBOperatorID, ILBCondition, generateTime"
 							+ " FROM InventoryLostRecord, CommodityInfo, InventoryLostBill"
-							+ " WHERE ILRComID=ComID AND ILBID=ILRID AND ComStore='"+store
+							+ " WHERE ILRComID=ComID AND ILBID=ILRID"
+							+ " AND ComStore='"+store
 							+"' AND generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
+							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
+							+operator2+operatorId
 							+"' AND ILBCondition="+state+";";
 					bills=getChangeBills(sql,false);													
 				}
 				
-				else if(store==null&&operatorId==null){
+				else if(store==null&&state==-1){
 					String sql="SELECT * FROM InventoryLostBill WHERE generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
-							+"' AND ILBCondition="+state+";";
+							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
+							+operator2+operatorId+"';";
 					
 					bills=getChangeBills(sql,false);
 				}
-				else if(store!=null&&operatorId!=null){
+				else if(store!=null&&state==-1){
 					String sql="SELECT DISTINCT IOBID, IOBOperatorID, IOBCondition, generateTime"
 							+ " FROM InventoryLostRecord, CommodityInfo, InventoryLostBill"
 							+ " WHERE ILRComID=ComID AND ILBID=ILRID AND ComStore='"+store
 							+"' AND ILBOperatorID='"+operatorId
 							+"' AND generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate
-							+"' AND ILBCondition="+state+";";
+							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
+							+operator2+operatorId+"';";
 					
 					bills=getChangeBills(sql,false);
 				}		
@@ -431,7 +445,38 @@ public class BillSearchData implements BillSearchDataService{
 	private String assembleSQL(String tableName, String fromDate, String toDate, 
 			String optional1_Name, String optional1, String optional2_Name, String optional2,
 			String condition_Name,int condition){
+		
 		String sql="";
+		String op1_And=" AND ",op2_And="' AND ",op1_equ="='",op2_equ="='";
+		
+		if(optional1==null){
+			optional1_Name=null;
+			op1_And=null;
+			op1_equ=null;
+		}
+		
+		if(optional2==null){
+			optional2_Name=null;
+			op2_And=null;
+			op2_equ=null;
+		}
+		
+		if(condition==-1)
+		{
+			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
+			        +"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate+"')"+
+			        op1_And+optional1_Name+op1_equ+optional1
+			        +op2_And+optional2_Name+op2_equ+optional2
+			        +";";			
+		}
+		else{
+			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
+			        +"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate+"')"+
+			        op1_And+optional1_Name+op1_equ+optional1
+			        +op2_And+optional2_Name+op2_equ+optional2
+			        +"' AND "+condition_Name+"="+condition+";";			
+		}
+		/*
 		if(optional1==null&&optional2!=null)
 			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
 			        +"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate
@@ -452,6 +497,7 @@ public class BillSearchData implements BillSearchDataService{
 			        "') AND "+optional1_Name+"='"+optional1
 			        +"' AND "+optional2_Name+"='"+optional2
 			        +"' AND "+condition_Name+"="+condition+";";
+	      */
 
 		return sql;
 		
@@ -475,7 +521,7 @@ public class BillSearchData implements BillSearchDataService{
 			recordAttributes[1]="IORComQuantity";
 			recordAttributes[2]="IOROverQuantity";
 			
-			sql2="SELECT * FROM InventoryOverflowRecord WHERE IORID=";
+			sql2="SELECT * FROM InventoryOverflowRecord WHERE IORID='";
 		}
 		else if(!isOver){
 			billAttributes[1]="ILBID";
@@ -486,7 +532,7 @@ public class BillSearchData implements BillSearchDataService{
 			recordAttributes[1]="ILRComQuantity";
 			recordAttributes[2]="ILRLostQuantity";
 			
-			sql2="SELECT * FROM InventoryLostRecord WHERE ILRID=";
+			sql2="SELECT * FROM InventoryLostRecord WHERE ILRID='";
 		}
 		
 		try{
@@ -495,7 +541,7 @@ public class BillSearchData implements BillSearchDataService{
 			
 			while(r1.next()){
 				Statement s2=DataHelper.getInstance().createStatement();
-				ResultSet r2=s2.executeQuery(sql2+r1.getString(billAttributes[1]));
+				ResultSet r2=s2.executeQuery(sql2+r1.getString(billAttributes[1])+"';");
 
 				ArrayList<ChangeItem> items=new ArrayList<ChangeItem>();
 				while(r2.next()){
@@ -522,6 +568,12 @@ public class BillSearchData implements BillSearchDataService{
 			return null;
 		}		
 		return bills;		
+	}
+
+	@Override
+	public ArrayList<BillPO> getBillList(UserPO user) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

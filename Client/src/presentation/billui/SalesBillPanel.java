@@ -1,7 +1,6 @@
 package presentation.billui;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -34,50 +33,22 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	private JButton sumButton;
 	private JTextArea promotionInfoArea;
 	
-	public SalesBillPanel(UserVO user, ActionListener closeListener) {
-		super(user, closeListener);
+	public SalesBillPanel(UserVO user) {
+		super(user);
 
 		billIdField.setText(saleBillBL.getNewId());
 		operatorField.setText(user.getName());
 	}
 
-	public SalesBillPanel(UserVO user, ActionListener closeListener,  SalesBillVO bill) {
-		super(user, closeListener, bill);
+	public SalesBillPanel(UserVO user, SalesBillVO bill) {
+		super(user, bill);
 	}
 	
-	@Override
-	protected void setEditable(boolean b) {
+	public void setEditable(boolean b) {
 		super.setEditable(b);
 		discountField.setEditable(false);
 	    couponField.setEditable(false);
 	}
-	@Override
-	protected ActionListener getNewActionListener() {
-		return e -> {
-            int response = JOptionPane.showConfirmDialog(null, "确认要新建一张销售单吗？", "提示", JOptionPane.YES_NO_OPTION);
-            if(response == 1)return;
-            clear();
-            billIdField.setText(saleBillBL.getNewId());
-            operatorField.setText(user.getName());
-		};
-	}
-
-	@Override
-	protected ActionListener getSaveActionListener() {
-		return e ->{
-			SalesBillVO bill = getBill(BillVO.SAVED);
-            if (bill != null && saleBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已保存。");
-        };
-	}
-
-	@Override
-	protected ActionListener getCommitActionListener() {
-		return e ->{
-			SalesBillVO bill = getBill(BillVO.COMMITED);
-            if (bill != null && saleBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
-        };
-	}
-
 	@Override
 	protected boolean isCorrectable() {
 	    if(!super.isCorrectable()) return false;
@@ -132,7 +103,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	    JPanel southPanel = new JPanel(new TableLayout(size));
 	    southPanel.add(getPromotionPanel(), "0 0");
 	    southPanel.add(getTailPanel(), "0 1");
-	    billPanel.add(southPanel, BorderLayout.SOUTH);
+	    this.add(southPanel, BorderLayout.SOUTH);
 	}
 	
 	/**
@@ -144,7 +115,6 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		    String date = getDate(), id = getId();
 		    String operater = operatorField.getText()
 		         , customerId = customerIdField.getText()
-		         , customerName = customerNameField.getText()
 		         , remark = remarkField.getText();
 		    MyTableModel model = (MyTableModel)goodsListTable.getModel();
 		    double beforeDiscount = Double.parseDouble(sumField.getText())
@@ -152,8 +122,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		         , discount = Double.parseDouble(discountField.getText())
 		         , coupon = Double.parseDouble(couponField.getText());
 		    return new SalesBillVO(date, Timetools.getTime(), id, operater, state
-		        , customerId, customerName, model, remark, beforeDiscount
-		        , discount, coupon, sum);
+		        , customerId, model, remark, beforeDiscount, discount, coupon, sum);
 		}
 		return null;
 	}
@@ -215,6 +184,27 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	@Override
 	protected void handleChooseCustomer() {
 		handleChooseCustomer(false);
+	}
+
+	@Override
+	public void newAction() {
+		int response = JOptionPane.showConfirmDialog(null, "确认要新建一张销售单吗？", "提示", JOptionPane.YES_NO_OPTION);
+        if(response == 1)return;
+        clear();
+        billIdField.setText(saleBillBL.getNewId());
+        operatorField.setText(user.getName());
+	}
+
+	@Override
+	public void saveAction() {
+		SalesBillVO bill = getBill(BillVO.COMMITED);
+        if (bill != null && saleBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
+	}
+
+	@Override
+	public void commitAction() {
+		SalesBillVO bill = getBill(BillVO.COMMITED);
+        if (bill != null && saleBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
 	}
 
 }

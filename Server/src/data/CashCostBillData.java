@@ -11,7 +11,7 @@ import po.billpo.CashCostItem;
 import po.billpo.CashCostBillPO;
 public class CashCostBillData extends UnicastRemoteObject implements CashCostBillDataService{
 	
-	protected CashCostBillData() throws RemoteException {
+	public CashCostBillData() throws RemoteException {
 		super();
 		// TODO Auto-generated constructor stub
 	}

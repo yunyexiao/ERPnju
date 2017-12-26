@@ -16,7 +16,7 @@ public class SaleReturnBillData extends UnicastRemoteObject implements SalesRetu
 	private String recordIdName="SRRID";
 
 
-	protected SaleReturnBillData() throws RemoteException {
+	public SaleReturnBillData() throws RemoteException {
 		super();
 
 	}

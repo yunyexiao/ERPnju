@@ -1,7 +1,6 @@
 package presentation.billui;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -34,21 +33,20 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     private DoubleField discountRateField, finalSumField;
     private JButton salesBillChooseButton;
 
-    public SalesReturnBillPanel(UserVO user, ActionListener closeListener) {
-        super(user, closeListener);
+    public SalesReturnBillPanel(UserVO user) {
+        super(user);
         this.billIdField.setText(saleReturnBl.getNewId());
         this.operatorField.setText(user.getName());
     }
 
-    public SalesReturnBillPanel(UserVO user, ActionListener closeListener, SalesReturnBillVO bill) {
-        super(user, closeListener, bill);
+    public SalesReturnBillPanel(UserVO user, SalesReturnBillVO bill) {
+        super(user, bill);
         this.discountRateField.setText(bill.getDiscountRate() + "");
         this.originalSBIdField.setText(bill.getOriginalSBId());
         this.finalSumField.setText(bill.getSum() + "");
     }
 
-	@Override
-	protected void setEditable(boolean b) {
+	public void setEditable(boolean b) {
 		super.setEditable(b);
 		salesBillChooseButton.setEnabled(b);
 		customerChooseButton.setEnabled(b);
@@ -108,7 +106,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         southPanel.add(new JLabel("实际总额"), "5 2");
         southPanel.add(finalSumField, "7 2");
         
-        billPanel.add(southPanel, BorderLayout.SOUTH);
+        this.add(southPanel, BorderLayout.SOUTH);
     }
 
     @Override
@@ -120,35 +118,6 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     protected String getTableTitle() {
         return "回库商品列表";
     }
-
-    @Override
-    protected ActionListener getNewActionListener() {
-        return e -> {
-            int response = JOptionPane.showConfirmDialog(
-                null, "确认要新建一张销售退货单吗？", "提示", JOptionPane.YES_NO_OPTION);
-            if(response == 1) return;
-            clear();
-            billIdField.setText(saleReturnBl.getNewId());
-            operatorField.setText(user.getName());
-        };
-    }
-
-    @Override
-    protected ActionListener getSaveActionListener() {
-    	return e ->{
-    		SalesReturnBillVO bill = getBill(BillVO.SAVED);
-            if (bill != null && saleReturnBl.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已保存。");
-        };
-    }
-
-    @Override
-    protected ActionListener getCommitActionListener() {
-    	return e ->{
-    		SalesReturnBillVO bill = getBill(BillVO.COMMITED);
-            if (bill != null && saleReturnBl.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
-        };
-    }
-
     @Override
     protected void sumUp(){
         super.sumUp();
@@ -157,7 +126,6 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
                finalSum = originalSum * discountRate;
         this.finalSumField.setValue(finalSum);
     }
-
     @Override
     protected void handleAddItem(){
         String[] newRow = new InputCommodityInfoWin().getRowData();
@@ -166,7 +134,6 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         if(!itemValid(newRow)) return;
         addItem(newRow);
     }
-
     @Override
     protected void clear(){
         super.clear();
@@ -181,7 +148,6 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         String date = getDate(), id = getId();
         String operater = operatorField.getText()
              , customerId = customerIdField.getText()
-             , customerName = customerNameField.getText()
              , remark = remarkField.getText()
              , originalSBId = originalSBIdField.getText();
         MyTableModel model = (MyTableModel)goodsListTable.getModel();
@@ -189,7 +155,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
                originalSum = Double.parseDouble(sumField.getText()),
                sum = Double.parseDouble(finalSumField.getText());
         return new SalesReturnBillVO(date, Timetools.getTime(), id, operater, state
-            , customerId, customerName, model, remark, originalSBId
+            , customerId, model, remark, originalSBId
             , discountRate, originalSum, sum);
     }
 
@@ -235,6 +201,27 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
 	@Override
 	protected void handleChooseCustomer() {
 		handleChooseCustomer(false);
+	}
+
+	@Override
+	public void newAction() {
+		int response = JOptionPane.showConfirmDialog(null, "确认要新建一张销售退货单吗？", "提示", JOptionPane.YES_NO_OPTION);
+        if(response == 1) return;
+        clear();
+        billIdField.setText(saleReturnBl.getNewId());
+        operatorField.setText(user.getName());
+	}
+
+	@Override
+	public void saveAction() {
+		SalesReturnBillVO bill = getBill(BillVO.SAVED);
+        if (bill != null && saleReturnBl.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已保存。");
+	}
+
+	@Override
+	public void commitAction() {
+		SalesReturnBillVO bill = getBill(BillVO.COMMITED);
+        if (bill != null && saleReturnBl.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
 	}
 
 }

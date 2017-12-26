@@ -7,23 +7,21 @@ import java.util.Calendar;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.CashCostBillBLService;
+import businesslogic.inter.AddLogInterface;
 import dataservice.CashCostBillDataService;
 import ds_stub.CashCostBillDs_stub;
 import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
 import presentation.tools.Timetools;
+import rmi.Rmi;
 import vo.billvo.BillVO;
 import vo.billvo.CashCostBillVO;
 
 public class CashCostBillBL implements CashCostBillBLService, BillOperationService, BillExamineService{
 
-	private CashCostBillDataService cashCostBillDataService;
-	
-	public CashCostBillBL() {
-		//cashCostBillDataService = Rmi.flag ? Rmi.getRemote(CashCostBillDataService.class) : new CashCostBillDs_stub();
-		cashCostBillDataService = new CashCostBillDs_stub();
-	}
+	private CashCostBillDataService cashCostBillDataService = Rmi.flag ? Rmi.getRemote(CashCostBillDataService.class) : new CashCostBillDs_stub();
+	private AddLogInterface addLog = new LogBL();
 	
 	@Override
 	public String getNewId() {
@@ -44,9 +42,11 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
 		try{
             CashCostBillPO bill = cashCostBillDataService.getBillById(id);
             if(bill.getState() == BillPO.PASS) return false;
-            
             int length = id.length();
-            return cashCostBillDataService.deleteBill(id.substring(length - 5, length));
+            if (cashCostBillDataService.deleteBill(id.substring(length - 5, length))) {
+            	addLog.add("删除现金费用单", "删除的现金费用单单据编号为"+id);
+            	return true;
+            } else return false;
 		}catch(RemoteException e){
 			e.printStackTrace();
 			return false;
@@ -55,23 +55,20 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
 
 	@Override
 	public boolean saveBill(CashCostBillVO bill) {
-		try{
-            return cashCostBillDataService.saveBill(toPO(bill));
-        }catch(RemoteException e){
-            e.printStackTrace();
-            return false;
-        }	
+		return saveBill(bill, "保存现金费用单", "保存的现金费用单单据编号为"+bill.getAllId());
 	}
-
-	@Override
-    public boolean updateBill(CashCostBillVO bill) {
-        try{
-            return cashCostBillDataService.saveBill(toPO(bill));
+	
+	private boolean saveBill(CashCostBillVO bill, String operation, String detail) {
+		try{
+            if (cashCostBillDataService.saveBill(toPO(bill))) {
+            	addLog.add(operation, detail);
+            	return true;
+            } else return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
         }
-    }
+	}
 	
     public ArrayList<CashCostBillPO> getCashCostBillPOsByDate(String from, String to){
         try{
@@ -91,7 +88,10 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
             CashCostBillPO offset = new CashCostBillPO(
                 Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator()
                 , BillPO.PASS, bill.getAccountId(), items, -bill.getSum());
-            return cashCostBillDataService.saveBill(offset);
+            if (cashCostBillDataService.saveBill(offset)) {
+            	addLog.add("红冲现金费用单", "被红冲的现金费用单单据编号为"+bill.getAllId());
+            	return true;
+            } else return false;
 	    }catch(RemoteException e){
 	        e.printStackTrace();
 	        return false;
@@ -102,11 +102,11 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
 	public boolean copyBill(BillVO bill){
 	    if(bill instanceof CashCostBillVO){
 	        CashCostBillVO oldOne = (CashCostBillVO) bill;
-	        CashCostBillVO newOne = new CashCostBillVO(
+	        CashCostBillVO copy = new CashCostBillVO(
 	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), 
 	            oldOne.getOperator(), BillVO.PASS, oldOne.getAccountId(), oldOne.getTableModel()
 	        );
-	        return saveBill(newOne);
+	        return saveBill(copy, "红冲并复制现金费用单", "红冲并复制后新的现金费用单单据编号为"+copy.getAllId());
 	    }
 	    return false;
 	}
@@ -133,7 +133,7 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
             CashCostBillVO billVO = BillTools.toCashCostBillVO(billPO);
             billPO.setState(3);
             billVO.setState(3);
-            return saveBill(billVO);
+            return saveBill(billVO, "审核现金费用单", "通过审核的现金费用单单据编号为"+billId);
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -147,10 +147,20 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
             CashCostBillVO billVO = BillTools.toCashCostBillVO(billPO);
             billPO.setState(4);
             billVO.setState(4);
-            return saveBill(billVO);
+            return saveBill(billVO, "审核现金费用单", "单据编号为"+billId+"的现金费用单审核未通过");
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
         }
+	}
+
+	@Override
+	public BillVO getBillById(String billId) {
+		try {
+			return BillTools.toCashCostBillVO(cashCostBillDataService.getBillById(billId));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

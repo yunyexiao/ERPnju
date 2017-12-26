@@ -3,7 +3,7 @@ package blservice.billblservice;
 import vo.billvo.BillVO;
 
 /**
- * 财务人员使用的接口
+ * 单据操作使用的接口
  * @author 钱美缘
  *
  */
@@ -21,4 +21,12 @@ public interface BillOperationService {
 	 * @return
 	 */
 	public boolean copyBill(BillVO bill);
+	/**
+	 * 删除一张单据（已提交状态的单据不能删除）
+	 * @param billId 单据编号
+	 * @return 是否删除成功
+	 */
+	public boolean deleteBill(String billId);
+	
+	public BillVO getBillById(String billId);
 }

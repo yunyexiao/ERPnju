@@ -9,11 +9,9 @@ public class SalesReturnBillVO extends MarketBillVO {
     private double discountRate, originalSum;
 
     public SalesReturnBillVO(String date, String time, String id
-        , String operator, int state, String customerId,
-        String customerName, MyTableModel model, String remark
+        , String operator, int state, String customerId, MyTableModel model, String remark
         , String originalSBId, double discountRate, double originalSum, double sum) {
-        super(date, time, id, operator, state, customerId
-            , customerName, model, remark, sum);
+        super(date, time, id, operator, state, customerId, model, remark, sum);
         this.originalSBId = originalSBId;
         this.discountRate = discountRate;
         this.originalSum = originalSum;

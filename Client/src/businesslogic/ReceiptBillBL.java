@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.ReceiptBillBLService;
+import businesslogic.inter.AddLogInterface;
 import dataservice.ReceiptBillDataService;
 import ds_stub.ReceiptBillDs_stub;
 import po.billpo.BillPO;
@@ -18,16 +19,13 @@ import vo.billvo.ReceiptBillVO;
 
 public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService, BillExamineService{
 
-	private ReceiptBillDataService receiptBillDataService;
-	
-	public ReceiptBillBL() {
-		receiptBillDataService = Rmi.flag ? Rmi.getRemote(ReceiptBillDataService.class) : new ReceiptBillDs_stub();
-	}
-	
+	private ReceiptBillDataService receiptBillDataService = Rmi.flag ? Rmi.getRemote(ReceiptBillDataService.class) : new ReceiptBillDs_stub();
+	private AddLogInterface addLog = new LogBL();
+
 	@Override
 	public String getNewId() {
 		 try {
-	    		return receiptBillDataService.getNewId();
+	    		return "SKD-"+Timetools.getDate()+"-"+receiptBillDataService.getNewId();
 	        } catch (RemoteException e) {
 	            e.printStackTrace();
 	            return null;
@@ -37,7 +35,10 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 	@Override
 	public boolean deleteBill(String id) {
 		try{
-			return receiptBillDataService.deleteBill(id);
+			if (receiptBillDataService.deleteBill(id)) {
+            	addLog.add("删除收款单", "删除的收款单单据编号为"+id);
+            	return true;
+            } else return false;
 		}catch(RemoteException e){
 			e.printStackTrace();
 			return false;
@@ -46,18 +47,15 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 
 	@Override
 	public boolean saveBill(ReceiptBillVO bill) {
-		try{
-            return receiptBillDataService.saveBill(toPO(bill));
-        }catch(RemoteException e){
-            e.printStackTrace();
-            return false;
-        }
+		return saveBill(bill, "保存收款单", "保存的收款单单据编号为"+bill.getAllId());
 	}
-
-	@Override
-	public boolean updateBill(ReceiptBillVO bill) {
+	
+	private boolean saveBill(ReceiptBillVO bill, String operation, String detail) {
 		try{
-            return receiptBillDataService.saveBill(toPO(bill));
+            if (receiptBillDataService.saveBill(toPO(bill))) {
+            	addLog.add(operation, detail);
+            	return true;
+            } else return false;
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -72,10 +70,13 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 	        bill.getTransferList().forEach(i -> items.add(new TransferItem(
 	            i.getAccountId(), -i.getMoney(), i.getRemark()
 	        )));
-	        return receiptBillDataService.saveBill(new ReceiptBillPO(
+	        ReceiptBillPO offset = new ReceiptBillPO(
 	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
-	            bill.getCustomerId(), items, -bill.getSum()
-	        ));
+	            bill.getCustomerId(), items, -bill.getSum());
+	        if (receiptBillDataService.saveBill(offset)) {
+            	addLog.add("红冲收款单", "被红冲的收款单单据编号为"+bill.getAllId());
+            	return true;
+            } else return false;
 	    }catch(RemoteException e){
 	        e.printStackTrace();
 	        return false;
@@ -90,7 +91,7 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
 	            BillVO.PASS, old.getCustomerId(), old.getTableModel()
 	        );
-	        return saveBill(copy);
+	        return saveBill(copy, "红冲并复制收款单", "红冲并复制后新的收款单单据编号为"+copy.getAllId());
 	    }
 	    return false;
 	}
@@ -117,7 +118,7 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
             ReceiptBillVO billVO = BillTools.toReceiptBillVO(billPO);
             billPO.setState(3);
             billVO.setState(3);
-            return saveBill(billVO);
+            return saveBill(billVO, "审核收款单", "通过审核的收款单单据编号为"+billId);
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -131,10 +132,20 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
             ReceiptBillVO billVO = BillTools.toReceiptBillVO(billPO);
             billPO.setState(4);
             billVO.setState(4);
-            return saveBill(billVO);
+            return saveBill(billVO, "审核收款单", "单据编号为"+billId+"的收款单审核未通过");
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
         }
+	}
+
+	@Override
+	public BillVO getBillById(String billId) {
+		try {
+			return BillTools.toReceiptBillVO(receiptBillDataService.getBillById(billId));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

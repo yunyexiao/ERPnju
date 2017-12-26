@@ -11,7 +11,7 @@ import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesItemsPO;;
 public class PurchaseReturnBillData extends UnicastRemoteObject implements PurchaseReturnBillDataService{
 	
-	protected PurchaseReturnBillData() throws RemoteException {
+	public PurchaseReturnBillData() throws RemoteException {
 		super();
 		
 	}

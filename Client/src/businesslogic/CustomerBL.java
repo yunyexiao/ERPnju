@@ -12,20 +12,13 @@ import po.CustomerPO;
 import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.CustomerVO;
-import vo.UserVO;
 
 public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 	
-	private AddLogInterface addLog;
+	private AddLogInterface addLog = new LogBL();
 	private CustomerDataService customerDataService = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
 	private String[] tableHeader = {"客户编号", "客户姓名", "分类", "级别", "电话", "地址", 
 			"邮编", "电子邮箱", "应收额度", "应收", "应付", "默认业务员"};
-	
-	public CustomerBL() {}
-	
-	public CustomerBL(UserVO user) {
-		addLog = new LogBL(user);
-	}
 	
 	private String[] getLine(CustomerPO customer) {
 		return new String[] {
@@ -67,20 +60,27 @@ public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 		}
 	}
 
-	@Override//暂时只实现按ID查找功能
+	@Override
 	public MyTableModel search(String type, String key) {
 		try {
 			ArrayList<CustomerPO> list = null;
-			CustomerPO customerPO = customerDataService.findById(key);
-			String[][] data = new String [list.size()][tableHeader.length];
-			for (int i = 0; i < list.size(); i++) {
-				data[i] = getLine(list.get(i));
-			}
-			MyTableModel searchTable = new MyTableModel (data, tableHeader);
-			if (addLog != null) addLog.add("搜索客户", "搜索方式："+type+"  搜索关键词："+key);
-			return searchTable;
+            if(type.contains("编号")){
+                list = customerDataService.getCustomersBy("CusID", key, true);
+            }else if(type.contains("姓名")){
+                list = customerDataService.getCustomersBy("CusName", key, true);
+            }else if(type.contains("类别")){
+                list = customerDataService.getCustomersBy("CusType", key, true);
+            }
+            if (list != null) {
+                String[][] data = new String[list.size()][tableHeader.length];
+                for(int i = 0; i < list.size(); i++){
+                    data[i] = getLine(list.get(i));
+                }
+                return new MyTableModel(data, tableHeader);
+            }
+            return new MyTableModel (new String[][]{{}}, tableHeader);
 		} catch (Exception e) {
-			return null;
+			return new MyTableModel (new String[][]{{}}, tableHeader);
 		}
 	}
 
