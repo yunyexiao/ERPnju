@@ -2,7 +2,6 @@ package businesslogic;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
@@ -30,11 +29,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
     @Override
     public String getNewId() {
         try {
-            Calendar c = Calendar.getInstance();
-            String date = c.get(Calendar.YEAR) + ""
-                        + c.get(Calendar.MONTH) + ""
-                        + c.get(Calendar.DATE);
-            return "JHD-" + date + "-" + purchaseBillDs.getNewId();
+            return "JHD-" + Timetools.getDate() + "-" + purchaseBillDs.getNewId();
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;

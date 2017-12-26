@@ -29,11 +29,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
     @Override
     public String getNewId() {
         try{
-            Calendar c = Calendar.getInstance();
-            String date = c.get(Calendar.YEAR) + ""
-                        + c.get(Calendar.MONTH) + ""
-                        + c.get(Calendar.DATE);
-            return "XSTHD-" + date + "-" + salesReturnBillDs.getNewId();
+            return "XSTHD-" + Timetools.getDate() + "-" + salesReturnBillDs.getNewId();
         }catch(RemoteException e){
             e.printStackTrace();
             return null;

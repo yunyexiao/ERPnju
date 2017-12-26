@@ -2,7 +2,6 @@ package businesslogic;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
@@ -26,11 +25,7 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
 	@Override
 	public String getNewId() {
         try {
-        	Calendar c = Calendar.getInstance();
-            String date = c.get(Calendar.YEAR) + ""
-                        + c.get(Calendar.MONTH) + ""
-                        + c.get(Calendar.DATE);
-            return "XJFYD-" + date + "-" + cashCostBillDataService.getNewId();
+            return "XJFYD-" + Timetools.getDate() + "-" + cashCostBillDataService.getNewId();
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;
