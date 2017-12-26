@@ -1,6 +1,8 @@
 package po.billpo;
 
-public class TransferItem {
+import java.io.Serializable;
+
+public class TransferItem implements Serializable{
 
 	private String accountId;
 	private double money;
