@@ -71,9 +71,9 @@ public class BillSearchBL implements BillSearchBLService {
 		}
 	}
     @Override
-    public MyTableModel filterInventoryBills(String from, String to, String store, String operatorId, boolean isOver) {
+    public MyTableModel filterInventoryBills(String from, String to, String store, String operatorId, boolean isOver, int state) {
         try{
-            ArrayList<ChangeBillPO> bills = billSearchDs.searchChangeBills(from, to, store, operatorId); 
+            ArrayList<ChangeBillPO> bills = billSearchDs.searchChangeBills(from, to, store, operatorId, isOver, state); 
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名"};
             String[][] data = new String[bills.size()][];
             String pref = isOver ? "BYD-" : "BSD-";
@@ -93,9 +93,9 @@ public class BillSearchBL implements BillSearchBLService {
     }
 
     @Override
-    public MyTableModel filterPurchaseBills(String from, String to, String customerId, String operatorId) {
+    public MyTableModel filterPurchaseBills(String from, String to, String customerId, String operatorId, int state) {
         try{
-            ArrayList<PurchaseBillPO> bills = billSearchDs.searchPurchaseBills(from, to, customerId, operatorId);
+            ArrayList<PurchaseBillPO> bills = billSearchDs.searchPurchaseBills(from, to, customerId, operatorId, state);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "进货商编号", "进货商姓名", "交易额", "备注"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
@@ -117,9 +117,9 @@ public class BillSearchBL implements BillSearchBLService {
     }
 
     @Override
-    public MyTableModel filterPurchaseReturnBills(String from, String to, String customerId, String operatorId) {
+    public MyTableModel filterPurchaseReturnBills(String from, String to, String customerId, String operatorId, int state) {
         try{
-            ArrayList<PurchaseReturnBillPO> bills = billSearchDs.searchPurchaseReturnBills(from, to, customerId, operatorId);
+            ArrayList<PurchaseReturnBillPO> bills = billSearchDs.searchPurchaseReturnBills(from, to, customerId, operatorId, state);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "进货商编号", "进货商姓名", "交易额", "备注"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
@@ -141,9 +141,9 @@ public class BillSearchBL implements BillSearchBLService {
     }
 
     @Override
-    public MyTableModel filterSalesBills(String from, String to, String customerId, String operatorId) {
+    public MyTableModel filterSalesBills(String from, String to, String customerId, String operatorId, int state) {
         try{
-            ArrayList<SalesBillPO> bills = billSearchDs.searchSalesBills(from, to, customerId, operatorId);
+            ArrayList<SalesBillPO> bills = billSearchDs.searchSalesBills(from, to, customerId, operatorId, state);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "销售商编号", "销售商姓名", "交易额", "备注"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
@@ -165,9 +165,9 @@ public class BillSearchBL implements BillSearchBLService {
     }
 
     @Override
-    public MyTableModel filterSalesReturnBills(String from, String to, String customerId, String operatorId) {
+    public MyTableModel filterSalesReturnBills(String from, String to, String customerId, String operatorId, int state) {
         try{
-            ArrayList<SalesReturnBillPO> bills = billSearchDs.searchSalesReturnBills(from, to, customerId, operatorId);
+            ArrayList<SalesReturnBillPO> bills = billSearchDs.searchSalesReturnBills(from, to, customerId, operatorId, state);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "销售商编号", "销售商姓名", "交易额", "备注"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
@@ -189,9 +189,9 @@ public class BillSearchBL implements BillSearchBLService {
     }
 
     @Override
-    public MyTableModel filterCashCostBills(String from, String to, String accountId, String operatorId) {
+    public MyTableModel filterCashCostBills(String from, String to, String accountId, String operatorId, int state) {
         try{
-            ArrayList<CashCostBillPO> bills = billSearchDs.searchCashCostBills(from, to, accountId, operatorId);
+            ArrayList<CashCostBillPO> bills = billSearchDs.searchCashCostBills(from, to, accountId, operatorId, state);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "银行账户", "总额"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
@@ -212,9 +212,9 @@ public class BillSearchBL implements BillSearchBLService {
     }
 
     @Override
-    public MyTableModel filterPaymentBills(String from, String to, String customerId, String operatorId) {
+    public MyTableModel filterPaymentBills(String from, String to, String customerId, String operatorId, int state) {
         try{
-            ArrayList<PaymentBillPO> bills = billSearchDs.searchPaymentBills(from, to, customerId, operatorId);
+            ArrayList<PaymentBillPO> bills = billSearchDs.searchPaymentBills(from, to, customerId, operatorId, state);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "客户编号", "客户姓名", "总额"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
@@ -236,9 +236,9 @@ public class BillSearchBL implements BillSearchBLService {
     }
 
     @Override
-    public MyTableModel filterReceiptBills(String from, String to, String customerId, String operatorId) {
+    public MyTableModel filterReceiptBills(String from, String to, String customerId, String operatorId, int state) {
         try{
-            ArrayList<PaymentBillPO> bills = billSearchDs.searchPaymentBills(from, to, customerId, operatorId);
+            ArrayList<PaymentBillPO> bills = billSearchDs.searchPaymentBills(from, to, customerId, operatorId, state);
             String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "客户编号", "客户姓名", "总额"};
             String[][] data = new String[bills.size()][columnNames.length];
             for(int i = 0; i < data.length; i++){
