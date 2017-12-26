@@ -1,6 +1,7 @@
 package data;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,7 +10,11 @@ import dataservice.BillSearchDataService;
 import po.UserPO;
 import po.billpo.*;
 
-public class BillSearchData implements BillSearchDataService{
+public class BillSearchData extends UnicastRemoteObject implements BillSearchDataService{
+	public BillSearchData() throws RemoteException {
+		super();
+	}
+
 	//查找所有状态的单据传state参数-1；
 	@Override
 	public ArrayList<PurchaseBillPO> searchPurchaseBills(String fromDate, String toDate, String customerId,
