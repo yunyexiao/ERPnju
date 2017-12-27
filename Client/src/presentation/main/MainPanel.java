@@ -92,10 +92,12 @@ public class MainPanel implements PanelInterface {
 			BillPanelHelper.user = user;
 			BillPanelHelper.closeListener = closeListener;
 			billChangeButton.addActionListener(e->{
+				if (table.getSelectedRow() < 0) {new InfoWindow("请选择需要修改的单据"); return;}
 				String[] info = tabelModel.getValueAtRow(table.getSelectedRow());
 				mainWindow.changePanel(BillPanelHelper.create(billOperationBL.getBillById(info[1])));
 			});
 			billDeleteButton.addActionListener(e->{
+				if (table.getSelectedRow() < 0) {new InfoWindow("请选择需要删除的单据"); return;}
 				String info = (String) tabelModel.getValueAt(table.getSelectedRow(), 1);
 				BillVO bill = billOperationBL.getBillById(info);
 				if (bill.getState() == BillVO.SAVED) {
