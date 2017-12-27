@@ -2,9 +2,10 @@ package data;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.sql.*;
+
 import dataservice.PurchaseBillDataService;
 import po.billpo.PurchaseBillPO;
 import po.billpo.SalesItemsPO;
@@ -22,7 +23,7 @@ public class PurchaseBillData extends UnicastRemoteObject implements PurchaseBil
 		
 		ArrayList<SalesItemsPO> items = bill.getPurchaseBillItems();
 		try{
-			boolean b1 = SQLQueryHelper.add(tableName, bill.getId()
+			boolean b1 = SQLQueryHelper.add(tableName, bill.getAllId()
 					,bill.getSupplierId(),bill.getOperator(),bill.getSum(),bill.getRemark()
 					,bill.getState(),bill.getDate() + " "+bill.getTime());
 			boolean b2 = true;
@@ -31,70 +32,26 @@ public class PurchaseBillData extends UnicastRemoteObject implements PurchaseBil
 						,items.get(i).getComId(),items.get(i).getComQuantity(),items.get(i).getComSum()
 						,items.get(i).getComRemark(),items.get(i).getComPrice());
 			}
-			if(b1 && b2) return true;
+			return b1 && b2;
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
-		return false;
 	}
 
 	@Override
 	public boolean deleteBill(String id) throws RemoteException {
-	
-		boolean res=SQLQueryHelper.getTrueDeleteResult(tableName, idName, id);
-		
-		return res;
+		return BillDataHelper.deleteBill(id);
 	}
 
 	@Override
 	public String getNewId() throws RemoteException {
-
-		String newId=SQLQueryHelper.getNewBillIdByDay(tableName,idName);
-		return newId;
+		return BillDataHelper.getNewBillId(tableName, idName);
 	}
 
 	@Override
 	public PurchaseBillPO getBillById(String id) throws RemoteException {
-		// TODO Auto-generated method stub
-		ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
-		PurchaseBillPO purchaseBill=null;
-		try{
-			//Statement s1=DataHelper.getInstance().createStatement();
-			//ResultSet r1=s1.executeQuery("SELECT * FROM PurchaseRecord WHERE PRID="+id+";");
-			ResultSet r1=SQLQueryHelper.getRecordByAttribute("PurchaseRecord", "PRID", id);
-	
-			while(r1.next()){	
-			    SalesItemsPO item=new SalesItemsPO(
-					r1.getString("PRComID"),
-					r1.getString("PRRemark"),
-					r1.getInt("PRComQuantity"),
-					r1.getDouble("PRComPrice"),
-					r1.getDouble("PRComSum"));
-			    items.add(item);
-			}
-			
-			//Statement s2=DataHelper.getInstance().createStatement();
-			//ResultSet r2=s2.executeQuery("SELECT * FROM PurchaseBill WHERE PBID="+id+";");
-			ResultSet r2=SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
-			while(r2.next()){
-				
-				purchaseBill=new PurchaseBillPO(
-						r2.getString("generateTime").split(" ")[0],
-						r2.getString("generateTime").split(" ")[1],
-						r2.getString("PBID"),
-						r2.getString("PBOperatorID"),
-						r2.getInt("PBCondition"),
-						r2.getString("PBSupplierID"),
-						r2.getString("PBRemark"),
-						r2.getDouble("PBSum"),
-						items);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
-		return purchaseBill;
+		return BillDataHelper.getPurchaseBill(id);
 	}
 
 	@Override
@@ -127,121 +84,31 @@ public class PurchaseBillData extends UnicastRemoteObject implements PurchaseBil
 						if(res_Record.getString("PRID")==ids.get(i))isAdd=false;
 					if(isAdd)ids.add(res_Record.getString("PRID"));
 				}
-				
-				for(int i=0;i<ids.size();i++){
-					ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
-					PurchaseBillPO bill=null;
-					ResultSet r =SQLQueryHelper.getRecordByAttribute("PurchaseRecord", "PRID", ids.get(i));
-					while(r.next()){
-						 SalesItemsPO item=new SalesItemsPO(
-									r.getString("PRComID"),
-									r.getString("PRRemark"),
-									r.getInt("PRComQuantity"),
-									r.getDouble("PRComPrice"),
-									r.getDouble("PRComSum"));
-							    items.add(item);
-					}
-					
-					ResultSet s =SQLQueryHelper.getRecordByAttribute(tableName,idName, ids.get(i));
-					while(s.next()){
-						
-						bill=new PurchaseBillPO(
-								s.getString("generateTime").split(" ")[0],
-								s.getString("generateTime").split(" ")[1],
-								s.getString("PBID"),
-								s.getString("PBOperatorID"),
-								s.getInt("PBCondition"),
-								s.getString("PBSupplierID"),
-								s.getString("PBRemark"),
-								s.getDouble("PBSum"),
-								items);
-						bills.add(bill);
-					}
-				}				
+				for(int i = 0; i < ids.size(); i++) bills.add(BillDataHelper.getPurchaseBill(ids.get(i)));
 			}
 			else{
-				while(res_Bill.next()){
-					ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
-					ResultSet r =SQLQueryHelper.getRecordByAttribute("PurchaseRecord", "PRID", res_Bill.getString("PBID"));
-					while(r.next()){
-						 SalesItemsPO item=new SalesItemsPO(
-									r.getString("PRComID"),
-									r.getString("PRRemark"),
-									r.getInt("PRComQuantity"),
-									r.getDouble("PRComPrice"),
-									r.getDouble("PRComSum"));
-							    items.add(item);
-					}
-					
-					PurchaseBillPO bill=new PurchaseBillPO(
-							res_Bill.getString("generateTime").split(" ")[0],
-							res_Bill.getString("generateTime").split(" ")[1],
-							res_Bill.getString("PBID"),
-							res_Bill.getString("PBOperatorID"),
-							res_Bill.getInt("PBCondition"),
-							res_Bill.getString("PBSupplierID"),
-							res_Bill.getString("PBRemark"),
-							res_Bill.getDouble("PBSum"),
-							items);
-							
-				    bills.add(bill);	
-				}
+				while(res_Bill.next()) bills.add(BillDataHelper.getPurchaseBill(res_Bill.getString("PBID")));	
 			}
 
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-
 		return bills;
 	}
 
 	@Override
 	public ArrayList<PurchaseBillPO> getBillByDate(String from, String to) throws RemoteException {
-		// TODO Auto-generated method stub
 		ArrayList<PurchaseBillPO> bills=new ArrayList<PurchaseBillPO>();
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT * FROM "+tableName+
 					" WHERE generateTime>'"+from+"' AND generateTime<DATEADD(DAY,1,"+"'"+to+"');");
-			
-			while(r.next()){
-				PurchaseBillPO bill=new PurchaseBillPO();
-				bill.setDate(r.getString("generateTime").split(" ")[0]);
-				bill.setId(r.getString("PBID"));
-				bill.setOperatorId(r.getString("PBOperatorID"));
-				bill.setRemark(r.getString("PBRemark"));
-				bill.setState(r.getInt("PBCondition"));
-				bill.setSum(r.getDouble("PBSum"));
-				bill.setSupplierId(r.getString("PBSupplierID"));
-				bill.setTime(r.getString("generateTime").split(" ")[1]);
-				bills.add(bill);
-				}
-			
-			for(int i=0;i<bills.size();i++){
-				Statement s1=DataHelper.getInstance().createStatement();
-				ResultSet r1=s1.executeQuery("SELECT * FROM PurchaseRecord WHERE PRID="+bills.get(i).getId()+";");
-				ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
-				
-				while(r1.next()){
-					SalesItemsPO item=new SalesItemsPO(
-							r1.getString("PRComID"),
-							r1.getString("PRRemark"),
-							r1.getInt("PRComQuantity"),
-							r1.getDouble("PRComPrice"),
-							r1.getDouble("PRComSum"));
-					items.add(item);
-				}
-				
-				bills.get(i).setPurchaseBillItems(items);;
-
-			}
-			
+			while(r.next()) bills.add(BillDataHelper.getPurchaseBill(r.getString("PBID")));
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
 		return bills;
 	}
-
 }

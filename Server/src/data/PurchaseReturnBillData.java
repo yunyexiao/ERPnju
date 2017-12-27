@@ -52,7 +52,7 @@ public class PurchaseReturnBillData extends UnicastRemoteObject implements Purch
 	@Override
 	public String getNewId() throws RemoteException {
 
-		String newId=SQLQueryHelper.getNewBillIdByDay(tableName,idName);	
+		String newId=BillDataHelper.getNewBillId(tableName,idName);	
 		return newId;
 	}
 
