@@ -69,6 +69,7 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
 		initBillPanel();
 		paymentButton.setSelected(true);
 		billIdField.setText(bill.getAllId());
+		operaterField.setText(userInfo.getUser(bill.getOperator()).getName());
         operaterField.setText(bill.getOperator());
         customerIdField.setText(bill.getCustomerId());
         transferListTable.setModel(bill.getTableModel());
@@ -254,7 +255,7 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
 		if(!isCorrectable()) return null;
         String date = Timetools.getDate();
         String time = Timetools.getTime();
-        String id = billIdField.getText()
+        String id = receiptBillBL.getNewId().split("-")[2]
              , operater = user.getId()
              , customerId = customerIdField.getText();
         MyTableModel model = (MyTableModel)transferListTable.getModel();
@@ -269,7 +270,7 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
 		if(!isCorrectable()) return null;
         String date = Timetools.getDate();
         String time = Timetools.getTime();
-        String id = billIdField.getText()
+        String id = paymentBillBL.getNewId().split("-")[2]
              , operater = user.getId()
              , customerId = customerIdField.getText();
         MyTableModel model = (MyTableModel)transferListTable.getModel();
@@ -294,12 +295,12 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
 		if (receiptButton.isSelected()) {
 			ReceiptBillVO bill = getReceiptBill(BillVO.SAVED);
 	        if(bill != null && receiptBillBL.saveBill(bill)){
-	            JOptionPane.showMessageDialog(null, "单据已提交。");
+	            JOptionPane.showMessageDialog(null, "单据已保存。");
 	        }
 		} else if (paymentButton.isSelected()) {
 			PaymentBillVO bill = getPaymentBill(BillVO.SAVED);
 	        if(bill != null && paymentBillBL.saveBill(bill)){
-	            JOptionPane.showMessageDialog(null, "单据已提交。");
+	            JOptionPane.showMessageDialog(null, "单据已保存。");
 	        }
 		}
 	}

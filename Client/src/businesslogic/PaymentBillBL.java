@@ -37,9 +37,7 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
 		try{
             PaymentBillPO bill = paymentBillDataService.getBillById(id);
             if(bill.getState() == BillPO.PASS) return false;
-            
-            int length = id.length();
-            if (paymentBillDataService.deleteBill(id.substring(length - 5, length))) {
+            if (paymentBillDataService.deleteBill(id)) {
             	addLog.add("删除付款单", "删除的付款单单据编号为"+id);
             	return true;
             } else return false;

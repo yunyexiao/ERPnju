@@ -14,39 +14,14 @@ public class SQLQueryHelper {
 			for (int i = 0; i < values.length; i++){
 				if(i == 0) str += values[i];
 				else str += "','" + values[i];
-			} 
+			}
+			System.out.println(str + "')");
 			if(s.executeUpdate(str + "')") > 0) return true;
 			else return false;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-	}
-	
-	//获取单据类id,不加标识
-	public static String getNewBillIdByDay(String tableName,String idName){
-		String newId=null;
-		int num=0;
-		
-		Calendar now = Calendar.getInstance();
-		int year=now.get(Calendar.YEAR), month=now.get(Calendar.MONTH),  day=now.get(Calendar.DAY_OF_MONTH);
-		String date=year+"-"+month+"-"+day;
-		
-		try{
-			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery("SELECT "+idName+" FROM "+tableName+" WHERE generateTime>"
-					+"'"+date+"' "+"AND generateTime<DATEADD(DAY,1,"+"'"+date+"');");
-			while(r.next()){
-				num++;
-			}
-			num++;
-			
-			newId=String.format("%05d", num);
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
-		return newId;	
 	}
 	
 	//按顺序获得普通id

@@ -1,10 +1,14 @@
 package businesslogic;
 
 import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 
 import blservice.billblservice.BillSearchBLService;
 import blservice.infoservice.GetCustomerInterface;
@@ -20,6 +24,7 @@ import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesReturnBillPO;
 import presentation.component.MyTableModel;
+import rmi.Rmi;
 import vo.UserVO;
 
 /**
@@ -32,7 +37,7 @@ public class BillSearchBL implements BillSearchBLService {
     private GetCustomerInterface customerInfo;
 
     public BillSearchBL() {
-        billSearchDs = new BillSearchDs_stub();
+        billSearchDs = Rmi.flag ? Rmi.getRemote(BillSearchDataService.class) : new BillSearchDs_stub();
         userInfo = new UserBL();
         customerInfo = new CustomerBL();
     }
@@ -49,9 +54,15 @@ public class BillSearchBL implements BillSearchBLService {
 	            public int compare(BillPO o1, BillPO o2) {
 	            	int[] states = {BillPO.SAVED, BillPO.NOTPASS, BillPO.COMMITED, BillPO.PASS};
 	            	if (Arrays.binarySearch(states, o1.getState()) == Arrays.binarySearch(states, o2.getState())) {
-	            		if (o1.getDate().equals(o2.getDate())) {
-	                		return Integer.parseInt(o1.getTime()) >= Integer.parseInt(o2.getTime()) ? 1 : -1;
-	                	} else return Integer.parseInt(o1.getDate()) > Integer.parseInt(o2.getDate()) ? 1 : -1;
+	            		DateFormat df = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+            			try {
+							Date time1 = df.parse(o1.getDate() + " " + o1.getTime());
+							Date time2 = df.parse(o2.getDate() + " " + o2.getTime());
+							return time1.after(time2) ? 1 : -1;
+						} catch (ParseException e) {
+							e.printStackTrace();
+							return -1;
+						}
 	            	} else return Arrays.binarySearch(states, o1.getState()) > Arrays.binarySearch(states, o2.getState()) ? 1 : -1 ;
 	            }  
 	        });

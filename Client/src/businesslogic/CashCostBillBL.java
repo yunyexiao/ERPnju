@@ -37,8 +37,7 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
 		try{
             CashCostBillPO bill = cashCostBillDataService.getBillById(id);
             if(bill.getState() == BillPO.PASS) return false;
-            int length = id.length();
-            if (cashCostBillDataService.deleteBill(id.substring(length - 5, length))) {
+            if (cashCostBillDataService.deleteBill(id)) {
             	addLog.add("删除现金费用单", "删除的现金费用单单据编号为"+id);
             	return true;
             } else return false;
