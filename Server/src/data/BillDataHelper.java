@@ -11,8 +11,11 @@ import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
 import po.billpo.PaymentBillPO;
 import po.billpo.PurchaseBillPO;
+import po.billpo.PurchaseReturnBillPO;
 import po.billpo.ReceiptBillPO;
+import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
+import po.billpo.SalesReturnBillPO;
 import po.billpo.TransferItem;
 
 public class BillDataHelper {
@@ -130,6 +133,107 @@ public class BillDataHelper {
 			return null;
 		}
 	}
+	
+	public static PurchaseReturnBillPO getPurchaseRetrunBill(String id) {
+		try{
+			ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
+			ResultSet r1 = SQLQueryHelper.getRecordByAttribute("PurchaseReturnRecord", "PRRID", id);
+			while(r1.next()){	
+			    SalesItemsPO item=new SalesItemsPO(
+					r1.getString("PRRComID"),
+					r1.getString("PRRRemark"),
+					r1.getInt("PRRComQuantity"),
+					r1.getDouble("PRRComPrice"),
+					r1.getDouble("PRRComSum"));
+			    items.add(item);
+			}
+			ResultSet r2=SQLQueryHelper.getRecordByAttribute("PurchaseReturnBill", "PRBID", id);
+			r2.next();
+			return new PurchaseReturnBillPO(
+				dateFormat.format(r2.getDate("generateTime")),
+				timeFormat.format(r2.getTime("generateTime")),
+				r2.getString("PRBID").split("-")[2],
+				r2.getString("PRBOperatorID"),
+				r2.getInt("PRBCondition"),
+				r2.getString("PRBSupplierID"),
+				r2.getString("PRBRemark"),
+				r2.getDouble("PRBSum"),
+				items);
+		} catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static SalesBillPO getSalesBill(String id) {
+		try{
+			ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
+			ResultSet r1=SQLQueryHelper.getRecordByAttribute("SalesRecord", "SRID", id);
+			while(r1.next()) {	
+			    SalesItemsPO item=new SalesItemsPO(
+					r1.getString("SRComID"),
+					r1.getString("SRRemark"),
+					r1.getInt("SRComQuantity"),
+					r1.getDouble("SRPrice"),
+					r1.getDouble("SRComSum"));
+			    items.add(item);
+			}
+			ResultSet r2=SQLQueryHelper.getRecordByAttribute("SalesBill", "SBID", id);
+			r2.next();
+			return new SalesBillPO(
+				dateFormat.format(r2.getDate("generateTime")),
+				timeFormat.format(r2.getTime("generateTime")),
+				r2.getString("SBID").split("-")[2],
+				r2.getString("SBOperatorID"),
+				r2.getInt("SBCondition"),
+				r2.getString("SBCustomerID"),
+				r2.getString("SBSalesmanName"),
+				r2.getString("SBRemark"),
+				r2.getString("SBPromotionID"),
+				r2.getDouble("SBBeforeDiscount"),
+				r2.getDouble("SBDiscount"),
+				r2.getDouble("SBCoupon"),
+				r2.getDouble("SBAfterDiscount"),
+				items);
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static SalesReturnBillPO getSalesReturnBill(String id) {
+		try{
+			ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
+			ResultSet r1=SQLQueryHelper.getRecordByAttribute("SalesReturnRecord", "SRRID", id);
+			while(r1.next()){	
+			    SalesItemsPO item=new SalesItemsPO(
+					r1.getString("SRComID"),
+					r1.getString("SRRemark"),
+					r1.getInt("SRComQuantity"),
+					r1.getDouble("SRPrice"),
+					r1.getDouble("SRComSum"));
+			    items.add(item);
+			}
+			ResultSet r2=SQLQueryHelper.getRecordByAttribute("SalesReturnBill", "SRBID", id);
+			r2.next();
+			return new SalesReturnBillPO(
+				dateFormat.format(r2.getDate("generateTime")),
+				timeFormat.format(r2.getTime("generateTime")),
+				r2.getString("SRBID").split("-")[2],
+				r2.getString("SRBOperatorID"),
+				r2.getInt("SRBCondition"),
+				r2.getString("SRBCustomerID"),
+				r2.getString("SRBSalesmanName"),
+				r2.getString("SRBRemark"),
+				r2.getString("SRBOriginalSBID"),
+				r2.getDouble("SRBOriginalSum"),
+				r2.getDouble("SRBReturnSum"),
+				items);
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	//获取单据类id,不加标识
 	public static String getNewBillId(String tableName,String idName){
 		String newId=null;
@@ -158,8 +262,8 @@ public class BillDataHelper {
 	
 	public static boolean deleteBill(String id) {
 		String[][] data = {{"XJFYD","FKD","SKD","JHD","JHTHD","XSD","XSTHD","BYD","BSD"},
-				{"CashCostBill","PaymentBill","ReceiptBill","PurchaseBill"},
-				{"CCBID","PBID","RBID","PBID"}};
+				{"CashCostBill","PaymentBill","ReceiptBill","PurchaseBill","PurchaseReturnBill","SalesBill","SalesReturnBill"},
+				{"CCBID","PBID","RBID","PBID","PRBID","SBID","SRBID"}};
 		String type = id.split("-")[0];
 		int num = 0;
 		for (int i = 0; i < data[0].length; i++) if (type.equals(data[0][i])) num = i;

@@ -12,7 +12,6 @@ import po.billpo.SalesItemsPO;
 public class PurchaseBillData extends UnicastRemoteObject implements PurchaseBillDataService{
 	public PurchaseBillData() throws RemoteException {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	private String tableName="PurchaseBill";
@@ -63,10 +62,10 @@ public class PurchaseBillData extends UnicastRemoteObject implements PurchaseBil
 		try{
 			if(isFuzzy){
 				Statement s1 = DataHelper.getInstance().createStatement();
-			    res_Bill = s1.executeQuery("SELECT * FROM PurchaseBill WHERE "+field+"LIKE '%"+key+"%';");
+			    res_Bill = s1.executeQuery("SELECT * FROM PurchaseBill WHERE "+field+" LIKE '%"+key+"%';");
 			    
 			    Statement s2 = DataHelper.getInstance().createStatement();
-			    res_Record = s2.executeQuery("SELECT * FROM PurchaseRecord WHERE "+field+"LIKE '%"+key+"%';");
+			    res_Record = s2.executeQuery("SELECT * FROM PurchaseRecord WHERE "+field+" LIKE '%"+key+"%';");
 			}
 			else if(!isFuzzy){
 				res_Bill =SQLQueryHelper.getRecordByAttribute(tableName, field, key);
@@ -87,7 +86,7 @@ public class PurchaseBillData extends UnicastRemoteObject implements PurchaseBil
 				for(int i = 0; i < ids.size(); i++) bills.add(BillDataHelper.getPurchaseBill(ids.get(i)));
 			}
 			else{
-				while(res_Bill.next()) bills.add(BillDataHelper.getPurchaseBill(res_Bill.getString("PBID")));	
+				while(res_Bill.next()) bills.add(BillDataHelper.getPurchaseBill(res_Bill.getString("PBID")));
 			}
 
 		}catch(Exception e){
