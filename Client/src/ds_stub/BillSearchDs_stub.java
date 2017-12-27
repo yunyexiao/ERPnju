@@ -298,4 +298,10 @@ public class BillSearchDs_stub implements BillSearchDataService {
 		System.out.println("Change Bills of state " + state + " returned from database, isOver = " + isOver);
 		return result;
 	}
+
+    @Override
+    public ArrayList<GiftBillPO> searchGiftBills(String fromDate, String toDate, String customerId) throws RemoteException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

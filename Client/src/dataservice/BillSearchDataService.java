@@ -8,6 +8,7 @@ import po.UserPO;
 import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.ChangeBillPO;
+import po.billpo.GiftBillPO;
 import po.billpo.PaymentBillPO;
 import po.billpo.PurchaseBillPO;
 import po.billpo.PurchaseReturnBillPO;
@@ -42,5 +43,7 @@ public interface BillSearchDataService extends Remote{
 
 	    ArrayList<ReceiptBillPO> searchReceiptBills(String fromDate, String toDate
 	        , String customerId, String operatorId,int state) throws RemoteException;
+	    
+	    ArrayList<GiftBillPO> searchGiftBills(String fromDate, String toDate, String customerId) throws RemoteException;
 
 }
