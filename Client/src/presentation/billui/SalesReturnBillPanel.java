@@ -145,7 +145,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
 
     public SalesReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
-        String date = getDate(), id = getId();
+        String id = getId();
         String operater = operatorField.getText()
              , customerId = customerIdField.getText()
              , remark = remarkField.getText()
@@ -154,7 +154,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
         double discountRate = Double.parseDouble(discountRateField.getText()), 
                originalSum = Double.parseDouble(sumField.getText()),
                sum = Double.parseDouble(finalSumField.getText());
-        return new SalesReturnBillVO(date, Timetools.getTime(), id, operater, state
+        return new SalesReturnBillVO(Timetools.getDate(), Timetools.getTime(), id, operater, state
             , customerId, model, remark, originalSBId
             , discountRate, originalSum, sum);
     }

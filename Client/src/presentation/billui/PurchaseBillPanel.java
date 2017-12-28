@@ -40,14 +40,13 @@ public class PurchaseBillPanel extends CommonSaleBillPanel {
 
     public PurchaseBillVO getBill(int state){
         if(!isCorrectable()) return null;
-        String date = getDate();
         String id = getId()
-             , operater = operatorField.getText()
+             , operater = user.getId()
              , customerId = customerIdField.getText()
              , remark = remarkField.getText();
         MyTableModel model = (MyTableModel)goodsListTable.getModel();
         double sum = Double.parseDouble(sumField.getText());
-        return new PurchaseBillVO(date, Timetools.getTime(), id, operater, state, customerId, model, remark, sum);
+        return new PurchaseBillVO(Timetools.getDate(), Timetools.getTime(), id, operater, state, customerId, model, remark, sum);
     }
 
 	@Override

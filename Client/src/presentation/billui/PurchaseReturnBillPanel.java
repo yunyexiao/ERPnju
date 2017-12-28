@@ -82,13 +82,13 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
 
     public PurchaseReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
-        String date = getDate(), id = getId();
-        String operater = operatorField.getText()
+        String id = getId()
+        	 , operater = user.getId()
              , customerId = customerIdField.getText()
              , remark = remarkField.getText();
         MyTableModel model = (MyTableModel)goodsListTable.getModel();
         double sum = Double.parseDouble(sumField.getText());
-        return new PurchaseReturnBillVO(date, Timetools.getTime(), id, operater, state, customerId, model, remark, sum);
+        return new PurchaseReturnBillVO(Timetools.getDate(), Timetools.getTime(), id, operater, state, customerId, model, remark, sum);
     }
 
     private void handleChoosePb(){
