@@ -10,6 +10,8 @@ import java.util.Calendar;
 import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
+import po.billpo.GiftBillPO;
+import po.billpo.GiftItem;
 import po.billpo.PaymentBillPO;
 import po.billpo.PurchaseBillPO;
 import po.billpo.PurchaseReturnBillPO;
@@ -165,6 +167,7 @@ public class BillDataHelper {
 			return null;
 		}
 	}
+	
 	public static SalesBillPO getSalesBill(String id) {
 		try{
 			ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
@@ -229,6 +232,34 @@ public class BillDataHelper {
 				r2.getDouble("SRBOriginalSum"),
 				r2.getDouble("SRBReturnSum"),
 				items);
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static GiftBillPO getGiftBill(String id){
+		ArrayList<GiftItem> items=new ArrayList<GiftItem>();
+		try{
+			ResultSet r1=SQLQueryHelper.getRecordByAttribute("InventoryGiftRecord", "IGRID", id);
+			while(r1.next()){
+				GiftItem item=new GiftItem(
+						r1.getString("IGRComID"),
+						r1.getInt("IGRComQuantity"),
+						r1.getDouble("IGRComPrice"));
+				items.add(item);
+			}
+			ResultSet r2=SQLQueryHelper.getRecordByAttribute("InventoryGiftBill", "IGBID", id);
+			r2.next();
+			return new GiftBillPO(
+					dateFormat.format(r2.getDate("generateTime")),
+					timeFormat.format(r2.getTime("generateTime")),
+					r2.getString("IGBID").split("-")[2],
+					r2.getString("IGBOperatorID"),
+					r2.getInt("IGBCondition"),
+					items,
+					r2.getString("IGBSalesBillID"),
+					r2.getString("IGBCustomerID"));	
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;

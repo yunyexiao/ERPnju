@@ -13,6 +13,7 @@ import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
+import po.billpo.GiftBillPO;
 import po.billpo.PaymentBillPO;
 import po.billpo.PurchaseBillPO;
 import po.billpo.PurchaseReturnBillPO;
@@ -424,5 +425,20 @@ public class BillSearchData extends UnicastRemoteObject implements BillSearchDat
 		return bills;
 	}
 
+	@Override
+	public ArrayList<GiftBillPO> searchGiftBills(String fromDate, String toDate, String customerId, int state)
+			throws RemoteException {
 
+		ArrayList<GiftBillPO> bills=new ArrayList<GiftBillPO>();
+		String sql=assembleSQL("InventoryGiftBill", fromDate, toDate, "IGBCustomerID", customerId, "RBOperatorID", null,"IGBCondition",state);
+		try{
+			Statement s=DataHelper.getInstance().createStatement();
+			ResultSet r=s.executeQuery(sql);
+			while(r.next()) bills.add(BillDataHelper.getGiftBill((r.getString("IGBID"))));
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+		return bills;
+	}
 }
