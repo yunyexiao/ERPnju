@@ -43,9 +43,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
         try{
             SalesBillPO bill = salesBillDs.getBillById(id);
             if(bill.getState() == BillPO.PASS) return false;
-
-            int length = id.length();
-            if (salesBillDs.deleteBill(id.substring(length - 5, length))) {
+            if (salesBillDs.deleteBill(id)) {
             	addLog.add("删除销售单", "删除的销售单单据编号为"+id);
             	return true;
             } else return false;

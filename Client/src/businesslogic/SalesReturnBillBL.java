@@ -40,8 +40,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
         try{
             SalesReturnBillPO bill = salesReturnBillDs.getBillById(id);
             if(bill.getState() == BillPO.PASS) return false;
-            int length = id.length();
-            if (salesReturnBillDs.deleteBill(id.substring(length - 5, length))) {
+            if (salesReturnBillDs.deleteBill(id)) {
             	addLog.add("删除销售退货单", "删除的销售退货单单据编号为"+id);
             	return true;
             } else return false;

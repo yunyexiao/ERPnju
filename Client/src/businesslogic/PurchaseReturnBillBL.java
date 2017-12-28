@@ -38,9 +38,7 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
         try{
             PurchaseReturnBillPO bill = purchaseReturnBillDs.getBillById(id);
             if(bill.getState() == BillPO.PASS) return false;
-            
-            int length = id.length();
-            if (purchaseReturnBillDs.deleteBill(id.substring(length - 5, length))) {
+            if (purchaseReturnBillDs.deleteBill(id)) {
             	addLog.add("删除进货退货单", "删除的进货退货单单据编号为"+id);
             	return true;
             } else return false;

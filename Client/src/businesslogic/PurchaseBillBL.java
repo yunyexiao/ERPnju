@@ -41,9 +41,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
         try{
             PurchaseBillPO bill = purchaseBillDs.getBillById(id);
             if(bill.getState() == BillPO.PASS) return false;
-
-            int length = id.length();
-            if (purchaseBillDs.deleteBill(id.substring(length - 5, length))) {
+            if (purchaseBillDs.deleteBill(id)) {
             	addLog.add("删除进货单", "删除的进货单单据编号为"+id);
             	return true;
             } else return false;
