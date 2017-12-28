@@ -17,6 +17,7 @@ import layout.TableLayout;
 import presentation.component.MyTableModel;
 import presentation.tools.DoubleField;
 import presentation.tools.Timetools;
+import vo.PromotionVO;
 import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.SalesBillVO;
@@ -32,6 +33,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	private DoubleField discountField, couponField, afterDiscountField;
 	private JButton sumButton;
 	private JTextArea promotionInfoArea;
+	private PromotionVO promotion;
 	
 	public SalesBillPanel(UserVO user) {
 		super(user);
@@ -122,7 +124,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		         , discount = Double.parseDouble(discountField.getText())
 		         , coupon = Double.parseDouble(couponField.getText());
 		    return new SalesBillVO(date, Timetools.getTime(), id, operater, state
-		        , customerId, model, remark, beforeDiscount, discount, coupon, sum);
+		        , customerId, model, remark, beforeDiscount, discount, coupon, sum, promotion.getId());
 		}
 		return null;
 	}

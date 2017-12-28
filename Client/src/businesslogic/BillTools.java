@@ -112,6 +112,7 @@ public class BillTools {
                id = bill.getId(),
                operatorId = bill.getOperator(),
                cusId = bill.getCustomerId(),
+               promotionId = bill.getPromotionId(),
                remark = bill.getRemark();
         int state = bill.getState();
         double sum = bill.getAfterDiscount(),
@@ -119,7 +120,7 @@ public class BillTools {
                discount = bill.getDiscount(),
                coupon = bill.getCoupon();
         return new SalesBillVO(date, time, id, operatorId, state
-            , cusId, model, remark, beforeDiscount, discount, coupon, sum);
+            , cusId, model, remark, beforeDiscount, discount, coupon, sum, promotionId);
     }
     
 	public static SalesReturnBillVO toSalesReturnBillVO(SalesReturnBillPO bill){

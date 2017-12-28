@@ -259,10 +259,4 @@ public class BillSearchBL implements BillSearchBLService {
         }
     }
 
-    @Override
-    public MyTableModel filterGiftBills(String from, String to, String customerId) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

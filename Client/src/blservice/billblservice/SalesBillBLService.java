@@ -20,6 +20,6 @@ public interface SalesBillBLService extends BillCreateBLService {
 	
 	public MyTableModel getFinishedBills(String customerId);
 	
-	public PromotionVO getBestPromotion(int userType, MyTableModel goods, double sum);
+	public PromotionVO getBestPromotion(int type, MyTableModel goods, double sum);
 	
 }

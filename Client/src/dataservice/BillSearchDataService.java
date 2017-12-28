@@ -44,6 +44,6 @@ public interface BillSearchDataService extends Remote{
 	    ArrayList<ReceiptBillPO> searchReceiptBills(String fromDate, String toDate
 	        , String customerId, String operatorId,int state) throws RemoteException;
 	    
-	    ArrayList<GiftBillPO> searchGiftBills(String fromDate, String toDate, String customerId) throws RemoteException;
+	    ArrayList<GiftBillPO> searchGiftBills(String fromDate, String toDate, String customerId, int state) throws RemoteException;
 
 }

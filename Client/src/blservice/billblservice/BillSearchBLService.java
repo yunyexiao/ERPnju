@@ -22,5 +22,4 @@ public interface BillSearchBLService {
 
     MyTableModel filterReceiptBills(String from, String to, String customerId, String operatorId, int state);
     
-    MyTableModel filterGiftBills(String from, String to, String customerId);
 }

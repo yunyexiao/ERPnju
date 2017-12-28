@@ -4,11 +4,17 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import blservice.PromotionBLService;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.SalesBillBLService;
 import blservice.infoservice.GetCustomerInterface;
+import businesslogic.best_promotion.BestGroupDiscount;
+import businesslogic.best_promotion.BestRankPromotion;
+import businesslogic.best_promotion.BestSumPromotion;
 import businesslogic.inter.AddLogInterface;
+import businesslogic.inter.GiftBillCreation;
+import businesslogic.inter.IBestPromotion;
 import dataservice.SalesBillDataService;
 import ds_stub.SalesBillDs_stub;
 import po.billpo.BillPO;
@@ -70,6 +76,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
 		try{
             if (salesBillDs.saveBill(toPO(bill))) {
             	addLog.add(operation, detail);
+            	createGiftBill(bill);
             	return true;
             } else return false;
         }catch(RemoteException e){
@@ -159,7 +166,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
             SalesBillVO copy = new SalesBillVO(
                 Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
                 BillVO.PASS, old.getCustomerId(), old.getModel(),
-                old.getRemark(), old.getBeforeDiscount(), old.getDiscount(), old.getCoupon(), old.getSum()
+                old.getRemark(), old.getBeforeDiscount(), old.getDiscount(), old.getCoupon(), old.getSum(), old.getPromotionId()
             );
             return saveBill(copy, "红冲并复制销售单", "红冲并复制后新的销售单单据编号为"+copy.getAllId());
         }
@@ -187,10 +194,10 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
                    sum = Double.parseDouble(row[6]);
             items.add(new SalesItemsPO(row[0], row[7], num, price, sum));
         }
-        // TODO promotionId not considered here
         return new SalesBillPO(bill.getDate(), bill.getTime()
             , bill.getId(), bill.getOperator(), bill.getState()
-            , bill.getCustomerId(), customerInfo.getCustomer(bill.getCustomerId()).getSalesman(), bill.getRemark(), "", bill.getBeforeDiscount()
+            , bill.getCustomerId(), customerInfo.getCustomer(bill.getCustomerId()).getSalesman()
+            , bill.getRemark(), bill.getPromotionId(), bill.getBeforeDiscount()
             , bill.getDiscount(), bill.getCoupon(), bill.getSum()
             , items);
     }
@@ -230,8 +237,39 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
 	}
 
     @Override
-    public PromotionVO getBestPromotion(int userType, MyTableModel goods, double sum) {
-        // TODO Auto-generated method stub
-        return null;
+    public PromotionVO getBestPromotion(int rank, MyTableModel goods, double sum) {
+        double reductionMax = 0;
+        PromotionVO best = null;
+        IBestPromotion groupBest = new BestGroupDiscount(goods);
+        double tempReduction = groupBest.getBenefit();
+        if(reductionMax < tempReduction){
+            reductionMax = tempReduction;
+            best = groupBest.getBest();
+        }
+        IBestPromotion rankBest = new BestRankPromotion(rank);
+        tempReduction = rankBest.getBenefit();
+        if(reductionMax < tempReduction){
+            reductionMax = tempReduction;
+            best = rankBest.getBest();
+        }
+        IBestPromotion sumBest = new BestSumPromotion(sum);
+        tempReduction = sumBest.getBenefit();
+        if(reductionMax < tempReduction){
+            reductionMax = tempReduction;
+            best = sumBest.getBest();
+        }
+        return best;
     }
+
+    private void createGiftBill(SalesBillVO bill){
+        if(bill.getState() != BillVO.COMMITED) return;
+        PromotionBLService promotionBl = new PromotionBL();
+        PromotionVO promotion = promotionBl.findById(bill.getPromotionId());
+        MyTableModel gifts = promotion.getGifts();
+        if(gifts != null){
+            GiftBillCreation giftCreator = new GiftBillBL();
+            giftCreator.createAndCommit(gifts, bill.getAllId(), bill.getCustomerId());
+        }
+    }
+
 }

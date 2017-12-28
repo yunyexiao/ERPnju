@@ -1,5 +1,6 @@
 package blservice;
 
+import presentation.component.MyTableModel;
 import vo.GroupDiscountVO;
 import vo.PromotionVO;
 import vo.RankPromotionVO;
@@ -20,17 +21,17 @@ public interface PromotionBLService {
     
     boolean delete(String id);
     
-    boolean searchRankPromotion(String from, String to, int rank);
+    MyTableModel searchRankPromotion(String from, String to, int rank);
     
-    boolean searchRankPromotion(String date, int rank);
+    MyTableModel searchRankPromotion(String date, int rank);
     
-    boolean searchGroupDiscount(String from, String to);
+    MyTableModel searchGroupDiscount(String from, String to);
     
-    boolean searchGroupDiscount(String date);
+    MyTableModel searchGroupDiscount(String date);
     
-    boolean searchSumPromotion(String from, String to);
+    MyTableModel searchSumPromotion(String from, String to);
     
-    boolean searchSumPromotion(String date);
+    MyTableModel searchSumPromotion(String date);
     
     PromotionVO findById(String id);
 
