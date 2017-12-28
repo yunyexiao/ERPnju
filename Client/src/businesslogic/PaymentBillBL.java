@@ -6,8 +6,14 @@ import java.util.ArrayList;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PaymentBillBLService;
+import dataservice.AccountDataService;
+import dataservice.CustomerDataService;
 import dataservice.PaymentBillDataService;
+import ds_stub.AccountDs_stub;
+import ds_stub.CustomerDs_stub;
 import ds_stub.PaymentBillDs_stub;
+import po.AccountPO;
+import po.CustomerPO;
 import po.billpo.BillPO;
 import po.billpo.PaymentBillPO;
 import po.billpo.TransferItem;
@@ -19,9 +25,13 @@ import vo.billvo.PaymentBillVO;
 public class PaymentBillBL implements PaymentBillBLService, BillOperationService, BillExamineService{
 
 	private PaymentBillDataService paymentBillDataService;
+	private AccountDataService accountDataService;
+    private CustomerDataService customerDataService;
 	
 	public PaymentBillBL() {
 		paymentBillDataService = Rmi.flag ? Rmi.getRemote(PaymentBillDataService.class) : new PaymentBillDs_stub();
+		accountDataService = Rmi.flag ? Rmi.getRemote(AccountDataService.class) : new AccountDs_stub();
+        customerDataService = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
 	}
 	
 	@Override
@@ -119,6 +129,31 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
         try{
             PaymentBillPO billPO = paymentBillDataService.getBillById(billId);
             PaymentBillVO billVO = BillTools.toPaymentBillVO(billPO);
+            ArrayList<TransferItem> list = billPO.getTransferList();
+            for (int i = 0; i < list.size(); i++) {
+            	AccountPO accountPO = accountDataService.findById(list.get(i).getAccountId());
+            	CustomerPO customerPO = customerDataService.findById(billPO.getCustomerId());
+            	if (list.get(i).getMoney() <= accountPO.getMoney()) { //公司账户余额减少，客户应收减少
+                	accountDataService.add(new AccountPO(accountPO.getId(), accountPO.getName(), accountPO.getMoney() - list.get(i).getMoney(), accountPO.getExistFlag()));
+                	if ((customerPO.getReceivable() - billPO.getSum()) >= 0) {
+                		customerDataService.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
+                    			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
+                    			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable() - billPO.getSum(), 
+                    			customerPO.getPayment(), customerPO.getExistFlag()));
+                	}else {//如果账户多付了钱，就在客户的应付里要回来→_→ 
+                		customerDataService.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
+                    			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
+                    			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), 0, 
+                    			customerPO.getPayment() + (billPO.getSum() - customerPO.getReceivable()), customerPO.getExistFlag()));
+                	}
+                	
+            	}else {
+                    billPO.setState(4);
+                    billVO.setState(4);
+                    saveBill(billVO);
+                    return false;
+            	}
+            }
             billPO.setState(3);
             billVO.setState(3);
             return saveBill(billVO);

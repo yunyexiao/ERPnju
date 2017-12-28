@@ -74,16 +74,16 @@ public class BillSearchDs_stub implements BillSearchDataService {
 
 	public PaymentBillPO getPaymentBill(String id) {
 		ArrayList<TransferItem> items1 = new ArrayList<>();
-        items1.add(new TransferItem("110", 10000, "赎金"));
-		items1.add(new TransferItem("119", 12345, "大保健费用"));
-		items1.add(new TransferItem("404", 127, "该内容涉嫌违规，已被删除"));
+        items1.add(new TransferItem("6209111100003333", 10000, "赎金"));
+		items1.add(new TransferItem("6209111100003333", 12345, "大保健费用"));
+		items1.add(new TransferItem("6209111100003333", 127, "该内容涉嫌违规，已被删除"));
 		return new PaymentBillPO("20171206", "23:19:16", "23333", "0003", BillPO.COMMITED,"000002",  items1, 227);
 	}
 
 	public ReceiptBillPO getReceiptBill(String id) {
 		ArrayList<TransferItem> items1 = new ArrayList<>();
-        items1.add(new TransferItem("110", 10000, "赎金"));
-        items1.add(new TransferItem("路边社", 100, "无"));
+        items1.add(new TransferItem("6209111100003333", 10000, "赎金"));
+        items1.add(new TransferItem("6209111100003333", 100, "无"));
 		return new ReceiptBillPO("20171205", "07:10:11", "00123", "0002", BillPO.COMMITED,"000001",  items1, 22345);
 	}
     public ArrayList<PurchaseBillPO> searchPurchaseBills(String fromDate, String toDate, String customerId,
@@ -229,16 +229,16 @@ public class BillSearchDs_stub implements BillSearchDataService {
 			throws RemoteException {
 		ArrayList<PaymentBillPO> result = new ArrayList<>();
 		ArrayList<TransferItem> items1 = new ArrayList<>();
-		items1.add(new TransferItem("110", 10000, "赎金"));
-		items1.add(new TransferItem("119", 12345, "大保健费用"));
+		items1.add(new TransferItem("6209111100003333", 10000, "赎金"));
+		items1.add(new TransferItem("6209111100003333", 12345, "大保健费用"));
 		result.add(new PaymentBillPO(
 				"2017-12-06", "07:10:11", "00123", "0002", BillPO.COMMITED,
 				"000001",  items1, 22345
 				));
     
 		ArrayList<TransferItem> items2 = new ArrayList<>();
-		items2.add(new TransferItem("114", 100, "无"));
-		items2.add(new TransferItem("120", 127, "该内容涉嫌违规，已被删除"));
+		items2.add(new TransferItem("6209111100003333", 100, "无"));
+		items2.add(new TransferItem("6209111100003333", 127, "该内容涉嫌违规，已被删除"));
 		result.add(new PaymentBillPO(
 				"2017-12-06", "23:19:16", "23333", "0003", BillPO.COMMITED,
 				"000001",  items2, 227
@@ -252,16 +252,16 @@ public class BillSearchDs_stub implements BillSearchDataService {
 			throws RemoteException {
 		ArrayList<ReceiptBillPO> result = new ArrayList<>();
 		ArrayList<TransferItem> items1 = new ArrayList<>();
-		items1.add(new TransferItem("110", 10000, "赎金"));
-		items1.add(new TransferItem("119", 12345, "大保健费用"));
+		items1.add(new TransferItem("6209111100003333", 10000, "赎金"));
+		items1.add(new TransferItem("6209111100003333", 12345, "大保健费用"));
 		result.add(new ReceiptBillPO(
 				"2017-12-05", "07:10:11", "00123", "0002", BillPO.COMMITED,
 				"000001",  items1, 22345
 				));
     
 		ArrayList<TransferItem> items2 = new ArrayList<>();
-		items2.add(new TransferItem("114", 100, "无"));
-		items2.add(new TransferItem("120", 127, "该内容涉嫌违规，已被删除"));
+		items2.add(new TransferItem("6209111100003333", 100, "无"));
+		items2.add(new TransferItem("6209111100003333", 127, "该内容涉嫌违规，已被删除"));
 		result.add(new ReceiptBillPO(
 				"2017-12-05", "23:19:16", "23333", "0003", BillPO.COMMITED,
 				"000001",  items2, 227

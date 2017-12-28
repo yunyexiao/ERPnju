@@ -7,23 +7,36 @@ import java.util.Calendar;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseReturnBillBLService;
+import dataservice.CommodityDataService;
+import dataservice.CustomerDataService;
 import dataservice.PurchaseReturnBillDataService;
+import ds_stub.CommodityDs_stub;
+import ds_stub.CustomerDs_stub;
 import ds_stub.PurchaseReturnBillDs_stub;
+import po.CommodityPO;
+import po.CustomerPO;
 import po.billpo.BillPO;
+import po.billpo.PurchaseBillPO;
 import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesItemsPO;
 import presentation.tools.Timetools;
 import rmi.Rmi;
 import vo.billvo.BillVO;
+import vo.billvo.PurchaseBillVO;
 import vo.billvo.PurchaseReturnBillVO;
 
 
 public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOperationService, BillExamineService {
     
     private PurchaseReturnBillDataService purchaseReturnBillDs;
+    private CustomerDataService customerDs;
+    private CommodityDataService commodityDs;
 
+    
     public PurchaseReturnBillBL() {
         purchaseReturnBillDs = Rmi.flag ? Rmi.getRemote(PurchaseReturnBillDataService.class) : new PurchaseReturnBillDs_stub();
+        customerDs = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
+        commodityDs = Rmi.flag ? Rmi.getRemote(CommodityDataService.class) : new CommodityDs_stub();
     }
 
     @Override
@@ -133,7 +146,37 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
 	@Override
 	public boolean examineBill(String billId) {
         try{
+        	PurchaseReturnBillPO billPO = purchaseReturnBillDs.getBillById(billId);
             PurchaseReturnBillVO billVO = BillTools.toPurchaseReturnBillVO(purchaseReturnBillDs.getBillById(billId));
+            ArrayList<SalesItemsPO> list = billPO.getPurchaseReturnBillItems();
+            CustomerPO customerPO = customerDs.findById(billPO.getSupplierId());
+            
+            //如果应收>=退款总额的话，则更新应收；否则应收直接清零，并增加应付
+            
+            if ((customerPO.getReceivable() - billPO.getSum()) >= 0) {
+            	customerDs.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
+            			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
+            			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable()
+            			- billPO.getSum(), customerPO.getPayment(), customerPO.getExistFlag()));
+            }else {
+            	customerDs.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
+            			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
+            			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), 0, customerPO.getPayment() + billPO.getSum() - customerPO.getReceivable(), customerPO.getExistFlag()));
+            }
+            for (int i = 0; i < list.size(); i++) {
+            	CommodityPO commodityPO = commodityDs.findById(list.get(i).getComId());
+            	if (commodityPO.getAmount() >= list.get(i).getComQuantity()) {
+            		commodityDs.add(new CommodityPO(commodityPO.getId(), commodityPO.getName(), commodityPO.getType(), 
+                    		commodityPO.getStore(), commodityPO.getCategoryId(), commodityPO.getAmount() - list.get(i).getComQuantity(), 
+                    		commodityPO.getAlarmNum(), commodityPO.getInPrice(), commodityPO.getSalePrice(), 
+                    		commodityPO.getRecentInPrice(), commodityPO.getRecentSalePrice(), commodityPO.getExistFlag()));              
+            	}else {
+            		billVO.setState(4);
+            		billPO.setState(4);
+            		saveBill(billVO);
+            		return false;
+            	}   	
+            }
             billVO.setState(3);
             return saveBill(billVO);
         }catch(RemoteException e){

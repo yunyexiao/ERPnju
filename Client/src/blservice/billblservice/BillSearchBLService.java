@@ -21,4 +21,7 @@ public interface BillSearchBLService {
     MyTableModel filterPaymentBills(String from, String to, String customerId, String operatorId, int state);
 
     MyTableModel filterReceiptBills(String from, String to, String customerId, String operatorId, int state);
+    
+    MyTableModel filterBills(String from, String to);
+
 }

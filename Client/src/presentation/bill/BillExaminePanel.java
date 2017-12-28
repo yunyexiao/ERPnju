@@ -97,7 +97,7 @@ public class BillExaminePanel implements PanelInterface {
     private JPanel getNorthPanel(ActionListener closeListener) {
         fromPanel = new DateChoosePanel("开始时间");
         toPanel = new DateChoosePanel("结束时间");
-        choiceBox = new JComboBox<String>(new String[]{"报溢单","报损单","进货单","进货退货单","销售单","销售退货单","收款单","付款单","现金费用单"});
+        choiceBox = new JComboBox<String>(new String[]{"全部","报溢单","报损单","进货单","进货退货单","销售单","销售退货单","收款单","付款单","现金费用单"});
         choiceBox.addItemListener(e -> itemChanged(e));
         operatorPanel = new IdNamePanel("操作员", 7, 7);
         operatorPanel.addMouseListener(chooseOperator());
@@ -173,36 +173,84 @@ public class BillExaminePanel implements PanelInterface {
         case "收款单" : table.setModel(billSearchBl.filterReceiptBills(from, to, chooseId, operatorId, BillVO.COMMITED));break;
         case "付款单" : table.setModel(billSearchBl.filterPaymentBills(from, to, chooseId, operatorId, BillVO.COMMITED));break;
         case "现金费用单" : table.setModel(billSearchBl.filterCashCostBills(from, to, chooseId, operatorId, BillVO.COMMITED));break;
+        default:table.setModel(billSearchBl.filterBills(from, to));break;
         }
     }
     
     private void pass() {
+    	boolean flag = true;
     	billExamineBl = new BillExamineBL();
-        int index = table.getSelectedRow();
-        if(index < 0){
+        int index[] = table.getSelectedRows();
+        
+    	if(index.length == 0){
             new InfoWindow("请选择一张单据审批@_@");
             return;
-        }
-        String id = table.getValueAt(index, 0).toString();
-        if(billExamineBl.examineBill(id)){
-            JOptionPane.showMessageDialog(null, "通过单据审批^_^");
+        }else if (index.length == 1) {
+            String id = table.getValueAt(index[0], 0).toString();
+        	if(billExamineBl.examineBill(id)){
+                JOptionPane.showMessageDialog(null, "通过单据审批^_^");
+            }else {
+            	String type = id.split("-")[0];
+            	switch (type) {
+            	case "XJFYD": JOptionPane.showMessageDialog(null, "审核未通过：账户余额不足@_@"); break;
+            	case "BYD": JOptionPane.showMessageDialog(null, "操作失败，请重试@_@");
+            	case "BSD": JOptionPane.showMessageDialog(null, "审核未通过：报损数量超过库存数量@_@"); break;
+            	case "FKD": JOptionPane.showMessageDialog(null, "审核未通过：账户余额不足@_@"); break;
+            	case "JHD": JOptionPane.showMessageDialog(null, "审核未通过：应收额度不足@_@"); break;
+            	case "JHTHD": JOptionPane.showMessageDialog(null, "审核未通过：商品退货数量超过库存数量@_@"); break;
+            	case "XSD": JOptionPane.showMessageDialog(null, "审核未通过：商品销售数量超过库存数量@_@"); break;
+            	
+            	default: JOptionPane.showMessageDialog(null, "操作失败，请重试@_@");
+            	}
+            }
         }else {
-            JOptionPane.showMessageDialog(null, "操作失败，请重试@_@");
+        	for (int i = 0; i < index.length; i++) {
+                String id = table.getValueAt(index[i], 0).toString();
+                if(billExamineBl.examineBill(id)){
+                	flag = true;
+                }else {
+                	flag = false;
+                    JOptionPane.showMessageDialog(null, "单据" + table.getValueAt(index[i], 0) + "操作失败，请重试@_@");
+                    JOptionPane.showMessageDialog(null, "批量审批终止@_@");
+                    break;
+                }	
+            }	
+        	if (flag) {
+                JOptionPane.showMessageDialog(null, "批量审批成功^_^");
+        	}
         }
     }
     
     private void notPass() {
+    	boolean flag = true;
     	billExamineBl = new BillExamineBL();
-        int index = table.getSelectedRow();
-        if(index < 0){
+        int index[] = table.getSelectedRows();
+        
+    	if(index.length == 0){
             new InfoWindow("请选择一张单据审批@_@");
             return;
-        }
-        String id = table.getValueAt(index, 0).toString();
-        if (billExamineBl.notPassBill(id)) {
-        	JOptionPane.showMessageDialog(null, "不通过单据审批^_^");
+        }else if (index.length == 1) {
+            String id = table.getValueAt(index[0], 0).toString();
+        	if(billExamineBl.notPassBill(id)){
+                JOptionPane.showMessageDialog(null, "单据审批不通过成功^_^");
+            }else {
+                JOptionPane.showMessageDialog(null, "操作失败，请重试@_@");
+            }
         }else {
-            JOptionPane.showMessageDialog(null, "操作失败，请重试@_@");
+        	for (int i = 0; i < index.length; i++) {
+                String id = table.getValueAt(index[i], 0).toString();
+                if(billExamineBl.notPassBill(id)){
+                	flag = true;
+                }else {
+                	flag = false;
+                    JOptionPane.showMessageDialog(null, "单据" + table.getValueAt(index[i], 0) + "操作失败，请重试@_@");
+                    JOptionPane.showMessageDialog(null, "批量不通过终止@_@");
+                    break;
+                }	
+            }	
+        	if (flag) {
+                JOptionPane.showMessageDialog(null, "批量不通过成功^_^");
+        	}
         }
     }
 }

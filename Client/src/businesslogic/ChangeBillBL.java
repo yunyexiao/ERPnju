@@ -7,7 +7,10 @@ import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.ChangeBillBLService;
 import dataservice.ChangeBillDataService;
+import dataservice.CommodityDataService;
 import ds_stub.ChangeBillDs_stub;
+import ds_stub.CommodityDs_stub;
+import po.CommodityPO;
 import po.billpo.BillPO;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
@@ -20,11 +23,13 @@ import vo.billvo.ChangeBillVO;
 public class ChangeBillBL implements ChangeBillBLService, BillOperationService, BillExamineService{
 
 	private ChangeBillDataService changeBillDS;
+	private CommodityDataService commodityDS;
 	private boolean isOver = true;
 	
 	public ChangeBillBL(boolean isOver) {
 		this.isOver = isOver;
 		changeBillDS = Rmi.flag ? Rmi.getRemote(ChangeBillDataService.class) : new ChangeBillDs_stub();
+		commodityDS = Rmi.flag ? Rmi.getRemote(CommodityDataService.class) : new CommodityDs_stub();		
 	}
 	
 	@Override
@@ -99,6 +104,32 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
         try{
             ChangeBillPO billPO = changeBillDS.getBillById(billId);
             ChangeBillVO billVO = BillTools.toChangeBillVO(billPO);
+            ArrayList<ChangeItem> list = billPO.getCommodityList();
+            if (billPO.getFlag()) { //报溢单(判断逻辑导致程序员进入混乱状态)
+                for (int i = 0; i < list.size(); i++) {
+                    CommodityPO commodityPO = commodityDS.findById(list.get(i).getCommodityId());
+            		commodityDS.add(new CommodityPO(commodityPO.getId(), commodityPO.getName(), commodityPO.getType(), 
+            				commodityPO.getStore(), commodityPO.getCategoryId(), commodityPO.getAmount() + (list.get(i).getChangedValue() - list.get(i).getOriginalValue()), 
+                			commodityPO.getAlarmNum(), commodityPO.getInPrice(), commodityPO.getSalePrice(), 
+                    		commodityPO.getRecentInPrice(), commodityPO.getRecentSalePrice(), commodityPO.getExistFlag()));              
+                }
+            }else { //报损单(判断逻辑导致程序员进入混乱状态)
+                for (int i = 0; i < list.size(); i++) {
+                    CommodityPO commodityPO = commodityDS.findById(list.get(i).getCommodityId());
+                    if (commodityPO.getAmount() - (list.get(i).getOriginalValue() - list.get(i).getChangedValue()) >= 0) {
+                    	commodityDS.add(new CommodityPO(commodityPO.getId(), commodityPO.getName(), commodityPO.getType(), 
+                        		commodityPO.getStore(), commodityPO.getCategoryId(), commodityPO.getAmount() - (list.get(i).getOriginalValue() - list.get(i).getChangedValue()), 
+                        		commodityPO.getAlarmNum(), commodityPO.getInPrice(), commodityPO.getSalePrice(), 
+                        		commodityPO.getRecentInPrice(), commodityPO.getRecentSalePrice(), commodityPO.getExistFlag()));              
+                    }else {
+                        billPO.setState(4);
+                        billVO.setState(4);
+                        saveBill(billVO);
+                    	return false;
+                    }
+                }
+            }
+
             billPO.setState(3);
             billVO.setState(3);
             return saveBill(billVO);
