@@ -27,8 +27,7 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 	@Override
 	public CategoryPO findById(String id) throws RemoteException {
 		try{
-			Statement s1 = DataHelper.getInstance().createStatement();
-			ResultSet r = s1.executeQuery("SELECT CateName, FatherID FROM CategoryInfo WHERE CateID = " + id +";");
+			ResultSet r = SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
 			r.next();
 			return getCategoryPO(r);
 		}catch(Exception e){

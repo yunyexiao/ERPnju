@@ -91,7 +91,7 @@ public class PurchaseBillData extends UnicastRemoteObject implements PurchaseBil
 
 		}catch(Exception e){
 			e.printStackTrace();
-			return null;
+			return bills;
 		}
 		return bills;
 	}
