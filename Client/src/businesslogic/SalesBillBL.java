@@ -16,6 +16,7 @@ import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
 import presentation.tools.Timetools;
 import rmi.Rmi;
+import vo.PromotionVO;
 import vo.billvo.BillVO;
 import vo.billvo.SalesBillVO;
 
@@ -220,4 +221,10 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
 			return null;
 		}
 	}
+
+    @Override
+    public PromotionVO getBestPromotion(int userType, MyTableModel goods, double sum) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

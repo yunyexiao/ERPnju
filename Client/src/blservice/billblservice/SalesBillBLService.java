@@ -1,6 +1,7 @@
 package blservice.billblservice;
 
 import presentation.component.MyTableModel;
+import vo.PromotionVO;
 import vo.billvo.SalesBillVO;
 
 public interface SalesBillBLService extends BillCreateBLService {
@@ -18,5 +19,7 @@ public interface SalesBillBLService extends BillCreateBLService {
 	public MyTableModel getFinishedBills();
 	
 	public MyTableModel getFinishedBills(String customerId);
+	
+	public PromotionVO getBestPromotion(int userType, MyTableModel goods, double sum);
 	
 }
