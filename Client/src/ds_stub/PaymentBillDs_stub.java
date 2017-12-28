@@ -14,16 +14,16 @@ public class PaymentBillDs_stub implements PaymentBillDataService {
 	
 	static{
         ArrayList<TransferItem> items1 = new ArrayList<>();
-        items1.add(new TransferItem("110", 10000, "赎金"));
-		items1.add(new TransferItem("119", 12345, "大保健费用"));
+        items1.add(new TransferItem("6209111100003333", 10000, "赎金"));
+		items1.add(new TransferItem("6209111100003333", 12345, "大保健费用"));
         BILLS.add(new PaymentBillPO(
 				"2017-12-06", "07:10:11", "00123", "0002", BillPO.COMMITED,
 				"000001",  items1, 22345
 				));
 
         ArrayList<TransferItem> items2 = new ArrayList<>();
-		items2.add(new TransferItem("114", 100, "无"));
-		items2.add(new TransferItem("120", 127, "该内容涉嫌违规，已被删除"));
+		items2.add(new TransferItem("6209111100003333", 100, "无"));
+		items2.add(new TransferItem("6209111100003333", 127, "该内容涉嫌违规，已被删除"));
         BILLS.add(new PaymentBillPO(
 				"2017-12-06", "23:19:16", "23333", "0003", BillPO.COMMITED,
 				"000001",  items2, 227

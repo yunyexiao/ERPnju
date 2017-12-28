@@ -8,8 +8,14 @@ import blservice.billblservice.BillOperationService;
 import blservice.billblservice.SalesReturnBillBLService;
 import blservice.infoservice.GetCustomerInterface;
 import businesslogic.inter.AddLogInterface;
+import dataservice.CommodityDataService;
+import dataservice.CustomerDataService;
 import dataservice.SalesReturnBillDataService;
+import ds_stub.CommodityDs_stub;
+import ds_stub.CustomerDs_stub;
 import ds_stub.SalesReturnBillDs_stub;
+import po.CommodityPO;
+import po.CustomerPO;
 import po.billpo.BillPO;
 import po.billpo.SalesItemsPO;
 import po.billpo.SalesReturnBillPO;
@@ -23,8 +29,11 @@ import vo.billvo.SalesReturnBillVO;
 public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperationService, BillExamineService{
     
     private SalesReturnBillDataService salesReturnBillDs = Rmi.flag ? Rmi.getRemote(SalesReturnBillDataService.class) : new SalesReturnBillDs_stub();
+    private CustomerDataService customerDs = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
+    private CommodityDataService commodityDs = Rmi.flag ? Rmi.getRemote(CommodityDataService.class) : new CommodityDs_stub();
     private GetCustomerInterface customerInfo = new CustomerBL();
     private AddLogInterface addLog = new LogBL();
+
     @Override
     public String getNewId() {
         try{
@@ -148,7 +157,32 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
 	@Override
 	public boolean examineBill(String billId) {
         try{
+        	SalesReturnBillPO billPO = salesReturnBillDs.getBillById(billId);
             SalesReturnBillVO billVO = BillTools.toSalesReturnBillVO(salesReturnBillDs.getBillById(billId));
+            
+            ArrayList<SalesItemsPO> list = billPO.getSalesReturnBillItems();
+            
+            CustomerPO customerPO = customerDs.findById(billPO.getCustomerId());
+           
+            if ((customerPO.getPayment() - billPO.getReturnSum()) >= 0) {
+            	customerDs.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
+            			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
+            			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable(),
+            			customerPO.getPayment() - billPO.getReturnSum(), customerPO.getExistFlag()));	
+            }else {
+            	customerDs.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
+            			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
+            			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable(),
+            			0, customerPO.getExistFlag()));
+            }
+            
+            for (int i = 0; i < list.size(); i++) {
+            	CommodityPO commodityPO = commodityDs.findById(list.get(i).getComId());
+            	commodityDs.add(new CommodityPO(commodityPO.getId(), commodityPO.getName(), commodityPO.getType(), 
+                		commodityPO.getStore(), commodityPO.getCategoryId(), commodityPO.getAmount() + list.get(i).getComQuantity(), 
+                		commodityPO.getAlarmNum(), commodityPO.getInPrice(), commodityPO.getSalePrice(), 
+                		commodityPO.getRecentInPrice(), commodityPO.getRecentSalePrice(), commodityPO.getExistFlag()));              
+            }
             billVO.setState(3);
             return saveBill(billVO, "审核销售退货单", "通过审核的销售退货单单据编号为"+billId);
         }catch(RemoteException e){

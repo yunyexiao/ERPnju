@@ -8,8 +8,14 @@ import blservice.billblservice.BillOperationService;
 import blservice.billblservice.SalesBillBLService;
 import blservice.infoservice.GetCustomerInterface;
 import businesslogic.inter.AddLogInterface;
+import dataservice.CommodityDataService;
+import dataservice.CustomerDataService;
 import dataservice.SalesBillDataService;
+import ds_stub.CommodityDs_stub;
+import ds_stub.CustomerDs_stub;
 import ds_stub.SalesBillDs_stub;
+import po.CommodityPO;
+import po.CustomerPO;
 import po.billpo.BillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
@@ -26,9 +32,11 @@ import vo.billvo.SalesBillVO;
 public class SalesBillBL implements SalesBillBLService, BillOperationService, BillExamineService {
     
     private SalesBillDataService salesBillDs = Rmi.flag ? Rmi.getRemote(SalesBillDataService.class) : new SalesBillDs_stub();
+    private CustomerDataService customerDs = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
+    private CommodityDataService commodityDs = Rmi.flag ? Rmi.getRemote(CommodityDataService.class) : new CommodityDs_stub();
     private GetCustomerInterface customerInfo = new CustomerBL();
     private AddLogInterface addLog = new LogBL();
-
+   
     @Override
     public String getNewId() {
         try{
@@ -191,7 +199,31 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
 	@Override
 	public boolean examineBill(String billId) {
         try{
+        	SalesBillPO billPO = salesBillDs.getBillById(billId);
             SalesBillVO billVO = BillTools.toSalesBillVO(salesBillDs.getBillById(billId));
+            ArrayList<SalesItemsPO> list = billPO.getSalesBillItems();
+            
+            CustomerPO customerPO = customerDs.findById(billPO.getCustomerId());
+            customerDs.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
+        			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
+        			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable(),
+        			customerPO.getPayment() + billPO.getAfterDiscount(), customerPO.getExistFlag()));
+            
+            for (int i = 0; i < list.size(); i++) {
+            	CommodityPO commodityPO = commodityDs.findById(list.get(i).getComId());
+            	if (commodityPO.getAmount() >= list.get(i).getComQuantity()) {
+            		commodityDs.add(new CommodityPO(commodityPO.getId(), commodityPO.getName(), commodityPO.getType(), 
+                    		commodityPO.getStore(), commodityPO.getCategoryId(), commodityPO.getAmount() - list.get(i).getComQuantity(), 
+                    		commodityPO.getAlarmNum(), commodityPO.getInPrice(), commodityPO.getSalePrice(), 
+                    		commodityPO.getRecentInPrice(), commodityPO.getRecentSalePrice(), commodityPO.getExistFlag()));              
+            	}else {
+            		billPO.setState(4);
+                    billVO.setState(4);
+                    salesBillDs.saveBill(billPO);
+                    return false;
+            	}
+            }
+
             billVO.setState(3);
             return saveBill(billVO, "审核销售单", "通过审核的销售单单据编号为"+billId);
         }catch(RemoteException e){

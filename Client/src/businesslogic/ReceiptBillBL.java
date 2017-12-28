@@ -7,8 +7,14 @@ import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.ReceiptBillBLService;
 import businesslogic.inter.AddLogInterface;
+import dataservice.AccountDataService;
+import dataservice.CustomerDataService;
 import dataservice.ReceiptBillDataService;
+import ds_stub.AccountDs_stub;
+import ds_stub.CustomerDs_stub;
 import ds_stub.ReceiptBillDs_stub;
+import po.AccountPO;
+import po.CustomerPO;
 import po.billpo.BillPO;
 import po.billpo.ReceiptBillPO;
 import po.billpo.TransferItem;
@@ -21,7 +27,9 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 
 	private ReceiptBillDataService receiptBillDataService = Rmi.flag ? Rmi.getRemote(ReceiptBillDataService.class) : new ReceiptBillDs_stub();
 	private AddLogInterface addLog = new LogBL();
-
+	private AccountDataService accountDataService = Rmi.flag ? Rmi.getRemote(AccountDataService.class) : new AccountDs_stub();
+    private CustomerDataService customerDataService = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
+	
 	@Override
 	public String getNewId() {
 		 try {
@@ -116,6 +124,23 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
         try{
             ReceiptBillPO billPO = receiptBillDataService.getBillById(billId);
             ReceiptBillVO billVO = BillTools.toReceiptBillVO(billPO);
+            ArrayList<TransferItem> list = billPO.getTransferList();
+            CustomerPO customerPO = customerDataService.findById(billPO.getCustomerId());
+            for (int i = 0; i < list.size(); i++) {
+            	if ((customerPO.getPayment() - billPO.getSum()) >= 0) {//如果应付>=收款金额，则相应的更改应付；否则则将应付清零，在应收中替客户将多付的钱要回来
+            		customerDataService.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
+                			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
+                			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable(), 
+                			customerPO.getPayment() - billPO.getSum(), customerPO.getExistFlag()));
+            	}else {
+            		customerDataService.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
+                			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
+                			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable() + (billPO.getSum() - customerPO.getPayment()), 
+                			0, customerPO.getExistFlag()));
+            	}
+            	AccountPO accountPO = accountDataService.findById(list.get(i).getAccountId());
+            	accountDataService.add(new AccountPO(accountPO.getId(), accountPO.getName(), accountPO.getMoney() + list.get(i).getMoney(), accountPO.getExistFlag()));
+            }
             billPO.setState(3);
             billVO.setState(3);
             return saveBill(billVO, "审核收款单", "通过审核的收款单单据编号为"+billId);
