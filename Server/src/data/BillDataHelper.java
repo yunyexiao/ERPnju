@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
 import po.billpo.PaymentBillPO;
@@ -274,6 +275,23 @@ public class BillDataHelper {
 			int r1 = s1.executeUpdate("DELETE FROM "+billTableName+" WHERE "+billTableId+"='"+id+"';");
 			return r1 > 0;
 		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static boolean isBillExist(String billName,String idName,BillPO bill){
+		int num=0;
+		try{
+			Statement s=DataHelper.getInstance().createStatement();
+			ResultSet r=s.executeQuery("SELECT COUNT(*) AS num FROM "+billName+" WHERE "+idName+"='"+bill.getAllId()+"';");
+			while(r.next())
+			{
+				num=r.getInt("num");
+			}
+			if(num>0)return true;
+			else return false;
+		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}

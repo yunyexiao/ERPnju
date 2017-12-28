@@ -8,10 +8,12 @@ import po.billpo.PaymentBillPO;
 import po.billpo.TransferItem;
 public class PaymentBillData extends UnicastRemoteObject implements PaymentBillDataService{
 	
-	private String billTableName="PaymentBill";
-	private String recordTableName="PaymentRecord";
-	private String billIdName="PBID";
-	private String recordIdName="PRID";
+	private String billName="PaymentBill";
+	private String recordName="PaymentRecord";
+	private String[] billAttributes={"PBID","PBCustomerID","PBOperatorID","PBSum","generateTime","PBCondition"};
+	private String[] recordAttributes={"PRID","PRAccountID","PRTransfer","PRRemark"};
+	
+	
 
 	public PaymentBillData() throws RemoteException {
 		super();
@@ -21,21 +23,34 @@ public class PaymentBillData extends UnicastRemoteObject implements PaymentBillD
 	public boolean saveBill(PaymentBillPO bill) throws RemoteException {
 
 		ArrayList<TransferItem> items=bill.getTransferList();
+		boolean isExist=BillDataHelper.isBillExist(billName, billAttributes[0], bill);
+		
+		Object[] billValues={bill.getAllId(),bill.getCustomerId(),bill.getOperator(),bill.getSum(),
+				bill.getDate()+" "+bill.getTime(),bill.getState()};
+
 		try{
-			boolean b1 = SQLQueryHelper.add(billTableName, bill.getAllId()
-					,bill.getCustomerId(),bill.getOperator(),bill.getSum()
-					,bill.getDate() + " "+bill.getTime(),bill.getState());
+			if(isExist){
+			boolean b1 = SQLQueryHelper.add(billName, billValues);
 			boolean b2 = true;
 			for(int i=0;i<items.size();i++){
-				b2 = b2 && SQLQueryHelper.add(recordTableName, bill.getAllId()
+				b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId()
 						,items.get(i).getAccountId(),items.get(i).getMoney(),items.get(i).getRemark());
 			}
-			if(b1 && b2) return true;
+			return b1 && b2;
+			}
+			else{
+				boolean b1=SQLQueryHelper.update(billName, billAttributes, billValues);
+				boolean b2=false;
+				for(int i=0;i<items.size();i++){
+					Object[] recordValues={bill.getAllId(),items.get(i).getAccountId(),items.get(i).getMoney(),items.get(i).getRemark()};
+					b2=b2||SQLQueryHelper.update(recordName, recordAttributes, recordValues);
+				}				
+				return b1||b2;
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
-		return false;
 	}
 
 	@Override
@@ -45,7 +60,7 @@ public class PaymentBillData extends UnicastRemoteObject implements PaymentBillD
 
 	@Override
 	public String getNewId() throws RemoteException {
-		return BillDataHelper.getNewBillId(billTableName,billIdName);		
+		return BillDataHelper.getNewBillId(billName,billAttributes[0]);		
 	}
 
 	@Override
