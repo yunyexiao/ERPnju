@@ -46,6 +46,11 @@ public class PromotionDs_stub implements PromotionDataService {
     }
 
     public PromotionDs_stub() {}
+    
+    @Override
+    public String getNewId(){
+        return "01234";
+    }
 
     @Override
     public boolean add(GroupDiscountPO promotion) throws RemoteException {

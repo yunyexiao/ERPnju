@@ -13,6 +13,8 @@ import vo.SumPromotionVO;
  */
 public interface PromotionBLService {
     
+    String getNewId();
+    
     boolean add(GroupDiscountVO promotion);
     
     boolean add(RankPromotionVO promotion);

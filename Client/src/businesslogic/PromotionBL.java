@@ -29,6 +29,16 @@ public class PromotionBL implements PromotionBLService, IPromotionSearch{
         promotionDs = Rmi.flag ? Rmi.getRemote(PromotionDataService.class) : new PromotionDs_stub();
         logger = new LogBL();
     }
+    
+    @Override
+    public String getNewId(){
+        try{
+            return promotionDs.getNewId();
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @Override
     public boolean add(GroupDiscountVO promotion) {

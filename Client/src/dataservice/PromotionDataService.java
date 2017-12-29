@@ -15,6 +15,8 @@ import po.SumPromotionPO;
  */
 public interface PromotionDataService {
     
+    String getNewId() throws RemoteException;
+    
     boolean add(GroupDiscountPO promotion) throws RemoteException;
     
     boolean add(RankPromotionPO promotion) throws RemoteException;
