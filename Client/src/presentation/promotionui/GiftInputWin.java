@@ -16,6 +16,7 @@ import presentation.component.InfoWindow;
 import presentation.component.choosewindow.CommodityChooseWin;
 import presentation.tools.DoubleField;
 import presentation.tools.IntField;
+import presentation.tools.StyleTools;
 import vo.CommodityVO;
 
 public class GiftInputWin {
@@ -33,12 +34,14 @@ public class GiftInputWin {
     public GiftInputWin(String[] data){
         super();
         frame = new JDialog();
+        StyleTools.setNimbusLookAndFeel();
         frame.setModal(true);
         frame.setSize(400, 300);
         frame.setLocation(400, 200);
         frame.setLayout(new BorderLayout());
         frame.add(initCenter(data), BorderLayout.CENTER);
         frame.add(initSouth(), BorderLayout.SOUTH);
+        frame.setTitle("赠品信息");
         frame.setVisible(true);
     }
     
@@ -87,9 +90,9 @@ public class GiftInputWin {
     }
     
     private JPanel initSouth(){
-        JButton okButton = new JButton("");
+        JButton okButton = new JButton("确认");
         okButton.addActionListener(e->ok());
-        JButton cancelButton = new JButton("");
+        JButton cancelButton = new JButton("取消");
         cancelButton.addActionListener(e->cancel());
         double[][] size = {{-1.0, -2.0, 10.0, -2.0, 20.0}, {10.0, -2.0, 10.0}};
         JPanel panel = new JPanel(new TableLayout(size));
@@ -129,7 +132,7 @@ public class GiftInputWin {
                 idField.setText(commodity.getId());
                 nameField.setText(commodity.getName());
                 typeField.setText(commodity.getType());
-                priceField.setValue(commodity.getRecentSalePrice());
+                priceField.setValue(commodity.getRecentInPrice());
             }
         };
     }

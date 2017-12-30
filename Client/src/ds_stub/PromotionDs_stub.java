@@ -19,30 +19,30 @@ public class PromotionDs_stub implements PromotionDataService {
         ArrayList<String> group0 = new ArrayList<>();
         group0.add("000001");
         group0.add("000002");
-        PROMOTIONS.add(new GroupDiscountPO("0001", "2017/12/11", "2017/12/21", group0, 100.0));
+        PROMOTIONS.add(new GroupDiscountPO("0001", "2017-12-11", "2017-12-21", group0, 100.0));
 
         ArrayList<String> group1 = new ArrayList<>();
         group1.add("000002");
         group1.add("000003");
-        PROMOTIONS.add(new GroupDiscountPO("0002", "2017/11/20", "2017/12/20", group1, 50.0));
+        PROMOTIONS.add(new GroupDiscountPO("0002", "2017-11-20", "2017-12-20", group1, 50.0));
 
         ArrayList<GiftItem> gifts0 = new ArrayList<>();
         gifts0.add(new GiftItem("000001", 10, 100.0));
-        PROMOTIONS.add(new RankPromotionPO("0003", "2017/12/04", "2018/01/04", 1, gifts0, 0, 0));
+        PROMOTIONS.add(new RankPromotionPO("0003", "2017-12-04", "2018-01-04", 1, gifts0, 0, 0));
 
         ArrayList<GiftItem> gifts1 = new ArrayList<>();
         gifts1.addAll(gifts0);
         gifts1.add(new GiftItem("000002", 10, 120.0));
-        PROMOTIONS.add(new RankPromotionPO("0004", "2017/12/20", "2018/02/20", 2, gifts1, 0, 100));
+        PROMOTIONS.add(new RankPromotionPO("0004", "2017-12-20", "2018-02-20", 2, gifts1, 0, 100));
         
         ArrayList<GiftItem> gifts2 = new ArrayList<>();
         gifts2.add(gifts1.get(1));
         gifts2.add(new GiftItem("000003", 15, 80.0));
-        PROMOTIONS.add(new SumPromotionPO("0005", "2018/01/01", "2018/03/01", 5000.0, 7000.0, 200.0, gifts2));
+        PROMOTIONS.add(new SumPromotionPO("0005", "2018-01-01", "2018-03-01", 5000.0, 7000.0, 200.0, gifts2));
         
         ArrayList<GiftItem> gifts3 = new ArrayList<>();
         gifts3.add(gifts2.get(1));
-        PROMOTIONS.add(new SumPromotionPO("0006", "2018/01/01", "2018/03/01", 3000.0, 5000.0, 0.0, gifts3));
+        PROMOTIONS.add(new SumPromotionPO("0006", "2018-01-01", "2018-03-01", 3000.0, 5000.0, 0.0, gifts3));
     }
 
     public PromotionDs_stub() {}

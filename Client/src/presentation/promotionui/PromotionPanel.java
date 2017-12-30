@@ -8,6 +8,7 @@ import blservice.PromotionBLService;
 import businesslogic.PromotionBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
+import presentation.component.MyTableModel;
 import presentation.component.TopButtonPanel;
 
 
@@ -77,7 +78,15 @@ public class PromotionPanel implements PanelInterface {
     }
     
     private void search(){
-        // TODO
+        if(centerPanel == null || centerPanel.close()){
+            MyTableModel model = new PromotionSearchWin(promotionBl).getResult();
+            if(model == null) return;
+            panel.setVisible(false);
+            if(centerPanel != null) panel.remove(centerPanel);
+            centerPanel = new SearchResultPanel(model, promotionBl);
+            panel.add(centerPanel, "0 1");
+            panel.setVisible(true);
+        }
     }
 
 }

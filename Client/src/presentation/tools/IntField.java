@@ -30,7 +30,11 @@ public class IntField extends MyField{
     }
     
     public int getValue(){
-        return Integer.parseInt(this.getText());
+        try{
+            return Integer.parseInt(this.getText());
+        }catch(Exception e){
+            return defaultValue;
+        }
     }
 
     public void setValue(int value){

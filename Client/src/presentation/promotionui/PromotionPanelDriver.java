@@ -2,6 +2,8 @@ package presentation.promotionui;
 
 import javax.swing.JFrame;
 
+import presentation.tools.StyleTools;
+
 public class PromotionPanelDriver {
     
     private JFrame frame;
@@ -9,6 +11,7 @@ public class PromotionPanelDriver {
 
     public PromotionPanelDriver() {
         frame = new JFrame();
+        StyleTools.setNimbusLookAndFeel();
         frame.setSize(800, 600);
         frame.setLocation(200, 100);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

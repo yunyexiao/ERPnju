@@ -1,33 +1,33 @@
 package presentation.promotionui;
 
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import blservice.PromotionBLService;
 import layout.TableLayout;
-import presentation.component.DateChooser;
 import presentation.component.InfoWindow;
 import presentation.tools.Timetools;
 
 
 @SuppressWarnings("serial")
-public abstract class PromotionDetailPanelBase extends CenterPanel{
+public abstract class PromotionDetailPanel extends CenterPanel{
     
     protected PromotionBLService promotionAdder;
     private boolean closable = false;
-    protected JTextField idField, fromField, toField;
+    private BasicPromotionInfoPanel basicInfoPanel;
 
-    public PromotionDetailPanelBase(PromotionBLService promotionAdder, ActionListener closeListener) {
+    public PromotionDetailPanel(PromotionBLService promotionAdder, ActionListener closeListener) {
         super();
         this.promotionAdder = promotionAdder;
+        initLeftPanel();
         double[][] size = {{-2.0, -1.0}, {-1.0, 50.0}};
         super.setLayout(new TableLayout(size));
-        super.add(getLeftPanel(), "0 0");
+        super.add(basicInfoPanel, "0 0");
         super.add(getCenterPanel(), "1 0");
         super.add(getBottomPanel(closeListener), "0 1 1 1");
     }
@@ -43,9 +43,10 @@ public abstract class PromotionDetailPanelBase extends CenterPanel{
     }
     
     protected boolean isFinished(){
-        String from = fromField.getText();
-        String to = toField.getText();
-        if(Timetools.checkDate(from, to)){
+        String from = basicInfoPanel.getFromField().getText();
+        String to = basicInfoPanel.getToField().getText();
+        String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        if(Timetools.checkDate(from, to) && Timetools.checkDate(today, from)){
             return true;
         } else {
             new InfoWindow("请正确填写起讫日期。");
@@ -57,27 +58,21 @@ public abstract class PromotionDetailPanelBase extends CenterPanel{
     
     abstract protected boolean addPromotionImpl();
     
-    private JPanel getLeftPanel(){
-        idField = new JTextField(10);
-        idField.setEditable(false);
-        idField.setText(promotionAdder.getNewId());
-        fromField = new JTextField(10);
-        DateChooser.getInstance().register(fromField);
-        toField = new JTextField(10);
-        DateChooser.getInstance().register(toField);
-        
-        double[][] size = {
-                {80.0, -2.0, 80.0},
-                {-1.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, -1.0}
-        };
-        JPanel panel = new JPanel(new TableLayout(size));
-        panel.add(new JLabel("编号"), "1 1");
-        panel.add(idField, "1 3");
-        panel.add(new JLabel("开始日期"), "1 5");
-        panel.add(fromField, "1 7");
-        panel.add(new JLabel("结束日期"), "1 9");
-        panel.add(toField, "1 11");
-        return panel;
+    protected String getId(){
+        return basicInfoPanel.getIdField().getText();
+    }
+    
+    protected String getFromDate(){
+        return basicInfoPanel.getFromField().getText();
+    }
+    
+    protected String getToDate(){
+        return basicInfoPanel.getToField().getText();
+    }
+
+    private void initLeftPanel(){
+        basicInfoPanel = new BasicPromotionInfoPanel();
+        basicInfoPanel.getIdField().setText(promotionAdder.getNewId());
     }
 
     private JPanel getBottomPanel(ActionListener closeListener){
