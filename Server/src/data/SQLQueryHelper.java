@@ -5,6 +5,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
 
+import po.PromotionPO;
+import po.billpo.BillPO;
+
 public class SQLQueryHelper {
 	
 	public static boolean add(String tableName, Object... values) {
@@ -103,5 +106,23 @@ public class SQLQueryHelper {
 			return null;
 		}
     }
+	
+	public static boolean isPromotionExist(String billName,String idName,PromotionPO pro){
+		int num=0;
+		try{
+			Statement s=DataHelper.getInstance().createStatement();
+			ResultSet r=s.executeQuery("SELECT COUNT(*) AS num FROM "+billName+" WHERE "+idName+"='"+pro.getId()+"';");
+			while(r.next())
+			{
+				num=r.getInt("num");
+			}
+			if(num>0)return true;
+			else return false;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
 	
 }

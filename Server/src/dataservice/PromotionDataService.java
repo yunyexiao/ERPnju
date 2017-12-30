@@ -48,5 +48,7 @@ public interface PromotionDataService {
     ArrayList<SumPromotionPO> searchSumPromotion(String date) throws RemoteException;
     
     PromotionPO findById(String id) throws RemoteException;
+    
+    String getNewId() throws RemoteException;
 
 }
