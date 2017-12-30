@@ -25,6 +25,7 @@ import presentation.billui.BillPanelHelper;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.dataui.userui.UpdateUserWindow;
+import presentation.mailui.MailPanel;
 import vo.UserType;
 import vo.UserVO;
 import vo.billvo.BillVO;
@@ -62,15 +63,25 @@ public class MainPanel implements PanelInterface {
 		infoPanel.add(infoLabel);
 		infoPanel.setOpaque(false);
 		
+		ActionListener closeListener = new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainWindow.changePanel();
+            }
+		};
+		
 		bPanel.setLayout(new TableLayout(
 				new double[][]{{TableLayout.FILL, TableLayout.PREFERRED, TableLayout.FILL},
-					{TableLayout.PREFERRED, TableLayout.FILL}}));
+					{5,TableLayout.PREFERRED, 15, TableLayout.PREFERRED,TableLayout.FILL}}));
 		JButton changeButton = new JButton("修改个人信息");
+		JButton mailButton = new JButton("邮件系统");
 		changeButton.addActionListener(e->{
 			new UpdateUserWindow(new UserBL(), new String[]{
 					user.getId(),user.getName(),user.getType().getName(),user.getRankName(),user.getPwd(),user.getSex(),""+user.getAge(),user.getTelNumber()}, true);
 		});
-		bPanel.add(changeButton, "1,0");
+		mailButton.addActionListener(e->{mainWindow.changePanel(new MailPanel(closeListener));});
+		bPanel.add(changeButton, "1,1");
+		bPanel.add(mailButton, "1,3");
 		bPanel.setOpaque(false);
 		
 		if (user.getType() != UserType.ADMIN) {
@@ -78,13 +89,6 @@ public class MainPanel implements PanelInterface {
 			table = new JTable(tabelModel);
 			table.getTableHeader().setReorderingAllowed(false);
 			JScrollPane scrollPane = new JScrollPane(table);
-			
-			ActionListener closeListener = new ActionListener(){
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                mainWindow.changePanel();
-	            }
-			};
 			
 			JPanel buttonPanel=new JPanel();
 			JButton billChangeButton = new JButton("修改单据", new ImageIcon("resource/FreshButton.png"));
