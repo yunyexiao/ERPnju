@@ -18,6 +18,7 @@ public interface InitDataService {
 	 * 获得当前账套，如果没有就返回null
 	 * @return
 	 */
+	//获取最近的日期
 	public String getYear() throws RemoteException;
 	
 	public ArrayList<CommodityPO> getCommodityInfo(String year) throws RemoteException;
@@ -26,7 +27,7 @@ public interface InitDataService {
 	
 	public ArrayList<AccountPO> getAccountInfo(String year) throws RemoteException;
 	/**
-	 * 期初信息初始化
+	 * 期初信息初始化，将正常操作的三张表的内容复制一份转存到期初表中
 	 * @return
 	 */
 	public boolean initNewOne() throws RemoteException;

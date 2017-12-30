@@ -109,7 +109,6 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 
 	private UserPO getUserPO(ResultSet r) {
 		try {
-			System.out.println(r.getInt("SUDept"));
 			return new UserPO(r.getString("SUID"),
 					r.getString("SUName"),
 					r.getString("SUPwd"),

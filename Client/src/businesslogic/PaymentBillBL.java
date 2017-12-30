@@ -7,8 +7,14 @@ import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PaymentBillBLService;
 import businesslogic.inter.AddLogInterface;
+import dataservice.AccountDataService;
+import dataservice.CustomerDataService;
 import dataservice.PaymentBillDataService;
+import ds_stub.AccountDs_stub;
+import ds_stub.CustomerDs_stub;
 import ds_stub.PaymentBillDs_stub;
+import po.AccountPO;
+import po.CustomerPO;
 import po.billpo.BillPO;
 import po.billpo.PaymentBillPO;
 import po.billpo.TransferItem;
@@ -21,8 +27,10 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
 
 	private PaymentBillDataService paymentBillDataService = Rmi.flag ? Rmi.getRemote(PaymentBillDataService.class) : new PaymentBillDs_stub();
 	private AddLogInterface addLog = new LogBL();
+	private AccountDataService accountDataService = Rmi.flag ? Rmi.getRemote(AccountDataService.class) : new AccountDs_stub();
+    private CustomerDataService customerDataService = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
 
-	@Override
+    @Override
 	public String getNewId() {
         try {
             return "FKD-" + Timetools.getDate() + "-" + paymentBillDataService.getNewId();
@@ -37,9 +45,7 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
 		try{
             PaymentBillPO bill = paymentBillDataService.getBillById(id);
             if(bill.getState() == BillPO.PASS) return false;
-            
-            int length = id.length();
-            if (paymentBillDataService.deleteBill(id.substring(length - 5, length))) {
+            if (paymentBillDataService.deleteBill(id)) {
             	addLog.add("删除付款单", "删除的付款单单据编号为"+id);
             	return true;
             } else return false;
@@ -90,9 +96,7 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
 	        PaymentBillVO old = (PaymentBillVO) bill;
 	        PaymentBillVO copy = new PaymentBillVO(
 	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), 
-	            old.getOperator(), BillVO.PASS, old.getCustomerId()
-	        );
-	        copy.setTableModel(old.getTableModel());
+	            old.getOperator(), BillVO.PASS, old.getCustomerId(),old.getTableModel());
 	        return saveBill(copy, "红冲并复制付款单", "红冲并复制后新的付款单单据编号为"+copy.getAllId());
 	    }
 	    return false;
@@ -118,6 +122,31 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
         try{
             PaymentBillPO billPO = paymentBillDataService.getBillById(billId);
             PaymentBillVO billVO = BillTools.toPaymentBillVO(billPO);
+            ArrayList<TransferItem> list = billPO.getTransferList();
+            for (int i = 0; i < list.size(); i++) {
+            	AccountPO accountPO = accountDataService.findById(list.get(i).getAccountId());
+            	CustomerPO customerPO = customerDataService.findById(billPO.getCustomerId());
+            	if (list.get(i).getMoney() <= accountPO.getMoney()) { //公司账户余额减少，客户应收减少
+                	accountDataService.add(new AccountPO(accountPO.getId(), accountPO.getName(), accountPO.getMoney() - list.get(i).getMoney(), accountPO.getExistFlag()));
+                	if ((customerPO.getReceivable() - billPO.getSum()) >= 0) {
+                		customerDataService.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
+                    			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
+                    			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable() - billPO.getSum(), 
+                    			customerPO.getPayment(), customerPO.getExistFlag()));
+                	}else {//如果账户多付了钱，就在客户的应付里要回来→_→ 
+                		customerDataService.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
+                    			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
+                    			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), 0, 
+                    			customerPO.getPayment() + (billPO.getSum() - customerPO.getReceivable()), customerPO.getExistFlag()));
+                	}
+                	
+            	}else {
+                    billPO.setState(4);
+                    billVO.setState(4);
+                    saveBill(billVO);
+                    return false;
+            	}
+            }
             billPO.setState(3);
             billVO.setState(3);
             return saveBill(billVO, "审核付款单", "通过审核的付款单单据编号为"+billId);

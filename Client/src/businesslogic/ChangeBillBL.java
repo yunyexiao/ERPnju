@@ -8,7 +8,9 @@ import blservice.billblservice.BillOperationService;
 import blservice.billblservice.ChangeBillBLService;
 import businesslogic.inter.AddLogInterface;
 import dataservice.ChangeBillDataService;
+import dataservice.CommodityDataService;
 import ds_stub.ChangeBillDs_stub;
+import po.CommodityPO;
 import po.billpo.BillPO;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
@@ -22,6 +24,7 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
 
 	private ChangeBillDataService changeBillDS = Rmi.flag ? Rmi.getRemote(ChangeBillDataService.class) : new ChangeBillDs_stub();
 	private AddLogInterface addLog = new LogBL();
+	private CommodityDataService commodityDS;
 	private boolean isOver = true;
 	
 	public ChangeBillBL(boolean isOver) {
@@ -112,6 +115,32 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
         try{
             ChangeBillPO billPO = changeBillDS.getBillById(billId);
             ChangeBillVO billVO = BillTools.toChangeBillVO(billPO);
+            ArrayList<ChangeItem> list = billPO.getCommodityList();
+            if (billPO.getFlag()) { //报溢单(判断逻辑导致程序员进入混乱状态)
+                for (int i = 0; i < list.size(); i++) {
+                    CommodityPO commodityPO = commodityDS.findById(list.get(i).getCommodityId());
+            		commodityDS.add(new CommodityPO(commodityPO.getId(), commodityPO.getName(), commodityPO.getType(), 
+            				commodityPO.getStore(), commodityPO.getCategoryId(), commodityPO.getAmount() + (list.get(i).getChangedValue() - list.get(i).getOriginalValue()), 
+                			commodityPO.getAlarmNum(), commodityPO.getInPrice(), commodityPO.getSalePrice(), 
+                    		commodityPO.getRecentInPrice(), commodityPO.getRecentSalePrice(), commodityPO.getExistFlag()));              
+                }
+            }else { //报损单(判断逻辑导致程序员进入混乱状态)
+                for (int i = 0; i < list.size(); i++) {
+                    CommodityPO commodityPO = commodityDS.findById(list.get(i).getCommodityId());
+                    if (commodityPO.getAmount() - (list.get(i).getOriginalValue() - list.get(i).getChangedValue()) >= 0) {
+                    	commodityDS.add(new CommodityPO(commodityPO.getId(), commodityPO.getName(), commodityPO.getType(), 
+                        		commodityPO.getStore(), commodityPO.getCategoryId(), commodityPO.getAmount() - (list.get(i).getOriginalValue() - list.get(i).getChangedValue()), 
+                        		commodityPO.getAlarmNum(), commodityPO.getInPrice(), commodityPO.getSalePrice(), 
+                        		commodityPO.getRecentInPrice(), commodityPO.getRecentSalePrice(), commodityPO.getExistFlag()));              
+                    }else {
+                        billPO.setState(4);
+                        billVO.setState(4);
+                        saveBill(billVO);
+                    	return false;
+                    }
+                }
+            }
+
             billPO.setState(3);
             billVO.setState(3);
             return saveBill(billVO, "审核"+getBillName(), "通过审核的"+getBillName()+"单据编号为"+billId);

@@ -1,15 +1,13 @@
 package presentation.billui;
 
-import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import bl_stub.PurchaseReturnBillBL_stub;
 import blservice.billblservice.PurchaseReturnBillBLService;
+import businesslogic.PurchaseReturnBillBL;
 import layout.TableLayout;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
@@ -26,7 +24,7 @@ import vo.billvo.PurchaseReturnBillVO;
  */
 public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
     
-    private PurchaseReturnBillBLService purchaseReturnBl = new PurchaseReturnBillBL_stub();
+    private PurchaseReturnBillBLService purchaseReturnBl = new PurchaseReturnBillBL();
     private JTextField originalPBIdField;
     private JButton purchaseBillChooseButton;
     private PurchaseBillVO originalPB;
@@ -84,13 +82,13 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
 
     public PurchaseReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
-        String date = getDate(), id = getId();
-        String operater = operatorField.getText()
+        String id = getId()
+        	 , operater = user.getId()
              , customerId = customerIdField.getText()
              , remark = remarkField.getText();
         MyTableModel model = (MyTableModel)goodsListTable.getModel();
         double sum = Double.parseDouble(sumField.getText());
-        return new PurchaseReturnBillVO(date, Timetools.getTime(), id, operater, state, customerId, model, remark, sum);
+        return new PurchaseReturnBillVO(Timetools.getDate(), Timetools.getTime(), id, operater, state, customerId, model, remark, sum);
     }
 
     private void handleChoosePb(){

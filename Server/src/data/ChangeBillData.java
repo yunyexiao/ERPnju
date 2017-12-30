@@ -2,11 +2,13 @@ package data;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
+
+import dataservice.ChangeBillDataService;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
-import dataservice.ChangeBillDataService;
 
 public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDataService{
 	
@@ -118,58 +120,22 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
 
 	@Override
 	public boolean saveBill(ChangeBillPO bill) throws RemoteException {
-		// TODO Auto-generated method stub
 		ArrayList<ChangeItem> items=bill.getCommodityList();
-		if(bill.isOver()){
-			try{
-				Statement s1 = DataHelper.getInstance().createStatement();
-				int r1=s1.executeUpdate("INSERT INTO InventoryOverflowBill VALUES('"
-						+String.format("%8d", bill.getId())+"','"
-						+bill.getOperatorId()+"','"
-						+bill.getState()+"','"
-						+bill.getDate()+" "+bill.getTime()+"')");
-				
-				for(int i=0;i<items.size();i++){
-				Statement s2 = DataHelper.getInstance().createStatement();
-				int r2=s2.executeUpdate("INSERT INTO InventoryOverflowRecord VALUES ('"
-						+String.format("%8d", bill.getId())+"','"
-						+items.get(i).getCommodityId()+"','"
-						+items.get(i).getOriginalValue()+"','"
-						+items.get(i).getChangedValue()+"')");
-				}
-				if(r1>0)return true;
-			}catch(Exception e){
-				  e.printStackTrace();
-				   return false;
+		try{
+			String tableName = bill.isOver() ? "InventoryOverflowBill" : "InventoryLostBill";
+			boolean b1 = SQLQueryHelper.add(tableName, bill.getId()
+					,bill.getOperator(),bill.getState()
+					,bill.getDate() + " "+bill.getTime());
+			boolean b2 = true;
+			for(int i=0;i<items.size();i++){
+				b2 = b2 && SQLQueryHelper.add(tableName, bill.getAllId(),items.get(i).getCommodityId()
+						,items.get(i).getOriginalValue(),items.get(i).getChangedValue());
 			}
+			if(b1 && b2) return true;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
 		}
-		else if(!bill.isOver()){
-			try{
-				Statement s1 = DataHelper.getInstance().createStatement();
-				int r1=s1.executeUpdate("INSERT INTO InventoryLostBill VALUES"
-						+ "('"
-						+String.format("%8d", bill.getId())+"','"
-						+bill.getOperatorId()+"','"
-						+bill.getState()+"','"
-						+bill.getDate()+" "+bill.getTime()+"')");
-				
-				for(int i=0;i<items.size();i++){
-					
-				Statement s2 = DataHelper.getInstance().createStatement();
-				
-				int r2=s2.executeUpdate("INSERT INTO InventoryLostRecord VALUES ('"
-						+String.format("%8d", bill.getId())+"','"
-						+items.get(i).getCommodityId()+"','"
-						+items.get(i).getOriginalValue()+"','"
-						+items.get(i).getChangedValue()+"')");
-				}
-				if(r1>0)return true;
-			}catch(Exception e){
-				  e.printStackTrace();
-				   return false;
-			}
-		}
-		
 		return false;
 	}
 

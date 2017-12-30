@@ -12,9 +12,11 @@ import layout.TableLayout;
 import presentation.component.choosewindow.AccountChooseWin;
 import presentation.component.choosewindow.CommodityChooseWin;
 import presentation.component.choosewindow.CustomerChooseWin;
+import presentation.component.choosewindow.UserChooseWin;
 import vo.AccountVO;
 import vo.CommodityVO;
 import vo.CustomerVO;
+import vo.UserVO;
 
 /**
  * @author ã¢Ò¶Ïö
@@ -102,6 +104,10 @@ public class IdNamePanel extends JPanel {
             	AccountVO account = new AccountChooseWin().getAccount();
                 if(account != null) {idField.setText(account.getNumber());nameField.setText(account.getName());}
                 break;
+            case "ÓÃ»§" :
+            	UserVO user = new UserChooseWin().getUser();
+            	if(user != null) {idField.setText(user.getId());nameField.setText(user.getName());}
+            	break;
             }
         }
      };

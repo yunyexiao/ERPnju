@@ -1,7 +1,5 @@
 package presentation.billui;
 
-import java.util.Calendar;
-
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,6 +24,7 @@ import layout.TableLayout;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.component.choosewindow.CustomerChooseWin;
+import presentation.tools.Timetools;
 import vo.CustomerVO;
 import vo.UserVO;
 import vo.billvo.BillVO;
@@ -70,6 +69,7 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
 		initBillPanel();
 		paymentButton.setSelected(true);
 		billIdField.setText(bill.getAllId());
+		operaterField.setText(userInfo.getUser(bill.getOperator()).getName());
         operaterField.setText(bill.getOperator());
         customerIdField.setText(bill.getCustomerId());
         transferListTable.setModel(bill.getTableModel());
@@ -251,23 +251,32 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
 	 * 获得单据VO
 	 * @return
 	 */
-	public ReceiptBillVO getBill(int state) {
+	public ReceiptBillVO getReceiptBill(int state) {
 		if(!isCorrectable()) return null;
-        Calendar c = Calendar.getInstance();
-        String date = c.get(Calendar.YEAR) + ""
-                    + c.get(Calendar.MONTH) + ""
-                    + c.get(Calendar.DATE);
-        String time = c.get(Calendar.HOUR_OF_DAY) + ""
-                    + c.get(Calendar.MINUTE) + ""
-                    + c.get(Calendar.SECOND);
-        String id = billIdField.getText()
+        String date = Timetools.getDate();
+        String time = Timetools.getTime();
+        String id = receiptBillBL.getNewId().split("-")[2]
              , operater = user.getId()
              , customerId = customerIdField.getText();
         MyTableModel model = (MyTableModel)transferListTable.getModel();
         ReceiptBillVO receiptBillVO= new ReceiptBillVO(date, time, id, operater, state, customerId, model); 
         return receiptBillVO;
     }
-	
+	/**
+	 * 获得单据VO
+	 * @return
+	 */
+	public PaymentBillVO getPaymentBill(int state) {
+		if(!isCorrectable()) return null;
+        String date = Timetools.getDate();
+        String time = Timetools.getTime();
+        String id = paymentBillBL.getNewId().split("-")[2]
+             , operater = user.getId()
+             , customerId = customerIdField.getText();
+        MyTableModel model = (MyTableModel)transferListTable.getModel();
+        PaymentBillVO paymentBillVO= new PaymentBillVO(date, time, id, operater, state, customerId, model); 
+        return paymentBillVO;
+    }
 	private void setBillId(boolean isReceipt) {
 		if (isReceipt) billIdField.setText(receiptBillBL.getNewId());
 		else billIdField.setText(paymentBillBL.getNewId());
@@ -283,17 +292,31 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
 
 	@Override
 	public void saveAction() {
-		ReceiptBillVO bill = getBill(BillVO.SAVED);
-        if(bill != null && receiptBillBL.saveBill(bill)){
-            JOptionPane.showMessageDialog(null, "单据已保存。");
-        }
+		if (receiptButton.isSelected()) {
+			ReceiptBillVO bill = getReceiptBill(BillVO.SAVED);
+	        if(bill != null && receiptBillBL.saveBill(bill)){
+	            JOptionPane.showMessageDialog(null, "单据已保存。");
+	        }
+		} else if (paymentButton.isSelected()) {
+			PaymentBillVO bill = getPaymentBill(BillVO.SAVED);
+	        if(bill != null && paymentBillBL.saveBill(bill)){
+	            JOptionPane.showMessageDialog(null, "单据已保存。");
+	        }
+		}
 	}
 
 	@Override
 	public void commitAction() {
-		ReceiptBillVO bill = getBill(BillVO.COMMITED);
-        if(bill != null && receiptBillBL.saveBill(bill)){
-            JOptionPane.showMessageDialog(null, "单据已提交。");
-        }
+		if (receiptButton.isSelected()) {
+			ReceiptBillVO bill = getReceiptBill(BillVO.COMMITED);
+	        if(bill != null && receiptBillBL.saveBill(bill)){
+	            JOptionPane.showMessageDialog(null, "单据已提交。");
+	        }
+		} else if (paymentButton.isSelected()) {
+			PaymentBillVO bill = getPaymentBill(BillVO.COMMITED);
+	        if(bill != null && paymentBillBL.saveBill(bill)){
+	            JOptionPane.showMessageDialog(null, "单据已提交。");
+	        }
+		}
 	}
 }

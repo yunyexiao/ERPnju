@@ -168,8 +168,7 @@ public class CashCostBillPanel extends JPanel implements BillPanelInterface {
 		if (itemListTable.getRowCount() == 0) new InfoWindow("没有选择条目");
 		else if ("".equals(accountIdField.getText())) new InfoWindow("没有选择账户");
 		else {
-			Timetools.check();
-			return new CashCostBillVO(Timetools.getDate(), Timetools.getTime(), cashCostBillBL.getNewId(), user.getId(), state, accountIdField.getText(),(MyTableModel) itemListTable.getModel());
+			return new CashCostBillVO(Timetools.getDate(), Timetools.getTime(), cashCostBillBL.getNewId().split("-")[2], user.getId(), state, accountIdField.getText(),(MyTableModel) itemListTable.getModel());
 		}
 		return null;
 	}

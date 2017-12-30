@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public abstract class BillPO implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5233390848113316495L;
 	public static int DRAFT = 0;
 	public static int SAVED = 1;
 	public static int COMMITED = 2;
@@ -51,10 +55,27 @@ public abstract class BillPO implements Serializable{
 	public int getState() {
 		return state;
 	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 	
 	public void setState(int n) {
 		state = n;
 	}
+
+	public void setOperatorId(String operatorId) {
+		this.operator = operatorId;
+	}
+	
 	/**
 	 * 修改此处名称->修改MainPanel中能否删除的判断
 	 * @return 单据状态的中文名称

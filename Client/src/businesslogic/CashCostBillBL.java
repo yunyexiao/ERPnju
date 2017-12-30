@@ -2,14 +2,16 @@ package businesslogic;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.CashCostBillBLService;
 import businesslogic.inter.AddLogInterface;
+import dataservice.AccountDataService;
 import dataservice.CashCostBillDataService;
+import ds_stub.AccountDs_stub;
 import ds_stub.CashCostBillDs_stub;
+import po.AccountPO;
 import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
@@ -22,15 +24,12 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
 
 	private CashCostBillDataService cashCostBillDataService = Rmi.flag ? Rmi.getRemote(CashCostBillDataService.class) : new CashCostBillDs_stub();
 	private AddLogInterface addLog = new LogBL();
+	private AccountDataService accountDataService = Rmi.flag ? Rmi.getRemote(AccountDataService.class) : new AccountDs_stub();
 	
 	@Override
 	public String getNewId() {
         try {
-        	Calendar c = Calendar.getInstance();
-            String date = c.get(Calendar.YEAR) + ""
-                        + c.get(Calendar.MONTH) + ""
-                        + c.get(Calendar.DATE);
-            return "XJFYD-" + date + "-" + cashCostBillDataService.getNewId();
+            return "XJFYD-" + Timetools.getDate() + "-" + cashCostBillDataService.getNewId();
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;
@@ -42,8 +41,7 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
 		try{
             CashCostBillPO bill = cashCostBillDataService.getBillById(id);
             if(bill.getState() == BillPO.PASS) return false;
-            int length = id.length();
-            if (cashCostBillDataService.deleteBill(id.substring(length - 5, length))) {
+            if (cashCostBillDataService.deleteBill(id)) {
             	addLog.add("删除现金费用单", "删除的现金费用单单据编号为"+id);
             	return true;
             } else return false;
@@ -131,9 +129,19 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
         try{
             CashCostBillPO billPO = cashCostBillDataService.getBillById(billId);
             CashCostBillVO billVO = BillTools.toCashCostBillVO(billPO);
-            billPO.setState(3);
-            billVO.setState(3);
-            return saveBill(billVO, "审核现金费用单", "通过审核的现金费用单单据编号为"+billId);
+            AccountPO accountPO = accountDataService.findById(billPO.getAccountId());
+            if (accountPO.getMoney() >= billPO.getSum()) {
+                billPO.setState(3);
+                billVO.setState(3);
+                accountDataService.add(new AccountPO(accountPO.getId(), accountPO.getName(),
+                		accountPO.getMoney() - billPO.getSum(), accountPO.getExistFlag())); //针对改变后的账户余额，new一个accountPO传入数据库
+                return saveBill(billVO);            	
+            }else {
+                billPO.setState(4);
+                billVO.setState(4);
+                saveBill(billVO);
+            	return false;
+            }
         }catch(RemoteException e){
             e.printStackTrace();
             return false;

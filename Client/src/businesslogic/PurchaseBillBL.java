@@ -2,14 +2,19 @@ package businesslogic;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseBillBLService;
 import businesslogic.inter.AddLogInterface;
+import dataservice.CommodityDataService;
+import dataservice.CustomerDataService;
 import dataservice.PurchaseBillDataService;
+import ds_stub.CommodityDs_stub;
+import ds_stub.CustomerDs_stub;
 import ds_stub.PurchaseBillDs_stub;
+import po.CommodityPO;
+import po.CustomerPO;
 import po.billpo.BillPO;
 import po.billpo.PurchaseBillPO;
 import po.billpo.SalesItemsPO;
@@ -26,15 +31,13 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
     
     private PurchaseBillDataService purchaseBillDs = Rmi.flag ? Rmi.getRemote(PurchaseBillDataService.class) : new PurchaseBillDs_stub();
     private AddLogInterface addLog = new LogBL();
+    private CustomerDataService customerDs = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
+    private CommodityDataService commodityDs = Rmi.flag ? Rmi.getRemote(CommodityDataService.class) : new CommodityDs_stub();
 
     @Override
     public String getNewId() {
         try {
-            Calendar c = Calendar.getInstance();
-            String date = c.get(Calendar.YEAR) + ""
-                        + c.get(Calendar.MONTH) + ""
-                        + c.get(Calendar.DATE);
-            return "JHD-" + date + "-" + purchaseBillDs.getNewId();
+            return "JHD-" + Timetools.getDate() + "-" + purchaseBillDs.getNewId();
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;
@@ -46,9 +49,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
         try{
             PurchaseBillPO bill = purchaseBillDs.getBillById(id);
             if(bill.getState() == BillPO.PASS) return false;
-
-            int length = id.length();
-            if (purchaseBillDs.deleteBill(id.substring(length - 5, length))) {
+            if (purchaseBillDs.deleteBill(id)) {
             	addLog.add("删除进货单", "删除的进货单单据编号为"+id);
             	return true;
             } else return false;
@@ -151,7 +152,30 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
     @Override
     public boolean examineBill(String id){
         try{
+        	PurchaseBillPO billPO = purchaseBillDs.getBillById(id);
             PurchaseBillVO billVO = BillTools.toPurchaseBillVO(purchaseBillDs.getBillById(id));
+            ArrayList<SalesItemsPO> list = billPO.getPurchaseBillItems();
+            CustomerPO customerPO = customerDs.findById(billPO.getSupplierId());
+            
+            if (customerPO.getRecRange() >= (billPO.getSum() + customerPO.getReceivable())) {
+            	customerDs.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
+            			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
+            			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable()
+            			+ billPO.getSum(), customerPO.getPayment(), customerPO.getExistFlag()));
+            }else {
+            	billPO.setState(4);
+                billVO.setState(4);
+                purchaseBillDs.saveBill(billPO);
+                return false;
+
+            }
+            for (int i = 0; i < list.size(); i++) {
+            	CommodityPO commodityPO = commodityDs.findById(list.get(i).getComId());
+            	commodityDs.add(new CommodityPO(commodityPO.getId(), commodityPO.getName(), commodityPO.getType(), 
+                		commodityPO.getStore(), commodityPO.getCategoryId(), commodityPO.getAmount() + list.get(i).getComQuantity(), 
+                		commodityPO.getAlarmNum(), commodityPO.getInPrice(), commodityPO.getSalePrice(), 
+                		commodityPO.getRecentInPrice(), commodityPO.getRecentSalePrice(), commodityPO.getExistFlag()));              
+            }
             billVO.setState(3);
             return saveBill(billVO, "审核进货单", "通过审核的进货单单据编号为"+id);
         }catch(RemoteException e){

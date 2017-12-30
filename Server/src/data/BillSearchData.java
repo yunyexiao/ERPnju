@@ -1,14 +1,30 @@
 package data;
 
 import java.rmi.RemoteException;
-import java.sql.*;
+import java.rmi.server.UnicastRemoteObject;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import dataservice.BillSearchDataService;
 import po.UserPO;
-import po.billpo.*;
+import po.billpo.BillPO;
+import po.billpo.CashCostBillPO;
+import po.billpo.ChangeBillPO;
+import po.billpo.ChangeItem;
+import po.billpo.PaymentBillPO;
+import po.billpo.PurchaseBillPO;
+import po.billpo.PurchaseReturnBillPO;
+import po.billpo.ReceiptBillPO;
+import po.billpo.SalesBillPO;
+import po.billpo.SalesReturnBillPO;
 
-public class BillSearchData implements BillSearchDataService{
+public class BillSearchData extends UnicastRemoteObject implements BillSearchDataService{
+	public BillSearchData() throws RemoteException {
+		super();
+	}
+
 	//查找所有状态的单据传state参数-1；
 	@Override
 	public ArrayList<PurchaseBillPO> searchPurchaseBills(String fromDate, String toDate, String customerId,
@@ -17,44 +33,15 @@ public class BillSearchData implements BillSearchDataService{
 		ArrayList<PurchaseBillPO> bills=new ArrayList<PurchaseBillPO>();
 		String sql=assembleSQL("PurchaseBill", fromDate, toDate, 
 				"PBSupplierID", customerId, "PBOperatorID", operatorId,"PBCondition",state);
-			
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery(sql);
-			while(r.next()){
-				Statement s1=DataHelper.getInstance().createStatement();
-				ResultSet r1=s1.executeQuery("SELECT * FROM PurchaseRecord WHERE PRID="+r.getString("PBID")+";");
-				ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
-				
-				while(r1.next()){
-					SalesItemsPO item=new SalesItemsPO(
-							r1.getString("PRComID"),
-							r1.getString("PRRemark"),
-							r1.getInt("PRComQuantity"),
-							r1.getDouble("PRComPrice"),
-							r1.getDouble("PRComSum"));
-					items.add(item);
-				}
-
-				PurchaseBillPO bill=new PurchaseBillPO(
-						r.getString("generateTime").split(" ")[0],
-						r.getString("generateTime").split(" ")[1],
-						r.getString("PBID"),
-						r.getString("PBOperatorID"),
-						r.getInt("PBCondition"),
-						r.getString("PBSupplierID"),
-						r.getString("PBRemark"),
-						r.getDouble("PBSum"),
-						items);
-			
-				bills.add(bill);				
-			}
-			
+			while(r.next()) bills.add(BillDataHelper.getPurchaseBill(r.getString("PBID")));
+			return bills;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		return bills;
 	}
 
 	@Override
@@ -65,42 +52,14 @@ public class BillSearchData implements BillSearchDataService{
 		String sql=assembleSQL("PurchaseReturnBill", fromDate, toDate, 
 				"PRBSupplierID", customerId, "PRBOperatorID", operatorId,"PRBCondition",state);
 		try{
-			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery(sql);
-			
-			while(r.next()){
-				Statement s1=DataHelper.getInstance().createStatement();
-				ResultSet r1=s1.executeQuery("SELECT * FROM PurchaseReturnRecord WHERE PRRID="+r.getString("PRBID")+";");
-				ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
-				
-				while(r1.next()){
-					SalesItemsPO item=new SalesItemsPO(
-							r1.getString("PRRComID"),
-							r1.getString("PRRRemark"),
-							r1.getInt("PRRComQuantity"),
-							r1.getDouble("PRRComPrice"),
-							r1.getDouble("PRRComSum"));
-					items.add(item);
-				}
-
-				PurchaseReturnBillPO bill=new PurchaseReturnBillPO(
-						r.getString("generateTime").split(" ")[0],
-						r.getString("generateTime").split(" ")[1],
-						r.getString("PRBID"),
-						r.getString("PRBOperatorID"),
-						r.getInt("PRBCondition"),
-						r.getString("PRBSupplierID"),
-						r.getString("PRBRemark"),
-						r.getDouble("PRBSum"),
-						items);
-				
-				bills.add(bill);
-				}			
+			Statement s = DataHelper.getInstance().createStatement();
+			ResultSet r = s.executeQuery(sql);
+			while(r.next()) bills.add(BillDataHelper.getPurchaseRetrunBill(r.getString("PRBID")));
+			return bills;	
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		return bills;
 	}
 
 	@Override
@@ -109,94 +68,27 @@ public class BillSearchData implements BillSearchDataService{
 		ArrayList<SalesBillPO> bills=new ArrayList<SalesBillPO>();
 		String sql=assembleSQL("SalesBill", fromDate, toDate, 
 				"SBCustomerID", customerId, "SBOperatorID", operatorId,"SBCondition",state);
-		
 		try{
-			
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery(sql);
-			while(r.next()){
-				Statement s1=DataHelper.getInstance().createStatement();
-				ResultSet r1=s1.executeQuery("SELECT * FROM SalesRecord WHERE SRID="+r.getString("SBID")+";");
-				ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
-				
-				while(r1.next()){
-					SalesItemsPO item=new SalesItemsPO(
-							r1.getString("SRComID"),
-							r1.getString("SRRemark"),
-							r1.getInt("SRComQuantity"),
-							r1.getDouble("SRPrice"),
-							r1.getDouble("SRComSum"));
-					items.add(item);
-				}
-
-				SalesBillPO bill=new SalesBillPO(
-						r.getString("generateTime").split(" ")[0],
-						r.getString("generateTime").split(" ")[1],
-						r.getString("SBID"),
-						r.getString("SBOperatorID"),
-						r.getInt("PBCondition"),
-						r.getString("SBCustomerID"),
-						r.getString("SBSalesmanName"),
-						r.getString("SBRemark"),
-						r.getString("SBPromotionID"),
-						r.getDouble("SBBeforeDiscount"),
-						r.getDouble("SBDiscount"),
-						r.getDouble("SBCoupon"),
-						r.getDouble("SBAfterDiscount"),
-						items);
-			
-				bills.add(bill);
-			}			
+			while(r.next()) bills.add(BillDataHelper.getSalesBill(r.getString("SBID")));
+			return bills;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		return bills;
-
 	}
 
 	@Override
 	public ArrayList<SalesReturnBillPO> searchSalesReturnBills(String fromDate, String toDate, String customerId,
 			String operatorId,int state) throws RemoteException {
-		
 		ArrayList<SalesReturnBillPO> bills=new ArrayList<SalesReturnBillPO>();
 		String sql=assembleSQL("SalesReturnBill", fromDate, toDate, 
 				"SRBCustomerID", customerId, "SRBOperatorID", operatorId,"SRBCondition",state);
 		try{
-			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery(sql);
-			while(r.next()){
-				Statement s1=DataHelper.getInstance().createStatement();
-				ResultSet r1=s1.executeQuery("SELECT * FROM SalesReturnRecord WHERE SRRID="+r.getString("SRBID")+";");
-				ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
-
-				while(r1.next()){
-					SalesItemsPO item=new SalesItemsPO(
-							r1.getString("SRRComID"),
-							r1.getString("SRRRemark"),
-							r1.getInt("SRRComQuantity"),
-							r1.getDouble("SRRPrice"),
-							r1.getDouble("SRRComSum"));
-					items.add(item);
-				}
-
-				SalesReturnBillPO bill=new SalesReturnBillPO(
-						r.getString("generateTime").split(" ")[0],
-						r.getString("generateTime").split(" ")[1],
-						r.getString("SRBID"),
-						r.getString("SRBOperatorID"),
-						r.getInt("SRBCondition"),
-						r.getString("SRBCustomerID"),
-						r.getString("SRBSalesmanName"),
-						r.getString("SRBRemark"),
-						r.getString("SRBOriginalSBID"),
-						r.getDouble("SRBOriginalSum"),
-						r.getDouble("SRBReturnSum"),
-						items);
-				
-				bills.add(bill);
-			}
-			
+			Statement s = DataHelper.getInstance().createStatement();
+			ResultSet r = s.executeQuery(sql);
+			while(r.next()) bills.add(BillDataHelper.getSalesReturnBill(r.getString("SRBID")));
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
@@ -211,40 +103,14 @@ public class BillSearchData implements BillSearchDataService{
 		String sql=assembleSQL("CashCostBill", fromDate, toDate, 
 				"CCBAccountID", customerId, "CCBOperatorID", operatorId,"CCBCondition",state);
 		try{
-			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery(sql);
-			
-			while(r.next()){
-				Statement s1=DataHelper.getInstance().createStatement();
-				ResultSet r1=s1.executeQuery("SELECT * FROM CashCostRecord WHERE CCRID="+r.getString("CCBID")+";");
-				ArrayList<CashCostItem> items=new ArrayList<CashCostItem>();
-
-				while(r1.next()){
-					CashCostItem item=new CashCostItem(
-							r1.getString("CCRCostName"),
-							r1.getDouble("CCRMoney"),
-							r1.getString("CCRRemark"));
-					items.add(item);
-				}
-
-				CashCostBillPO bill=new CashCostBillPO(
-						r.getString("generateTime").split(" ")[0],
-						r.getString("generateTime").split(" ")[1],
-						r.getString("CCBID"),
-						r.getString("CCBOperatorID"),
-						r.getInt("CCBCondition"),
-						r.getString("CCBAccountID"),
-						items,
-						r.getDouble("CCBSum"));
-				
-				bills.add(bill);
-			}				
+			Statement s = DataHelper.getInstance().createStatement();
+			ResultSet r = s.executeQuery(sql);
+			while(r.next()) bills.add(BillDataHelper.getCashCostBill(r.getString("CCBID")));
+			return bills;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		
-		return bills;
 	}
 
 	@Override
@@ -258,39 +124,11 @@ public class BillSearchData implements BillSearchDataService{
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery(sql);
-			
-			while(r.next()){
-				Statement s2=DataHelper.getInstance().createStatement();
-				ResultSet r2=s2.executeQuery("SELECT * FROM PaymentRecord WHERE PRID="+r.getString("PBID")+";");
-								
-				ArrayList<TransferItem> items=new ArrayList<TransferItem>();
-				
-				while(r2.next()){
-					TransferItem item=new TransferItem(
-							r2.getString("PRAccountID"),
-							r2.getDouble("PRTransfer"),
-							r2.getString("PRRemark"));
-					items.add(item);
-				}
-				
-				PaymentBillPO bill=new PaymentBillPO(
-						r.getString("generateTime").split(" ")[0],
-						r.getString("generateTime").split(" ")[1],
-						r.getString("PBID"),
-						r.getString("PBOperatorID"),
-						r.getInt("PBCondition"),
-						r.getString("PBCustomerID"),
-						items,
-						r.getDouble("PBSum"));
-				
-				bills.add(bill);
-			}
-
+			while(r.next()) bills.add(BillDataHelper.getPaymentBill(r.getString("PBID")));
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		
 		return bills;
 	}
 
@@ -298,45 +136,15 @@ public class BillSearchData implements BillSearchDataService{
 	public ArrayList<ReceiptBillPO> searchReceiptBills(String fromDate, String toDate, String customerId,
 			String operatorId, int state) throws RemoteException {
 		ArrayList<ReceiptBillPO> bills=new ArrayList<ReceiptBillPO>();
-		String sql=assembleSQL("ReceiptBill", fromDate, toDate, 
-				"RBCustomerID", customerId, "RBOperatorID", operatorId,"RBCondition",state);
-		
+		String sql=assembleSQL("ReceiptBill", fromDate, toDate, "RBCustomerID", customerId, "RBOperatorID", operatorId,"RBCondition",state);
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery(sql);
-			
-			while(r.next()){
-				Statement s2=DataHelper.getInstance().createStatement();
-				ResultSet r2=s2.executeQuery("SELECT * FROM ReceiptRecord WHERE RRID="+r.getString("RBID")+";");
-								
-				ArrayList<TransferItem> items=new ArrayList<TransferItem>();
-				
-				while(r2.next()){
-					TransferItem item=new TransferItem(
-							r2.getString("RRAccountID"),
-							r2.getDouble("RRTransfer"),
-							r2.getString("RRRemark"));
-					items.add(item);
-				}
-				
-				ReceiptBillPO bill=new ReceiptBillPO(
-						r.getString("generateTime").split(" ")[0],
-						r.getString("generateTime").split(" ")[1],
-						r.getString("PBID"),
-						r.getString("PBOperatorID"),
-						r.getInt("PBCondition"),
-						r.getString("PBCustomerID"),
-						items,
-						r.getDouble("PBSum"));
-				
-				bills.add(bill);
-			}
-
+			while(r.next()) bills.add(BillDataHelper.getReceiptBill(r.getString("RBID")));
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		
 		return bills;
 	}
 	
@@ -447,18 +255,20 @@ public class BillSearchData implements BillSearchDataService{
 			String condition_Name,int condition){
 		
 		String sql="";
-		String op1_And=" AND ",op2_And="' AND ",op1_equ="='",op2_equ="='";
+		String op1_And=" AND ",op2_And=" AND ",op1_equ="='",op2_equ="='";
 		
 		if(optional1==null){
-			optional1_Name=null;
-			op1_And=null;
-			op1_equ=null;
+			optional1 = "";
+			optional1_Name="";
+			op1_And="";
+			op1_equ="";
 		}
 		
 		if(optional2==null){
-			optional2_Name=null;
-			op2_And=null;
-			op2_equ=null;
+			optional2 = "";
+			optional2_Name="";
+			op2_And="";
+			op2_equ="";
 		}
 		
 		if(condition==-1)
@@ -467,14 +277,14 @@ public class BillSearchData implements BillSearchDataService{
 			        +"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate+"')"+
 			        op1_And+optional1_Name+op1_equ+optional1
 			        +op2_And+optional2_Name+op2_equ+optional2
-			        +";";			
+			        +"';";			
 		}
 		else{
 			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
 			        +"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate+"')"+
 			        op1_And+optional1_Name+op1_equ+optional1
 			        +op2_And+optional2_Name+op2_equ+optional2
-			        +"' AND "+condition_Name+"="+condition+";";			
+			        +"' AND "+condition_Name+"="+condition+"';";			
 		}
 		/*
 		if(optional1==null&&optional2!=null)
@@ -498,7 +308,7 @@ public class BillSearchData implements BillSearchDataService{
 			        +"' AND "+optional2_Name+"='"+optional2
 			        +"' AND "+condition_Name+"="+condition+";";
 	      */
-
+		System.out.println(sql);
 		return sql;
 		
 	}
@@ -523,7 +333,7 @@ public class BillSearchData implements BillSearchDataService{
 			
 			sql2="SELECT * FROM InventoryOverflowRecord WHERE IORID='";
 		}
-		else if(!isOver){
+		else {
 			billAttributes[1]="ILBID";
 			billAttributes[2]="ILBOperatorID";
 			billAttributes[3]="ILBCondition";
@@ -572,8 +382,46 @@ public class BillSearchData implements BillSearchDataService{
 
 	@Override
 	public ArrayList<BillPO> getBillList(UserPO user) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+
+		ArrayList<BillPO> bills=new ArrayList<BillPO>();
+
+		Calendar now = Calendar.getInstance(); 
+		String today=now.get(Calendar.YEAR)+"-"+(now.get(Calendar.MONTH)+1)+"-"+now.get(Calendar.DAY_OF_MONTH);
+		String start="2000-01-01";
+		String userId=user.getUserId();
+	
+		if(user.getUsertype()==0){
+			try{
+				ArrayList<ChangeBillPO> lostBills=searchChangeBills(start, today, null, userId,false, -1);
+				ArrayList<ChangeBillPO> overflowBills=searchChangeBills(start, today, null, userId, true, -1);
+				bills.addAll(lostBills);
+				bills.addAll(overflowBills);	
+			}catch(Exception e){
+				e.printStackTrace();
+				return null;
+			}
+		}
+		//销售人员
+		else if(user.getUsertype()==1){
+			ArrayList<SalesBillPO> salesBills=searchSalesBills(start, today, null, userId, -1);
+			ArrayList<SalesReturnBillPO> salesReturnBills=searchSalesReturnBills(start, today, null, userId, -1);
+			ArrayList<PurchaseBillPO> purchaseBills=searchPurchaseBills(start, today, null, userId, -1);
+			ArrayList<PurchaseReturnBillPO> purchaseReturnBills=searchPurchaseReturnBills(start, today, null, userId, -1);
+			bills.addAll(purchaseReturnBills);
+			bills.addAll(purchaseBills);
+			bills.addAll(salesReturnBills);
+			bills.addAll(salesBills);
+		}
+		//财务人员
+		else if(user.getUsertype()==UserPO.UserType.ACCOUNTANT){
+			ArrayList<CashCostBillPO> cashCostBills=searchCashCostBills(start, today, null, userId, -1);
+			ArrayList<PaymentBillPO> paymentBills=searchPaymentBills(start, today, null, userId, -1);
+			ArrayList<ReceiptBillPO> receiptBills=searchReceiptBills(start, today, null, userId, -1);
+			bills.addAll(receiptBills);
+			bills.addAll(cashCostBills);
+			bills.addAll(paymentBills);
+		}
+		return bills;
 	}
 
 

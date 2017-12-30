@@ -186,8 +186,7 @@ public class BillTools {
         }
         MyTableModel model = new MyTableModel(data, columnNames);
         PaymentBillVO paymentBillVO = new PaymentBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator()
-                , bill.getState(), bill.getCustomerId());
-        paymentBillVO.setTableModel(model);
+                , bill.getState(), bill.getCustomerId(),model);
         return paymentBillVO;
     }
 	
