@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -24,6 +23,7 @@ import presentation.component.MyTableModel;
 import presentation.component.choosewindow.CommodityChooseWin;
 import vo.CommodityVO;
 import vo.GroupDiscountVO;
+import vo.PromotionVO;
 
 
 @SuppressWarnings("serial")
@@ -33,15 +33,24 @@ public class GroupDiscountPanel extends PromotionDetailPanel {
     private DetailGroupDiscountPanel panel;
 
     public GroupDiscountPanel(PromotionBLService promotionAdder, ActionListener closeListener) {
-        super(promotionAdder, closeListener);
+        this(promotionAdder, closeListener, null);
+    }
+    
+    public GroupDiscountPanel(PromotionBLService promotionAdder, ActionListener closeListener, GroupDiscountVO promotion){
+        super(promotionAdder, closeListener, promotion);
     }
 
     @Override
-    protected JPanel getCenterPanel() {
+    protected JPanel getCenterPanel(PromotionVO promotion) {
         JScrollPane sp = new JScrollPane(groupTable = new GroupTable());
         groupTable.register(sp);
-        
-        return panel = new DetailGroupDiscountPanel(sp);
+        panel = new DetailGroupDiscountPanel(sp);
+        if(promotion != null){
+            GroupDiscountVO gd = (GroupDiscountVO) promotion;
+            panel.getDiscountField().setValue(gd.getReduction());
+            groupTable.setModel(gd.getGroup());
+        }
+        return panel;
     }
 
     @Override
@@ -49,9 +58,9 @@ public class GroupDiscountPanel extends PromotionDetailPanel {
         String id = getId(),
                from = getFromDate(),
                to = getToDate();
-        ArrayList<String> comIds = getComIds();
+        MyTableModel goods = (MyTableModel)groupTable.getModel();
         double discount = panel.getDiscountField().getValue();
-        GroupDiscountVO promotion = new GroupDiscountVO(id, from, to, discount, comIds);
+        GroupDiscountVO promotion = new GroupDiscountVO(id, from, to, discount, goods);
         return promotionAdder.add(promotion);
     }
 
@@ -73,16 +82,6 @@ public class GroupDiscountPanel extends PromotionDetailPanel {
         return false;
     }
     
-    private ArrayList<String> getComIds(){
-        MyTableModel model = (MyTableModel)groupTable.getModel();
-        int size = model.getRowCount();
-        ArrayList<String> comIds = new ArrayList<>(size);
-        for(int i = 0; i < size; i++){
-            comIds.add(model.getValueAt(i, 0).toString());
-        }
-        return comIds;
-    }
-
 }
 
 @SuppressWarnings("serial")
@@ -94,7 +93,7 @@ class GroupTable extends JTable{
     public GroupTable(){
         super();
         super.getTableHeader().setReorderingAllowed(false);
-        super.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        super.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         super.setModel(initModel());
         initChooseHandler();
         initPopup();

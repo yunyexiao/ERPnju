@@ -12,6 +12,7 @@ import blservice.PromotionBLService;
 import layout.TableLayout;
 import presentation.component.InfoWindow;
 import presentation.tools.Timetools;
+import vo.PromotionVO;
 
 
 @SuppressWarnings("serial")
@@ -22,16 +23,20 @@ public abstract class PromotionDetailPanel extends CenterPanel{
     private BasicPromotionInfoPanel basicInfoPanel;
 
     public PromotionDetailPanel(PromotionBLService promotionAdder, ActionListener closeListener) {
+        this(promotionAdder, closeListener, null);
+    }
+    
+    public PromotionDetailPanel(PromotionBLService promotionAdder, ActionListener closeListener, PromotionVO promotion){
         super();
         this.promotionAdder = promotionAdder;
-        initLeftPanel();
+        initLeftPanel(promotion);
         double[][] size = {{-2.0, -1.0}, {-1.0, 50.0}};
         super.setLayout(new TableLayout(size));
         super.add(basicInfoPanel, "0 0");
-        super.add(getCenterPanel(), "1 0");
+        super.add(getCenterPanel(promotion), "1 0");
         super.add(getBottomPanel(closeListener), "0 1 1 1");
     }
-    
+
     @Override
     public boolean close(){
         if(!closable){
@@ -54,7 +59,7 @@ public abstract class PromotionDetailPanel extends CenterPanel{
         }
     }
     
-    abstract protected JPanel getCenterPanel();
+    abstract protected JPanel getCenterPanel(PromotionVO promotion);
     
     abstract protected boolean addPromotionImpl();
     
@@ -70,9 +75,15 @@ public abstract class PromotionDetailPanel extends CenterPanel{
         return basicInfoPanel.getToField().getText();
     }
 
-    private void initLeftPanel(){
+    private void initLeftPanel(PromotionVO promotion){
         basicInfoPanel = new BasicPromotionInfoPanel();
-        basicInfoPanel.getIdField().setText(promotionAdder.getNewId());
+        if(promotion == null)
+            basicInfoPanel.getIdField().setText(promotionAdder.getNewId());
+        else {
+            basicInfoPanel.getIdField().setText(promotion.getId());
+            basicInfoPanel.getFromField().setText(promotion.getFromDate());
+            basicInfoPanel.getToField().setText(promotion.getToDate());
+        }
     }
 
     private JPanel getBottomPanel(ActionListener closeListener){

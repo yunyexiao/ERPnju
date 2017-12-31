@@ -8,6 +8,7 @@ import javax.swing.JScrollPane;
 import blservice.PromotionBLService;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
+import vo.PromotionVO;
 import vo.SumPromotionVO;
 
 
@@ -18,14 +19,28 @@ public class SumPromotionPanel extends PromotionDetailPanel {
     private GiftTable giftTable;
 
     public SumPromotionPanel(PromotionBLService promotionAdder, ActionListener closeListener) {
-        super(promotionAdder, closeListener);
+        this(promotionAdder, closeListener, null);
+    }
+    
+    public SumPromotionPanel(PromotionBLService promotionAdder, ActionListener closeListener, SumPromotionVO promotion){
+        super(promotionAdder, closeListener, promotion);
     }
 
     @Override
-    protected JPanel getCenterPanel() {
+    protected JPanel getCenterPanel(PromotionVO promotion) {
         JScrollPane sp = new JScrollPane();
         giftTable = new GiftTable(sp);
-        return panel = new DetailSumPromotionPanel(sp);
+        panel = new DetailSumPromotionPanel(sp);
+        if(promotion != null){
+            SumPromotionVO spv = (SumPromotionVO)promotion;
+            panel.getStartPriceField().setValue(spv.getStartPrice());
+            if(spv.getEndPrice() != Double.POSITIVE_INFINITY){
+                panel.getEndPriceField().setText(spv.getEndPrice() + "");
+            }
+            panel.getCouponField().setValue(spv.getCoupon());
+            giftTable.setModel(spv.getGifts());
+        }
+        return panel;
     }
 
     @Override

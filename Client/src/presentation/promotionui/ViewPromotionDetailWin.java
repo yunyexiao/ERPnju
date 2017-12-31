@@ -1,18 +1,15 @@
 package presentation.promotionui;
 
-import java.util.ArrayList;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import blservice.infoservice.GetCommodityInterface;
-import businesslogic.CommodityBL;
 import layout.TableLayout;
-import presentation.component.MyTableModel;
 import presentation.tools.StyleTools;
-import vo.CommodityVO;
 import vo.GroupDiscountVO;
 import vo.PromotionVO;
 import vo.RankPromotionVO;
@@ -36,6 +33,12 @@ public class ViewPromotionDetailWin {
         frame.setLayout(new TableLayout(size));
         frame.add(getBasicInfoPanel(), "0 0");
         frame.add(getDetailPanel(), "1 0");
+        frame.addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosed(WindowEvent e){
+                frame.dispose();
+            }
+        });
         frame.setVisible(true);
     }
     
@@ -77,28 +80,13 @@ public class ViewPromotionDetailWin {
     }
     
     private JPanel groupDiscountPanel(GroupDiscountVO promotion){
-        JTable table = new JTable(getComModel(promotion.getGroup()));
+        JTable table = new JTable(promotion.getGroup());
         looseTable(table);
         JScrollPane sp = new JScrollPane(table);
         DetailGroupDiscountPanel panel = new DetailGroupDiscountPanel(sp);
         panel.getDiscountField().setEditable(false);
         panel.getDiscountField().setValue(promotion.getReduction());
         return panel;
-    }
-    
-    private MyTableModel getComModel(ArrayList<String> comIds){
-        GetCommodityInterface comInfo = new CommodityBL();
-        String[] columnNames = {"商品编号", "名称", "型号"};
-        int size = comIds.size();
-        String[][] data = new String[size][];
-        for(int i = 0; i < size; i++){
-            String id = comIds.get(i);
-            CommodityVO com = comInfo.getCommodity(id);
-            String name = com.getName();
-            String type = com.getType();
-            data[i] = new String[]{id, name, type};
-        }
-        return new MyTableModel(data, columnNames);
     }
     
     private JPanel sumPromotionPanel(SumPromotionVO promotion){

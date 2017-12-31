@@ -19,7 +19,7 @@ public class PromotionDs_stub implements PromotionDataService {
         ArrayList<String> group0 = new ArrayList<>();
         group0.add("000001");
         group0.add("000002");
-        PROMOTIONS.add(new GroupDiscountPO("0001", "2017-12-11", "2017-12-21", group0, 100.0));
+        PROMOTIONS.add(new GroupDiscountPO("0001", "2018-01-11", "2018-02-21", group0, 100.0));
 
         ArrayList<String> group1 = new ArrayList<>();
         group1.add("000002");
@@ -28,7 +28,7 @@ public class PromotionDs_stub implements PromotionDataService {
 
         ArrayList<GiftItem> gifts0 = new ArrayList<>();
         gifts0.add(new GiftItem("000001", 10, 100.0));
-        PROMOTIONS.add(new RankPromotionPO("0003", "2017-12-04", "2018-01-04", 1, gifts0, 0, 0));
+        PROMOTIONS.add(new RankPromotionPO("0003", "2018-02-04", "2018-04-04", 1, gifts0, 0, 0));
 
         ArrayList<GiftItem> gifts1 = new ArrayList<>();
         gifts1.addAll(gifts0);
@@ -72,9 +72,9 @@ public class PromotionDs_stub implements PromotionDataService {
 
     @Override
     public boolean delete(String id) throws RemoteException {
-        PROMOTIONS.forEach(e->{
-            if(e.getId().equals(id)) PROMOTIONS.remove(e);
-        });
+        int index = -1;
+        for(int i = 0; i < PROMOTIONS.size(); i++)if(PROMOTIONS.get(i).getId().equals(id)) index = i;
+        if(index >= 0) PROMOTIONS.remove(index);
         System.out.println("Promotion deleted in database: " + id);
         return true;
     }

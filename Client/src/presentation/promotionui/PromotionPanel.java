@@ -79,10 +79,13 @@ public class PromotionPanel implements PanelInterface {
     
     private void search(){
         if(centerPanel == null || centerPanel.close()){
+            panel.setVisible(false);
+            if(centerPanel != null) panel.remove(centerPanel);
+            panel.setVisible(true);
+
             MyTableModel model = new PromotionSearchWin(promotionBl).getResult();
             if(model == null) return;
             panel.setVisible(false);
-            if(centerPanel != null) panel.remove(centerPanel);
             centerPanel = new SearchResultPanel(model, promotionBl);
             panel.add(centerPanel, "0 1");
             panel.setVisible(true);

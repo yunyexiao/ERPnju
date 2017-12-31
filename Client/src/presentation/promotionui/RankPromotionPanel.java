@@ -8,6 +8,7 @@ import javax.swing.JScrollPane;
 import blservice.PromotionBLService;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
+import vo.PromotionVO;
 import vo.RankPromotionVO;
 
 
@@ -18,14 +19,26 @@ public class RankPromotionPanel extends PromotionDetailPanel {
     private GiftTable giftTable;
 
     public RankPromotionPanel(PromotionBLService promotionAdder, ActionListener closeListener) {
-        super(promotionAdder, closeListener);
+        this(promotionAdder, closeListener, null);
+    }
+    
+    public RankPromotionPanel(PromotionBLService promotionAdder, ActionListener closeListener, RankPromotionVO promotion){
+        super(promotionAdder, closeListener, promotion);
     }
 
     @Override
-    protected JPanel getCenterPanel() {
+    protected JPanel getCenterPanel(PromotionVO promotion) {
         JScrollPane sp = new JScrollPane();
         giftTable = new GiftTable(sp);
-        return panel = new DetailRankPromotionPanel(sp);
+        panel = new DetailRankPromotionPanel(sp);
+        if(promotion != null){
+            RankPromotionVO rp = (RankPromotionVO)promotion;
+            panel.getRankField().setValue(rp.getRank());
+            panel.getDiscountField().setValue(rp.getReduction());
+            panel.getCouponField().setValue(rp.getCoupon());
+            giftTable.setModel(rp.getGifts());
+        }
+        return panel;
     }
 
     @Override

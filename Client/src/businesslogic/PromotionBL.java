@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import blservice.PromotionBLService;
+import blservice.infoservice.GetCommodityInterface;
 import businesslogic.inter.AddLogInterface;
 import businesslogic.inter.IPromotionSearch;
 import dataservice.PromotionDataService;
@@ -14,6 +15,7 @@ import po.RankPromotionPO;
 import po.SumPromotionPO;
 import presentation.component.MyTableModel;
 import rmi.Rmi;
+import vo.CommodityVO;
 import vo.GroupDiscountVO;
 import vo.PromotionVO;
 import vo.RankPromotionVO;
@@ -203,7 +205,7 @@ public class PromotionBL implements PromotionBLService, IPromotionSearch{
         if(po instanceof GroupDiscountPO){
             GroupDiscountPO gpo = (GroupDiscountPO)po;
             return new GroupDiscountVO(gpo.getId(), gpo.getFromDate(), 
-                gpo.getToDate(), gpo.getReduction(), gpo.getGroup());
+                gpo.getToDate(), gpo.getReduction(), toGroupModel(gpo.getGroup()));
         }else if(po instanceof RankPromotionPO){
             RankPromotionPO rpo = (RankPromotionPO)po;
             return new RankPromotionVO(rpo.getId(), rpo.getFromDate(), rpo.getToDate(), 
@@ -213,6 +215,21 @@ public class PromotionBL implements PromotionBLService, IPromotionSearch{
             return new SumPromotionVO(spo.getId(), spo.getFromDate(), spo.getToDate(), 
                 spo.getStartPrice(), spo.getEndPrice(), spo.getCoupon(), GiftItemTools.toModel(spo.getGifts()));
         }
+    }
+    
+    private MyTableModel toGroupModel(ArrayList<String> comIds){
+        GetCommodityInterface comInfo = new CommodityBL();
+        String[] columnNames = {"商品编号", "名称", "型号"};
+        int size = comIds.size();
+        String[][] data = new String[size][];
+        for(int i = 0; i < size; i++){
+            String id = comIds.get(i);
+            CommodityVO com = comInfo.getCommodity(id);
+            String name = com.getName();
+            String type = com.getType();
+            data[i] = new String[]{id, name, type};
+        }
+        return new MyTableModel(data, columnNames);
     }
    
     private MyTableModel toModel(ArrayList<? extends PromotionPO> promotions){
