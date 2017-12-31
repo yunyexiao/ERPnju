@@ -5,6 +5,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
 
+import po.PromotionPO;
+import po.billpo.BillPO;
+
 public class SQLQueryHelper {
 	
 	public static boolean add(String tableName, Object... values) {
@@ -19,6 +22,23 @@ public class SQLQueryHelper {
 			if(s.executeUpdate(str + "')") > 0) return true;
 			else return false;
 		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static boolean update(String tableName, String[] attributes,Object[] values){
+		try{
+			Statement s=DataHelper.getInstance().createStatement();
+			String str="UPDATE "+tableName+" SET ";
+			for(int i=1;i<attributes.length;i++){
+				if(i==1)str=str+attributes[i]+"='"+values[i];
+				else str=str+"', "+attributes[i]+"='"+values[i];
+			}
+			str=str+"' WHERE "+attributes[0]+"='"+values[0]+"';";
+			if(s.executeUpdate(str)>0)return true;
+			else return false;
+		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
@@ -86,5 +106,23 @@ public class SQLQueryHelper {
 			return null;
 		}
     }
+	
+	public static boolean isPromotionExist(String billName,String idName,PromotionPO pro){
+		int num=0;
+		try{
+			Statement s=DataHelper.getInstance().createStatement();
+			ResultSet r=s.executeQuery("SELECT COUNT(*) AS num FROM "+billName+" WHERE "+idName+"='"+pro.getId()+"';");
+			while(r.next())
+			{
+				num=r.getInt("num");
+			}
+			if(num>0)return true;
+			else return false;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
 	
 }
