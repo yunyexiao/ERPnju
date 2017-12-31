@@ -1,7 +1,8 @@
-package presentation.promotionui;
+package presentation.driver;
 
 import javax.swing.JFrame;
 
+import presentation.promotionui.PromotionPanel;
 import presentation.tools.StyleTools;
 
 public class PromotionPanelDriver {
