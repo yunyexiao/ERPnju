@@ -270,6 +270,7 @@ public class BillSearchBL implements BillSearchBLService {
             return null;
         }
     }
+
     @Override
     public MyTableModel filterGiftBills(String from, String to, String customerId) {
         // TODO Auto-generated method stub
@@ -386,4 +387,5 @@ public class BillSearchBL implements BillSearchBLService {
     	
         return null;
     }
+
 }

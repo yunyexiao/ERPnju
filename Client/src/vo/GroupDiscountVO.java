@@ -2,6 +2,9 @@ package vo;
 
 import java.util.ArrayList;
 
+import po.GroupDiscountPO;
+import presentation.component.MyTableModel;
+
 /**
  * 商品组合降价的促销策略VO
  * 
@@ -9,27 +12,47 @@ import java.util.ArrayList;
  */
 public class GroupDiscountVO extends PromotionVO {
     
-    private ArrayList<String> group;
-    private double reduction;
+    private MyTableModel group;
+    private double singleReduction;
 
-    public GroupDiscountVO(String id, String from, String to, double reduction, ArrayList<String> group) {
-        super(id, from, to);
-        this.reduction = reduction;
+    public GroupDiscountVO(String id, String from, String to, double reduction, MyTableModel group) {
+        super(id, from, to, null);
         this.group = group;
+        this.singleReduction = reduction;
     }
     
-    public double getReduction(){
-        return reduction;
-    }
-    
-    public ArrayList<String> getGroup(){
+    public MyTableModel getGroup(){
         return group;
+    }
+    
+    public ArrayList<String> getGroupComIds(){
+        int rows = group.getRowCount();
+        ArrayList<String> comIds = new ArrayList<>(rows);
+        for(int i = 0; i < rows; i++){
+            comIds.add(group.getValueAt(i, 0).toString());
+        }
+        return comIds;
+    }
+
+    @Override
+    public void setReduction(int num){
+        reduction = singleReduction * num;
     }
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return null;
+        StringBuffer buffer = new StringBuffer(super.toString());
+        buffer.append(" 商品组合：");
+        getGroupComIds().forEach(e->buffer.append(e + ","));
+        buffer.delete(buffer.length() - 1, buffer.length());
+        buffer.append(" 减价总额：");
+        buffer.append(singleReduction);
+        return buffer.toString();
+    }
+
+    @Override
+    public GroupDiscountPO toPO() {
+        return new GroupDiscountPO(this.getId(), this.getFromDate(), this.getToDate(), getGroupComIds(), singleReduction);
     }
 
 }

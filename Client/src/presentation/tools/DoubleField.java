@@ -37,7 +37,11 @@ public class DoubleField extends MyField{
     }
     
     public double getValue(){
-        return Double.parseDouble(this.getText());
+        try{
+            return Double.parseDouble(this.getText());
+        }catch(Exception e){
+            return defaultValue;
+        }
     }
 
     public void setValue(double value){

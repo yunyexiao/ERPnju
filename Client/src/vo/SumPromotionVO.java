@@ -1,5 +1,10 @@
 package vo;
 
+import java.util.ArrayList;
+
+import businesslogic.GiftItemTools;
+import po.SumPromotionPO;
+import po.billpo.GiftItem;
 import presentation.component.MyTableModel;
 
 /**
@@ -15,11 +20,12 @@ public class SumPromotionVO extends PromotionVO {
 
     public SumPromotionVO(String id, String from, String to, double startPrice, 
         double endPrice, double coupon, MyTableModel gifts) {
-        super(id, from, to);
+        super(id, from, to, gifts);
         this.startPrice = startPrice;
         this.endPrice = endPrice;
         this.coupon = coupon;
         this.gifts = gifts;
+        this.reduction = 0.0;
     }
 
     public double getStartPrice() {
@@ -40,8 +46,30 @@ public class SumPromotionVO extends PromotionVO {
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return null;
+        StringBuffer buffer = new StringBuffer(super.toString());
+        buffer.append(" 价格区间：");
+        buffer.append(startPrice + "-" + endPrice);
+        if(coupon > 0){
+            buffer.append(" 代金券：");
+            buffer.append(coupon);
+        }
+        int rows = gifts.getRowCount();
+        if(rows > 0){
+            buffer.append(" 赠品：");
+            for(int i = 0; i < rows; i++){
+                buffer.append(gifts.getValueAt(i, 0) + "*" + gifts.getValueAt(i, 1));
+                buffer.append(',');
+            }
+            buffer.delete(buffer.length() - 1, buffer.length());
+        }
+        return buffer.toString();
+    }
+
+    @Override
+    public SumPromotionPO toPO() {
+        ArrayList<GiftItem> gifts = GiftItemTools.toArrayList(this.gifts);
+        return new SumPromotionPO(this.getId(), this.getFromDate(), this.getToDate(), 
+            startPrice, endPrice, coupon, gifts);
     }
 
 }

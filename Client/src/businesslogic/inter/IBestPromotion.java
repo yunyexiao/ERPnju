@@ -1,7 +1,5 @@
 package businesslogic.inter;
 
-import java.util.ArrayList;
-
 import vo.PromotionVO;
 
 /**
@@ -11,8 +9,8 @@ import vo.PromotionVO;
  */
 public interface IBestPromotion {
     
-    ArrayList<PromotionVO> getBest();
+    PromotionVO getBest();
     
-    double getReduction();
+    double getBenefit();
 
 }

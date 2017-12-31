@@ -89,6 +89,9 @@ public class IdNamePanel extends JPanel {
     class ChooseListener extends MouseAdapter{
         public void mouseClicked(MouseEvent e){
             switch (label.getText()) {
+            case "赠品一":
+            case "赠品二":
+            case "赠品三":
             case "商品" : 
             	CommodityVO commodity = new CommodityChooseWin().getCommodity();
                 if(commodity != null) {idField.setText(commodity.getId());nameField.setText(commodity.getName());}

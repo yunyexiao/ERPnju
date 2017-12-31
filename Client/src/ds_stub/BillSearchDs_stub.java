@@ -309,10 +309,10 @@ public class BillSearchDs_stub implements BillSearchDataService {
 		return result;
 	}
 
-	@Override
-	public ArrayList<GiftBillPO> searchGiftBills(String fromDate, String toDate, String customerId)
-			throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public ArrayList<GiftBillPO> searchGiftBills(String fromDate, String toDate, String customerId, int state) throws RemoteException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

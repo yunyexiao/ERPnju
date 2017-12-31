@@ -1,6 +1,7 @@
 package dataservice;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import po.GroupDiscountPO;
 import po.PromotionPO;
@@ -13,6 +14,8 @@ import po.SumPromotionPO;
  * @author 恽叶霄
  */
 public interface PromotionDataService {
+    
+    String getNewId() throws RemoteException;
     
     boolean add(GroupDiscountPO promotion) throws RemoteException;
     
@@ -28,7 +31,7 @@ public interface PromotionDataService {
      * 下同
      * <p>rank若为 -1 则是指所有等级的策略
      */
-    boolean searchRankPromotion(String from, String to, int rank) throws RemoteException;
+    ArrayList<RankPromotionPO> searchRankPromotion(String from, String to, int rank) throws RemoteException;
     
     /**
      * 搜索在某天有效的所有该等级的促销策略<p>
@@ -36,15 +39,15 @@ public interface PromotionDataService {
      * 下同
      * <p>rank若为 -1 则是指所有等级的策略
      */
-    boolean searchRankPromotion(String date, int rank) throws RemoteException;
+    ArrayList<RankPromotionPO> searchRankPromotion(String date, int rank) throws RemoteException;
     
-    boolean searchGroupDiscount(String from, String to) throws RemoteException;
+    ArrayList<GroupDiscountPO> searchGroupDiscount(String from, String to) throws RemoteException;
     
-    boolean searchGroupDiscount(String date) throws RemoteException;
+    ArrayList<GroupDiscountPO> searchGroupDiscount(String date) throws RemoteException;
     
-    boolean searchSumPromotion(String from, String to) throws RemoteException;
+    ArrayList<SumPromotionPO> searchSumPromotion(String from, String to) throws RemoteException;
     
-    boolean searchSumPromotion(String date) throws RemoteException;
+    ArrayList<SumPromotionPO> searchSumPromotion(String date) throws RemoteException;
     
     PromotionPO findById(String id) throws RemoteException;
 
