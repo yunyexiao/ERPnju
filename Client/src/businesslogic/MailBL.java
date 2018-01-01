@@ -53,8 +53,8 @@ public class MailBL implements MailBLService {
 			Collections.sort(listvo, new Comparator<MailVO>() {  
 	            @Override  
 	            public int compare(MailVO o1, MailVO o2) {
-	            	if ((!o1.isRead()) && o2.isRead() ) return 1;
-	            	if ((!o2.isRead()) && o1.isRead() ) return -1;
+	            	if ((!o1.isRead()) && o2.isRead() ) return -1;
+	            	if ((!o2.isRead()) && o1.isRead() ) return 1;
 	            	DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	            	try {
 						Date date1 = df.parse(o1.getTime());

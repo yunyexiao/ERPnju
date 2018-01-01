@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import dataservice.MailDataService;
@@ -12,39 +13,30 @@ import po.UserPO;
 
 public class MailData extends UnicastRemoteObject implements MailDataService {
 
-	protected MailData() throws RemoteException {
+	public MailData() throws RemoteException {
 		super();
 	}
 
 	@Override
 	public boolean saveMail(MailPO mail) throws RemoteException {
-		try{
-			String sql="INSERT INTO MailInfo VALUES('"+mail.getFromId()+"','"+mail.getToId()
-			+"','"+mail.getTime()+"','"+mail.getContent()+"',"+mail.isRead()+");";
-			Statement s=DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate(sql);
-			if(r>0)return true;
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
-		return false;
+		return SQLQueryHelper.add("MailInfo", mail.getFromId(), mail.getToId(), mail.getTime(), mail.getContent(), mail.isRead()?1:0);
 	}
 
 	@Override
 	public ArrayList<MailPO> getMailList(UserPO user) throws RemoteException {
 		ArrayList<MailPO> mails=new ArrayList<MailPO>();
 		try{
-			String sql="SELCET * FROM MailInfo WHERE MIFromID='"+user.getUserId()+"' OR MIToID='"+user.getUserId()+"';";
+			String sql="SELECT * FROM MailInfo WHERE MIFromID='"+user.getUserId()+"' OR MIToID='"+user.getUserId()+"';";
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery(sql);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			while(r.next()){
 				MailPO mail=new MailPO(
 						r.getString("MIFromID"),
 						r.getString("MIToID"),
 						r.getString("MIContent"),
-						r.getString("MITime"),
-						r.getBoolean("MIIsExist")
+						sdf.format(r.getTimestamp("MITime")),
+						r.getBoolean("MIIsRead")
 						);
 				mails.add(mail);
 			}
@@ -58,7 +50,7 @@ public class MailData extends UnicastRemoteObject implements MailDataService {
 	@Override
 	public boolean readMail(MailPO mail) throws RemoteException {
 		try{
-			String sql="UPDATE MailInfo SET MIIsExist="+1;
+			String sql="UPDATE MailInfo SET MIIsRead="+1;
 			Statement s=DataHelper.getInstance().createStatement();
 			int r=s.executeUpdate(sql);
 			if(r>0)return true;

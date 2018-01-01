@@ -72,5 +72,6 @@ public class MailPanel implements PanelInterface {
 		for (int i = 0; i < mailList.size(); i++) mailPanel.add(new OneMailPanel(mailList.get(i),mailBL,userInfo,new UpdateListener()), "0, "+i);
 		scrollPane.setViewportView(mailPanel);
 		panel.add(scrollPane, "0,1,f");
+		panel.updateUI();
 	}
 }
