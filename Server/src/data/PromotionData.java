@@ -22,7 +22,7 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 			sumAttributes={"PSID","PSStartMoney","PSEndMoney","PSComID1","PSComQuantity1",
 					"PSComID2","PSComQuantity2","PSComID3","PSComQuantity3","PSCoupon"};
 	
-	protected PromotionData() throws RemoteException {
+	public PromotionData() throws RemoteException {
 		super();
 	}
 
@@ -184,6 +184,7 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery(sql);
+			if (!r.next()) return null;
 			if(r.getInt(billAttributes[3])==1){
 				String sql2="SELECT * FROM "+rankProName+" WHERE "+rankAttributes[0]+"='"+id+"';";
 				Statement s2=DataHelper.getInstance().createStatement();
@@ -301,7 +302,7 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 		for(int i=0;i<items.size();i++){
 			str=str+sumAttributes[3+2*i]+","+sumAttributes[4+2*i]+",";
 		}
-		str=str+rankAttributes[9]+") VALUES('"+promotion.getId()
+		str=str+sumAttributes[9]+") VALUES('"+promotion.getId()
 		+"',"+promotion.getStartPrice()+","+promotion.getEndPrice()+",";
 		for(int i=0;i<items.size();i++){
 			str=str+"'"+items.get(i).getComId()+"',"+items.get(i).getNum()+",";
@@ -309,6 +310,7 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 		str=str+promotion.getCoupon()+");";
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
+			System.out.println(str);
 			int r=s.executeUpdate(str);
 			if(r>0)return true;
 		}catch(Exception e){
@@ -425,18 +427,19 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 			ResultSet r=s.executeQuery(str);
 			while(r.next()){
 				for(int i=0;i<3;i++){
-					if(r.getString(rankAttributes[3+2*i])!=null){
+					if(r.getString(sumAttributes[3+2*i])!=null){
 						GiftItem item=new GiftItem(
-								r.getString(rankAttributes[3+2*i]),
-								r.getInt(rankAttributes[4+2*i]),
-								getComPrice(r.getString(rankAttributes[3+2*i]))
+								r.getString(sumAttributes[3+2*i]),
+								r.getInt(sumAttributes[4+2*i]),
+								getComPrice(r.getString(sumAttributes[3+2*i]))
 								);
 						items.add(item);
 					}
 				}
 			}
 		}catch(Exception e){
-		return null;
+			e.printStackTrace();
+			return null;
 		}
 		return items;
 	}
