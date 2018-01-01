@@ -141,6 +141,11 @@ public class PromotionSearchWin {
         String id = idField.getText();
         PromotionVO promotion = promotionBl.findById(id);
         String[] columnNames = {"编号", "生效日期", "失效日期"};
+        if (promotion == null) {
+        	result = new MyTableModel(null, columnNames);
+            frame.dispose();
+        	return;
+        }
         String[][] data = {{promotion.getId(), promotion.getFromDate(), promotion.getToDate()}};
         result = new MyTableModel(data, columnNames);
         frame.dispose();
