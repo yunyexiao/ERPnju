@@ -1,10 +1,12 @@
 package po;
 
+import java.io.Serializable;
+
 /**
  * 促销策略PO的抽象父类
  * @author 恽叶霄
  */
-public abstract class PromotionPO {
+public abstract class PromotionPO implements Serializable{
     
     private String id;
     /** 该促销策略的起讫日期 */
