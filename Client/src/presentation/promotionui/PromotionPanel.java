@@ -2,6 +2,7 @@ package presentation.promotionui;
 
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import blservice.PromotionBLService;
@@ -41,11 +42,11 @@ public class PromotionPanel implements PanelInterface {
     private JPanel getNorthPanel(ActionListener closeListener){
         TopButtonPanel topPanel = new TopButtonPanel();
         // TODO icons to be added
-        topPanel.addButton("等级策略", null, e -> addRankPromotion());
-        topPanel.addButton("商品组合降价", null, e -> addGroupDiscount());
-        topPanel.addButton("总额策略", null, e -> addSumPromotion());
-        topPanel.addButton("搜索", null, e -> search());
-        topPanel.addButton("关闭", null, closeListener);
+        topPanel.addButton("等级策略", new ImageIcon("resource/PromotionA.png"), e -> addRankPromotion());
+        topPanel.addButton("商品组合降价", new ImageIcon("resource/PromotionB.png"), e -> addGroupDiscount());
+        topPanel.addButton("总额策略", new ImageIcon("resource/PromotionC.png"), e -> addSumPromotion());
+        topPanel.addButton("搜索", new ImageIcon("resource/SearchData.png"), e -> search());
+        topPanel.addButton("关闭", new ImageIcon("resource/Close.png"), closeListener);
         return topPanel.getPanel();
     }
     
