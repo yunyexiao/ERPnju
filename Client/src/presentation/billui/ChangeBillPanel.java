@@ -59,8 +59,6 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 		initBillPanel();
 		changeBillBL = new ChangeBillBL(bill.getFlag());
 		billIdField.setText(bill.getAllId());
-		overButton.setEnabled(false);
-		lostButton.setEnabled(false);
 		if (bill.getFlag()) overButton.setSelected(true);
 		else lostButton.setSelected(true);
 		operaterField.setText(bill.getOperator());
@@ -195,11 +193,8 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 	}
 
 	public ChangeBillVO getBill() {
-		if (! isCorrectable()) {
-			return null;
-		}
-		Timetools.check();
-		return new ChangeBillVO(Timetools.getDate(), Timetools.getTime(), changeBillBL.getNewId(), user.getId(), ChangeBillVO.DRAFT, overButton.isSelected(), (MyTableModel) table.getModel());
+		if (! isCorrectable()) return null;
+		return new ChangeBillVO(Timetools.getDate(), Timetools.getTime(), changeBillBL.getNewId().split("-")[2], user.getId(), ChangeBillVO.DRAFT, overButton.isSelected(), (MyTableModel) table.getModel());
 	}
 	
 	private void setBillId(boolean isOver) {
@@ -239,7 +234,9 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 
 	@Override
 	public void setEditable(boolean b) {
-		// TODO Auto-generated method stub
-		
+		overButton.setEnabled(false);
+		lostButton.setEnabled(false);
+		addButton.setEnabled(false);
+		deleteButton.setEnabled(false);
 	}
 }

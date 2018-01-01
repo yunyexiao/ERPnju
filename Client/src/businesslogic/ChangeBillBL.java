@@ -45,7 +45,7 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
 	@Override
 	public boolean deleteBill(String id) {
 		try {
-			if (changeBillDS.deleteBill(id)) {
+			if (changeBillDS.deleteBill(id, isOver)) {
             	addLog.add("删除"+getBillName(), "删除的"+getBillName()+"单据编号为"+id);
             	return true;
             } else return false;
@@ -80,13 +80,13 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
 	@Override
 	public boolean offsetBill(String id){
 	    try{
-            ChangeBillPO bill = changeBillDS.getBillById(id);
+            ChangeBillPO bill = changeBillDS.getBillById(id, isOver);
             ArrayList<ChangeItem> items = new ArrayList<>();
             bill.getCommodityList().forEach(i -> items.add(new ChangeItem(
                 i.getCommodityId(), i.getChangedValue(), i.getOriginalValue())));
             ChangeBillPO offset = new ChangeBillPO(
                 Timetools.getDate(), Timetools.getTime(), this.getNewId()
-                , bill.getOperator(), BillPO.PASS, bill.getFlag(), items);
+                , bill.getOperator(), BillPO.PASS, bill.isOver(), items);
             if (changeBillDS.saveBill(offset)) {
             	addLog.add("红冲"+getBillName(), "被红冲的"+getBillName()+"单据编号为"+bill.getAllId());
             	return true;
@@ -113,10 +113,10 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
 	@Override
 	public boolean examineBill(String billId) {
         try{
-            ChangeBillPO billPO = changeBillDS.getBillById(billId);
+            ChangeBillPO billPO = changeBillDS.getBillById(billId, isOver);
             ChangeBillVO billVO = BillTools.toChangeBillVO(billPO);
             ArrayList<ChangeItem> list = billPO.getCommodityList();
-            if (billPO.getFlag()) { //报溢单(判断逻辑导致程序员进入混乱状态)
+            if (billPO.isOver()) { //报溢单(判断逻辑导致程序员进入混乱状态)
                 for (int i = 0; i < list.size(); i++) {
                     CommodityPO commodityPO = commodityDS.findById(list.get(i).getCommodityId());
             		commodityDS.add(new CommodityPO(commodityPO.getId(), commodityPO.getName(), commodityPO.getType(), 
@@ -153,7 +153,7 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
 	@Override
 	public boolean notPassBill(String billId) {
         try{
-            ChangeBillPO billPO = changeBillDS.getBillById(billId);
+            ChangeBillPO billPO = changeBillDS.getBillById(billId, isOver);
             ChangeBillVO billVO = BillTools.toChangeBillVO(billPO);
             billPO.setState(4);
             billVO.setState(4);
@@ -167,7 +167,7 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
 	@Override
 	public BillVO getBillById(String billId) {
 		try {
-			return BillTools.toChangeBillVO(changeBillDS.getBillById(billId));
+			return BillTools.toChangeBillVO(changeBillDS.getBillById(billId, isOver));
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return null;
