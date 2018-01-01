@@ -194,7 +194,14 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 
 	public ChangeBillVO getBill() {
 		if (! isCorrectable()) return null;
-		return new ChangeBillVO(Timetools.getDate(), Timetools.getTime(), changeBillBL.getNewId().split("-")[2], user.getId(), ChangeBillVO.DRAFT, overButton.isSelected(), (MyTableModel) table.getModel());
+		String[] headers = {"商品id", "商品名称", "库存数量", "实际数量"};
+		Object[][] data = new Object[table.getRowCount()][4];
+		for (int i = 0; i < table.getRowCount(); i++) {
+			for (int j = 0; j < 4; j++) {
+				data[i][j] = table.getValueAt(i, j);
+			}
+		}
+		return new ChangeBillVO(Timetools.getDate(), Timetools.getTime(), billIdField.getText().split("-")[2], user.getId(), ChangeBillVO.DRAFT, overButton.isSelected(), new MyTableModel(data, headers));
 	}
 	
 	private void setBillId(boolean isOver) {

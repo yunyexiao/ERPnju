@@ -42,8 +42,8 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
 			new String[]{"IOBID","IOBOperatorID","IOBCondition"}:
 			new String[]{"ILBID","ILBOperatorID","ILBCondition"};
 		String[] recordAttributes = bill.isOver() ? 
-			new String[]{"IORID","IORComQuantity","IOROverQuantity"}: 
-			new String[]{"ILRID","ILRComQuantity","ILRLostQuantity"};
+			new String[]{"IORID","IORComID","IORComQuantity","IOROverQuantity"}: 
+			new String[]{"ILRID","ILRComID","ILRComQuantity","ILRLostQuantity"};
 		try{
 			boolean isExist=BillDataHelper.isBillExist(billName, billAttributes[0], bill);
 			if(!isExist){
@@ -63,7 +63,7 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
 				for(int i=0;i<items.size();i++){
 					ChangeItem item = items.get(i);
 					b2=b2||SQLQueryHelper.update(recordName, recordAttributes, new Object[]
-						{bill.getId(),item.getCommodityId(),item.getOriginalValue(),item.getChangedValue()});
+						{bill.getAllId(),item.getCommodityId(),item.getOriginalValue(),item.getChangedValue()});
 				}
 				return b1||b2;
 			}
