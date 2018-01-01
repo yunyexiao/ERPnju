@@ -55,12 +55,12 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	protected boolean isCorrectable() {
 	    if(!super.isCorrectable()) return false;
 	    try{
-	        int discount = Integer.parseInt(discountField.getText());
+	        double discount = Double.parseDouble(discountField.getText());
 	        if(user.getRank() == 0 && discount > 1000)
 	            return false;
 	        if(user.getRank() == 1 && discount > 5000)
 	            return false;
-	        Integer.parseInt(couponField.getText());
+	        Double.parseDouble(couponField.getText());
 	        return true;
 	    }catch(NumberFormatException e){
 	        e.printStackTrace();
@@ -149,10 +149,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		afterDiscountField.setEditable(false);
 		FocusListener l = new FocusListener(){
             @Override
-            public void focusGained(FocusEvent e) {
-                // no need
-            }
-
+            public void focusGained(FocusEvent e) {}
             @Override
             public void focusLost(FocusEvent e) {
                 sumUp();

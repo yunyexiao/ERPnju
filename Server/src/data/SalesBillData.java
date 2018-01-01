@@ -13,8 +13,8 @@ import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
 public class SalesBillData extends UnicastRemoteObject implements SalesBillDataService{
 	private static final long serialVersionUID = -952253035895433810L;
-	private String billName="SaleBill";
-	private String recordName="SaleRecord";
+	private String billName="SalesBill";
+	private String recordName="SalesRecord";
 	private String[] billAttributes={"SBID","SBCustomerID","SBSalesmanName","SBOperatorID","SBBeforeDiscount",
 			"SBDiscount","SBCoupon","SBAfterDiscount","SBRemark","SBPromotionID","generateTime","SBCondition"};
 	private String[] recordAttributes={"SRID","SRComID","SRComQuantity","SRPrice","SRComSum","SRRemark"};
