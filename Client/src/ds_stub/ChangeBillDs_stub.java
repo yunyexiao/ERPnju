@@ -30,29 +30,11 @@ public class ChangeBillDs_stub implements ChangeBillDataService {
     }
 	
 	private static int count = 0; 
-	
-	@Override
-	public ChangeBillPO getBillById(String id) {
-        System.out.println("Change Bill found in database: " + id);
-        return BILLS.get(1);
-    }
 
 	@Override
 	public boolean saveBill(ChangeBillPO bill) {
 		BILLS.add(bill);
 		System.out.println("Change Bill added in database: " + bill.getId());
-        return true;
-	}
-
-	@Override
-	public boolean deleteBill(String id) {
-		for(int i = 0; i < BILLS.size(); i++){
-            if(BILLS.get(i).getId().equals(id)){
-                BILLS.remove(i);
-                break;
-            }
-        }
-        System.out.println("Change Bill deleted in database: " + id);
         return true;
 	}
 
@@ -63,11 +45,20 @@ public class ChangeBillDs_stub implements ChangeBillDataService {
 	}
 
 	@Override
-    public ArrayList<ChangeBillPO> getBillsByDate(String from, String to) throws RemoteException {
-        ArrayList<ChangeBillPO> result = new ArrayList<>();
-        result.add(BILLS.get(0));
-        result.add(BILLS.get(1));
-        System.out.println("Change Bill found by date in database");
-        return result;
-    }
+	public ChangeBillPO getBillById(String id, boolean isOver) throws RemoteException {
+		System.out.println("Change Bill found in database: " + id);
+        return BILLS.get(1);
+	}
+
+	@Override
+	public boolean deleteBill(String id, boolean isOver) throws RemoteException {
+		for(int i = 0; i < BILLS.size(); i++){
+            if(BILLS.get(i).getId().equals(id)){
+                BILLS.remove(i);
+                break;
+            }
+        }
+        System.out.println("Change Bill deleted in database: " + id);
+        return true;
+	}
 }
