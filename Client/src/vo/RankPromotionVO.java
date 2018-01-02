@@ -42,25 +42,23 @@ public class RankPromotionVO extends PromotionVO {
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer(super.toString());
-        buffer.append(" 用户等级：");
-        buffer.append(rank);
         if(gifts != null){
-            buffer.append(" 赠品：");
+            buffer.append("；赠品：");
             int rows = gifts.getRowCount();
             for(int i = 0; i < rows; i++){
-                buffer.append(gifts.getValueAt(i, 0));
-                buffer.append('*');
                 buffer.append(gifts.getValueAt(i, 1));
+                buffer.append('*');
+                buffer.append(gifts.getValueAt(i, 4));
                 buffer.append(',');
             }
             buffer.delete(buffer.length() - 1, buffer.length());
         }
         if(reduction > 0){
-            buffer.append(" 减价：");
+            buffer.append("；减价：");
             buffer.append(reduction);
         }
         if(coupon > 0){
-            buffer.append(" 代金券：");
+            buffer.append("；代金券：");
             buffer.append(coupon);
         }
         return buffer.toString();

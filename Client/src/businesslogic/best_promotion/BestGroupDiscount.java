@@ -51,6 +51,9 @@ public class BestGroupDiscount implements IBestPromotion {
                 properPromotions.add(vo);
             }
         });
+        if(properPromotions.isEmpty()){
+            return;
+        }
         Collections.sort(properPromotions, (a,b)->{
             if(a.getReduction() > b.getReduction()) return -1;
             if(a.getReduction() == b.getReduction()) return 0;

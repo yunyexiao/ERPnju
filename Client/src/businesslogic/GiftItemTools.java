@@ -39,7 +39,7 @@ public final class GiftItemTools {
             CommodityVO com = commodityInfo.getCommodity(id);
             String name = com.getName();
             String type = com.getType();
-            data[i] = new String[]{id, name, type, item.getNum() + "", item.getPrice() + ""};
+            data[i] = new String[]{id, name, type, item.getPrice() + "", item.getNum() + ""};
         }
         return new MyTableModel(data, columnNames);
     }

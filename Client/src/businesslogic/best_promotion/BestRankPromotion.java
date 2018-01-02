@@ -39,6 +39,9 @@ public class BestRankPromotion implements IBestPromotion {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String date = formatter.format(new Date());
         ArrayList<RankPromotionPO> promotions = promotionBl.searchRankPromotionPO(date, rank);
+        if(promotions.isEmpty()){
+            return;
+        }
         Collections.sort(promotions, (a,b)->compare(a,b));
         best = promotionBl.toVO(promotions.get(0));
         benefit = getBenefit(promotions.get(0));

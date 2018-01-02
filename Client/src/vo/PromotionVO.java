@@ -26,11 +26,7 @@ public abstract class PromotionVO {
     
     @Override
     public String toString(){
-        StringBuffer buffer = new StringBuffer("编号：");
-        buffer.append(this.getId());
-        buffer.append(" 有效时间：");
-        buffer.append(this.getFromDate() + "-" + this.getToDate());
-        return buffer.toString();
+        return "编号：" + id;
     }
     
     abstract public PromotionPO toPO();

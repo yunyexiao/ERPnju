@@ -81,11 +81,17 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 
 	@Override
 	protected void sumUp(){
-	    // TODO promotions haven't been considered
-	    double before = 0, after = 0;
 	    super.sumUp();
+
+	    int rank = user.getRank();
+	    MyTableModel goods = (MyTableModel)goodsListTable.getModel();
+	    double sum = sumField.getValue();
+	    promotion = saleBillBL.getBestPromotion(rank, goods, sum);
+	    if(promotion != null)promotionInfoArea.setText(promotion.toString());
+
+	    double before = 0, after = 0;
         before = sumField.getValue();
-        after = before - discountField.getValue() - couponField.getValue();
+        after = before - discountField.getValue() - couponField.getValue() - promotion.getReduction();
 	    afterDiscountField.setValue(after);
 	}
 
@@ -135,6 +141,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	    promotionPanel.add(new JLabel("¥Ÿœ˙–≈œ¢"), "1 1");
 	    promotionInfoArea = new JTextArea(2, 20);
 	    promotionInfoArea.setEditable(false);
+	    promotionInfoArea.setLineWrap(true);
 	    promotionPanel.add(promotionInfoArea, "1 3");
 	    return promotionPanel;
 	}
