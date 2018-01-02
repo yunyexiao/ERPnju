@@ -7,8 +7,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
+import po.billpo.GiftBillPO;
+import po.billpo.GiftItem;
 import po.billpo.PaymentBillPO;
 import po.billpo.PurchaseBillPO;
 import po.billpo.PurchaseReturnBillPO;
@@ -164,6 +167,7 @@ public class BillDataHelper {
 			return null;
 		}
 	}
+	
 	public static SalesBillPO getSalesBill(String id) {
 		try{
 			ArrayList<SalesItemsPO> items=new ArrayList<SalesItemsPO>();
@@ -234,6 +238,34 @@ public class BillDataHelper {
 		}
 	}
 	
+	public static GiftBillPO getGiftBill(String id){
+		ArrayList<GiftItem> items=new ArrayList<GiftItem>();
+		try{
+			ResultSet r1=SQLQueryHelper.getRecordByAttribute("InventoryGiftRecord", "IGRID", id);
+			while(r1.next()){
+				GiftItem item=new GiftItem(
+						r1.getString("IGRComID"),
+						r1.getInt("IGRComQuantity"),
+						r1.getDouble("IGRComPrice"));
+				items.add(item);
+			}
+			ResultSet r2=SQLQueryHelper.getRecordByAttribute("InventoryGiftBill", "IGBID", id);
+			r2.next();
+			return new GiftBillPO(
+					dateFormat.format(r2.getDate("generateTime")),
+					timeFormat.format(r2.getTime("generateTime")),
+					r2.getString("IGBID").split("-")[2],
+					r2.getString("IGBOperatorID"),
+					r2.getInt("IGBCondition"),
+					items,
+					r2.getString("IGBSalesBillID"),
+					r2.getString("IGBCustomerID"));	
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	//获取单据类id,不加标识
 	public static String getNewBillId(String tableName,String idName){
 		String newId=null;
@@ -274,6 +306,23 @@ public class BillDataHelper {
 			int r1 = s1.executeUpdate("DELETE FROM "+billTableName+" WHERE "+billTableId+"='"+id+"';");
 			return r1 > 0;
 		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static boolean isBillExist(String billName,String idName,BillPO bill){
+		int num=0;
+		try{
+			Statement s=DataHelper.getInstance().createStatement();
+			ResultSet r=s.executeQuery("SELECT COUNT(*) AS num FROM "+billName+" WHERE "+idName+"='"+bill.getAllId()+"';");
+			while(r.next())
+			{
+				num=r.getInt("num");
+			}
+			if(num>0)return true;
+			else return false;
+		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}

@@ -84,9 +84,6 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
     	
     	return changeBill;
 	}
-
-	
-
 	
 	@Override
 	public String getNewId(boolean isOver) throws RemoteException{
@@ -101,7 +98,6 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
 		}
 		return newId;
 	}
-
 
 	@Override
 	public boolean deleteBill(String id, boolean isOver) throws RemoteException {
@@ -121,22 +117,70 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
 	@Override
 	public boolean saveBill(ChangeBillPO bill) throws RemoteException {
 		ArrayList<ChangeItem> items=bill.getCommodityList();
+		
+		String billName = bill.isOver() ? "InventoryOverflowBill" : "InventoryLostBill";
+		String recordName=bill.isOver() ? "InventoryOverflowRecord" : "InventoryLostRecord";
+		String[] billAttributes = new String[4];
+		String[] recordAttributes=new String[4];
+		Object[] billValues=new Object[4];
+		Object[] recordValues=new Object[4];
+		if(bill.isOver()){
+			billAttributes[0]="IOBID";
+			billAttributes[1]="IOBOperatorID";
+			billAttributes[2]="IOBCondition";
+			billAttributes[3]="generateTime";
+			
+			recordAttributes[0]="IORID";
+			recordAttributes[1]="IORComID";
+			recordAttributes[2]="IORComQuantity";
+			recordAttributes[3]="IOROverQuantity";	
+		}
+		
+		else{
+			billAttributes[0]="ILBID";
+			billAttributes[1]="ILBOperatorID";
+			billAttributes[2]="ILBCondition";
+			billAttributes[3]="generateTime";
+			
+			recordAttributes[0]="ILRID";
+			recordAttributes[1]="ILRComID";
+			recordAttributes[2]="ILRComQuantity";
+			recordAttributes[3]="ILRLostQuantity";				
+		}
+		billValues[0]=bill.getId();
+		billValues[1]=bill.getOperator();
+		billValues[2]=bill.getState();
+		billValues[3]=bill.getDate()+" "+bill.getTime();
+		
 		try{
-			String tableName = bill.isOver() ? "InventoryOverflowBill" : "InventoryLostBill";
-			boolean b1 = SQLQueryHelper.add(tableName, bill.getId()
-					,bill.getOperator(),bill.getState()
-					,bill.getDate() + " "+bill.getTime());
+			boolean isExist=BillDataHelper.isBillExist(billName, billAttributes[0], bill);
+			
+			if(!isExist){
+			boolean b1 = SQLQueryHelper.add(billName, billValues);
 			boolean b2 = true;
 			for(int i=0;i<items.size();i++){
-				b2 = b2 && SQLQueryHelper.add(tableName, bill.getAllId(),items.get(i).getCommodityId()
+				b2 = b2 && SQLQueryHelper.add(billName, bill.getAllId(),items.get(i).getCommodityId()
 						,items.get(i).getOriginalValue(),items.get(i).getChangedValue());
 			}
-			if(b1 && b2) return true;
+			return b1 && b2;
+			}
+			
+			else{
+				boolean b1=SQLQueryHelper.update(billName, billAttributes, billValues);
+				boolean b2=false;
+				for(int i=0;i<items.size();i++){
+					recordValues[0]=bill.getId();
+					recordValues[1]=items.get(i).getCommodityId();
+					recordValues[2]=items.get(i).getOriginalValue();
+					recordValues[3]=items.get(i).getChangedValue();
+					
+					b2=b2||SQLQueryHelper.update(recordName, recordAttributes, recordValues);
+				}
+				return b1||b2;
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
-		return false;
 	}
-
 }
