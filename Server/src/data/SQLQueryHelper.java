@@ -51,22 +51,14 @@ public class SQLQueryHelper {
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT "+attributeName+" FROM "+tableName+";");
-			while(r.next())
-			{
-				int temp=0;
-				temp=r.getInt(attributeName);
-				//temp=Integer.valueOf(r.getString("SUID"));
-				if(temp>max)max=temp;
-			}
+			while(r.next()) max++;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
 		res=max+1;
 		newId=String.format(format, res);
-		
 		return newId;
-		
 	}
 	
 	public static boolean getTrueDeleteResult(String tableName, String attributeName, String value){

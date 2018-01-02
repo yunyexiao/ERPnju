@@ -13,8 +13,6 @@ public class PaymentBillData extends UnicastRemoteObject implements PaymentBillD
 	private String[] billAttributes={"PBID","PBCustomerID","PBOperatorID","PBSum","generateTime","PBCondition"};
 	private String[] recordAttributes={"PRID","PRAccountID","PRTransfer","PRRemark"};
 	
-	
-
 	public PaymentBillData() throws RemoteException {
 		super();
 	}
@@ -29,14 +27,14 @@ public class PaymentBillData extends UnicastRemoteObject implements PaymentBillD
 				bill.getDate()+" "+bill.getTime(),bill.getState()};
 
 		try{
-			if(isExist){
-			boolean b1 = SQLQueryHelper.add(billName, billValues);
-			boolean b2 = true;
-			for(int i=0;i<items.size();i++){
-				b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId()
-						,items.get(i).getAccountId(),items.get(i).getMoney(),items.get(i).getRemark());
-			}
-			return b1 && b2;
+			if(!isExist){
+				boolean b1 = SQLQueryHelper.add(billName, billValues);
+				boolean b2 = true;
+				for(int i=0;i<items.size();i++){
+					b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId()
+							,items.get(i).getAccountId(),items.get(i).getMoney(),items.get(i).getRemark());
+				}
+				return b1 && b2;
 			}
 			else{
 				boolean b1=SQLQueryHelper.update(billName, billAttributes, billValues);

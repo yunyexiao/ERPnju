@@ -3,6 +3,7 @@ package data;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,13 +31,10 @@ public class BillSearchData extends UnicastRemoteObject implements BillSearchDat
 	@Override
 	public ArrayList<PurchaseBillPO> searchPurchaseBills(String fromDate, String toDate, String customerId,
 			String operatorId,int state) throws RemoteException {
-
 		ArrayList<PurchaseBillPO> bills=new ArrayList<PurchaseBillPO>();
-		String sql=assembleSQL("PurchaseBill", fromDate, toDate, 
-				"PBSupplierID", customerId, "PBOperatorID", operatorId,"PBCondition",state);
 		try{
-			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery(sql);
+			ResultSet r = assembleSQL("PurchaseBill", fromDate, toDate,"PBCondition",state, 
+					"PBSupplierID", customerId, "PBOperatorID", operatorId);
 			while(r.next()) bills.add(BillDataHelper.getPurchaseBill(r.getString("PBID")));
 			return bills;
 		}catch(Exception e){
@@ -48,13 +46,10 @@ public class BillSearchData extends UnicastRemoteObject implements BillSearchDat
 	@Override
 	public ArrayList<PurchaseReturnBillPO> searchPurchaseReturnBills(String fromDate, String toDate, String customerId,
 			String operatorId,int state) throws RemoteException {
-
 		ArrayList<PurchaseReturnBillPO> bills=new ArrayList<PurchaseReturnBillPO>();
-		String sql=assembleSQL("PurchaseReturnBill", fromDate, toDate, 
-				"PRBSupplierID", customerId, "PRBOperatorID", operatorId,"PRBCondition",state);
 		try{
-			Statement s = DataHelper.getInstance().createStatement();
-			ResultSet r = s.executeQuery(sql);
+			ResultSet r = assembleSQL("PurchaseReturnBill", fromDate, toDate,"PRBCondition",state, 
+					"PRBSupplierID", customerId, "PRBOperatorID", operatorId);
 			while(r.next()) bills.add(BillDataHelper.getPurchaseRetrunBill(r.getString("PRBID")));
 			return bills;	
 		}catch(Exception e){
@@ -67,11 +62,9 @@ public class BillSearchData extends UnicastRemoteObject implements BillSearchDat
 	public ArrayList<SalesBillPO> searchSalesBills(String fromDate, String toDate, String customerId, String operatorId,int state)
 			throws RemoteException {
 		ArrayList<SalesBillPO> bills=new ArrayList<SalesBillPO>();
-		String sql=assembleSQL("SalesBill", fromDate, toDate, 
-				"SBCustomerID", customerId, "SBOperatorID", operatorId,"SBCondition",state);
 		try{
-			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery(sql);
+			ResultSet r = assembleSQL("SalesBill", fromDate, toDate,"SBCondition",state, 
+					"SBCustomerID", customerId, "SBOperatorID", operatorId);
 			while(r.next()) bills.add(BillDataHelper.getSalesBill(r.getString("SBID")));
 			return bills;
 		}catch(Exception e){
@@ -84,28 +77,24 @@ public class BillSearchData extends UnicastRemoteObject implements BillSearchDat
 	public ArrayList<SalesReturnBillPO> searchSalesReturnBills(String fromDate, String toDate, String customerId,
 			String operatorId,int state) throws RemoteException {
 		ArrayList<SalesReturnBillPO> bills=new ArrayList<SalesReturnBillPO>();
-		String sql=assembleSQL("SalesReturnBill", fromDate, toDate, 
-				"SRBCustomerID", customerId, "SRBOperatorID", operatorId,"SRBCondition",state);
 		try{
-			Statement s = DataHelper.getInstance().createStatement();
-			ResultSet r = s.executeQuery(sql);
+			ResultSet r = assembleSQL("SalesReturnBill", fromDate, toDate,"SRBCondition",state,
+					"SRBCustomerID", customerId, "SRBOperatorID", operatorId);
 			while(r.next()) bills.add(BillDataHelper.getSalesReturnBill(r.getString("SRBID")));
+			return bills;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		return bills;
 	}
 
 	@Override
 	public ArrayList<CashCostBillPO> searchCashCostBills(String fromDate, String toDate, String customerId,
 			String operatorId,int state) throws RemoteException {
 		ArrayList<CashCostBillPO> bills=new ArrayList<CashCostBillPO>();
-		String sql=assembleSQL("CashCostBill", fromDate, toDate, 
-				"CCBAccountID", customerId, "CCBOperatorID", operatorId,"CCBCondition",state);
 		try{
-			Statement s = DataHelper.getInstance().createStatement();
-			ResultSet r = s.executeQuery(sql);
+			ResultSet r = assembleSQL("CashCostBill", fromDate, toDate,"CCBCondition",state,
+					"CCBAccountID", customerId, "CCBOperatorID", operatorId);
 			while(r.next()) bills.add(BillDataHelper.getCashCostBill(r.getString("CCBID")));
 			return bills;
 		}catch(Exception e){
@@ -117,268 +106,66 @@ public class BillSearchData extends UnicastRemoteObject implements BillSearchDat
 	@Override
 	public ArrayList<PaymentBillPO> searchPaymentBills(String fromDate, String toDate, String customerId,
 			String operatorId, int state) throws RemoteException {
-		
 		ArrayList<PaymentBillPO> bills=new ArrayList<PaymentBillPO>();
-		String sql=assembleSQL("PaymentBill", fromDate, toDate, 
-				"PBCustomerID", customerId, "PBOperatorID", operatorId,"PBCondition",state);
-		
 		try{
-			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery(sql);
+			ResultSet r = assembleSQL("PaymentBill", fromDate, toDate,"PBCondition",state, 
+					"PBCustomerID", customerId, "PBOperatorID", operatorId);
 			while(r.next()) bills.add(BillDataHelper.getPaymentBill(r.getString("PBID")));
+			return bills;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		return bills;
 	}
 
 	@Override
 	public ArrayList<ReceiptBillPO> searchReceiptBills(String fromDate, String toDate, String customerId,
 			String operatorId, int state) throws RemoteException {
 		ArrayList<ReceiptBillPO> bills=new ArrayList<ReceiptBillPO>();
-		String sql=assembleSQL("ReceiptBill", fromDate, toDate, "RBCustomerID", customerId, "RBOperatorID", operatorId,"RBCondition",state);
 		try{
-			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery(sql);
+			ResultSet r = assembleSQL("ReceiptBill", fromDate, toDate,"RBCondition",state, "RBCustomerID", customerId, "RBOperatorID", operatorId);
 			while(r.next()) bills.add(BillDataHelper.getReceiptBill(r.getString("RBID")));
+			return bills;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		return bills;
 	}
 	
 		@Override
 	public ArrayList<ChangeBillPO> searchChangeBills(String fromDate, String toDate, String store, String operatorId,
-			boolean isOver,int state) throws RemoteException {
-			
-			ArrayList<ChangeBillPO> bills=new ArrayList<ChangeBillPO>();
-			String operator1=" AND IOBOperatorID='";
-			String operator2=" AND ILBOperatorID='";
-			
-			if(operatorId==null)
-			{
-				operator1=null;
-				operator2=null;
-			}
-							
-			try{
-				
-			if(isOver){
-				if(store==null&&state!=-1){
-					String sql="SELECT * FROM InventoryOverflowBill WHERE generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
-							+operator1+operatorId
-							+"' AND IOBCondition="+state+";";
-					bills=getChangeBills(sql,true);
-			    }
-				else if(store!=null&&state!=-1){
-					String sql="SELECT DISTINCT IOBID, IOBOperatorID, IOBCondition, generateTime"
-							+ " FROM InventoryOverflowRecord, CommodityInfo, InventoryOverflowBill"
-							+ " WHERE IORComID=ComID AND IOBID=IORID"
-							+ " AND ComStore='"+store
-							+"' AND generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
-							+operator1+operatorId
-							+"' AND IOBCondition="+state+";";
-					bills=getChangeBills(sql,true);
-				}
-				
-				else if(store==null&&state==-1){
-					String sql="SELECT * FROM InventoryOverflowBill WHERE generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
-							+operator1+operatorId+"';";
-					bills=getChangeBills(sql,true);
-				}
-				else if(store!=null&&state==-1){
-					String sql="SELECT DISTINCT IOBID, IOBOperatorID, IOBCondition, generateTime"
-							+ " FROM InventoryOverflowRecord, CommodityInfo, InventoryOverflowBill"
-							+ " WHERE IORComID=ComID AND IOBID=IORID"
-							+ " AND ComStore='"+store
-							+operator1+operatorId
-							+"' AND generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"');";
-					
-					bills=getChangeBills(sql,true);					
-				}
-
-			}
-			else if(!isOver){
-				
-				if(store==null&&state!=-1){
-					String sql="SELECT * FROM InventoryLostBill WHERE generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
-							+operator2+operatorId
-							+"' AND ILBCondition="+state+";";
-					bills=getChangeBills(sql,false);
-				}
-				else if(store!=null&&state!=-1){
-					String sql="SELECT DISTINCT ILBID, ILBOperatorID, ILBCondition, generateTime"
-							+ " FROM InventoryLostRecord, CommodityInfo, InventoryLostBill"
-							+ " WHERE ILRComID=ComID AND ILBID=ILRID"
-							+ " AND ComStore='"+store
-							+"' AND generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
-							+operator2+operatorId
-							+"' AND ILBCondition="+state+";";
-					bills=getChangeBills(sql,false);													
-				}
-				
-				else if(store==null&&state==-1){
-					String sql="SELECT * FROM InventoryLostBill WHERE generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
-							+operator2+operatorId+"';";
-					
-					bills=getChangeBills(sql,false);
-				}
-				else if(store!=null&&state==-1){
-					String sql="SELECT DISTINCT IOBID, IOBOperatorID, IOBCondition, generateTime"
-							+ " FROM InventoryLostRecord, CommodityInfo, InventoryLostBill"
-							+ " WHERE ILRComID=ComID AND ILBID=ILRID AND ComStore='"+store
-							+"' AND ILBOperatorID='"+operatorId
-							+"' AND generateTime>'"+fromDate
-							+"' AND generateTime<DATEADD(DAY,1,'"+toDate+"')"
-							+operator2+operatorId+"';";
-					
-					bills=getChangeBills(sql,false);
-				}		
-			}	
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}	
-		return bills;
+		boolean isOver,int state) throws RemoteException {
+		ArrayList<ChangeBillPO> bills = new ArrayList<ChangeBillPO>();
+		String[] attributes = isOver ?
+				new String[]{"InventoryOverflowBill","IOBCondition","IOBID","IOBOperatorID"}:
+				new String[]{"InventoryLostBill","ILBCondition","ILBID","ILBOperatorID"};
+		try {
+			ResultSet r = assembleSQL(attributes[0], fromDate, toDate,attributes[1],state, "ComStore", store, attributes[3], operatorId);
+			while(r.next()) bills.add(BillDataHelper.getChangeBill(r.getString(attributes[2]),isOver));
+			return bills;
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return bills;
+		}
 	}
 
-	private String assembleSQL(String tableName, String fromDate, String toDate, 
-			String optional1_Name, String optional1, String optional2_Name, String optional2,
-			String condition_Name,int condition){
-		
-		String sql="";
-		String op1_And=" AND ",op2_And=" AND ",op1_equ="='",op2_equ="='";
-		
-		if(optional1==null){
-			optional1 = "";
-			optional1_Name="";
-			op1_And="";
-			op1_equ="";
-		}
-		
-		if(optional2==null){
-			optional2 = "";
-			optional2_Name="";
-			op2_And="";
-			op2_equ="";
-		}
-		
-		if(condition==-1)
-		{
-			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
-			        +"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate+"')"+
-			        op1_And+optional1_Name+op1_equ+optional1
-			        +op2_And+optional2_Name+op2_equ+optional2
-			        +"';";			
-		}
-		else{
-			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
-			        +"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate+"')"+
-			        op1_And+optional1_Name+op1_equ+optional1
-			        +op2_And+optional2_Name+op2_equ+optional2
-			        +"' AND "+condition_Name+"="+condition+"';";			
-		}
-		/*
-		if(optional1==null&&optional2!=null)
-			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
-			        +"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate
-			        +"') AND "+optional2_Name+"='"+optional2
-			        +"' AND "+condition_Name+"="+condition+";";
-		else if(optional1!=null&&optional2==null)
-			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
-					+"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate+
-					"') AND "+optional1_Name+"='"+optional1
-					+"' AND "+condition_Name+"="+condition+";";
-		else if(optional1==null&&optional2==null)
-			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
-			        +"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate
-			        +"' AND "+condition_Name+"="+condition+";";
-		else if(optional1!=null&&optional2!=null)
-			sql="SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate
-			        +"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate+
-			        "') AND "+optional1_Name+"='"+optional1
-			        +"' AND "+optional2_Name+"='"+optional2
-			        +"' AND "+condition_Name+"="+condition+";";
-	      */
-		System.out.println(sql);
-		return sql;
-		
-	}
-	
-	private ArrayList<ChangeBillPO> getChangeBills(String sql1,boolean isOver){
-		
-		String[] billAttributes=new  String[4];
-		String[] recordAttributes=new String[3];
-		String sql2=null;
-		ArrayList<ChangeBillPO> bills=new ArrayList<ChangeBillPO>();
-		
-		billAttributes[0]="generateTime";
-		
-		if(isOver){
-			billAttributes[1]="IOBID";
-			billAttributes[2]="IOBOperatorID";
-			billAttributes[3]="IOBCondition";
-			
-			recordAttributes[0]="IORComID";
-			recordAttributes[1]="IORComQuantity";
-			recordAttributes[2]="IOROverQuantity";
-			
-			sql2="SELECT * FROM InventoryOverflowRecord WHERE IORID='";
-		}
-		else {
-			billAttributes[1]="ILBID";
-			billAttributes[2]="ILBOperatorID";
-			billAttributes[3]="ILBCondition";
-			
-			recordAttributes[0]="ILRComID";
-			recordAttributes[1]="ILRComQuantity";
-			recordAttributes[2]="ILRLostQuantity";
-			
-			sql2="SELECT * FROM InventoryLostRecord WHERE ILRID='";
-		}
-		
-		try{
-			Statement s1=DataHelper.getInstance().createStatement();
-			ResultSet r1=s1.executeQuery(sql1);
-			
-			while(r1.next()){
-				Statement s2=DataHelper.getInstance().createStatement();
-				ResultSet r2=s2.executeQuery(sql2+r1.getString(billAttributes[1])+"';");
-
-				ArrayList<ChangeItem> items=new ArrayList<ChangeItem>();
-				while(r2.next()){
-					ChangeItem item=new ChangeItem(
-							r2.getString(recordAttributes[0]),
-							r2.getInt(recordAttributes[1]),
-							r2.getInt(recordAttributes[2]));
-					items.add(item);	
-				}
-				
-				ChangeBillPO bill=new ChangeBillPO(
-						r1.getString(billAttributes[0]).split(" ")[0],
-						r1.getString(billAttributes[0]).split(" ")[1],
-						r1.getString(billAttributes[1]),
-						r1.getString(billAttributes[2]),
-						r1.getInt(billAttributes[3]),
-						true,
-						items);
-				bills.add(bill);
-				}							
-
-		}catch(Exception e){
+	private ResultSet assembleSQL(String tableName, String fromDate, String toDate, 
+			String conditionName, int state, String... values){
+		try {
+			Statement s = DataHelper.getInstance().createStatement();
+			String sql = "SELECT * FROM "+tableName+" WHERE generateTime>'"+fromDate+"' AND generateTime<DATEADD(DAY,1,"+"'"+toDate+"')";
+			if (state != -1) sql += (" AND "+conditionName+"="+state);
+			for (int i = 0; i < values.length; i+=2) {
+				if (values[i+1] == null) continue;
+				sql += (" AND " + values[i] + "=" + values[i+1]);
+			}
+			System.out.println(sql);
+			ResultSet r = s.executeQuery(sql+";");
+			return r;
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
-		}		
-		return bills;		
+		}
 	}
 
 	@Override
@@ -428,17 +215,14 @@ public class BillSearchData extends UnicastRemoteObject implements BillSearchDat
 	@Override
 	public ArrayList<GiftBillPO> searchGiftBills(String fromDate, String toDate, String customerId, int state)
 			throws RemoteException {
-
 		ArrayList<GiftBillPO> bills=new ArrayList<GiftBillPO>();
-		String sql=assembleSQL("InventoryGiftBill", fromDate, toDate, "IGBCustomerID", customerId, "RBOperatorID", null,"IGBCondition",state);
 		try{
-			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery(sql);
+			ResultSet r = assembleSQL("InventoryGiftBill", fromDate, toDate,"IGBCondition", state, "IGBCustomerID", customerId);
 			while(r.next()) bills.add(BillDataHelper.getGiftBill((r.getString("IGBID"))));
+			return bills;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		return bills;
 	}
 }

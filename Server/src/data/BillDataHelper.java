@@ -10,6 +10,8 @@ import java.util.Calendar;
 import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
+import po.billpo.ChangeBillPO;
+import po.billpo.ChangeItem;
 import po.billpo.GiftBillPO;
 import po.billpo.GiftItem;
 import po.billpo.PaymentBillPO;
@@ -26,6 +28,35 @@ public class BillDataHelper {
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 	private static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
+	public static ChangeBillPO getChangeBill(String id, boolean isOver) {
+		ArrayList<ChangeItem> changeItems=new ArrayList<ChangeItem>();
+		String billName = isOver ? "InventoryOverflowBill" : "InventoryLostBill";
+		String recordName = isOver ? "InventoryOverflowRecord" : "InventoryLostRecord";
+		String[] recordColumns = isOver ? new String[]{"IORID","IORComID","IORComQuantity","IOROverQuantity"} : 
+			new String[]{"ILRID","ILRComID","ILRComQuantity","ILRLostQuantity"};
+		String[] billColumns = isOver ? new String[] {"IOBID","IOBOperatorID","IOBCondition"} :
+			new String[]{"ILBID","ILBOperatorID","ILBCondition"};
+		try{
+			ResultSet r1 = SQLQueryHelper.getRecordByAttribute(recordName, recordColumns[0], id);
+			while(r1.next()) {	
+				ChangeItem item = new ChangeItem(r1.getString(recordColumns[1])
+						,r1.getInt(recordColumns[2]),r1.getInt(recordColumns[3]));
+				changeItems.add(item);
+			}
+			ResultSet r2 = SQLQueryHelper.getRecordByAttribute(billName, billColumns[0], id);
+			r2.next();
+			return new ChangeBillPO(
+					dateFormat.format(r2.getDate("generateTime")),
+					timeFormat.format(r2.getTime("generateTime")),
+					r2.getString(billColumns[0]).split("-")[2],
+					r2.getString(billColumns[1]),
+					r2.getInt(billColumns[2]),true,changeItems);
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static CashCostBillPO getCashCostBill(String id) {
 		try {
 			ArrayList<CashCostItem> items = new ArrayList<CashCostItem>();
@@ -267,29 +298,23 @@ public class BillDataHelper {
 	}
 	
 	//获取单据类id,不加标识
-	public static String getNewBillId(String tableName,String idName){
-		String newId=null;
-		int num=0;
-		
+	public static String getNewBillId(String tableName, String idName){
+		int num = 0;
 		Calendar now = Calendar.getInstance();
 		int year=now.get(Calendar.YEAR), month=now.get(Calendar.MONTH),  day=now.get(Calendar.DAY_OF_MONTH);
 		String date=year+"-"+(month+1)+"-"+day;
 		
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery("SELECT "+idName+" FROM "+tableName+" WHERE generateTime>"
-					+"'"+date+"' "+"AND generateTime<DATEADD(DAY,1,"+"'"+date+"');");
-			while(r.next()){
-				num++;
-			}
+			ResultSet r=s.executeQuery("SELECT "+idName+" FROM "+tableName+
+				" WHERE generateTime>'2000-01-01' AND generateTime<DATEADD(DAY,1,"+"'"+date+"');");
+			while(r.next())num++;
 			num++;
-			
-			newId=String.format("%05d", num);
+			return String.format("%05d", num);
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		return newId;	
 	}
 	
 	public static boolean deleteBill(String id) {
@@ -316,11 +341,9 @@ public class BillDataHelper {
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT COUNT(*) AS num FROM "+billName+" WHERE "+idName+"='"+bill.getAllId()+"';");
-			while(r.next())
-			{
-				num=r.getInt("num");
-			}
-			if(num>0)return true;
+			r.next(); 
+			num=r.getInt("num");
+			if(num > 0) return true;
 			else return false;
 		}catch(Exception e){
 			e.printStackTrace();
