@@ -129,8 +129,9 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		         , sum = Double.parseDouble(afterDiscountField.getText())
 		         , discount = Double.parseDouble(discountField.getText())
 		         , coupon = Double.parseDouble(couponField.getText());
+		    String promotionId = promotion == null ? null : promotion.getId();
 		    return new SalesBillVO(Timetools.getDate(), Timetools.getTime(), id, operater, state
-		        , customerId, model, remark, beforeDiscount, discount, coupon, sum, promotion.getId());
+		        , customerId, model, remark, beforeDiscount, discount, coupon, sum, promotionId);
 		}
 		return null;
 	}
