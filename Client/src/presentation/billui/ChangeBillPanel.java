@@ -24,11 +24,13 @@ import presentation.component.choosewindow.CommodityChooseWin;
 import presentation.tools.Timetools;
 import vo.CommodityVO;
 import vo.UserVO;
+import vo.billvo.BillVO;
 import vo.billvo.ChangeBillVO;
 
 public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 
 	private UserVO user;
+	private BillVO bill;
 	private JTable table;
 	private JButton addButton;
 	private JButton deleteButton;
@@ -56,6 +58,7 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 	 */
 	public ChangeBillPanel(UserVO user, ChangeBillVO bill) {
 		this.user = user;
+		this.bill = bill;
 		initBillPanel();
 		changeBillBL = new ChangeBillBL(bill.getFlag());
 		billIdField.setText(bill.getAllId());
@@ -201,7 +204,11 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 				data[i][j] = table.getValueAt(i, j);
 			}
 		}
-		return new ChangeBillVO(Timetools.getDate(), Timetools.getTime(), billIdField.getText().split("-")[2], user.getId(), ChangeBillVO.DRAFT, overButton.isSelected(), new MyTableModel(data, headers));
+		return new ChangeBillVO(
+				bill == null ? Timetools.getDate() : bill.getDate(),
+				bill == null ? Timetools.getTime() : bill.getTime(),
+				bill == null ? changeBillBL.getNewId().split("-")[2] : billIdField.getText().split("-")[2],
+				user.getId(), ChangeBillVO.DRAFT, overButton.isSelected(), new MyTableModel(data, headers));
 	}
 	
 	private void setBillId(boolean isOver) {

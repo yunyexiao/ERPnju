@@ -26,6 +26,7 @@ public class CashCostBillPanel extends JPanel implements BillPanelInterface {
 
 	private CashCostBillBLService cashCostBillBL = new CashCostBillBL();
 	private UserVO user;
+	private BillVO bill = null;
 	
 	private JTextField billIdField, operatorField, accountIdField, sumField;
 	private JButton accountChooseButton, itemChooseButton, itemDeleteButton;
@@ -40,6 +41,7 @@ public class CashCostBillPanel extends JPanel implements BillPanelInterface {
 
 	public CashCostBillPanel(UserVO user, CashCostBillVO cashCostBill) {
 		this.user = user;
+		this.bill = cashCostBill;
 		initBillPanel();
         billIdField.setText(cashCostBill.getAllId());
         operatorField.setText(cashCostBill.getOperator());
@@ -168,7 +170,11 @@ public class CashCostBillPanel extends JPanel implements BillPanelInterface {
 		if (itemListTable.getRowCount() == 0) new InfoWindow("没有选择条目");
 		else if ("".equals(accountIdField.getText())) new InfoWindow("没有选择账户");
 		else {
-			return new CashCostBillVO(Timetools.getDate(), Timetools.getTime(), cashCostBillBL.getNewId().split("-")[2], user.getId(), state, accountIdField.getText(),(MyTableModel) itemListTable.getModel());
+			return new CashCostBillVO(
+					bill == null ? Timetools.getDate() : bill.getDate(),
+			        bill == null ? Timetools.getTime() : bill.getTime(),
+			        bill == null ? cashCostBillBL.getNewId().split("-")[2] : billIdField.getText().split("-")[2],
+			        user.getId(), state, accountIdField.getText(),(MyTableModel) itemListTable.getModel());
 		}
 		return null;
 	}
