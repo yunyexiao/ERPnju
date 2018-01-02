@@ -25,32 +25,16 @@ public class PurchaseBillData extends UnicastRemoteObject implements PurchaseBil
 	@Override
 	public boolean saveBill(PurchaseBillPO bill) throws RemoteException {
 		
-		ArrayList<SalesItemsPO> items = bill.getPurchaseBillItems();
 		boolean isExist=BillDataHelper.isBillExist(billName, billAttributes[0], bill);
-		Object[] billValues={bill.getAllId(), bill.getSupplierId(), bill.getOperator(), bill.getSum(),
-				bill.getRemark(), bill.getState(), bill.getDate() + " "+bill.getTime()};
 		
 		try{
 			if(!isExist){
-			boolean b1 = SQLQueryHelper.add(billName, billValues);
-			boolean b2 = true;
-			for(int i=0;i<items.size();i++){
-				b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId()
-						,items.get(i).getComId(),items.get(i).getComQuantity(),items.get(i).getComSum()
-						,items.get(i).getComRemark(),items.get(i).getComPrice());
-			}
-			return b1 && b2;
+				return addBill(bill);
 			}
 			else{
-				boolean b1=SQLQueryHelper.update(billName, billAttributes, billValues);
-				boolean b2=false;
-				for(int i=0;i<items.size();i++){
-					Object[] recordValues={bill.getAllId(), items.get(i).getComId(), items.get(i).getComQuantity(), 
-							items.get(i).getComSum(), items.get(i).getComRemark(), items.get(i).getComPrice()};
-					b2=b2||SQLQueryHelper.update(recordName, recordAttributes, recordValues);
-				}
-				return b1||b2;
-			}
+				if(deleteBill(bill.getAllId()))return addBill(bill);
+				else return false;
+			}	
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
@@ -127,5 +111,23 @@ public class PurchaseBillData extends UnicastRemoteObject implements PurchaseBil
 			return null;
 		}
 		return bills;
+	}
+	
+	private boolean addBill(PurchaseBillPO bill){
+		
+		ArrayList<SalesItemsPO> items = bill.getPurchaseBillItems();
+		Object[] billValues={bill.getAllId(), bill.getSupplierId(), bill.getOperator(), bill.getSum(),
+				bill.getRemark(), bill.getState(), bill.getDate() + " "+bill.getTime()};
+		
+		boolean b1 = SQLQueryHelper.add(billName, billValues);
+		boolean b2 = true;
+		for(int i=0;i<items.size();i++){
+			b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId()
+					,items.get(i).getComId(),items.get(i).getComQuantity(),items.get(i).getComSum()
+					,items.get(i).getComRemark(),items.get(i).getComPrice());
+		}
+		return b1 && b2;
+
+
 	}
 }

@@ -20,30 +20,15 @@ public class ReceiptBillData extends UnicastRemoteObject implements ReceiptBillD
 	@Override
 	public boolean saveBill(ReceiptBillPO bill) throws RemoteException {
 
-		ArrayList<TransferItem> items=bill.getTransferList();
 		boolean isExist=BillDataHelper.isBillExist(billName, billAttributes[0], bill);
-		Object[] billValues={bill.getAllId(), bill.getCustomerId(), bill.getOperator(), bill.getSum(),
-				bill.getDate() + " "+bill.getTime(), bill.getState()};
 
 		try{
 			if(!isExist){
-			boolean b1 = SQLQueryHelper.add(billName, billValues);
-			boolean b2 = true;
-			for(int i = 0; i < items.size(); i++) {
-				b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId()
-						,items.get(i).getAccountId(),items.get(i).getMoney(),items.get(i).getRemark());
-			}
-			return b1 && b2;
+				return addBill(bill);
 			}
 			else{
-				boolean b1=SQLQueryHelper.update(billName, billAttributes, billValues);
-				boolean b2=false;
-				for(int i=0;i<items.size();i++){
-					Object[] recordValues={bill.getAllId(), items.get(i).getAccountId(), items.get(i).getMoney(),
-							items.get(i).getRemark()};
-					b2=b2||SQLQueryHelper.update(recordName, recordAttributes, recordValues);
-				}
-				return b1||b2;
+				if(deleteBill(bill.getAllId()))return addBill(bill);
+				else return false;
 			}
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -64,6 +49,20 @@ public class ReceiptBillData extends UnicastRemoteObject implements ReceiptBillD
 	@Override
 	public ReceiptBillPO getBillById(String id) throws RemoteException {
 		return BillDataHelper.getReceiptBill(id);
+	}
+	
+	private boolean addBill(ReceiptBillPO bill){
+		ArrayList<TransferItem> items=bill.getTransferList();
+		Object[] billValues={bill.getAllId(), bill.getCustomerId(), bill.getOperator(), bill.getSum(),
+				bill.getDate() + " "+bill.getTime(), bill.getState()};
+		
+		boolean b1 = SQLQueryHelper.add(billName, billValues);
+		boolean b2 = true;
+		for(int i = 0; i < items.size(); i++) {
+			b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId()
+					,items.get(i).getAccountId(),items.get(i).getMoney(),items.get(i).getRemark());
+		}
+		return b1 && b2;
 	}
 
 }

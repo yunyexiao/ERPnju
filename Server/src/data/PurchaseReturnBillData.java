@@ -19,37 +19,17 @@ public class PurchaseReturnBillData extends UnicastRemoteObject implements Purch
 	private String billName="PurchaseReturnBill";
 	private String recordName="PurchaseReturnRecord";
 	private String[] billAttributes={"PRBID","PRBSupplierID","PRBOperatorID","PRBSum","PRBRemark","PRBCondition","generateTime"};
-	private String[] recordAttributes={"PRRID","PRRComID","PRRComQuantity","PRRComSum","PRRRemark","PRRComPrice"};
 
 	@Override
 	public boolean saveBill(PurchaseReturnBillPO bill) throws RemoteException {
-        ArrayList<SalesItemsPO> items = bill.getPurchaseReturnBillItems();
-		boolean isExist=BillDataHelper.isBillExist(billName, billAttributes[0], bill);
-		Object[] billValues={ bill.getAllId(), bill.getSupplierId(), bill.getOperator(), bill.getSum(),
-				bill.getRemark(), bill.getState(), bill.getDate() + " "+bill.getTime()};
-		
+ 		boolean isExist=BillDataHelper.isBillExist(billName, billAttributes[0], bill);	
 		try{
 			if(!isExist){
-			boolean b1 = SQLQueryHelper.add(billName, bill.getAllId()
-					,bill.getSupplierId(),bill.getOperator(),bill.getSum(),bill.getRemark()
-					,bill.getState(),bill.getDate() + " "+bill.getTime());
-			boolean b2 = true;
-			for(int i=0;i<items.size();i++){
-				b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId()
-						,items.get(i).getComId(),items.get(i).getComQuantity(),items.get(i).getComSum()
-						,items.get(i).getComRemark(),items.get(i).getComPrice());
-			}
-			return b1 && b2;
+				return addBill(bill);
 			}
 			else{
-				boolean b1=SQLQueryHelper.update(billName, billAttributes, billValues);
-				boolean b2=false;
-				for(int i=0;i<items.size();i++){
-					Object[] recordValues={ bill.getAllId(), items.get(i).getComId(), items.get(i).getComQuantity(),
-							items.get(i).getComSum(), items.get(i).getComRemark(), items.get(i).getComPrice()};
-					b2=b2||SQLQueryHelper.update(recordName, recordAttributes, recordValues);
-				}
-				return b1||b2;
+				if(deleteBill(bill.getAllId()))return addBill(bill);
+				else return false;
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -85,6 +65,22 @@ public class PurchaseReturnBillData extends UnicastRemoteObject implements Purch
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	private boolean addBill(PurchaseReturnBillPO bill){
+		
+        ArrayList<SalesItemsPO> items = bill.getPurchaseReturnBillItems();
+		Object[] billValues={ bill.getAllId(), bill.getSupplierId(), bill.getOperator(), bill.getSum(),
+				bill.getRemark(), bill.getState(), bill.getDate() + " "+bill.getTime()};
+		
+		boolean b1 = SQLQueryHelper.add(billName, billValues);
+		boolean b2 = true;
+		for(int i=0;i<items.size();i++){
+			b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId()
+					,items.get(i).getComId(),items.get(i).getComQuantity(),items.get(i).getComSum()
+					,items.get(i).getComRemark(),items.get(i).getComPrice());
+		}
+		return b1 && b2;
 	}
 
 }

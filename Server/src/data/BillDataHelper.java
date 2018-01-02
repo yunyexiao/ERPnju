@@ -308,8 +308,11 @@ public class BillDataHelper {
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT "+idName+" FROM "+tableName+
 				" WHERE generateTime>'2000-01-01' AND generateTime<DATEADD(DAY,1,"+"'"+date+"');");
-			while(r.next())num++;
-			num++;
+			while(r.next()){
+				int temp=Integer.valueOf(r.getString(idName).split("-")[2]);
+				if(temp>num)num=temp;
+			}
+			num++;		
 			return String.format("%05d", num);
 		}catch(Exception e){
 			e.printStackTrace();

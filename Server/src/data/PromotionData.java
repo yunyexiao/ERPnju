@@ -28,62 +28,41 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 
 	@Override
 	public boolean add(GroupDiscountPO promotion) throws RemoteException {
-		Object[] billValues={promotion.getId(),promotion.getFromDate(),promotion.getToDate(),2,promotion.isExist()};
 		boolean isExist=SQLQueryHelper.isPromotionExist(billName, billAttributes[0], promotion);
 		try{
-			if(!isExist){
-				boolean b1 = SQLQueryHelper.add(billName, billValues);
-				boolean b2=addGroup(promotion);
-				return b1&b2;
-			}else{
-				boolean b1=SQLQueryHelper.update(billName, billAttributes, billValues);
-				boolean b2=updateGroup(promotion);
-				return b1||b2;
-			}
+			if(!isExist)return addGroup(promotion);
+			else if(delete(promotion.getId()))return addGroup(promotion);
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
+		return false;
 	}
 
 	@Override
 	public boolean add(RankPromotionPO promotion) throws RemoteException {
-		Object[] billValues={promotion.getId(),promotion.getFromDate(),promotion.getToDate(),1,promotion.isExist()};
 		boolean isExist=SQLQueryHelper.isPromotionExist(billName, billAttributes[0], promotion);
 		try{
-			if(!isExist){
-				boolean b1 = SQLQueryHelper.add(billName, billValues);
-				boolean b2=addRank(promotion);
-				return b1&b2;
-			}else{
-				boolean b1=SQLQueryHelper.update(billName, billAttributes, billValues);
-				boolean b2=updateRank(promotion);
-				return b1||b2;
-			}
+			if(!isExist)return addRank(promotion);
+			else if(delete(promotion.getId()))return addRank(promotion);	
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
+		return false;
 	}
 
 	@Override
 	public boolean add(SumPromotionPO promotion) throws RemoteException {
-		Object[] billValues={promotion.getId(),promotion.getFromDate(),promotion.getToDate(),3,promotion.isExist()};
 		boolean isExist=SQLQueryHelper.isPromotionExist(billName, billAttributes[0], promotion);
 		try{
-			if(!isExist){
-				boolean b1 = SQLQueryHelper.add(billName, billValues);
-				boolean b2=addSum(promotion);
-				return b1&b2;
-			}else{
-				boolean b1=SQLQueryHelper.update(billName, billAttributes, billValues);
-				boolean b2=updateSum(promotion);
-				return b1||b2;
-			}
+			if(!isExist)return addSum(promotion);
+		    else if(delete(promotion.getId()))return addSum(promotion);
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
+		return false;
 	}
 
 	@Override
@@ -260,15 +239,18 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 			else str+=");";
 		}
 		
+		Object[] billValues={promotion.getId(),promotion.getFromDate(),promotion.getToDate(),2,promotion.isExist()};
+		boolean b1 = SQLQueryHelper.add(billName, billValues);
+		boolean b2=false;
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			int r=s.executeUpdate(str);
-			if(r>0)return true;
+			if(r>0) b2=true;
+			return b1&b2;
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
-		}
-		return false;		
+		}	
 	}
 	
 	private boolean addRank(RankPromotionPO promotion){
@@ -284,15 +266,19 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 		}
 		str=str+promotion.getReduction()+","+promotion.getCoupon()+");";
 		
+		Object[] billValues={promotion.getId(),promotion.getFromDate(),promotion.getToDate(),1,promotion.isExist()};
+		boolean b1 = SQLQueryHelper.add(billName, billValues);
+		boolean b2=false;
+
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			int r=s.executeUpdate(str);
-			if(r>0)return true;
+			if(r>0)b2=true;
+			return b1&b2;
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
-		return false;		
 	}
 	
 	private boolean addSum(SumPromotionPO promotion){
@@ -308,17 +294,20 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 			str=str+"'"+items.get(i).getComId()+"',"+items.get(i).getNum()+",";
 		}	
 		str=str+promotion.getCoupon()+");";
+		
+		Object[] billValues={promotion.getId(),promotion.getFromDate(),promotion.getToDate(),3,promotion.isExist()};
+		boolean b1 = SQLQueryHelper.add(billName, billValues);
+		boolean b2=false;
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			System.out.println(str);
 			int r=s.executeUpdate(str);
-			if(r>0)return true;
+			if(r>0)b2=true;
+			return b1&b2;
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
-
-		return false;
 	}
 	
 	private boolean updateGroup(GroupDiscountPO promotion){
@@ -494,8 +483,6 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery(sql);
-			//String id, String fromDate, String toDate, 
-	       // ArrayList<String> group, double reduction
 			while(r.next()){
 				if(r.getBoolean(billAttributes[4])){
 					GroupDiscountPO pro=new GroupDiscountPO(

@@ -32,10 +32,10 @@ public class SQLQueryHelper {
 			Statement s=DataHelper.getInstance().createStatement();
 			String str="UPDATE "+tableName+" SET ";
 			for(int i=1;i<attributes.length;i++){
-				if(i==1)str=str+attributes[i]+"='"+values[i];
-				else str=str+"', "+attributes[i]+"='"+values[i];
+				str=str+attributes[i]+"='"+values[i]+"'";
+				if(i!=attributes.length-1) str+=",";
 			}
-			str=str+"' WHERE "+attributes[0]+"='"+values[0]+"';";
+			str=str+" WHERE "+attributes[0]+"='"+values[0]+"';";
 			if(s.executeUpdate(str)>0)return true;
 			else return false;
 		}catch(Exception e){

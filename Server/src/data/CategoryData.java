@@ -14,6 +14,7 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 	private static final long serialVersionUID = 2679649485153805573L;
 	private String tableName="CategoryInfo";
 	private String idName="CateID";
+	private String[] attributes={"CateID","CateName","CateIsExist","FatherID"};
 
 	public CategoryData() throws RemoteException {
 		super();
@@ -48,18 +49,8 @@ public class CategoryData extends UnicastRemoteObject implements CategoryDataSer
 
 	@Override
 	public boolean update(CategoryPO category) throws RemoteException {
-		try{
-			Statement s2 = DataHelper.getInstance().createStatement();
-			int r2 = s2.executeUpdate("UPDATE CategoryInfo SET "
-					+ "CateName = '"+category.getName()
-					+ "', FatherID = '"+category.getFatherId()
-					+"' WHERE CateID = "+category.getId()+";");
-			if(r2>0)return true;
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
-		return false;
+		Object[] values={category.getId(),category.getName(),category.getExistFlag(),category.getFatherId()};
+		return SQLQueryHelper.update(tableName, attributes, values);
 	}
 
 	@Override

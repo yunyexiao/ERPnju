@@ -15,7 +15,7 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 	private static final long serialVersionUID = 2621222134047070486L;
 	private String tableName = "AccountInfo";
 	private String idName = "AccountID";
-
+	private String[] attributes={"AccountID","AccountName","AccountMoney","AccountIsExist"};
 	public AccountData() throws RemoteException {
 		super();
 	}
@@ -48,20 +48,9 @@ public class AccountData extends UnicastRemoteObject implements AccountDataServi
 	}
 
 	@Override
-	public boolean update(AccountPO account) throws RemoteException {
-		
-		try{
-			Statement s = DataHelper.getInstance().createStatement();
-			int r = s.executeUpdate("UPDATE CustomerInfo SET "
-					+ "AccountName = '"+account.getName()
-					+"', AccountMoney = '"+account.getMoney()
-					+"' WHERE AccountID = "+account.getId()+";");
-			if(r > 0) return true;
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
-		return false;
+	public boolean update(AccountPO account) throws RemoteException {	
+		Object[] values={account.getId(),account.getName(),account.getMoney(),account.getExistFlag()};	
+		return SQLQueryHelper.update(tableName, attributes, values);
 	}
 
 	@Override
