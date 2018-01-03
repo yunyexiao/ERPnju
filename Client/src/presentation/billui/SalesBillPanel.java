@@ -1,8 +1,6 @@
 package presentation.billui;
 
 import java.awt.BorderLayout;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -12,6 +10,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import blservice.billblservice.SalesBillBLService;
+import blservice.infoservice.GetPromotionInterface;
+import businesslogic.PromotionBL;
 import businesslogic.SalesBillBL;
 import layout.TableLayout;
 import presentation.component.MyTableModel;
@@ -44,12 +44,23 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 
 	public SalesBillPanel(UserVO user, SalesBillVO bill) {
 		super(user, bill);
+		discountField.setValue(bill.getDiscount());
+		couponField.setValue(bill.getCoupon());
+		sumField.setValue(bill.getBeforeDiscount());
+		afterDiscountField.setValue(bill.getSum());
+		GetPromotionInterface promotionInfo = new PromotionBL();
+		if(bill.getPromotionId() != null){
+		    promotion = promotionInfo.findById(bill.getPromotionId());
+		    promotionInfoArea.setText(promotion.toString());
+		}
 	}
 	
 	public void setEditable(boolean b) {
 		super.setEditable(b);
-		discountField.setEditable(false);
-	    couponField.setEditable(false);
+		discountField.setEditable(b);
+	    couponField.setEditable(b);
+	    sumButton.setEnabled(b);
+	    afterDiscountField.setEnabled(b);
 	}
 	@Override
 	protected boolean isCorrectable() {
@@ -81,11 +92,17 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 
 	@Override
 	protected void sumUp(){
-	    // TODO promotions haven't been considered
-	    double before = 0, after = 0;
 	    super.sumUp();
+
+	    int rank = user.getRank();
+	    MyTableModel goods = (MyTableModel)goodsListTable.getModel();
+	    double sum = sumField.getValue();
+	    promotion = saleBillBL.getBestPromotion(rank, goods, sum);
+	    if(promotion != null)promotionInfoArea.setText(promotion.toString());
+
+	    double before = 0, after = 0;
         before = sumField.getValue();
-        after = before - discountField.getValue() - couponField.getValue();
+        after = before - discountField.getValue() - couponField.getValue() - promotion.getReduction();
 	    afterDiscountField.setValue(after);
 	}
 
@@ -123,10 +140,11 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		         , sum = Double.parseDouble(afterDiscountField.getText())
 		         , discount = Double.parseDouble(discountField.getText())
 		         , coupon = Double.parseDouble(couponField.getText());
+		    String promotionId = promotion == null ? null : promotion.getId();
 		    return new SalesBillVO(
 	    		bill == null ? Timetools.getDate() : bill.getDate(),
 				bill == null ? Timetools.getTime() : bill.getTime(), id, operater, state, 
-		        customerId, model, remark, beforeDiscount, discount, coupon, sum, promotion.getId());
+		        customerId, model, remark, beforeDiscount, discount, coupon, sum, promotionId);
 		}
 		return null;
 	}
@@ -137,6 +155,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	    promotionPanel.add(new JLabel("¥Ÿœ˙–≈œ¢"), "1 1");
 	    promotionInfoArea = new JTextArea(2, 20);
 	    promotionInfoArea.setEditable(false);
+	    promotionInfoArea.setLineWrap(true);
 	    promotionPanel.add(promotionInfoArea, "1 3");
 	    return promotionPanel;
 	}
@@ -149,18 +168,8 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		afterDiscountField = new DoubleField(10);
 		sumField.setEditable(false);
 		afterDiscountField.setEditable(false);
-		FocusListener l = new FocusListener(){
-            @Override
-            public void focusGained(FocusEvent e) {}
-            @Override
-            public void focusLost(FocusEvent e) {
-                sumUp();
-            }
-		};
 		discountField = new DoubleField(10);
-		discountField.addFocusListener(l);
 		couponField = new DoubleField(10);
-		couponField.addFocusListener(l);
 		remarkField = new JTextField(10);
 		
 		double size[][] = {

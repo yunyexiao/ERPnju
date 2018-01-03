@@ -42,10 +42,10 @@ public class GroupDiscountVO extends PromotionVO {
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer(super.toString());
-        buffer.append(" 商品组合：");
+        buffer.append("；商品组合：");
         getGroupComIds().forEach(e->buffer.append(e + ","));
         buffer.delete(buffer.length() - 1, buffer.length());
-        buffer.append(" 减价总额：");
+        buffer.append("；减价总额：");
         buffer.append(singleReduction);
         return buffer.toString();
     }

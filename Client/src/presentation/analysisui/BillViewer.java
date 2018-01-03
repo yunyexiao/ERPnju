@@ -17,7 +17,7 @@ class BillViewer {
         frame.setModal(true);
         frame.setTitle("查看单据具体内容");
         BillPanelInterface billPanelImp = BillPanelHelper.createInner(bill);
-        billPanelImp.setEditable(true);
+        billPanelImp.setEditable(isCopy);
         panel = (JPanel) billPanelImp;
         frame.setContentPane(panel);
         frame.setLocation(300, 100);

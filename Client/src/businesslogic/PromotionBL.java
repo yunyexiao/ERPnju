@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import blservice.PromotionBLService;
 import blservice.infoservice.GetCommodityInterface;
+import blservice.infoservice.GetPromotionInterface;
 import businesslogic.inter.AddLogInterface;
 import businesslogic.inter.IPromotionSearch;
 import dataservice.PromotionDataService;
@@ -22,7 +23,7 @@ import vo.RankPromotionVO;
 import vo.SumPromotionVO;
 
 
-public class PromotionBL implements PromotionBLService, IPromotionSearch{
+public class PromotionBL implements PromotionBLService, IPromotionSearch, GetPromotionInterface{
     
     private PromotionDataService promotionDs;
     private AddLogInterface logger;

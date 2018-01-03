@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.NoSuchElementException;
 
 import businesslogic.PromotionBL;
 import businesslogic.inter.IBestPromotion;
@@ -39,10 +40,17 @@ public class BestSumPromotion implements IBestPromotion {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String date = formatter.format(new Date());
         ArrayList<SumPromotionPO> promotions = promotionBl.searchSumPromotionPO(date);
-        SumPromotionPO best = promotions.stream().filter(e -> valid(e, date))
+        if(promotions.isEmpty()){
+            return;
+        }
+        try{
+            SumPromotionPO best = promotions.stream().filter(e -> valid(e, date))
                         .sorted((a, b)->compare(a, b)).findFirst().get();
-        this.best = promotionBl.toVO(best);
-        benefit = getBenefit(best);
+            this.best = promotionBl.toVO(best);
+            benefit = getBenefit(best);
+        }catch(NoSuchElementException e){
+            return;
+        }
     } 
     
     private boolean valid(SumPromotionPO promotion, String date){

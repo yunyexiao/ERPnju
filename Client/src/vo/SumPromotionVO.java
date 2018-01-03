@@ -47,17 +47,15 @@ public class SumPromotionVO extends PromotionVO {
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer(super.toString());
-        buffer.append(" 价格区间：");
-        buffer.append(startPrice + "-" + endPrice);
         if(coupon > 0){
-            buffer.append(" 代金券：");
+            buffer.append("；代金券：");
             buffer.append(coupon);
         }
         int rows = gifts.getRowCount();
         if(rows > 0){
-            buffer.append(" 赠品：");
+            buffer.append("；赠品：");
             for(int i = 0; i < rows; i++){
-                buffer.append(gifts.getValueAt(i, 0) + "*" + gifts.getValueAt(i, 1));
+                buffer.append(gifts.getValueAt(i, 1) + "*" + gifts.getValueAt(i, 4));
                 buffer.append(',');
             }
             buffer.delete(buffer.length() - 1, buffer.length());
