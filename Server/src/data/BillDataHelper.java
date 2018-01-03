@@ -50,7 +50,7 @@ public class BillDataHelper {
 					timeFormat.format(r2.getTime("generateTime")),
 					r2.getString(billColumns[0]).split("-")[2],
 					r2.getString(billColumns[1]),
-					r2.getInt(billColumns[2]),true,changeItems);
+					r2.getInt(billColumns[2]),isOver,changeItems);
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
@@ -302,18 +302,14 @@ public class BillDataHelper {
 		int num = 0;
 		Calendar now = Calendar.getInstance();
 		int year=now.get(Calendar.YEAR), month=now.get(Calendar.MONTH),  day=now.get(Calendar.DAY_OF_MONTH);
-		String date=year+"-"+(month+1)+"-"+day;
+		String date = year+"-"+(month+1)+"-"+day;
 		
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT "+idName+" FROM "+tableName+
-				" WHERE generateTime>'2000-01-01' AND generateTime<DATEADD(DAY,1,"+"'"+date+"');");
-			while(r.next()){
-				int temp=Integer.valueOf(r.getString(idName).split("-")[2]);
-				if(temp>num)num=temp;
-			}
-			num++;		
-			return String.format("%05d", num);
+				" WHERE generateTime>'"+date+"' AND generateTime<DATEADD(DAY,1,'"+date+"');");
+			while(r.next()) num++;
+			return String.format("%05d", num+1);
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
@@ -322,8 +318,8 @@ public class BillDataHelper {
 	
 	public static boolean deleteBill(String id) {
 		String[][] data = {{"XJFYD","FKD","SKD","JHD","JHTHD","XSD","XSTHD","BYD","BSD"},
-				{"CashCostBill","PaymentBill","ReceiptBill","PurchaseBill","PurchaseReturnBill","SalesBill","SalesReturnBill"},
-				{"CCBID","PBID","RBID","PBID","PRBID","SBID","SRBID"}};
+				{"CashCostBill","PaymentBill","ReceiptBill","PurchaseBill","PurchaseReturnBill","SalesBill","SalesReturnBill","InventoryOverflowBill","InventoryLostBill"},
+				{"CCBID","PBID","RBID","PBID","PRBID","SBID","SRBID","IOBID","ILBID"}};
 		String type = id.split("-")[0];
 		int num = 0;
 		for (int i = 0; i < data[0].length; i++) if (type.equals(data[0][i])) num = i;

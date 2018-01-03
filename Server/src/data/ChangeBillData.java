@@ -24,14 +24,12 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
 	public String getNewId(boolean isOver) throws RemoteException{
 		String billName = isOver ? "InventoryOverflowBill" : "InventoryLostBill";
 		String billId = isOver ? "IOBID" : "ILBID";
-		return SQLQueryHelper.getNewId(billName, billId, "%05d");
+		return BillDataHelper.getNewBillId(billName, billId);
 	}
 
 	@Override
 	public boolean deleteBill(String id, boolean isOver) throws RemoteException {
-		String billName = isOver ? "InventoryOverflowBill" : "InventoryLostBill";
-		String billId = isOver ? "IOBID" : "ILBID";
-		return SQLQueryHelper.getTrueDeleteResult(billName, billId, id);
+		return BillDataHelper.deleteBill(id);
 	}
 
 	@Override
