@@ -95,10 +95,14 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 
 	private CustomerPO getCustomerPO(ResultSet r) {
 		try {
-			return new CustomerPO(r.getString(attributes[0]),r.getString(attributes[1]),r.getString(attributes[2]),
-					r.getString(attributes[3]),r.getString(attributes[4]),r.getString(attributes[5]),r.getString(attributes[6]),
-					r.getInt(attributes[7]),r.getInt(attributes[8]),r.getDouble(attributes[9]),r.getDouble(attributes[10]),
-					r.getDouble(attributes[11]),r.getBoolean(attributes[12]));
+			
+			//String id, String name, String telNumber, String address
+            //, String mail, String code,String salesman, int rank, int type, double recRange
+            //, double receivable, double payment, boolean isExist
+			return new CustomerPO(r.getString(attributes[0]),r.getString(attributes[1]),r.getString(attributes[3]),
+					r.getString(attributes[4]),r.getString(attributes[6]),r.getString(attributes[5]),r.getString(attributes[10]),
+					r.getInt(attributes[2]),r.getInt(attributes[11]),r.getDouble(attributes[7]),r.getDouble(attributes[8]),
+					r.getDouble(attributes[9]),r.getBoolean(attributes[12]));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;

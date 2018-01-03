@@ -39,9 +39,10 @@ public class CategoryDataPanel implements PanelInterface{
             	if (tree.getSelectionCount() == 1) {
             		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             		CategoryVO category = (CategoryVO)node.getUserObject();
-            		if (categoryBl.hasContent(category.getId()) || commodityBL.hasCommodity(category.getId())) {
+            		if (commodityBL.hasCommodity(category.getId())) {
             			new InfoWindow("请选择一个空节点作为父节点");
-            		} else {
+            		}
+            		else {
                         new AddCategoryWindow(categoryBl, category);
                         tree.setModel(categoryBl.getModel());
             		}
