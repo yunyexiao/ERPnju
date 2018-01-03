@@ -20,8 +20,7 @@ public class InitData extends UnicastRemoteObject implements InitDataService{
 
 	@Override
 	public String[] getInitInfo() throws RemoteException {
-
-		String[] dates = null;
+		String[] dates = new String[]{};
 		int i=0;
 		try{		
 			Statement s=DataHelper.getInstance().createStatement();
@@ -30,7 +29,6 @@ public class InitData extends UnicastRemoteObject implements InitDataService{
 				dates[i]=r.getString("InitTime");
 				i++;
 			}
-			
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
