@@ -11,7 +11,9 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import blservice.billblservice.CashCostBillBLService;
+import blservice.infoservice.GetUserInterface;
 import businesslogic.CashCostBillBL;
+import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
@@ -25,6 +27,7 @@ import vo.billvo.CashCostBillVO;
 public class CashCostBillPanel extends JPanel implements BillPanelInterface {
 
 	private CashCostBillBLService cashCostBillBL = new CashCostBillBL();
+	private GetUserInterface userInfo = new UserBL();
 	private UserVO user;
 	private BillVO bill = null;
 	
@@ -44,7 +47,7 @@ public class CashCostBillPanel extends JPanel implements BillPanelInterface {
 		this.bill = cashCostBill;
 		initBillPanel();
         billIdField.setText(cashCostBill.getAllId());
-        operatorField.setText(cashCostBill.getOperator());
+        operatorField.setText(userInfo.getUser(cashCostBill.getOperator()).getName());
         accountIdField.setText(cashCostBill.getAccountId());
         itemListTable.setModel(cashCostBill.getTableModel());
         sumUp();

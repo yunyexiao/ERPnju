@@ -15,7 +15,9 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import blservice.billblservice.ChangeBillBLService;
+import blservice.infoservice.GetUserInterface;
 import businesslogic.ChangeBillBL;
+import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.component.InfoAdapter;
 import presentation.component.InfoWindow;
@@ -37,6 +39,7 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 	private JTextField billIdField, operaterField;
 	private JRadioButton overButton, lostButton;
 	private ChangeBillBLService changeBillBL = new ChangeBillBL(true);
+	private GetUserInterface userInfo = new UserBL();
 	
 	/**
 	 * 新建单据界面
@@ -62,6 +65,7 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 		initBillPanel();
 		changeBillBL = new ChangeBillBL(bill.getFlag());
 		billIdField.setText(bill.getAllId());
+		operaterField.setText(userInfo.getUser(bill.getOperator()).getName());
 		if (bill.getFlag()) overButton.setSelected(true);
 		else lostButton.setSelected(true);
 		operaterField.setText(bill.getOperator());
