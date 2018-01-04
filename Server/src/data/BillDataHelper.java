@@ -214,6 +214,7 @@ public class BillDataHelper {
 			}
 			ResultSet r2=SQLQueryHelper.getRecordByAttribute("SalesBill", "SBID", id);
 			r2.next();
+			String promotionId = "null".equals(r2.getString("SBPromotionID")) ? null : r2.getString("SBPromotionID");
 			return new SalesBillPO(
 				dateFormat.format(r2.getDate("generateTime")),
 				timeFormat.format(r2.getTime("generateTime")),
@@ -223,7 +224,7 @@ public class BillDataHelper {
 				r2.getString("SBCustomerID"),
 				r2.getString("SBSalesmanName"),
 				r2.getString("SBRemark"),
-				r2.getString("SBPromotionID"),
+				promotionId,
 				r2.getDouble("SBBeforeDiscount"),
 				r2.getDouble("SBDiscount"),
 				r2.getDouble("SBCoupon"),

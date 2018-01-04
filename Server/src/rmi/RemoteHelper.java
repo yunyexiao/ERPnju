@@ -12,6 +12,7 @@ import data.CategoryData;
 import data.ChangeBillData;
 import data.CommodityData;
 import data.CustomerData;
+import data.GiftBillData;
 import data.InitData;
 import data.LogData;
 import data.MailData;
@@ -47,6 +48,7 @@ public class RemoteHelper {
 			bind(new MailData());
 			bind(new PromotionData());
 			bind(new InitData());
+			bind(new GiftBillData());
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

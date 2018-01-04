@@ -100,9 +100,9 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	    promotion = saleBillBL.getBestPromotion(rank, goods, sum);
 	    if(promotion != null)promotionInfoArea.setText(promotion.toString());
 
-	    double before = 0, after = 0;
+	    double before = 0, after = 0, reduction = promotion == null ? 0 : promotion.getReduction();
         before = sumField.getValue();
-        after = before - discountField.getValue() - couponField.getValue() - promotion.getReduction();
+        after = before - discountField.getValue() - couponField.getValue() - reduction;
 	    afterDiscountField.setValue(after);
 	}
 

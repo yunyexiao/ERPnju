@@ -7,13 +7,11 @@ import java.util.ArrayList;
 import dataservice.GiftBillDataService;
 import po.billpo.GiftBillPO;
 import po.billpo.GiftItem;
-import po.billpo.SalesItemsPO;
 
 public class GiftBillData extends UnicastRemoteObject implements GiftBillDataService {
 
-	protected GiftBillData() throws RemoteException {
+	public GiftBillData() throws RemoteException {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	private String billName="InventoryGiftBill";

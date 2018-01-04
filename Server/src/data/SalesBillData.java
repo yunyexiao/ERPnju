@@ -120,8 +120,8 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 		boolean b2 = true;
 		for(int i=0;i<items.size();i++){
 			b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId()
-					,items.get(i).getComId(),items.get(i).getComQuantity(),items.get(i).getComSum()
-					,items.get(i).getComRemark(),items.get(i).getComPrice());
+					,items.get(i).getComId(),items.get(i).getComQuantity(),items.get(i).getComPrice()
+					,items.get(i).getComSum(),items.get(i).getComRemark());
 		}
 		return b1&&b2;
 	}

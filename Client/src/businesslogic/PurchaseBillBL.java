@@ -78,7 +78,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
     @Override
     public MyTableModel getFinishedBills(String customerId) {
         try{
-            String field = "CONCAT(PBCondition,',',PBCustomerID)";
+            String field = "CONCAT(PBCondition,',',PBSupplierID)";
             String key = BillPO.PASS + "," + customerId;
             ArrayList<PurchaseBillPO> bills = purchaseBillDs.getBillsBy(field, key, true);
             return toModel(bills);

@@ -2,7 +2,8 @@ package data;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -20,20 +21,16 @@ public class InitData extends UnicastRemoteObject implements InitDataService{
 
 	@Override
 	public String[] getInitInfo() throws RemoteException {
-		String[] dates = new String[]{};
-		int i=0;
+		ArrayList<String> list = new ArrayList<String>();
 		try{		
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT DISTINCT InitTime FROM InitCommodity;");
-			while(r.next()){
-				dates[i]=r.getString("InitTime");
-				i++;
-			}
+			while(r.next()) list.add(r.getString("InitTime"));
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		return dates;
+		return (String[]) list.toArray(new String[list.size()]);
 	}
 
 	@Override
