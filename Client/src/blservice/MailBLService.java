@@ -7,7 +7,7 @@ import vo.UserVO;
 
 public interface MailBLService {
 
-	public boolean saveMail(String toId, String content);
+	public boolean saveMail(String fromId, String toId, String content);
 	
 	public boolean readMail(MailVO mail);
 	

@@ -13,7 +13,6 @@ import blservice.MailBLService;
 import dataservice.MailDataService;
 import ds_stub.MailDataDs_stub;
 import po.MailPO;
-import presentation.main.MainWindow;
 import rmi.Rmi;
 import vo.MailVO;
 import vo.UserVO;
@@ -22,10 +21,10 @@ public class MailBL implements MailBLService {
 
 	private MailDataService mailDs = Rmi.flag ? Rmi.getRemote(MailDataService.class) : new MailDataDs_stub();
 	@Override
-	public boolean saveMail(String toId, String content) {
+	public boolean saveMail(String fromId, String toId, String content) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String time = sdf.format(new Date());
-		MailPO mail = new MailPO(MainWindow.getUser().getId(), toId, content, time, false);
+		MailPO mail = new MailPO(fromId, toId, content, time, false);
 		try {
 			return mailDs.saveMail(mail);
 		} catch (RemoteException e) {
