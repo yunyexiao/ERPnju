@@ -11,6 +11,7 @@ import po.billpo.CashCostItem;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
 import po.billpo.GiftBillPO;
+import po.billpo.GiftItem;
 import po.billpo.PaymentBillPO;
 import po.billpo.PurchaseBillPO;
 import po.billpo.PurchaseReturnBillPO;
@@ -311,8 +312,14 @@ public class BillSearchDs_stub implements BillSearchDataService {
 
     @Override
     public ArrayList<GiftBillPO> searchGiftBills(String fromDate, String toDate, String customerId, int state) throws RemoteException {
-        // TODO Auto-generated method stub
-        return null;
+    	ArrayList<GiftBillPO> result = new ArrayList<>();
+		ArrayList<GiftItem> items1 = new ArrayList<>();
+		items1.add(new GiftItem("000001", 20, 120));
+		result.add(new GiftBillPO(
+				"2018-01-04", "09:22:23", "00123", "0004", BillPO.COMMITED,
+				items1, "12000", "000002"
+				));
+		return result;
     }
 
 }

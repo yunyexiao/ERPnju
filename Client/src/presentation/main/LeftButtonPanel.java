@@ -26,6 +26,7 @@ import presentation.analysisui.ViewBusinessHistoryPanel;
 import presentation.analysisui.ViewBusinessSituationPanel;
 import presentation.bill.BillExaminePanel;
 import presentation.billui.BillPanelHelper;
+import presentation.billui.ViewGiftBillPanel;
 import presentation.component.InfoAdapter;
 import presentation.component.Listener_stub;
 import presentation.dataui.accountui.AccountDataPanel;
@@ -35,6 +36,7 @@ import presentation.dataui.customerui.CustomerDataPanel;
 import presentation.dataui.userui.UserDataPanel;
 import presentation.initui.InitPanel;
 import presentation.logui.LogPanel;
+import presentation.promotionui.PromotionPanel;
 import vo.UserType;
 import vo.UserVO;
 
@@ -111,7 +113,7 @@ class LeftButtonPanel extends JPanel{
 		}
 		else if (type == UserType.GM) {
 			addButton("审批单据", e -> mw.changePanel(new BillExaminePanel(mw,closeListener)));
-			addButton("制定促销策略", new Listener_stub());
+			addButton("制定促销策略", e -> mw.changePanel(new PromotionPanel(closeListener)));
 			addButton("查看销售明细表", e -> mw.changePanel(new SalesDetailsPanel()));
 			addButton("查看经营状况表", e -> mw.changePanel(new ViewBusinessSituationPanel(user, closeListener)));
 			addButton("查看经营历程表", e -> mw.changePanel(new ViewBusinessHistoryPanel(user, closeListener)));

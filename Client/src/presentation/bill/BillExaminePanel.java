@@ -97,7 +97,7 @@ public class BillExaminePanel implements PanelInterface {
     private JPanel getNorthPanel(ActionListener closeListener) {
         fromPanel = new DateChoosePanel("开始时间");
         toPanel = new DateChoosePanel("结束时间");
-        choiceBox = new JComboBox<String>(new String[]{"全部","报溢单","报损单","进货单","进货退货单","销售单","销售退货单","收款单","付款单","现金费用单"});
+        choiceBox = new JComboBox<String>(new String[]{"全部","报溢单","报损单","进货单","进货退货单","销售单","销售退货单","收款单","付款单","现金费用单","赠品单"});
         choiceBox.addItemListener(e -> itemChanged(e));
         operatorPanel = new IdNamePanel("操作员", 7, 7);
         operatorPanel.addMouseListener(chooseOperator());
@@ -130,6 +130,7 @@ public class BillExaminePanel implements PanelInterface {
         case "收款单" : choosePanel.setLabelText("账户");type = UserType.ACCOUNTANT;break;
         case "付款单" : choosePanel.setLabelText("账户");type = UserType.ACCOUNTANT;break;
         case "现金费用单" : choosePanel.setLabelText("账户");type = UserType.ACCOUNTANT;break;
+        case "赠品单" : choosePanel.setLabelText("客户");type = UserType.SALESMAN;break;
         }
         operatorPanel.setId(""); 
         operatorPanel.setItsName("");
@@ -173,6 +174,7 @@ public class BillExaminePanel implements PanelInterface {
         case "收款单" : table.setModel(billSearchBl.filterReceiptBills(from, to, chooseId, operatorId, BillVO.COMMITED));break;
         case "付款单" : table.setModel(billSearchBl.filterPaymentBills(from, to, chooseId, operatorId, BillVO.COMMITED));break;
         case "现金费用单" : table.setModel(billSearchBl.filterCashCostBills(from, to, chooseId, operatorId, BillVO.COMMITED));break;
+        case "赠品单" : table.setModel(billSearchBl.filterGiftBills(from, to, chooseId, BillVO.COMMITED));break;
         default:table.setModel(billSearchBl.filterBills(from, to));break;
         }
     }
@@ -199,7 +201,7 @@ public class BillExaminePanel implements PanelInterface {
             	case "JHD": JOptionPane.showMessageDialog(null, "审核未通过：应收额度不足@_@"); break;
             	case "JHTHD": JOptionPane.showMessageDialog(null, "审核未通过：商品退货数量超过库存数量@_@"); break;
             	case "XSD": JOptionPane.showMessageDialog(null, "审核未通过：商品销售数量超过库存数量@_@"); break;
-            	
+            	case "ZPD": JOptionPane.showMessageDialog(null, "审核未通过：赠送数量超过库存数量@_@"); break;
             	default: JOptionPane.showMessageDialog(null, "操作失败，请重试@_@");
             	}
             }

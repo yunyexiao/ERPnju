@@ -14,10 +14,13 @@ import blservice.billblservice.BillSearchBLService;
 import blservice.infoservice.GetCustomerInterface;
 import blservice.infoservice.GetUserInterface;
 import dataservice.BillSearchDataService;
+import dataservice.SalesBillDataService;
 import ds_stub.BillSearchDs_stub;
+import ds_stub.SalesBillDs_stub;
 import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.ChangeBillPO;
+import po.billpo.GiftBillPO;
 import po.billpo.PaymentBillPO;
 import po.billpo.PurchaseBillPO;
 import po.billpo.PurchaseReturnBillPO;
@@ -34,11 +37,13 @@ import vo.UserVO;
 public class BillSearchBL implements BillSearchBLService {
     
     private BillSearchDataService billSearchDs;
+    private SalesBillDataService salesBillDs;
     private GetUserInterface userInfo;
     private GetCustomerInterface customerInfo;
 
     public BillSearchBL() {
         billSearchDs = Rmi.flag ? Rmi.getRemote(BillSearchDataService.class) : new BillSearchDs_stub();
+        salesBillDs = Rmi.flag ? Rmi.getRemote(SalesBillDataService.class) : new SalesBillDs_stub();
         userInfo = new UserBL();
         customerInfo = new CustomerBL();
     }
@@ -272,9 +277,27 @@ public class BillSearchBL implements BillSearchBLService {
     }
 
     @Override
-    public MyTableModel filterGiftBills(String from, String to, String customerId) {
-        // TODO Auto-generated method stub
-        return null;
+    public MyTableModel filterGiftBills(String from, String to, String customerId, int state) {
+    	try{
+            ArrayList<GiftBillPO> bills = billSearchDs.searchGiftBills(from, to, customerId, state);
+            String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "客户编号", "客户姓名", "对应销售单ID"};
+            String[][] data = new String[bills.size()][columnNames.length];
+            for(int i = 0; i < data.length; i++){
+                GiftBillPO bill = bills.get(i);
+                data[i][0] = "ZPD-" + bill.getDate() + "-" + bill.getId();
+                data[i][1] = bill.getDate() + ' ' + bill.getTime();
+                data[i][2] = bill.getOperator();
+                data[i][3] = userInfo.getUser(data[i][2]).getName();
+                data[i][4] = bill.getCustomerId();
+                data[i][5] = customerInfo.getCustomer(data[i][4]).getName();
+                SalesBillPO salesBillPO = salesBillDs.getBillById(bill.getSalesBillId());
+                data[i][6] = salesBillPO.getAllId();
+            }
+            return new MyTableModel(data, columnNames);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     
@@ -290,6 +313,7 @@ public class BillSearchBL implements BillSearchBLService {
             ArrayList<CashCostBillPO> cashCostBills = billSearchDs.searchCashCostBills(from, to, null, null, 2);
             ArrayList<PaymentBillPO> paymentBills = billSearchDs.searchPaymentBills(from, to, null, null, 2);
             ArrayList<ReceiptBillPO> receiptBills = billSearchDs.searchReceiptBills(from, to, null, null, 2);
+            ArrayList<GiftBillPO> giftBills = billSearchDs.searchGiftBills(from, to, null, 2);
 
        /*     ArrayList<BillPO> bills = new ArrayList<BillPO>();
             bills.addAll(overflowBills);
@@ -306,7 +330,7 @@ public class BillSearchBL implements BillSearchBLService {
         	String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名"};
             String[][] data = new String[purchaseBills.size() + purchaseReturnBills.size() 
             + salesBills.size() + salesReturnBills.size() + cashCostBills.size() + paymentBills.size() 
-            + receiptBills.size()][columnNames.length];
+            + receiptBills.size() + giftBills.size()][columnNames.length];
             
      /*       for (int i = 0; i < overflowBills.size(); i++) {
                 ChangeBillPO bill = overflowBills.get(i);
@@ -379,6 +403,14 @@ public class BillSearchBL implements BillSearchBLService {
                  data[i][2] = bill.getOperator();
                  data[i][3] = userInfo.getUser(data[i][2]).getName();
             } 
+            
+            for (int i = purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size() + cashCostBills.size() + paymentBills.size() + receiptBills.size(); i < purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size() + cashCostBills.size() + paymentBills.size() + receiptBills.size() + giftBills.size(); i++) {
+           	 	GiftBillPO bill = giftBills.get(i - purchaseBills.size() - purchaseReturnBills.size() - salesBills.size() - salesReturnBills.size() - cashCostBills.size() - paymentBills.size() - receiptBills.size());
+                data[i][0] = "ZPD-" + bill.getDate() + "-" + bill.getId();
+                data[i][1] = bill.getDate() + ' ' + bill.getTime();
+                data[i][2] = bill.getOperator();
+                data[i][3] = userInfo.getUser(data[i][2]).getName();
+           } 
             
             return new MyTableModel(data, columnNames);
     	}catch (RemoteException e) {

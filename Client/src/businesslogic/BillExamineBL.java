@@ -20,6 +20,7 @@ public class BillExamineBL implements BillExamineService{
         services.put("XSD", new SalesBillBL());
         services.put("XSTHD", new SalesReturnBillBL());
         services.put("SKD", new ReceiptBillBL());
+        services.put("ZPD", new GiftBillBL());
     }
 
 	@Override

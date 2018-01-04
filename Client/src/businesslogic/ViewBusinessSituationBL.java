@@ -9,6 +9,8 @@ import dataservice.BillSearchDataService;
 import ds_stub.BillSearchDs_stub;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
+import po.billpo.GiftBillPO;
+import po.billpo.GiftItem;
 import po.billpo.PurchaseBillPO;
 import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesBillPO;
@@ -52,7 +54,7 @@ public class ViewBusinessSituationBL implements ViewBusinessSituationBLService{
         		for (int j = 0; j < list.size(); j++) {
         			ChangeItem item = list.get(j);
             		CommodityVO commodity = commodityBl.getCommodity(item.getCommodityId());
-            		sum += commodity.getRecentSalePrice() * (item.getChangedValue() - item.getOriginalValue());
+            		sum += commodity.getRecentInPrice() * (item.getChangedValue() - item.getOriginalValue());
         		}
             }
             return sum;
@@ -117,14 +119,45 @@ public class ViewBusinessSituationBL implements ViewBusinessSituationBLService{
 
 	@Override
 	public double getCommodityBrokenExpense(String from, String to) {
-		// TODO Auto-generated method stub
-		return 0;
+		double sum = 0;
+		try{
+            ArrayList<ChangeBillPO> bills = billSearchDs.searchChangeBills(from, to, null, null, false, 3);
+            for (int i = 0; i < bills.size(); i++) {
+            	ChangeBillPO changeBill = bills.get(i);
+            	if (changeBill.getFlag())  continue; //½öÕë¶Ô×®ÓÃ
+        		ArrayList<ChangeItem> list = changeBill.getCommodityList();
+        		for (int j = 0; j < list.size(); j++) {
+        			ChangeItem item = list.get(j);
+            		CommodityVO commodity = commodityBl.getCommodity(item.getCommodityId());
+            		sum += commodity.getInPrice() * (item.getOriginalValue() - item.getChangedValue());
+        		}
+            }
+            return sum;
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return sum;
+        }
 	}
 
 	@Override
 	public double getCommoditySentExpense(String from, String to) {
-		// TODO Auto-generated method stub
-		return 0;
+		double sum = 0;
+		try{
+            ArrayList<GiftBillPO> bills = billSearchDs.searchGiftBills(from, to, null, 3);
+            for (int i = 0; i < bills.size(); i++) {
+            	GiftBillPO giftBill = bills.get(i);
+            	ArrayList<GiftItem> list = giftBill.getGifts();
+        		for (int j = 0; j < list.size(); j++) {
+        			GiftItem item = list.get(j);
+            		CommodityVO commodity = commodityBl.getCommodity(item.getComId());
+            		sum += commodity.getInPrice() * item.getNum();
+        		}	
+            }
+            return sum;
+        }catch(RemoteException e){
+            e.printStackTrace();
+            return sum;
+        }
 	}
 
 	@Override
