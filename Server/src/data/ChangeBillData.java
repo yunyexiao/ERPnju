@@ -58,19 +58,18 @@ public class ChangeBillData extends UnicastRemoteObject implements ChangeBillDat
 		ArrayList<ChangeItem> items=bill.getCommodityList();
 		String billName = bill.isOver() ? "InventoryOverflowBill" : "InventoryLostBill";
 		String recordName=bill.isOver() ? "InventoryOverflowRecord" : "InventoryLostRecord";			
-			try{
-				boolean b1 = SQLQueryHelper.add(billName, bill.getAllId(), bill.getOperator()
-						, bill.getState(), bill.getDate()+" "+bill.getTime());
-				boolean b2 = true;
-				for(int i=0;i<items.size();i++){
-					b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId(),items.get(i).getCommodityId()
-							,items.get(i).getOriginalValue(),items.get(i).getChangedValue());
-				}
-				return b1 && b2;
-			}catch(Exception e){
-				e.printStackTrace();
-				return false;
+		try{
+			boolean b1 = SQLQueryHelper.add(billName, bill.getAllId(), bill.getOperator()
+					, bill.getState(), bill.getDate()+" "+bill.getTime());
+			boolean b2 = true;
+			for(int i=0;i<items.size();i++){
+				b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId(),items.get(i).getCommodityId()
+						,items.get(i).getOriginalValue(),items.get(i).getChangedValue());
 			}
-
+			return b1 && b2;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
 	}
 }
