@@ -12,6 +12,7 @@ import po.billpo.BillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
+import rmi.Rmi;
 import vo.CommodityVO;
 
 
@@ -21,7 +22,7 @@ public class SalesDetailsBL implements SalesDetailsBLService {
     private GetCommodityInterface commodityBl;
 
     public SalesDetailsBL() {
-        billSearchDs = new BillSearchDs_stub();
+        billSearchDs = Rmi.flag ? Rmi.getRemote(BillSearchDataService.class) : new BillSearchDs_stub();
         commodityBl = new CommodityBL();
     }
 

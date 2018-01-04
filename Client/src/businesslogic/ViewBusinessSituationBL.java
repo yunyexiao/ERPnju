@@ -14,6 +14,7 @@ import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
 import presentation.component.MyTableModel;
+import rmi.Rmi;
 import vo.CommodityVO;
 
 public class ViewBusinessSituationBL implements ViewBusinessSituationBLService{
@@ -22,7 +23,7 @@ public class ViewBusinessSituationBL implements ViewBusinessSituationBLService{
     private GetCommodityInterface commodityBl;
 
     public ViewBusinessSituationBL() {
-        billSearchDs = new BillSearchDs_stub();
+        billSearchDs = Rmi.flag ? Rmi.getRemote(BillSearchDataService.class) : new BillSearchDs_stub();
         commodityBl = new CommodityBL();
     }
 	
