@@ -207,32 +207,31 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
 	public boolean examineBill(String billId) {
         try{
         	SalesBillPO billPO = salesBillDs.getBillById(billId);
-            SalesBillVO billVO = BillTools.toSalesBillVO(salesBillDs.getBillById(billId));
+            SalesBillVO billVO = BillTools.toSalesBillVO(billPO);
             ArrayList<SalesItemsPO> list = billPO.getSalesBillItems();
-            
+            ArrayList<CommodityPO> commodityList = new ArrayList<CommodityPO>();
+            boolean flag = true;
             CustomerPO customerPO = customerDs.findById(billPO.getCustomerId());
-            customerDs.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
-        			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
-        			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable(),
-        			customerPO.getPayment() + billPO.getAfterDiscount(), customerPO.getExistFlag()));
+            customerPO.setPayment(customerPO.getPayment()+billPO.getAfterDiscount());
             
             for (int i = 0; i < list.size(); i++) {
-            	CommodityPO commodityPO = commodityDs.findById(list.get(i).getComId());
-            	if (commodityPO.getAmount() >= list.get(i).getComQuantity()) {
-            		commodityDs.add(new CommodityPO(commodityPO.getId(), commodityPO.getName(), commodityPO.getType(), 
-                    		commodityPO.getStore(), commodityPO.getCategoryId(), commodityPO.getAmount() - list.get(i).getComQuantity(), 
-                    		commodityPO.getAlarmNum(), commodityPO.getInPrice(), commodityPO.getSalePrice(), 
-                    		commodityPO.getRecentInPrice(), commodityPO.getRecentSalePrice(), commodityPO.getExistFlag()));              
-            	}else {
-            		billPO.setState(4);
-                    billVO.setState(4);
-                    salesBillDs.saveBill(billPO);
-                    return false;
-            	}
+            	SalesItemsPO item = list.get(i);
+            	CommodityPO commodityPO = commodityDs.findById(item.getComId());
+            	commodityPO.setRecentSalePrice(item.getComPrice());
+            	if (!commodityPO.setAmount(commodityPO.getAmount()-item.getComQuantity())) flag = false;
+            	commodityList.add(commodityPO);
             }
 
-            billVO.setState(3);
-            return saveBill(billVO, "审核销售单", "通过审核的销售单单据编号为"+billId);
+            if (flag) {
+            	for (CommodityPO c : commodityList) commodityDs.update(c);
+            	customerDs.update(customerPO);
+            	billVO.setState(3);
+                return saveBill(billVO, "审核销售单", "通过审核的销售单单据编号为"+billId);
+            } else {
+            	notPassBill(billId);
+            	return false;
+            }
+            
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -287,7 +286,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
     }
 
     private void createGiftBill(SalesBillVO bill){
-        if(bill.getState() != BillVO.COMMITED) return;
+        if(bill.getState() != BillVO.COMMITED || bill.getPromotionId() == null) return;
         PromotionBLService promotionBl = new PromotionBL();
         PromotionVO promotion = promotionBl.findById(bill.getPromotionId());
         MyTableModel gifts = promotion.getGifts();

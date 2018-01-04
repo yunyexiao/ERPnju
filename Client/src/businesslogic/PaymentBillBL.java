@@ -123,33 +123,25 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
             PaymentBillPO billPO = paymentBillDataService.getBillById(billId);
             PaymentBillVO billVO = BillTools.toPaymentBillVO(billPO);
             ArrayList<TransferItem> list = billPO.getTransferList();
+            ArrayList<AccountPO> accountList = new ArrayList<AccountPO>();
+            CustomerPO customerPO = customerDataService.findById(billPO.getCustomerId());
+            boolean flag = true;
             for (int i = 0; i < list.size(); i++) {
-            	AccountPO accountPO = accountDataService.findById(list.get(i).getAccountId());
-            	CustomerPO customerPO = customerDataService.findById(billPO.getCustomerId());
-            	if (list.get(i).getMoney() <= accountPO.getMoney()) { //公司账户余额减少，客户应收减少
-                	accountDataService.add(new AccountPO(accountPO.getId(), accountPO.getName(), accountPO.getMoney() - list.get(i).getMoney(), accountPO.getExistFlag()));
-                	if ((customerPO.getReceivable() - billPO.getSum()) >= 0) {
-                		customerDataService.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
-                    			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
-                    			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable() - billPO.getSum(), 
-                    			customerPO.getPayment(), customerPO.getExistFlag()));
-                	}else {//如果账户多付了钱，就在客户的应付里要回来→_→ 
-                		customerDataService.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
-                    			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
-                    			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), 0, 
-                    			customerPO.getPayment() + (billPO.getSum() - customerPO.getReceivable()), customerPO.getExistFlag()));
-                	}
-                	
-            	}else {
-                    billPO.setState(4);
-                    billVO.setState(4);
-                    saveBill(billVO);
-                    return false;
-            	}
+            	TransferItem item = list.get(i);
+            	AccountPO accountPO = accountDataService.findById(item.getAccountId());
+            	if (!accountPO.subMoney(item.getMoney())) flag = false;
+            	accountList.add(accountPO);
             }
-            billPO.setState(3);
-            billVO.setState(3);
-            return saveBill(billVO, "审核付款单", "通过审核的付款单单据编号为"+billId);
+            if (!customerPO.setReceivable(customerPO.getReceivable() - billPO.getSum())) flag = false;
+            if (flag) {
+            	for (AccountPO a : accountList) accountDataService.update(a);
+            	customerDataService.update(customerPO);
+            	billVO.setState(3);
+                return saveBill(billVO, "审核付款单", "通过审核的付款单单据编号为"+billId);
+            } else {
+            	notPassBill(billId);
+            	return false;
+            }
         }catch(RemoteException e){
             e.printStackTrace();
             return false;
@@ -161,7 +153,6 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
         try{
             PaymentBillPO billPO = paymentBillDataService.getBillById(billId);
             PaymentBillVO billVO = BillTools.toPaymentBillVO(billPO);
-            billPO.setState(4);
             billVO.setState(4);
             return saveBill(billVO, "审核付款单", "单据编号为"+billId+"的付款单审核未通过");
         }catch(RemoteException e){

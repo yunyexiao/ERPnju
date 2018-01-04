@@ -213,8 +213,7 @@ public class BillSearchBL implements BillSearchBLService {
                 data[i][2] = bill.getOperator();
                 data[i][3] = userInfo.getUser(data[i][2]).getName();
                 data[i][4] = bill.getAccountId();
-                // TODO get the sum
-                data[i][5] = "";
+                data[i][5] = ""+bill.getSum();
             }
             return new MyTableModel(data, columnNames);
         }catch(RemoteException e){
@@ -237,8 +236,7 @@ public class BillSearchBL implements BillSearchBLService {
                 data[i][3] = userInfo.getUser(data[i][2]).getName();
                 data[i][4] = bill.getCustomerId();
                 data[i][5] = customerInfo.getCustomer(data[i][4]).getName();
-                // TODO get the sum
-                data[i][6] = "";
+                data[i][6] = ""+bill.getSum();
             }
             return new MyTableModel(data, columnNames);
         }catch(RemoteException e){
@@ -261,8 +259,7 @@ public class BillSearchBL implements BillSearchBLService {
                 data[i][3] = userInfo.getUser(data[i][2]).getName();
                 data[i][4] = bill.getCustomerId();
                 data[i][5] = customerInfo.getCustomer(data[i][4]).getName();
-                // TODO get the sum
-                data[i][6] = "";
+                data[i][6] = ""+bill.getSum();
             }
             return new MyTableModel(data, columnNames);
         }catch(RemoteException e){
@@ -280,6 +277,7 @@ public class BillSearchBL implements BillSearchBLService {
     
     @Override
     public MyTableModel filterBills(String from, String to) {
+    	String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名"};
     	try {
     		ArrayList<ChangeBillPO> overflowBills = billSearchDs.searchChangeBills(from, to, null, null, true, 2); 
             ArrayList<ChangeBillPO> brokenBills = billSearchDs.searchChangeBills(from, to, null, null, false, 2); 
@@ -291,7 +289,7 @@ public class BillSearchBL implements BillSearchBLService {
             ArrayList<PaymentBillPO> paymentBills = billSearchDs.searchPaymentBills(from, to, null, null, 2);
             ArrayList<ReceiptBillPO> receiptBills = billSearchDs.searchReceiptBills(from, to, null, null, 2);
 
-       /*     ArrayList<BillPO> bills = new ArrayList<BillPO>();
+            ArrayList<BillPO> bills = new ArrayList<BillPO>();
             bills.addAll(overflowBills);
             bills.addAll(brokenBills);
             bills.addAll(purchaseBills);
@@ -301,91 +299,97 @@ public class BillSearchBL implements BillSearchBLService {
             bills.addAll(cashCostBills);
             bills.addAll(paymentBills);
             bills.addAll(receiptBills);
-            */
-   
-        	String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名"};
+            
+        	String[][] data = new String[bills.size()][columnNames.length];
+        	for(int i = 0; i < bills.size(); i++) {
+        		BillPO bill = bills.get(i);
+        		data[i][0] = bill.getAllId();
+                data[i][1] = bill.getDate() + ' ' + bill.getTime();
+                data[i][2] = bill.getOperator();
+                data[i][3] = userInfo.getUser(data[i][2]).getName();
+        	}
+        	/*
             String[][] data = new String[purchaseBills.size() + purchaseReturnBills.size() 
             + salesBills.size() + salesReturnBills.size() + cashCostBills.size() + paymentBills.size() 
             + receiptBills.size()][columnNames.length];
+            int s = 0;
+            for (; s < overflowBills.size(); s++) {
+                ChangeBillPO bill = overflowBills.get(s);
+                data[s][0] = bill.getAllId();
+                data[s][1] = bill.getDate() + ' ' + bill.getTime();
+                data[s][2] = bill.getOperator();
+                data[s][3] = userInfo.getUser(data[s][2]).getName();
+            }
+           
+           for (int i = 0; i < brokenBills.size(); i++, s++) {
+                ChangeBillPO bill = brokenBills.get(s);
+                data[s][0] = "BSD-" + bill.getDate() + "-" + bill.getId();
+                data[s][1] = bill.getDate() + ' ' + bill.getTime();
+                data[s][2] = bill.getOperator();
+                data[s][3] = userInfo.getUser(data[s][2]).getName();
+            }
             
-     /*       for (int i = 0; i < overflowBills.size(); i++) {
-                ChangeBillPO bill = overflowBills.get(i);
-                data[i][0] = "BYD-" + bill.getDate() + "-" + bill.getId();
-                data[i][1] = bill.getDate() + ' ' + bill.getTime();
-                data[i][2] = bill.getOperator();
-                data[i][3] = userInfo.getUser(data[i][2]).getName();
-            }
-         */   
-      /*      for (int i = overflowBills.size(); i < overflowBills.size() + brokenBills.size(); i++) {
-                ChangeBillPO bill = brokenBills.get(i);
-                data[i][0] = "BSD-" + bill.getDate() + "-" + bill.getId();
-                data[i][1] = bill.getDate() + ' ' + bill.getTime();
-                data[i][2] = bill.getOperator();
-                data[i][3] = userInfo.getUser(data[i][2]).getName();
-            }
-            */
-            for (int i = 0; i < purchaseBills.size(); i++) {
+            for (int i = 0; i < purchaseBills.size(); i++,s++) {
             	PurchaseBillPO bill = purchaseBills.get(i);
-                data[i][0] = "JHD-" + bill.getDate() + "-" + bill.getId();
-                data[i][1] = bill.getDate() + ' ' + bill.getTime();
-                data[i][2] = bill.getOperator();
-                data[i][3] = userInfo.getUser(data[i][2]).getName();
+                data[s][0] = "JHD-" + bill.getDate() + "-" + bill.getId();
+                data[s][1] = bill.getDate() + ' ' + bill.getTime();
+                data[s][2] = bill.getOperator();
+                data[s][3] = userInfo.getUser(data[s][2]).getName();
             }
             
             for (int i = purchaseBills.size(); i < purchaseBills.size() + purchaseReturnBills.size(); i++) {
             	 PurchaseReturnBillPO bill = purchaseReturnBills.get(i- purchaseBills.size());
-                 data[i][0] = "JHTHD-" + bill.getDate() + "-" + bill.getId();
-                 data[i][1] = bill.getDate() + ' ' + bill.getTime();
-                 data[i][2] = bill.getOperator();
-                 data[i][3] = userInfo.getUser(data[i][2]).getName();
+                 data[s][0] = "JHTHD-" + bill.getDate() + "-" + bill.getId();
+                 data[s][1] = bill.getDate() + ' ' + bill.getTime();
+                 data[s][2] = bill.getOperator();
+                 data[s][3] = userInfo.getUser(data[s][2]).getName();
             }
             
             for (int i = purchaseBills.size() + purchaseReturnBills.size(); i < purchaseBills.size() + purchaseReturnBills.size() + salesBills.size(); i++) {
             	SalesBillPO bill = salesBills.get(i - purchaseBills.size() - purchaseReturnBills.size());
-            	data[i][0] = "XSD-" + bill.getDate() + "-" + bill.getId();
-            	data[i][1] = bill.getDate() + ' ' + bill.getTime();
-            	data[i][2] = bill.getOperator();
-            	data[i][3] = userInfo.getUser(data[i][2]).getName();
+            	data[s][0] = "XSD-" + bill.getDate() + "-" + bill.getId();
+            	data[s][1] = bill.getDate() + ' ' + bill.getTime();
+            	data[s][2] = bill.getOperator();
+            	data[s][3] = userInfo.getUser(data[s][2]).getName();
             }
             
             for (int i = purchaseBills.size() + purchaseReturnBills.size() + salesBills.size(); i < purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size(); i++) {
             	SalesReturnBillPO bill = salesReturnBills.get(i - purchaseBills.size() - purchaseReturnBills.size() - salesBills.size());
-                data[i][0] = "XSTHD-" + bill.getDate() + "-" + bill.getId();
-                data[i][1] = bill.getDate() + ' ' + bill.getTime();
-                data[i][2] = bill.getOperator();
-                data[i][3] = new UserBL().getUser(data[i][2]).getName();
+                data[s][0] = "XSTHD-" + bill.getDate() + "-" + bill.getId();
+                data[s][1] = bill.getDate() + ' ' + bill.getTime();
+                data[s][2] = bill.getOperator();
+                data[s][3] = new UserBL().getUser(data[s][2]).getName();
             }            
 
             for (int i = purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size(); i < purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size() + cashCostBills.size(); i++) {
             	CashCostBillPO bill = cashCostBills.get(i - purchaseBills.size() - purchaseReturnBills.size() - salesBills.size() - salesReturnBills.size());
-                data[i][0] = "XJFYD-" + bill.getDate() + "-" + bill.getId();
-                data[i][1] = bill.getDate() + ' ' + bill.getTime();
-                data[i][2] = bill.getOperator();
-                data[i][3] = userInfo.getUser(data[i][2]).getName();
+                data[s][0] = "XJFYD-" + bill.getDate() + "-" + bill.getId();
+                data[s][1] = bill.getDate() + ' ' + bill.getTime();
+                data[s][2] = bill.getOperator();
+                data[s][3] = userInfo.getUser(data[s][2]).getName();
             }   
 
             for (int i = purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size() + cashCostBills.size(); i < purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size() + cashCostBills.size() + paymentBills.size(); i++) {
             	 PaymentBillPO bill = paymentBills.get(i - purchaseBills.size() - purchaseReturnBills.size() - salesBills.size() - salesReturnBills.size() - cashCostBills.size());
-                 data[i][0] = "FKD-" + bill.getDate() + "-" + bill.getId();
-                 data[i][1] = bill.getDate() + ' ' + bill.getTime();
-                 data[i][2] = bill.getOperator();
-                 data[i][3] = userInfo.getUser(data[i][2]).getName();
+                 data[s][0] = "FKD-" + bill.getDate() + "-" + bill.getId();
+                 data[s][1] = bill.getDate() + ' ' + bill.getTime();
+                 data[s][2] = bill.getOperator();
+                 data[s][3] = userInfo.getUser(data[s][2]).getName();
             }   
 
             for (int i = purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size() + cashCostBills.size() + paymentBills.size(); i < purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size() + cashCostBills.size() + paymentBills.size() + receiptBills.size(); i++) {
             	 ReceiptBillPO bill = receiptBills.get(i - purchaseBills.size() - purchaseReturnBills.size() - salesBills.size() - salesReturnBills.size() - cashCostBills.size() - paymentBills.size());
-                 data[i][0] = "SKD-" + bill.getDate() + "-" + bill.getId();
-                 data[i][1] = bill.getDate() + ' ' + bill.getTime();
-                 data[i][2] = bill.getOperator();
-                 data[i][3] = userInfo.getUser(data[i][2]).getName();
+                 data[s][0] = "SKD-" + bill.getDate() + "-" + bill.getId();
+                 data[s][1] = bill.getDate() + ' ' + bill.getTime();
+                 data[s][2] = bill.getOperator();
+                 data[s][3] = userInfo.getUser(data[s][2]).getName();
             } 
-            
+            */
             return new MyTableModel(data, columnNames);
     	}catch (RemoteException e) {
     		e.printStackTrace();
     	}
-    	
-        return null;
+        return new MyTableModel(null, columnNames);
     }
 
 }
