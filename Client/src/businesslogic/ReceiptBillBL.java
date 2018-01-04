@@ -3,6 +3,7 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import blservice.MailBLService;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.ReceiptBillBLService;
@@ -27,6 +28,7 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 
 	private ReceiptBillDataService receiptBillDataService = Rmi.flag ? Rmi.getRemote(ReceiptBillDataService.class) : new ReceiptBillDs_stub();
 	private AddLogInterface addLog = new LogBL();
+	private MailBLService mailBL = new MailBL();
 	private AccountDataService accountDataService = Rmi.flag ? Rmi.getRemote(AccountDataService.class) : new AccountDs_stub();
     private CustomerDataService customerDataService = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
 	
@@ -140,6 +142,7 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
             	for (AccountPO a : accountList) accountDataService.update(a);
             	customerDataService.update(customerPO);
             	billVO.setState(3);
+            	mailBL.saveMail("0000", billPO.getOperator(), "单据编号为"+billId+"的收款单通过审核，请尽快完成银行操作");
                 return saveBill(billVO, "审核收款单", "通过审核的收款单单据编号为"+billId);
             } else {
             	notPassBill(billId);

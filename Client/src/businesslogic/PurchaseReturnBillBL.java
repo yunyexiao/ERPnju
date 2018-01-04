@@ -3,6 +3,7 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import blservice.MailBLService;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseReturnBillBLService;
@@ -15,6 +16,7 @@ import ds_stub.CustomerDs_stub;
 import ds_stub.PurchaseReturnBillDs_stub;
 import po.CommodityPO;
 import po.CustomerPO;
+import po.UserPO;
 import po.billpo.BillPO;
 import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesItemsPO;
@@ -28,6 +30,7 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
     
     private PurchaseReturnBillDataService purchaseReturnBillDs = Rmi.flag ? Rmi.getRemote(PurchaseReturnBillDataService.class) : new PurchaseReturnBillDs_stub();
     private AddLogInterface addLog = new LogBL();
+	private MailBLService mailBL = new MailBL();
     private CustomerDataService customerDs = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
     private CommodityDataService commodityDs = Rmi.flag ? Rmi.getRemote(CommodityDataService.class) : new CommodityDs_stub();
 
@@ -146,7 +149,10 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
             if (flag) {
             	customerDs.update(customerPO);
             	billVO.setState(3);
-            	for (CommodityPO c : commodityList) commodityDs.update(c);
+            	for (CommodityPO c : commodityList) {
+            		if(c.getAmount() < c.getAlarmNum()) mailBL.saveMail("0000", UserPO.UserType.STORE_KEEPER, "编号为"+c.getId()+"的商品"+c.getName()+"库存数量不足");
+            		commodityDs.update(c);
+            	}
                 return saveBill(billVO, "审核进货退货单", "通过审核的进货退货单单据编号为"+billId);
             } else {
             	notPassBill(billId);

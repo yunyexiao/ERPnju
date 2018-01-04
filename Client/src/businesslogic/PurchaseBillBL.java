@@ -3,6 +3,7 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import blservice.MailBLService;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseBillBLService;
@@ -31,6 +32,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
     
     private PurchaseBillDataService purchaseBillDs = Rmi.flag ? Rmi.getRemote(PurchaseBillDataService.class) : new PurchaseBillDs_stub();
     private AddLogInterface addLog = new LogBL();
+	private MailBLService mailBL = new MailBL();
     private CustomerDataService customerDs = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
     private CommodityDataService commodityDs = Rmi.flag ? Rmi.getRemote(CommodityDataService.class) : new CommodityDs_stub();
 
@@ -172,6 +174,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
             	customerDs.update(customerPO);
             	for (CommodityPO c : commodityList) commodityDs.update(c);
             	billVO.setState(3);
+            	mailBL.saveMail("0000", billPO.getOperator(), "单据编号为"+id+"的进货单通过审核，请尽快完成商品入库操作");
                 return saveBill(billVO, "审核进货单", "通过审核的进货单单据编号为"+id);
             } else {
             	notPassBill(id);

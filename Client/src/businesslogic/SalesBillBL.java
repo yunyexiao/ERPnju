@@ -3,6 +3,7 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import blservice.MailBLService;
 import blservice.PromotionBLService;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
@@ -22,6 +23,7 @@ import ds_stub.CustomerDs_stub;
 import ds_stub.SalesBillDs_stub;
 import po.CommodityPO;
 import po.CustomerPO;
+import po.UserPO;
 import po.billpo.BillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
@@ -42,6 +44,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
     private CommodityDataService commodityDs = Rmi.flag ? Rmi.getRemote(CommodityDataService.class) : new CommodityDs_stub();
     private GetCustomerInterface customerInfo = new CustomerBL();
     private AddLogInterface addLog = new LogBL();
+	private MailBLService mailBL = new MailBL();
    
     @Override
     public String getNewId() {
@@ -223,9 +226,13 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
             }
 
             if (flag) {
-            	for (CommodityPO c : commodityList) commodityDs.update(c);
+            	for (CommodityPO c : commodityList) {
+            		if(c.getAmount() < c.getAlarmNum()) mailBL.saveMail("0000", UserPO.UserType.STORE_KEEPER, "编号为"+c.getId()+"的商品"+c.getName()+"库存数量不足");
+            		commodityDs.update(c);
+            	}
             	customerDs.update(customerPO);
             	billVO.setState(3);
+            	mailBL.saveMail("0000", billPO.getOperator(), "单据编号为"+billId+"的销售单通过审核，请尽快完成商品出库操作");
                 return saveBill(billVO, "审核销售单", "通过审核的销售单单据编号为"+billId);
             } else {
             	notPassBill(billId);
