@@ -32,7 +32,7 @@ public class MailPanel implements PanelInterface {
 		buttonPanel.addButton("新邮件", new ImageIcon("resource/SendMail.png"), e->{
 			String[] input = new NewMailWindow().getMessage();
 			if (input != null) {
-				if (mailBL.saveMail(input[0], input[1])) new InfoWindow("邮件发送成功");
+				if (mailBL.saveMail(MainWindow.getUser().getId(), input[0], input[1])) new InfoWindow("邮件发送成功");
 			}
 		});
 		buttonPanel.addButton("全部已读", new ImageIcon("resource/ReadAll.png"), e->{

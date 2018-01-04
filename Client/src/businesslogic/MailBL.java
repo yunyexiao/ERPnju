@@ -11,8 +11,11 @@ import java.util.Date;
 
 import blservice.MailBLService;
 import dataservice.MailDataService;
+import dataservice.UserDataService;
 import ds_stub.MailDataDs_stub;
+import ds_stub.UserDs_stub;
 import po.MailPO;
+import po.UserPO;
 import rmi.Rmi;
 import vo.MailVO;
 import vo.UserVO;
@@ -20,6 +23,7 @@ import vo.UserVO;
 public class MailBL implements MailBLService {
 
 	private MailDataService mailDs = Rmi.flag ? Rmi.getRemote(MailDataService.class) : new MailDataDs_stub();
+	private UserDataService userData = Rmi.flag ? Rmi.getRemote(UserDataService.class) : new UserDs_stub();
 	@Override
 	public boolean saveMail(String fromId, String toId, String content) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -33,6 +37,26 @@ public class MailBL implements MailBLService {
 		}
 	}
 
+	@Override
+	public boolean saveMail(String fromId, int type, String content) {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String time = sdf.format(new Date());
+			ArrayList<UserPO> list = userData.getAllUser();
+			boolean b = true;
+			for (UserPO user : list) {
+				if (user.getUsertype() == type) {
+					MailPO mail = new MailPO(fromId, user.getUserId(), content, time, false);
+					b = b && mailDs.saveMail(mail);
+				}
+			}
+			return b;
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	@Override
 	public boolean readMail(MailVO mail) {
 		try {
@@ -71,5 +95,4 @@ public class MailBL implements MailBLService {
 			return new ArrayList<MailVO>();
 		}
 	}
-
 }
