@@ -252,6 +252,8 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 
 	@Override
 	public void setEditable(boolean b) {
+		MyTableModel model = (MyTableModel) table.getModel();
+		model.setEditable(new int[]{});
 		overButton.setEnabled(false);
 		lostButton.setEnabled(false);
 		addButton.setEnabled(false);
