@@ -82,7 +82,7 @@ public class MailBL implements MailBLService {
 	            	try {
 						Date date1 = df.parse(o1.getTime());
 						Date date2 = df.parse(o2.getTime());
-						return date1.after(date2) ? 1 : -1;
+						return date1.after(date2) ? -1 : 1;
 					} catch (ParseException e) {
 						e.printStackTrace();
 						return 1;

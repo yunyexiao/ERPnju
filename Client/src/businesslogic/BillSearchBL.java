@@ -59,7 +59,7 @@ public class BillSearchBL implements BillSearchBLService {
             			try {
 							Date time1 = df.parse(o1.getDate() + " " + o1.getTime());
 							Date time2 = df.parse(o2.getDate() + " " + o2.getTime());
-							return time1.after(time2) ? 1 : -1;
+							return time1.after(time2) ? -1 : 1;
 						} catch (ParseException e) {
 							e.printStackTrace();
 							return -1;
