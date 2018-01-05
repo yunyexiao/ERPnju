@@ -6,12 +6,13 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 
 import businesslogic.AccountBL;
 import businesslogic.CategoryBL;
@@ -46,18 +47,20 @@ import vo.UserVO;
 @SuppressWarnings("serial")
 class LeftButtonPanel extends JPanel{
     private JPanel innerPanel = new JPanel(new GridLayout(11, 1, 5, 5));
+    private ArrayList<JToggleButton> buttonList = new ArrayList<JToggleButton>();
     /**
      * 向Panel增加按钮
      * @param text 按钮显示的文字
      * @param listener 按钮绑定的监听器（由Listener类生成）
      */
     private void addButton(String text, ActionListener listener) {
-    	JButton button = new JButton(text);
+    	JToggleButton button = new JToggleButton(text);
 		button.setFont(new Font("等线",Font.BOLD,18));
 		button.addActionListener(listener);
+		button.addActionListener(e->updateButtons(button));
 		if ("退出".equals(text)) button.addMouseListener(new InfoAdapter("退出系统"));
 		else button.addMouseListener(new InfoAdapter("进入<" + text + ">界面"));
-		innerPanel.add(button);
+		buttonList.add(button);
     }
     /**
      * 构造方法：根据MainWindow的UserVO初始化按钮栏
@@ -125,6 +128,7 @@ class LeftButtonPanel extends JPanel{
 		addButton("退出", new CloseListener());
 		//-----------------------------------------
 		
+		for(JToggleButton button : buttonList) innerPanel.add(button);
 		double[][] size = {{TableLayout.FILL, 0.8, TableLayout.FILL},{TableLayout.FILL}};
 		this.setLayout(new TableLayout(size));
 		this.add(innerPanel, "1,0");
@@ -137,5 +141,11 @@ class LeftButtonPanel extends JPanel{
         img = img.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT);  
         image.setImage(img);
 		this.add(new JLabel(image), "0, 0, 2, 0");
+	}
+	
+	public void updateButtons(JToggleButton button) {
+		for (JToggleButton b : buttonList) {
+			if (b != button) b.setSelected(false);
+		}
 	}
 }

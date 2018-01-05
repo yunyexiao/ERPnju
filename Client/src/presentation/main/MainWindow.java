@@ -121,6 +121,7 @@ public class MainWindow {
 	public void changePanel() {
 		changePanel(new MainPanel(this));
 		((MainPanel) innerPanel).setBackground();
+		buttonPanel.updateButtons(null);
 	}
 	
 	/**
