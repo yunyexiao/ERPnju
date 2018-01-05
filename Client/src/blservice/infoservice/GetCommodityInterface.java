@@ -1,5 +1,6 @@
 package blservice.infoservice;
 
+import presentation.component.MyTableModel;
 import vo.CommodityVO;
 
 public interface GetCommodityInterface {
@@ -12,4 +13,6 @@ public interface GetCommodityInterface {
 	 * @return
 	 */
 	public boolean hasCommodity(String categoryId);
+	
+	public MyTableModel getCategoryCommodities(String categoryId);
 }

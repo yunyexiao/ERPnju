@@ -59,4 +59,10 @@ public class CommodityBL_stub implements CommodityBLService, GetCommodityInterfa
 		return false;
 	}
 
+    @Override
+    public MyTableModel getCategoryCommodities(String categoryId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

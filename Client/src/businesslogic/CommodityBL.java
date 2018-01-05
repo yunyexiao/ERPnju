@@ -168,4 +168,10 @@ public class CommodityBL implements CommodityBLService, GetCommodityInterface{
 		return null;
 	}
 
+
+    @Override
+    public MyTableModel getCategoryCommodities(String categoryId) {
+        return search("∑÷¿‡±‡∫≈", categoryId);
+    }
+
 }
