@@ -94,7 +94,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
                 i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
             SalesReturnBillPO offset = new SalesReturnBillPO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
+                Timetools.getDate(), Timetools.getTime(), salesReturnBillDs.getNewId(), bill.getOperator(), BillPO.PASS,
                 bill.getCustomerId(), bill.getSalesManName(), bill.getRemark(), bill.getOriginalSBId(), 
                 -bill.getOriginalSum(), -bill.getReturnSum(), items);
             if (salesReturnBillDs.saveBill(offset)) {
@@ -112,7 +112,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
         if(bill instanceof SalesReturnBillVO){
             SalesReturnBillVO old = (SalesReturnBillVO) bill;
             SalesReturnBillVO copy = new SalesReturnBillVO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+                Timetools.getDate(), Timetools.getTime(), this.getNewId().split("-")[2], old.getOperator(),
                 BillVO.PASS, old.getCustomerId(), old.getModel(), old.getRemark(), 
                 old.getOriginalSBId(), old.getDiscountRate(), old.getOriginalSum(), old.getSum()
             );

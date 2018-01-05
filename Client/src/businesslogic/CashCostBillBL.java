@@ -84,7 +84,7 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
             bill.getCashcostList().forEach(i -> items.add
                 (new CashCostItem(i.getName(), -i.getMoney(), i.getRemark())));
             CashCostBillPO offset = new CashCostBillPO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator()
+                Timetools.getDate(), Timetools.getTime(), cashCostBillDataService.getNewId(), bill.getOperator()
                 , BillPO.PASS, bill.getAccountId(), items, -bill.getSum());
             if (cashCostBillDataService.saveBill(offset)) {
             	addLog.add("红冲现金费用单", "被红冲的现金费用单单据编号为"+bill.getAllId());
@@ -101,7 +101,7 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
 	    if(bill instanceof CashCostBillVO){
 	        CashCostBillVO oldOne = (CashCostBillVO) bill;
 	        CashCostBillVO copy = new CashCostBillVO(
-	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), 
+	            Timetools.getDate(), Timetools.getTime(), this.getNewId().split("-")[2], 
 	            oldOne.getOperator(), BillVO.PASS, oldOne.getAccountId(), oldOne.getTableModel()
 	        );
 	        return saveBill(copy, "红冲并复制现金费用单", "红冲并复制后新的现金费用单单据编号为"+copy.getAllId());

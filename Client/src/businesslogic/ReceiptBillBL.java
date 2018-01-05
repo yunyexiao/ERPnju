@@ -81,7 +81,7 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 	            i.getAccountId(), -i.getMoney(), i.getRemark()
 	        )));
 	        ReceiptBillPO offset = new ReceiptBillPO(
-	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
+	            Timetools.getDate(), Timetools.getTime(), receiptBillDataService.getNewId(), bill.getOperator(), BillPO.PASS,
 	            bill.getCustomerId(), items, -bill.getSum());
 	        if (receiptBillDataService.saveBill(offset)) {
             	addLog.add("红冲收款单", "被红冲的收款单单据编号为"+bill.getAllId());
@@ -98,7 +98,7 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 	    if(bill instanceof ReceiptBillVO){
 	        ReceiptBillVO old = (ReceiptBillVO) bill;
 	        ReceiptBillVO copy = new ReceiptBillVO(
-	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+	            Timetools.getDate(), Timetools.getTime(), this.getNewId().split("-")[2], old.getOperator(),
 	            BillVO.PASS, old.getCustomerId(), old.getTableModel()
 	        );
 	        return saveBill(copy, "红冲并复制收款单", "红冲并复制后新的收款单单据编号为"+copy.getAllId());

@@ -150,7 +150,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
                 i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
             SalesBillPO offset = new SalesBillPO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
+                Timetools.getDate(), Timetools.getTime(), salesBillDs.getNewId(), bill.getOperator(), BillPO.PASS,
                 bill.getCustomerId(), bill.getSalesManName(), bill.getRemark(), bill.getPromotionId(),
                 -bill.getBeforeDiscount(), -bill.getDiscount(), -bill.getCoupon(), -bill.getAfterDiscount(), items);
             if (salesBillDs.saveBill(offset)) {
@@ -168,7 +168,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
         if(bill instanceof SalesBillVO){
             SalesBillVO old = (SalesBillVO) bill;
             SalesBillVO copy = new SalesBillVO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+                Timetools.getDate(), Timetools.getTime(), this.getNewId().split("-")[2], old.getOperator(),
                 BillVO.PASS, old.getCustomerId(), old.getModel(),
                 old.getRemark(), old.getBeforeDiscount(), old.getDiscount(), old.getCoupon(), old.getSum(), old.getPromotionId()
             );

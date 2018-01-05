@@ -125,7 +125,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
                 i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
             PurchaseBillPO offset =new PurchaseBillPO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
+                Timetools.getDate(), Timetools.getTime(), purchaseBillDs.getNewId(), bill.getOperator(), BillPO.PASS,
                 bill.getSupplierId(), bill.getRemark(), -bill.getSum(), items
             );
             if (purchaseBillDs.saveBill(offset)) {
@@ -143,7 +143,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
         if(bill instanceof PurchaseBillVO){
             PurchaseBillVO old = (PurchaseBillVO) bill;
             PurchaseBillVO copy = new PurchaseBillVO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+                Timetools.getDate(), Timetools.getTime(), this.getNewId().split("-")[2], old.getOperator(),
                 BillVO.PASS, old.getCustomerId(), old.getModel(), old.getRemark(), old.getSum()
             );
             return saveBill(copy, "红冲并复制进货单", "红冲并复制后新的进货单单据编号为"+copy.getAllId());

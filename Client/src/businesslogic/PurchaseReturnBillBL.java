@@ -92,7 +92,7 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
                 i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
             PurchaseReturnBillPO offset = new PurchaseReturnBillPO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS, 
+                Timetools.getDate(), Timetools.getTime(), purchaseReturnBillDs.getNewId(), bill.getOperator(), BillPO.PASS, 
                 bill.getSupplierId(), bill.getRemark(), -bill.getSum(), items);
             if (purchaseReturnBillDs.saveBill(offset)) {
             	addLog.add("红冲进货退货单", "被红冲的进货退货单单据编号为"+bill.getAllId());
@@ -108,11 +108,15 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
     public boolean copyBill(BillVO bill){
         if(bill instanceof PurchaseReturnBillVO){
             PurchaseReturnBillVO old = (PurchaseReturnBillVO) bill;
-            PurchaseReturnBillVO copy = new PurchaseReturnBillVO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
-                BillVO.PASS, old.getCustomerId(), old.getModel(), old.getRemark(), old.getSum()
-            );
-            return saveBill(copy, "红冲并复制进货退货单", "红冲并复制后新的进货退货单编号为"+copy.getAllId());
+			try {
+				PurchaseReturnBillVO copy = new PurchaseReturnBillVO(
+				    Timetools.getDate(), Timetools.getTime(), purchaseReturnBillDs.getNewId(), old.getOperator(),
+				    BillVO.PASS, old.getCustomerId(), old.getModel(), old.getRemark(), old.getSum()
+				);
+				return saveBill(copy, "红冲并复制进货退货单", "红冲并复制后新的进货退货单编号为"+copy.getAllId());
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
         }
         return false;
     }

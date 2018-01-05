@@ -80,7 +80,7 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
 	        bill.getTransferList().forEach(i -> items.add(
 	            new TransferItem(i.getAccountId(), -i.getMoney(), i.getRemark())));
 	        PaymentBillPO offset = new PaymentBillPO(
-	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator()
+	            Timetools.getDate(), Timetools.getTime(), paymentBillDataService.getNewId(), bill.getOperator()
 	            , BillPO.PASS, bill.getCustomerId(), items, -bill.getSum());
 	        if (paymentBillDataService.saveBill(offset)) {
             	addLog.add("红冲付款单", "被红冲的付款单单据编号为"+bill.getAllId());
@@ -97,7 +97,7 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
 	    if(bill instanceof PaymentBillVO){
 	        PaymentBillVO old = (PaymentBillVO) bill;
 	        PaymentBillVO copy = new PaymentBillVO(
-	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), 
+	            Timetools.getDate(), Timetools.getTime(), this.getNewId().split("-")[2], 
 	            old.getOperator(), BillVO.PASS, old.getCustomerId(),old.getTableModel());
 	        return saveBill(copy, "红冲并复制付款单", "红冲并复制后新的付款单单据编号为"+copy.getAllId());
 	    }

@@ -86,7 +86,7 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
             bill.getCommodityList().forEach(i -> items.add(new ChangeItem(
                 i.getCommodityId(), i.getChangedValue(), i.getOriginalValue())));
             ChangeBillPO offset = new ChangeBillPO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId()
+                Timetools.getDate(), Timetools.getTime(), this.getNewId().split("-")[2]
                 , bill.getOperator(), BillPO.PASS, bill.isOver(), items);
             if (changeBillDS.saveBill(offset)) {
             	addLog.add("红冲"+getBillName(), "被红冲的"+getBillName()+"单据编号为"+bill.getAllId());
@@ -103,7 +103,7 @@ public class ChangeBillBL implements ChangeBillBLService, BillOperationService, 
 	    if(bill instanceof ChangeBillVO){
 	        ChangeBillVO old = (ChangeBillVO) bill;
 	        ChangeBillVO copy = new ChangeBillVO(
-	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+	            Timetools.getDate(), Timetools.getTime(), this.getNewId().split("-")[2], old.getOperator(),
 	            BillVO.PASS, old.getFlag(), old.getTableModel()
 	        );
 	        return saveBill(copy, "红冲并复制"+getBillName(), "红冲并复制后新的"+getBillName()+"单据编号为"+copy.getAllId());
