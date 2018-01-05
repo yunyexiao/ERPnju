@@ -5,6 +5,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -72,7 +73,7 @@ public class BillExaminePanel implements PanelInterface {
         	public void mouseClicked(MouseEvent e) {
         		if(e.getClickCount() == 2) {
         			int index = table.getSelectedRow();
-        	        new BillViewer(billOperationBl.getBillById(table.getValueAt(index, 0).toString()), false);
+        	        new BillViewer(billOperationBl.getBillById(table.getValueAt(index, 0).toString()));
         		}
         	}
         });
@@ -217,8 +218,12 @@ public class BillExaminePanel implements PanelInterface {
             }	
         	if (flag) {
                 JOptionPane.showMessageDialog(null, "批量审批成功^_^");
+                Arrays.sort(index);
+                for (int i = index.length - 1; i >= 0; i--) 
+                	((MyTableModel) table.getModel()).removeRow(index[i]);
         	}
         }
+    	
     }
     
     private void notPass() {
