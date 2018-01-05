@@ -299,7 +299,7 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
         MyTableModel gifts = promotion.getGifts();
         if(gifts != null){
             GiftBillCreation giftCreator = new GiftBillBL();
-            giftCreator.createAndCommit(gifts, bill.getAllId(), bill.getCustomerId());
+            giftCreator.createAndCommit(gifts, bill.getAllId(),bill.getOperator(), bill.getCustomerId());
         }
     }
 

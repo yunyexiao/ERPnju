@@ -7,6 +7,7 @@ import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.CashCostBillVO;
 import vo.billvo.ChangeBillVO;
+import vo.billvo.GiftBillVO;
 import vo.billvo.PaymentBillVO;
 import vo.billvo.PurchaseBillVO;
 import vo.billvo.PurchaseReturnBillVO;
@@ -51,6 +52,7 @@ public class BillPanelHelper {
 		else if (bill instanceof PaymentBillVO) return new ReceiptOrPaymentBillPanel(user, (PaymentBillVO)bill);
 		else if (bill instanceof SalesBillVO) return new SalesBillPanel(user, (SalesBillVO)bill);
 		else if (bill instanceof SalesReturnBillVO) return new SalesReturnBillPanel(user, (SalesReturnBillVO)bill);
+		else if (bill instanceof GiftBillVO) return new GiftBillPanel((GiftBillVO) bill);
 		else return null;
 	}
 }

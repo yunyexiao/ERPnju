@@ -22,6 +22,7 @@ public class BillOperationBL implements BillOperationService {
         services.put("XSD", new SalesBillBL());
         services.put("XSTHD", new SalesReturnBillBL());
         services.put("SKD", new ReceiptBillBL());
+        services.put("SPZSD", new GiftBillBL());
     }
 
     @Override

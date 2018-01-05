@@ -18,6 +18,7 @@ import ds_stub.BillSearchDs_stub;
 import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.ChangeBillPO;
+import po.billpo.GiftBillPO;
 import po.billpo.PaymentBillPO;
 import po.billpo.PurchaseBillPO;
 import po.billpo.PurchaseReturnBillPO;
@@ -270,8 +271,24 @@ public class BillSearchBL implements BillSearchBLService {
 
     @Override
     public MyTableModel filterGiftBills(String from, String to, String customerId) {
-        // TODO Auto-generated method stub
-        return null;
+    	String[] columnNames = {"单据编号", "制定时间", "操作员编号", "操作员姓名", "客户编号", "客户姓名"};
+        try {
+			ArrayList<GiftBillPO> bills = billSearchDs.searchGiftBills(from, to, customerId, 2);
+            String[][] data = new String[bills.size()][columnNames.length];
+            for(int i = 0; i < data.length; i++){
+            	GiftBillPO bill = bills.get(i);
+                data[i][0] = "SKD-" + bill.getDate() + "-" + bill.getId();
+                data[i][1] = bill.getDate() + ' ' + bill.getTime();
+                data[i][2] = bill.getOperator();
+                data[i][3] = userInfo.getUser(data[i][2]).getName();
+                data[i][4] = bill.getCustomerId();
+                data[i][5] = customerInfo.getCustomer(data[i][4]).getName();
+            }
+            return new MyTableModel(data, columnNames);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+        return new MyTableModel(null, columnNames);
     }
 
     
@@ -288,6 +305,7 @@ public class BillSearchBL implements BillSearchBLService {
             ArrayList<CashCostBillPO> cashCostBills = billSearchDs.searchCashCostBills(from, to, null, null, 2);
             ArrayList<PaymentBillPO> paymentBills = billSearchDs.searchPaymentBills(from, to, null, null, 2);
             ArrayList<ReceiptBillPO> receiptBills = billSearchDs.searchReceiptBills(from, to, null, null, 2);
+            ArrayList<GiftBillPO> giftBills = billSearchDs.searchGiftBills(from, to, null, 2);
 
             ArrayList<BillPO> bills = new ArrayList<BillPO>();
             bills.addAll(overflowBills);
@@ -299,6 +317,7 @@ public class BillSearchBL implements BillSearchBLService {
             bills.addAll(cashCostBills);
             bills.addAll(paymentBills);
             bills.addAll(receiptBills);
+            bills.addAll(giftBills);
             
         	String[][] data = new String[bills.size()][columnNames.length];
         	for(int i = 0; i < bills.size(); i++) {
@@ -308,83 +327,6 @@ public class BillSearchBL implements BillSearchBLService {
                 data[i][2] = bill.getOperator();
                 data[i][3] = userInfo.getUser(data[i][2]).getName();
         	}
-        	/*
-            String[][] data = new String[purchaseBills.size() + purchaseReturnBills.size() 
-            + salesBills.size() + salesReturnBills.size() + cashCostBills.size() + paymentBills.size() 
-            + receiptBills.size()][columnNames.length];
-            int s = 0;
-            for (; s < overflowBills.size(); s++) {
-                ChangeBillPO bill = overflowBills.get(s);
-                data[s][0] = bill.getAllId();
-                data[s][1] = bill.getDate() + ' ' + bill.getTime();
-                data[s][2] = bill.getOperator();
-                data[s][3] = userInfo.getUser(data[s][2]).getName();
-            }
-           
-           for (int i = 0; i < brokenBills.size(); i++, s++) {
-                ChangeBillPO bill = brokenBills.get(s);
-                data[s][0] = "BSD-" + bill.getDate() + "-" + bill.getId();
-                data[s][1] = bill.getDate() + ' ' + bill.getTime();
-                data[s][2] = bill.getOperator();
-                data[s][3] = userInfo.getUser(data[s][2]).getName();
-            }
-            
-            for (int i = 0; i < purchaseBills.size(); i++,s++) {
-            	PurchaseBillPO bill = purchaseBills.get(i);
-                data[s][0] = "JHD-" + bill.getDate() + "-" + bill.getId();
-                data[s][1] = bill.getDate() + ' ' + bill.getTime();
-                data[s][2] = bill.getOperator();
-                data[s][3] = userInfo.getUser(data[s][2]).getName();
-            }
-            
-            for (int i = purchaseBills.size(); i < purchaseBills.size() + purchaseReturnBills.size(); i++) {
-            	 PurchaseReturnBillPO bill = purchaseReturnBills.get(i- purchaseBills.size());
-                 data[s][0] = "JHTHD-" + bill.getDate() + "-" + bill.getId();
-                 data[s][1] = bill.getDate() + ' ' + bill.getTime();
-                 data[s][2] = bill.getOperator();
-                 data[s][3] = userInfo.getUser(data[s][2]).getName();
-            }
-            
-            for (int i = purchaseBills.size() + purchaseReturnBills.size(); i < purchaseBills.size() + purchaseReturnBills.size() + salesBills.size(); i++) {
-            	SalesBillPO bill = salesBills.get(i - purchaseBills.size() - purchaseReturnBills.size());
-            	data[s][0] = "XSD-" + bill.getDate() + "-" + bill.getId();
-            	data[s][1] = bill.getDate() + ' ' + bill.getTime();
-            	data[s][2] = bill.getOperator();
-            	data[s][3] = userInfo.getUser(data[s][2]).getName();
-            }
-            
-            for (int i = purchaseBills.size() + purchaseReturnBills.size() + salesBills.size(); i < purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size(); i++) {
-            	SalesReturnBillPO bill = salesReturnBills.get(i - purchaseBills.size() - purchaseReturnBills.size() - salesBills.size());
-                data[s][0] = "XSTHD-" + bill.getDate() + "-" + bill.getId();
-                data[s][1] = bill.getDate() + ' ' + bill.getTime();
-                data[s][2] = bill.getOperator();
-                data[s][3] = new UserBL().getUser(data[s][2]).getName();
-            }            
-
-            for (int i = purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size(); i < purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size() + cashCostBills.size(); i++) {
-            	CashCostBillPO bill = cashCostBills.get(i - purchaseBills.size() - purchaseReturnBills.size() - salesBills.size() - salesReturnBills.size());
-                data[s][0] = "XJFYD-" + bill.getDate() + "-" + bill.getId();
-                data[s][1] = bill.getDate() + ' ' + bill.getTime();
-                data[s][2] = bill.getOperator();
-                data[s][3] = userInfo.getUser(data[s][2]).getName();
-            }   
-
-            for (int i = purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size() + cashCostBills.size(); i < purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size() + cashCostBills.size() + paymentBills.size(); i++) {
-            	 PaymentBillPO bill = paymentBills.get(i - purchaseBills.size() - purchaseReturnBills.size() - salesBills.size() - salesReturnBills.size() - cashCostBills.size());
-                 data[s][0] = "FKD-" + bill.getDate() + "-" + bill.getId();
-                 data[s][1] = bill.getDate() + ' ' + bill.getTime();
-                 data[s][2] = bill.getOperator();
-                 data[s][3] = userInfo.getUser(data[s][2]).getName();
-            }   
-
-            for (int i = purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size() + cashCostBills.size() + paymentBills.size(); i < purchaseBills.size() + purchaseReturnBills.size() + salesBills.size() + salesReturnBills.size() + cashCostBills.size() + paymentBills.size() + receiptBills.size(); i++) {
-            	 ReceiptBillPO bill = receiptBills.get(i - purchaseBills.size() - purchaseReturnBills.size() - salesBills.size() - salesReturnBills.size() - cashCostBills.size() - paymentBills.size());
-                 data[s][0] = "SKD-" + bill.getDate() + "-" + bill.getId();
-                 data[s][1] = bill.getDate() + ' ' + bill.getTime();
-                 data[s][2] = bill.getOperator();
-                 data[s][3] = userInfo.getUser(data[s][2]).getName();
-            } 
-            */
             return new MyTableModel(data, columnNames);
     	}catch (RemoteException e) {
     		e.printStackTrace();

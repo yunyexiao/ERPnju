@@ -73,7 +73,8 @@ public class BillExaminePanel implements PanelInterface {
         	public void mouseClicked(MouseEvent e) {
         		if(e.getClickCount() == 2) {
         			int index = table.getSelectedRow();
-        	        new BillViewer(billOperationBl.getBillById(table.getValueAt(index, 0).toString()));
+        			String billId = table.getValueAt(index, 0).toString();
+        			new BillViewer(billOperationBl.getBillById(billId));
         		}
         	}
         });
@@ -189,7 +190,7 @@ public class BillExaminePanel implements PanelInterface {
         }else if (index.length == 1) {
             String id = table.getValueAt(index[0], 0).toString();
         	if(billExamineBl.examineBill(id)){
-                JOptionPane.showMessageDialog(null, "通过单据审批^_^");
+                new InfoWindow("通过单据审批！");
             }else {
             	String type = id.split("-")[0];
             	switch (type) {
