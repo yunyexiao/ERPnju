@@ -281,6 +281,12 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
         PaymentBillVO paymentBillVO= new PaymentBillVO(date, time, id, operater, state, customerId, model); 
         return paymentBillVO;
     }
+	
+	public BillVO getBill(int state) {
+		if (receiptButton.isSelected()) return getReceiptBill(state);
+		else return getPaymentBill(state);
+	}
+	
 	private void setBillId(boolean isReceipt) {
 		if (isReceipt) billIdField.setText(receiptBillBL.getNewId());
 		else billIdField.setText(paymentBillBL.getNewId());
