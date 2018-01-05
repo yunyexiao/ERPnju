@@ -64,6 +64,18 @@ public class CustomerPO implements Serializable {
     public double getPayment() {return payment;}
     
     public boolean getExistFlag() {return this.isExist;}
+
+    public boolean setPayment(double n) {
+    	if (n < 0) return false;
+    	payment = n;
+    	return true;
+    }
+    
+    public boolean setReceivable(double n) {
+    	if (n < 0 || n > recRange) return false;
+    	receivable = n;
+    	return true;
+    }
     
     public class CustomerType{
         public static final int SUPPLIER = 1;

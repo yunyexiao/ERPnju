@@ -1,5 +1,6 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -7,7 +8,7 @@ import po.AccountPO;
 import po.CommodityPO;
 import po.CustomerPO;
 
-public interface InitDataService {
+public interface InitDataService extends Remote{
 
 	/**
 	 * 获得各期初信息的起始时间

@@ -203,6 +203,7 @@ public class PromotionBL implements PromotionBLService, IPromotionSearch, GetPro
 
     @Override
     public PromotionVO toVO(PromotionPO po){
+    	if (po == null) return null;
         if(po instanceof GroupDiscountPO){
             GroupDiscountPO gpo = (GroupDiscountPO)po;
             return new GroupDiscountVO(gpo.getId(), gpo.getFromDate(), 

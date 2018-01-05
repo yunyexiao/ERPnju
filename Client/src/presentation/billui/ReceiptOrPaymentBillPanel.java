@@ -36,6 +36,7 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
 	private ReceiptBillBLService receiptBillBL = new ReceiptBillBL();
 	private PaymentBillBLService paymentBillBL = new PaymentBillBL();
 
+	private BillVO bill = null;
 	private UserVO user;
 	private JTextField billIdField, customerIdField, customerNameField, operaterField, sumField;
 	private JButton customerChooseButton, transferChooseButton, transferDeleteButton;
@@ -54,6 +55,7 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
 
 	public ReceiptOrPaymentBillPanel(UserVO user, ReceiptBillVO bill) {
 		this.user = user;
+		this.bill = bill;
 		initBillPanel();
 		receiptButton.setSelected(true);
 		billIdField.setText(bill.getAllId());
@@ -66,12 +68,14 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
 	
 	public ReceiptOrPaymentBillPanel(UserVO user, PaymentBillVO bill) {
 		this.user = user;
+		this.bill = bill;
 		initBillPanel();
 		paymentButton.setSelected(true);
 		billIdField.setText(bill.getAllId());
 		operaterField.setText(userInfo.getUser(bill.getOperator()).getName());
         operaterField.setText(bill.getOperator());
         customerIdField.setText(bill.getCustomerId());
+        customerNameField.setText(customerInfo.getCustomer(bill.getCustomerId()).getName());
         transferListTable.setModel(bill.getTableModel());
         sumUp();
 	}
@@ -253,9 +257,9 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
 	 */
 	public ReceiptBillVO getReceiptBill(int state) {
 		if(!isCorrectable()) return null;
-        String date = Timetools.getDate();
-        String time = Timetools.getTime();
-        String id = receiptBillBL.getNewId().split("-")[2]
+        String date = bill == null ? Timetools.getDate() : bill.getDate();
+        String time = bill == null ? Timetools.getTime() : bill.getTime();
+        String id = bill == null ? receiptBillBL.getNewId().split("-")[2] : billIdField.getText().split("-")[2]
              , operater = user.getId()
              , customerId = customerIdField.getText();
         MyTableModel model = (MyTableModel)transferListTable.getModel();
@@ -268,15 +272,21 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
 	 */
 	public PaymentBillVO getPaymentBill(int state) {
 		if(!isCorrectable()) return null;
-        String date = Timetools.getDate();
-        String time = Timetools.getTime();
-        String id = paymentBillBL.getNewId().split("-")[2]
+		String date = bill == null ? Timetools.getDate() : bill.getDate();
+        String time = bill == null ? Timetools.getTime() : bill.getTime();
+        String id = bill == null ? paymentBillBL.getNewId().split("-")[2] : billIdField.getText().split("-")[2]
              , operater = user.getId()
              , customerId = customerIdField.getText();
         MyTableModel model = (MyTableModel)transferListTable.getModel();
         PaymentBillVO paymentBillVO= new PaymentBillVO(date, time, id, operater, state, customerId, model); 
         return paymentBillVO;
     }
+	
+	public BillVO getBill(int state) {
+		if (receiptButton.isSelected()) return getReceiptBill(state);
+		else return getPaymentBill(state);
+	}
+	
 	private void setBillId(boolean isReceipt) {
 		if (isReceipt) billIdField.setText(receiptBillBL.getNewId());
 		else billIdField.setText(paymentBillBL.getNewId());
@@ -294,14 +304,12 @@ public class ReceiptOrPaymentBillPanel extends JPanel implements BillPanelInterf
 	public void saveAction() {
 		if (receiptButton.isSelected()) {
 			ReceiptBillVO bill = getReceiptBill(BillVO.SAVED);
-	        if(bill != null && receiptBillBL.saveBill(bill)){
-	            JOptionPane.showMessageDialog(null, "单据已保存。");
-	        }
+	        if(bill != null && receiptBillBL.saveBill(bill)) new InfoWindow("单据已保存");
+	        else new InfoWindow("单据保存失败");
 		} else if (paymentButton.isSelected()) {
 			PaymentBillVO bill = getPaymentBill(BillVO.SAVED);
-	        if(bill != null && paymentBillBL.saveBill(bill)){
-	            JOptionPane.showMessageDialog(null, "单据已保存。");
-	        }
+	        if(bill != null && paymentBillBL.saveBill(bill)) new InfoWindow("单据已保存");
+	        else new InfoWindow("单据保存失败");
 		}
 	}
 

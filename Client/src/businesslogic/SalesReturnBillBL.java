@@ -94,7 +94,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
                 i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
             SalesReturnBillPO offset = new SalesReturnBillPO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
+                Timetools.getDate(), Timetools.getTime(), salesReturnBillDs.getNewId(), bill.getOperator(), BillPO.PASS,
                 bill.getCustomerId(), bill.getSalesManName(), bill.getRemark(), bill.getOriginalSBId(), 
                 -bill.getOriginalSum(), -bill.getReturnSum(), items);
             if (salesReturnBillDs.saveBill(offset)) {
@@ -112,7 +112,7 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
         if(bill instanceof SalesReturnBillVO){
             SalesReturnBillVO old = (SalesReturnBillVO) bill;
             SalesReturnBillVO copy = new SalesReturnBillVO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+                Timetools.getDate(), Timetools.getTime(), this.getNewId().split("-")[2], old.getOperator(),
                 BillVO.PASS, old.getCustomerId(), old.getModel(), old.getRemark(), 
                 old.getOriginalSBId(), old.getDiscountRate(), old.getOriginalSum(), old.getSum()
             );
@@ -159,32 +159,24 @@ public class SalesReturnBillBL implements SalesReturnBillBLService, BillOperatio
         try{
         	SalesReturnBillPO billPO = salesReturnBillDs.getBillById(billId);
             SalesReturnBillVO billVO = BillTools.toSalesReturnBillVO(salesReturnBillDs.getBillById(billId));
-            
             ArrayList<SalesItemsPO> list = billPO.getSalesReturnBillItems();
-            
+            ArrayList<CommodityPO> commodityList = new ArrayList<CommodityPO>();
             CustomerPO customerPO = customerDs.findById(billPO.getCustomerId());
-           
-            if ((customerPO.getPayment() - billPO.getReturnSum()) >= 0) {
-            	customerDs.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
-            			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
-            			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable(),
-            			customerPO.getPayment() - billPO.getReturnSum(), customerPO.getExistFlag()));	
-            }else {
-            	customerDs.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
-            			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
-            			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable(),
-            			0, customerPO.getExistFlag()));
+            boolean flag = customerPO.setPayment(customerPO.getPayment() - billPO.getReturnSum());
+            for (SalesItemsPO item : list) {
+            	CommodityPO commodityPO = commodityDs.findById(item.getComId());
+            	if (!commodityPO.setAmount(commodityPO.getAmount()+item.getComQuantity())) flag = false;
+            	commodityList.add(commodityPO);
             }
-            
-            for (int i = 0; i < list.size(); i++) {
-            	CommodityPO commodityPO = commodityDs.findById(list.get(i).getComId());
-            	commodityDs.add(new CommodityPO(commodityPO.getId(), commodityPO.getName(), commodityPO.getType(), 
-                		commodityPO.getStore(), commodityPO.getCategoryId(), commodityPO.getAmount() + list.get(i).getComQuantity(), 
-                		commodityPO.getAlarmNum(), commodityPO.getInPrice(), commodityPO.getSalePrice(), 
-                		commodityPO.getRecentInPrice(), commodityPO.getRecentSalePrice(), commodityPO.getExistFlag()));              
+            if (flag) {
+            	customerDs.update(customerPO);
+            	for (CommodityPO c : commodityList) commodityDs.update(c);
+            	billVO.setState(3);
+                return saveBill(billVO, "审核销售退货单", "通过审核的销售退货单单据编号为"+billId);
+            } else {
+            	notPassBill(billId);
+            	return false;
             }
-            billVO.setState(3);
-            return saveBill(billVO, "审核销售退货单", "通过审核的销售退货单单据编号为"+billId);
         }catch(RemoteException e){
             e.printStackTrace();
             return false;

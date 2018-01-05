@@ -42,7 +42,6 @@ public class CustomerDataPanel extends DataPanel{
 	            if (table.getSelectedRow() != -1) {
 	                new UpdateCustomerWindow(customerBL, tableModel.getValueAtRow(table.getSelectedRow()), user.getRank());
 	                updateTable();
-	        		TableTools.autoFit(table);
                 }
 	            else new InfoWindow("请选择需要修改的客户");
             }

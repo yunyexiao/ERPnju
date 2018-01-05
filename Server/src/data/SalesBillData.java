@@ -13,8 +13,8 @@ import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
 public class SalesBillData extends UnicastRemoteObject implements SalesBillDataService{
 	private static final long serialVersionUID = -952253035895433810L;
-	private String billName="SaleBill";
-	private String recordName="SaleRecord";
+	private String billName="SalesBill";
+	private String recordName="SalesRecord";
 	private String[] billAttributes={"SBID","SBCustomerID","SBSalesmanName","SBOperatorID","SBBeforeDiscount",
 			"SBDiscount","SBCoupon","SBAfterDiscount","SBRemark","SBPromotionID","generateTime","SBCondition"};
 	private String[] recordAttributes={"SRID","SRComID","SRComQuantity","SRPrice","SRComSum","SRRemark"};
@@ -26,33 +26,14 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 
 	@Override
 	public boolean saveBill(SalesBillPO bill) throws RemoteException {
-		ArrayList<SalesItemsPO> items = bill.getSalesBillItems();
 		boolean isExist=BillDataHelper.isBillExist(billName, billAttributes[0], bill);
-		Object[] billValues={bill.getAllId(), bill.getCustomerId(), bill.getSalesManName(),
-				bill.getOperator(), bill.getBeforeDiscount(), bill.getDiscount(),
-				bill.getCoupon(), bill.getAfterDiscount(), bill.getRemark(),
-				bill.getPromotionId(), bill.getDate() + " "+bill.getTime(), bill.getState()};
-
 		try{
 			if(!isExist){
-			boolean b1 = SQLQueryHelper.add(billName, billValues);
-			boolean b2 = true;
-			for(int i=0;i<items.size();i++){
-				b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId()
-						,items.get(i).getComId(),items.get(i).getComQuantity(),items.get(i).getComSum()
-						,items.get(i).getComRemark(),items.get(i).getComPrice());
-			}
-			return b1&&b2;
+				return addBill(bill);
 			}
 			else{
-				boolean b1=SQLQueryHelper.update(billName, billAttributes, billValues);
-				boolean b2=false;
-				for(int i=0;i<items.size();i++){
-					Object[] recordValues={bill.getAllId(), items.get(i).getComId(), items.get(i).getComQuantity(), 
-							items.get(i).getComSum(), items.get(i).getComRemark(), items.get(i).getComPrice()};
-					b2=b2||SQLQueryHelper.update(recordName, recordAttributes, recordValues);
-				}
-				return b1||b2;
+				if(deleteBill(bill.getAllId()))return addBill(bill);
+				else return false;
 			}
 		}catch(Exception e){
 			  e.printStackTrace();
@@ -126,6 +107,23 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	private boolean addBill(SalesBillPO bill){
+		ArrayList<SalesItemsPO> items = bill.getSalesBillItems();
+		Object[] billValues={bill.getAllId(), bill.getCustomerId(), bill.getSalesManName(),
+				bill.getOperator(), bill.getBeforeDiscount(), bill.getDiscount(),
+				bill.getCoupon(), bill.getAfterDiscount(), bill.getRemark(),
+				bill.getPromotionId(), bill.getDate() + " "+bill.getTime(), bill.getState()};
+		
+		boolean b1 = SQLQueryHelper.add(billName, billValues);
+		boolean b2 = true;
+		for(int i=0;i<items.size();i++){
+			b2 = b2 && SQLQueryHelper.add(recordName, bill.getAllId()
+					,items.get(i).getComId(),items.get(i).getComQuantity(),items.get(i).getComPrice()
+					,items.get(i).getComSum(),items.get(i).getComRemark());
+		}
+		return b1&&b2;
 	}
 	
 }

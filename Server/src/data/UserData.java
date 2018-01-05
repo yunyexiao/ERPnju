@@ -15,6 +15,8 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 	private static final long serialVersionUID = 1724052352464005222L;
 	private String tableName="SystemUser";
 	private String idName="SUID";
+	private String[] attributes={"SUID","SUName","SUPwd","SUDept","SURank","SUSex",
+			"SUBirth","SUTel","SUIsExist"};
 
 	public UserData() throws RemoteException {
 		super();
@@ -54,23 +56,9 @@ public class UserData extends UnicastRemoteObject implements UserDataService {
 	public boolean update(UserPO user) throws RemoteException {
 		Calendar now = Calendar.getInstance(); 
 		int userBirth = now.get(Calendar.YEAR)-user.getUserAge();
-		try{
-			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("UPDATE SystemUser SET "
-					+ "SUName='"+user.getUserName()
-					+"', SUPwd='"+user.getUserPwd()
-					+"', SUDept='"+user.getUsertype()
-					+"', SURank='"+user.getUserRank()
-					+"', SUSex='"+user.getUserSex()
-					+"', SUBirth='"+userBirth
-					+"', SUTel='"+user.getUserTelNumber()
-					+"' WHERE SUID='"+user.getUserId()+"';");
-			if(r>0)return true;
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
-		return false;
+		Object[] values={user.getUserId(),user.getUserName(),user.getUserPwd(),user.getUsertype(),
+				user.getUserRank(),user.getUserSex(),userBirth,user.getUserTelNumber(),user.getExistFlag()};
+		return SQLQueryHelper.update(tableName, attributes, values);
 		
 	}
 

@@ -84,7 +84,7 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
             bill.getCashcostList().forEach(i -> items.add
                 (new CashCostItem(i.getName(), -i.getMoney(), i.getRemark())));
             CashCostBillPO offset = new CashCostBillPO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator()
+                Timetools.getDate(), Timetools.getTime(), cashCostBillDataService.getNewId(), bill.getOperator()
                 , BillPO.PASS, bill.getAccountId(), items, -bill.getSum());
             if (cashCostBillDataService.saveBill(offset)) {
             	addLog.add("红冲现金费用单", "被红冲的现金费用单单据编号为"+bill.getAllId());
@@ -101,7 +101,7 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
 	    if(bill instanceof CashCostBillVO){
 	        CashCostBillVO oldOne = (CashCostBillVO) bill;
 	        CashCostBillVO copy = new CashCostBillVO(
-	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), 
+	            Timetools.getDate(), Timetools.getTime(), this.getNewId().split("-")[2], 
 	            oldOne.getOperator(), BillVO.PASS, oldOne.getAccountId(), oldOne.getTableModel()
 	        );
 	        return saveBill(copy, "红冲并复制现金费用单", "红冲并复制后新的现金费用单单据编号为"+copy.getAllId());
@@ -130,15 +130,12 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
             CashCostBillPO billPO = cashCostBillDataService.getBillById(billId);
             CashCostBillVO billVO = BillTools.toCashCostBillVO(billPO);
             AccountPO accountPO = accountDataService.findById(billPO.getAccountId());
-            if (accountPO.getMoney() >= billPO.getSum()) {
-                billPO.setState(3);
-                billVO.setState(3);
-                accountDataService.add(new AccountPO(accountPO.getId(), accountPO.getName(),
-                		accountPO.getMoney() - billPO.getSum(), accountPO.getExistFlag())); //针对改变后的账户余额，new一个accountPO传入数据库
-                return saveBill(billVO);            	
-            }else {
-                billPO.setState(4);
-                billVO.setState(4);
+            if (accountPO.subMoney(billPO.getSum())) {
+            	billVO.setState(3);
+                accountDataService.update(accountPO); 
+                return saveBill(billVO, "审核现金费用单", "通过审核的现金费用单单据编号为"+billId); 
+            } else {
+            	billVO.setState(4);
                 saveBill(billVO);
             	return false;
             }
@@ -153,7 +150,6 @@ public class CashCostBillBL implements CashCostBillBLService, BillOperationServi
         try{
             CashCostBillPO billPO = cashCostBillDataService.getBillById(billId);
             CashCostBillVO billVO = BillTools.toCashCostBillVO(billPO);
-            billPO.setState(4);
             billVO.setState(4);
             return saveBill(billVO, "审核现金费用单", "单据编号为"+billId+"的现金费用单审核未通过");
         }catch(RemoteException e){

@@ -3,6 +3,7 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import blservice.MailBLService;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.ReceiptBillBLService;
@@ -27,6 +28,7 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 
 	private ReceiptBillDataService receiptBillDataService = Rmi.flag ? Rmi.getRemote(ReceiptBillDataService.class) : new ReceiptBillDs_stub();
 	private AddLogInterface addLog = new LogBL();
+	private MailBLService mailBL = new MailBL();
 	private AccountDataService accountDataService = Rmi.flag ? Rmi.getRemote(AccountDataService.class) : new AccountDs_stub();
     private CustomerDataService customerDataService = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
 	
@@ -79,7 +81,7 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 	            i.getAccountId(), -i.getMoney(), i.getRemark()
 	        )));
 	        ReceiptBillPO offset = new ReceiptBillPO(
-	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
+	            Timetools.getDate(), Timetools.getTime(), receiptBillDataService.getNewId(), bill.getOperator(), BillPO.PASS,
 	            bill.getCustomerId(), items, -bill.getSum());
 	        if (receiptBillDataService.saveBill(offset)) {
             	addLog.add("红冲收款单", "被红冲的收款单单据编号为"+bill.getAllId());
@@ -96,7 +98,7 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
 	    if(bill instanceof ReceiptBillVO){
 	        ReceiptBillVO old = (ReceiptBillVO) bill;
 	        ReceiptBillVO copy = new ReceiptBillVO(
-	            Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+	            Timetools.getDate(), Timetools.getTime(), this.getNewId().split("-")[2], old.getOperator(),
 	            BillVO.PASS, old.getCustomerId(), old.getTableModel()
 	        );
 	        return saveBill(copy, "红冲并复制收款单", "红冲并复制后新的收款单单据编号为"+copy.getAllId());
@@ -125,25 +127,27 @@ public class ReceiptBillBL implements ReceiptBillBLService, BillOperationService
             ReceiptBillPO billPO = receiptBillDataService.getBillById(billId);
             ReceiptBillVO billVO = BillTools.toReceiptBillVO(billPO);
             ArrayList<TransferItem> list = billPO.getTransferList();
+            ArrayList<AccountPO> accountList = new ArrayList<AccountPO>();
             CustomerPO customerPO = customerDataService.findById(billPO.getCustomerId());
+            boolean flag = true;
+            
             for (int i = 0; i < list.size(); i++) {
-            	if ((customerPO.getPayment() - billPO.getSum()) >= 0) {//如果应付>=收款金额，则相应的更改应付；否则则将应付清零，在应收中替客户将多付的钱要回来
-            		customerDataService.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
-                			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
-                			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable(), 
-                			customerPO.getPayment() - billPO.getSum(), customerPO.getExistFlag()));
-            	}else {
-            		customerDataService.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
-                			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
-                			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable() + (billPO.getSum() - customerPO.getPayment()), 
-                			0, customerPO.getExistFlag()));
-            	}
-            	AccountPO accountPO = accountDataService.findById(list.get(i).getAccountId());
-            	accountDataService.add(new AccountPO(accountPO.getId(), accountPO.getName(), accountPO.getMoney() + list.get(i).getMoney(), accountPO.getExistFlag()));
+            	TransferItem item = list.get(i);
+            	AccountPO accountPO = accountDataService.findById(item.getAccountId());
+            	if (!accountPO.subMoney(item.getMoney())) flag = false;
+            	accountList.add(accountPO);
             }
-            billPO.setState(3);
-            billVO.setState(3);
-            return saveBill(billVO, "审核收款单", "通过审核的收款单单据编号为"+billId);
+            if (!customerPO.setPayment(customerPO.getPayment() - billPO.getSum())) flag = false;
+            if (flag) {
+            	for (AccountPO a : accountList) accountDataService.update(a);
+            	customerDataService.update(customerPO);
+            	billVO.setState(3);
+            	mailBL.saveMail("0000", billPO.getOperator(), "单据编号为"+billId+"的收款单通过审核，请尽快完成银行操作");
+                return saveBill(billVO, "审核收款单", "通过审核的收款单单据编号为"+billId);
+            } else {
+            	notPassBill(billId);
+            	return false;
+            }
         }catch(RemoteException e){
             e.printStackTrace();
             return false;

@@ -55,4 +55,13 @@ public class CommodityPO implements Serializable {
     public double getRecentSalePrice() {return recentSalePrice;}
     
     public boolean getExistFlag() {return this.isExist;}
+    
+    public void setRecentInPrice(double price) {recentInPrice = price;}
+    public void setRecentSalePrice(double price) {recentSalePrice = price;}
+    
+    public boolean setAmount(long n) {
+    	if (n < 0) return false;
+    	amount = n;
+    	return true;
+    }
 }

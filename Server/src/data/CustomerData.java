@@ -14,6 +14,8 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 	private static final long serialVersionUID = -3647893693949919501L;
 	private String tableName="CustomerInfo";
 	private String idName="CusID";
+	private String[] attributes={"CusID","CusName","CusRank","CusTel","CusAddress","CusCode",
+			"CusMail","CusReceiRange","CusReceivable","CusPayment","CusSalesman","CusType","CusIsExist"};
 
 	public CustomerData() throws RemoteException {
 		super();
@@ -38,28 +40,10 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 
 	@Override
 	public boolean add(CustomerPO customer) throws RemoteException {
-		try{
-			Statement s = DataHelper.getInstance().createStatement();
-			int r = s.executeUpdate("INSERT INTO CustomerInfo VALUES ('"
-			        +customer.getId()+"','"
-					+customer.getName()+"','"
-			        +customer.getRank()+"','"
-					+customer.getTelNumber()+"','"
-					+customer.getAddress()+"','"
-					+customer.getCode()+"','"
-					+customer.getMail()+"','"
-					+customer.getRecRange()+"','"
-					+customer.getReceivable()+"','"
-					+customer.getPayment()+"','"
-					+customer.getSalesman()+"','"
-					+customer.getType()+"','"
-					+1+"')");
-			if (r > 0) return true;
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
-		return false;
+		return SQLQueryHelper.add(tableName, customer.getId(),customer.getName(),customer.getRank(),
+				customer.getTelNumber(),customer.getAddress(),customer.getCode(),customer.getMail(),
+				customer.getRecRange(),customer.getReceivable(),customer.getPayment(),customer.getSalesman(),
+				customer.getType(),1);
 	}
 
 	@Override
@@ -69,28 +53,11 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 
 	@Override
 	public boolean update(CustomerPO customer) throws RemoteException {
-	
-		try{
-			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("UPDATE CustomerInfo SET "
-					+ "CusName='"+customer.getName()
-					+"', CusRank='"+customer.getRank()
-					+"', CusTel='"+customer.getTelNumber()
-					+"', CusAddress='"+customer.getAddress()
-					+"', CusCode='"+customer.getCode()
-					+"', CusMail='"+customer.getMail()
-					+"', CusReceiRange='"+customer.getRecRange()
-					+"', CusReceivable='"+customer.getReceivable()
-					+"', CusPayment='"+customer.getPayment()
-					+"', CusSalesman='"+customer.getSalesman()
-					+"', CusType='"+customer.getType()
-					+"' WHERE CusID="+customer.getId()+";");
-			if(r>0)return true;
-		}catch(Exception e){
-			  e.printStackTrace();
-			   return false;
-		}
-		return false;
+		Object[] values={customer.getId(),customer.getName(),customer.getRank(),
+				customer.getTelNumber(),customer.getAddress(),customer.getCode(),customer.getMail(),
+				customer.getRecRange(),customer.getReceivable(),customer.getPayment(),customer.getSalesman(),
+				customer.getType(),customer.getExistFlag()};
+		return SQLQueryHelper.update(tableName, attributes, values);
 	}
 
 	@Override
@@ -128,19 +95,14 @@ public class CustomerData extends UnicastRemoteObject implements CustomerDataSer
 
 	private CustomerPO getCustomerPO(ResultSet r) {
 		try {
-			return new CustomerPO(r.getString("CusID"),
-					r.getString("CusName"),
-					r.getString("CusTel"),
-					r.getString("CusAddress"),
-					r.getString("CusMail"),
-					r.getString("CusCode"),
-					r.getString("CusSalesman"),
-					r.getInt("CusRank"),
-					r.getInt("CusType"),
-					r.getDouble("CusReceiRange"),
-					r.getDouble("CusReceivable"),
-					r.getDouble("CusPayment"),
-					r.getBoolean("CusIsExist"));
+			
+			//String id, String name, String telNumber, String address
+            //, String mail, String code,String salesman, int rank, int type, double recRange
+            //, double receivable, double payment, boolean isExist
+			return new CustomerPO(r.getString(attributes[0]),r.getString(attributes[1]),r.getString(attributes[3]),
+					r.getString(attributes[4]),r.getString(attributes[6]),r.getString(attributes[5]),r.getString(attributes[10]),
+					r.getInt(attributes[2]),r.getInt(attributes[11]),r.getDouble(attributes[7]),r.getDouble(attributes[8]),
+					r.getDouble(attributes[9]),r.getBoolean(attributes[12]));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;

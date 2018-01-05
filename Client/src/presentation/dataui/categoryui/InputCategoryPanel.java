@@ -16,7 +16,7 @@ class InputCategoryPanel extends JPanel {
 
     public InputCategoryPanel(String[] data) {
         super();
-        double[][] size = {{TableLayout.FILL, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, TableLayout.FILL}
+        double[][] size = {{40.0, TableLayout.PREFERRED, 10.0, TableLayout.FILL, 40.0}
             , {TableLayout.FILL, TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, 10.0
                 , TableLayout.PREFERRED, 10.0, TableLayout.PREFERRED, TableLayout.FILL}};
         this.setLayout(new TableLayout(size));

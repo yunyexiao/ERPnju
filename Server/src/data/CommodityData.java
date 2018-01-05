@@ -13,6 +13,8 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 	private static final long serialVersionUID = -54758905450277134L;
 	private String tableName="CommodityInfo";
 	private String idName="ComID";
+	private String[] attributes={"ComID","ComName","ComCateID","ComType","ComStore","ComQuantity",
+			"ComInPrice","ComSalePrice","ComRecInPrice","ComRecSalePrice","ComAlarmQuantity","ComIsExist"};
 
 	public CommodityData() throws RemoteException {
 		super();
@@ -26,9 +28,9 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 	@Override
 	public CommodityPO findById(String id) throws RemoteException {
 		try{
-			ResultSet r=SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
+			ResultSet r = SQLQueryHelper.getRecordByAttribute(tableName, idName, id);
 			r.next();
-			return getCommodityPO(r);		
+			return getCommodityPO(r);
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
@@ -48,27 +50,11 @@ public class CommodityData extends UnicastRemoteObject implements CommodityDataS
 
 	@Override
 	public boolean update(CommodityPO commodity) throws RemoteException {
-		try{
-			Statement s = DataHelper.getInstance().createStatement();
-			int r=s.executeUpdate("UPDATE CommodityInfo SET "
-					+ "ComName='"+commodity.getName()
-					+"', ComCateID='"+commodity.getCategoryId()
-					+"', ComType='"+commodity.getType()
-					+"', ComStore='"+commodity.getStore()
-					+"', ComQuantity='"+commodity.getAmount()
-					+"', ComInPrice='"+commodity.getInPrice()
-					+"', ComSalePrice='"+commodity.getSalePrice()
-					+"', ComRecInPrice='"+commodity.getRecentInPrice()
-					+"', ComRecSalePrice='"+commodity.getRecentSalePrice()
-					+"', ComAlarmQuantity='"+commodity.getAlarmNum()
-					+"' WHERE ComID ="
-					+commodity.getId()+";");
-			if(r>0)return true;
-		}catch(Exception e){
-			  e.printStackTrace();
-			   return false;
-		}
-		return false;
+		Object[] values={commodity.getId(),commodity.getName(),commodity.getCategoryId(),
+				commodity.getType(),commodity.getStore(),commodity.getAmount(),commodity.getInPrice(),
+				commodity.getSalePrice(),commodity.getRecentInPrice(),commodity.getRecentSalePrice(),
+				commodity.getAlarmNum(),commodity.getExistFlag()};
+		return SQLQueryHelper.update(tableName, attributes, values);
 	}
 
 	@Override

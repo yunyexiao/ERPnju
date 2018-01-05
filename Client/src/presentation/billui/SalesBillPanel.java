@@ -1,10 +1,6 @@
 package presentation.billui;
 
 import java.awt.BorderLayout;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -70,12 +66,12 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	protected boolean isCorrectable() {
 	    if(!super.isCorrectable()) return false;
 	    try{
-	        int discount = Integer.parseInt(discountField.getText());
+	        double discount = Double.parseDouble(discountField.getText());
 	        if(user.getRank() == 0 && discount > 1000)
 	            return false;
 	        if(user.getRank() == 1 && discount > 5000)
 	            return false;
-	        Integer.parseInt(couponField.getText());
+	        Double.parseDouble(couponField.getText());
 	        return true;
 	    }catch(NumberFormatException e){
 	        e.printStackTrace();
@@ -104,9 +100,9 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	    promotion = saleBillBL.getBestPromotion(rank, goods, sum);
 	    if(promotion != null)promotionInfoArea.setText(promotion.toString());
 
-	    double before = 0, after = 0;
+	    double before = 0, after = 0, reduction = promotion == null ? 0 : promotion.getReduction();
         before = sumField.getValue();
-        after = before - discountField.getValue() - couponField.getValue() - promotion.getReduction();
+        after = before - discountField.getValue() - couponField.getValue() - reduction;
 	    afterDiscountField.setValue(after);
 	}
 
@@ -135,7 +131,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	 */
 	public SalesBillVO getBill(int state) {
 		if (isCorrectable()) {
-		    String id = getId();
+		    String id = bill == null ? saleBillBL.getNewId().split("-")[2] : getId();
 		    String operater = user.getId()
 		         , customerId = customerIdField.getText()
 		         , remark = remarkField.getText();
@@ -145,8 +141,10 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 		         , discount = Double.parseDouble(discountField.getText())
 		         , coupon = Double.parseDouble(couponField.getText());
 		    String promotionId = promotion == null ? null : promotion.getId();
-		    return new SalesBillVO(Timetools.getDate(), Timetools.getTime(), id, operater, state
-		        , customerId, model, remark, beforeDiscount, discount, coupon, sum, promotionId);
+		    return new SalesBillVO(
+	    		bill == null ? Timetools.getDate() : bill.getDate(),
+				bill == null ? Timetools.getTime() : bill.getTime(), id, operater, state, 
+		        customerId, model, remark, beforeDiscount, discount, coupon, sum, promotionId);
 		}
 		return null;
 	}

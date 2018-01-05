@@ -11,10 +11,6 @@ public interface ChangeBillDataService extends Remote{
 	public boolean saveBill(ChangeBillPO bill) throws RemoteException;
 
 	public boolean deleteBill(String id, boolean isOver) throws RemoteException;
-	/**
-	 * 返回当天单据的最新编号，即完整ID的最后一部分！不是全部！
-	 * @param isOver 判断是否为报溢单-true
-	 * @return
-	 */
+	
 	public String getNewId(boolean isOver) throws RemoteException;
 }

@@ -3,6 +3,7 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import blservice.MailBLService;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseReturnBillBLService;
@@ -15,6 +16,7 @@ import ds_stub.CustomerDs_stub;
 import ds_stub.PurchaseReturnBillDs_stub;
 import po.CommodityPO;
 import po.CustomerPO;
+import po.UserPO;
 import po.billpo.BillPO;
 import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesItemsPO;
@@ -28,6 +30,7 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
     
     private PurchaseReturnBillDataService purchaseReturnBillDs = Rmi.flag ? Rmi.getRemote(PurchaseReturnBillDataService.class) : new PurchaseReturnBillDs_stub();
     private AddLogInterface addLog = new LogBL();
+	private MailBLService mailBL = new MailBL();
     private CustomerDataService customerDs = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
     private CommodityDataService commodityDs = Rmi.flag ? Rmi.getRemote(CommodityDataService.class) : new CommodityDs_stub();
 
@@ -89,7 +92,7 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
                 i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
             PurchaseReturnBillPO offset = new PurchaseReturnBillPO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS, 
+                Timetools.getDate(), Timetools.getTime(), purchaseReturnBillDs.getNewId(), bill.getOperator(), BillPO.PASS, 
                 bill.getSupplierId(), bill.getRemark(), -bill.getSum(), items);
             if (purchaseReturnBillDs.saveBill(offset)) {
             	addLog.add("红冲进货退货单", "被红冲的进货退货单单据编号为"+bill.getAllId());
@@ -105,11 +108,15 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
     public boolean copyBill(BillVO bill){
         if(bill instanceof PurchaseReturnBillVO){
             PurchaseReturnBillVO old = (PurchaseReturnBillVO) bill;
-            PurchaseReturnBillVO copy = new PurchaseReturnBillVO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
-                BillVO.PASS, old.getCustomerId(), old.getModel(), old.getRemark(), old.getSum()
-            );
-            return saveBill(copy, "红冲并复制进货退货单", "红冲并复制后新的进货退货单编号为"+copy.getAllId());
+			try {
+				PurchaseReturnBillVO copy = new PurchaseReturnBillVO(
+				    Timetools.getDate(), Timetools.getTime(), purchaseReturnBillDs.getNewId(), old.getOperator(),
+				    BillVO.PASS, old.getCustomerId(), old.getModel(), old.getRemark(), old.getSum()
+				);
+				return saveBill(copy, "红冲并复制进货退货单", "红冲并复制后新的进货退货单编号为"+copy.getAllId());
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
         }
         return false;
     }
@@ -135,36 +142,26 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
         	PurchaseReturnBillPO billPO = purchaseReturnBillDs.getBillById(billId);
             PurchaseReturnBillVO billVO = BillTools.toPurchaseReturnBillVO(purchaseReturnBillDs.getBillById(billId));
             ArrayList<SalesItemsPO> list = billPO.getPurchaseReturnBillItems();
+            ArrayList<CommodityPO> commodityList = new ArrayList<CommodityPO>();
             CustomerPO customerPO = customerDs.findById(billPO.getSupplierId());
-            
-            //如果应收>=退款总额的话，则更新应收；否则应收直接清零，并增加应付
-            
-            if ((customerPO.getReceivable() - billPO.getSum()) >= 0) {
-            	customerDs.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
-            			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
-            			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable()
-            			- billPO.getSum(), customerPO.getPayment(), customerPO.getExistFlag()));
-            }else {
-            	customerDs.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
-            			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
-            			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), 0, customerPO.getPayment() + billPO.getSum() - customerPO.getReceivable(), customerPO.getExistFlag()));
+            boolean flag = customerPO.setReceivable(customerPO.getReceivable() - billPO.getSum());
+            for (SalesItemsPO item : list) {
+            	CommodityPO commodityPO = commodityDs.findById(item.getComId());
+        		if (!commodityPO.setAmount(commodityPO.getAmount() - item.getComQuantity())) flag = false;
+        		commodityList.add(commodityPO);
+        	}
+            if (flag) {
+            	customerDs.update(customerPO);
+            	billVO.setState(3);
+            	for (CommodityPO c : commodityList) {
+            		if(c.getAmount() < c.getAlarmNum()) mailBL.saveMail("0000", UserPO.UserType.STORE_KEEPER, "编号为"+c.getId()+"的商品"+c.getName()+"库存数量不足");
+            		commodityDs.update(c);
+            	}
+                return saveBill(billVO, "审核进货退货单", "通过审核的进货退货单单据编号为"+billId);
+            } else {
+            	notPassBill(billId);
+            	return false;
             }
-            for (int i = 0; i < list.size(); i++) {
-            	CommodityPO commodityPO = commodityDs.findById(list.get(i).getComId());
-            	if (commodityPO.getAmount() >= list.get(i).getComQuantity()) {
-            		commodityDs.add(new CommodityPO(commodityPO.getId(), commodityPO.getName(), commodityPO.getType(), 
-                    		commodityPO.getStore(), commodityPO.getCategoryId(), commodityPO.getAmount() - list.get(i).getComQuantity(), 
-                    		commodityPO.getAlarmNum(), commodityPO.getInPrice(), commodityPO.getSalePrice(), 
-                    		commodityPO.getRecentInPrice(), commodityPO.getRecentSalePrice(), commodityPO.getExistFlag()));              
-            	}else {
-            		billVO.setState(4);
-            		billPO.setState(4);
-            		saveBill(billVO);
-            		return false;
-            	}   	
-            }
-            billVO.setState(3);
-            return saveBill(billVO, "审核进货退货单", "通过审核的进货退货单单据编号为"+billId);
         }catch(RemoteException e){
             e.printStackTrace();
             return false;

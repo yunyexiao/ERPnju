@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ChangeBillPO extends BillPO implements Serializable{
-
-	/*判断报溢或者报损*/
+	private static final long serialVersionUID = -3066329192092078746L;
 	private boolean isOver;
 	private ArrayList<ChangeItem> commodityList;
 	
@@ -16,7 +15,7 @@ public class ChangeBillPO extends BillPO implements Serializable{
 		this.commodityList = commodityList;
 	}
 	
-	public boolean getFlag() {
+	public boolean isOver() {
 		return isOver;
 	}
 

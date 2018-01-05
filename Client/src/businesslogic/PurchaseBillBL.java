@@ -3,6 +3,7 @@ package businesslogic;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import blservice.MailBLService;
 import blservice.billblservice.BillExamineService;
 import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseBillBLService;
@@ -31,6 +32,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
     
     private PurchaseBillDataService purchaseBillDs = Rmi.flag ? Rmi.getRemote(PurchaseBillDataService.class) : new PurchaseBillDs_stub();
     private AddLogInterface addLog = new LogBL();
+	private MailBLService mailBL = new MailBL();
     private CustomerDataService customerDs = Rmi.flag ? Rmi.getRemote(CustomerDataService.class) : new CustomerDs_stub();
     private CommodityDataService commodityDs = Rmi.flag ? Rmi.getRemote(CommodityDataService.class) : new CommodityDs_stub();
 
@@ -78,7 +80,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
     @Override
     public MyTableModel getFinishedBills(String customerId) {
         try{
-            String field = "CONCAT(PBCondition,',',PBCustomerID)";
+            String field = "CONCAT(PBCondition,',',PBSupplierID)";
             String key = BillPO.PASS + "," + customerId;
             ArrayList<PurchaseBillPO> bills = purchaseBillDs.getBillsBy(field, key, true);
             return toModel(bills);
@@ -123,7 +125,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
                 i.getComId(), i.getComRemark(), -i.getComQuantity(), i.getComPrice(), -i.getComSum()
             )));
             PurchaseBillPO offset =new PurchaseBillPO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), bill.getOperator(), BillPO.PASS,
+                Timetools.getDate(), Timetools.getTime(), purchaseBillDs.getNewId(), bill.getOperator(), BillPO.PASS,
                 bill.getSupplierId(), bill.getRemark(), -bill.getSum(), items
             );
             if (purchaseBillDs.saveBill(offset)) {
@@ -141,7 +143,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
         if(bill instanceof PurchaseBillVO){
             PurchaseBillVO old = (PurchaseBillVO) bill;
             PurchaseBillVO copy = new PurchaseBillVO(
-                Timetools.getDate(), Timetools.getTime(), this.getNewId(), old.getOperator(),
+                Timetools.getDate(), Timetools.getTime(), this.getNewId().split("-")[2], old.getOperator(),
                 BillVO.PASS, old.getCustomerId(), old.getModel(), old.getRemark(), old.getSum()
             );
             return saveBill(copy, "红冲并复制进货单", "红冲并复制后新的进货单单据编号为"+copy.getAllId());
@@ -153,31 +155,31 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
     public boolean examineBill(String id){
         try{
         	PurchaseBillPO billPO = purchaseBillDs.getBillById(id);
-            PurchaseBillVO billVO = BillTools.toPurchaseBillVO(purchaseBillDs.getBillById(id));
+            PurchaseBillVO billVO = BillTools.toPurchaseBillVO(billPO);
             ArrayList<SalesItemsPO> list = billPO.getPurchaseBillItems();
+            ArrayList<CommodityPO> commodityList = new ArrayList<CommodityPO>();
+            boolean flag = true;
             CustomerPO customerPO = customerDs.findById(billPO.getSupplierId());
+            flag = customerPO.setReceivable(billPO.getSum() + customerPO.getReceivable());
             
-            if (customerPO.getRecRange() >= (billPO.getSum() + customerPO.getReceivable())) {
-            	customerDs.add(new CustomerPO(customerPO.getId(), customerPO.getName(), customerPO.getTelNumber(),
-            			customerPO.getAddress(), customerPO.getMail(), customerPO.getCode(), customerPO.getSalesman(),
-            			customerPO.getRank(), customerPO.getType(), customerPO.getRecRange(), customerPO.getReceivable()
-            			+ billPO.getSum(), customerPO.getPayment(), customerPO.getExistFlag()));
-            }else {
-            	billPO.setState(4);
-                billVO.setState(4);
-                purchaseBillDs.saveBill(billPO);
-                return false;
-
-            }
             for (int i = 0; i < list.size(); i++) {
-            	CommodityPO commodityPO = commodityDs.findById(list.get(i).getComId());
-            	commodityDs.add(new CommodityPO(commodityPO.getId(), commodityPO.getName(), commodityPO.getType(), 
-                		commodityPO.getStore(), commodityPO.getCategoryId(), commodityPO.getAmount() + list.get(i).getComQuantity(), 
-                		commodityPO.getAlarmNum(), commodityPO.getInPrice(), commodityPO.getSalePrice(), 
-                		commodityPO.getRecentInPrice(), commodityPO.getRecentSalePrice(), commodityPO.getExistFlag()));              
+            	SalesItemsPO item = list.get(i);
+            	CommodityPO commodityPO = commodityDs.findById(item.getComId());
+            	commodityPO.setRecentInPrice(item.getComPrice());
+            	if (!commodityPO.setAmount(commodityPO.getAmount()+item.getComQuantity())) flag = false;
+            	commodityList.add(commodityPO);
             }
-            billVO.setState(3);
-            return saveBill(billVO, "审核进货单", "通过审核的进货单单据编号为"+id);
+            
+            if (flag) {
+            	customerDs.update(customerPO);
+            	for (CommodityPO c : commodityList) commodityDs.update(c);
+            	billVO.setState(3);
+            	mailBL.saveMail("0000", billPO.getOperator(), "单据编号为"+id+"的进货单通过审核，请尽快完成商品入库操作");
+                return saveBill(billVO, "审核进货单", "通过审核的进货单单据编号为"+id);
+            } else {
+            	notPassBill(id);
+            	return false;
+            }
         }catch(RemoteException e){
             e.printStackTrace();
             return false;

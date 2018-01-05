@@ -3,7 +3,7 @@ package po.billpo;
 import java.io.Serializable;
 
 public class ChangeItem implements Serializable{
-
+	private static final long serialVersionUID = 6913832139421592140L;
 	private String commodityId;
 	private int originalValue;
 	private int changedValue;

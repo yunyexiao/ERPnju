@@ -1,5 +1,6 @@
 package po;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import po.billpo.GiftItem;
@@ -9,7 +10,7 @@ import po.billpo.GiftItem;
  * 
  * @author ã¢Ò¶Ïö
  */
-public class RankPromotionPO extends PromotionPO {
+public class RankPromotionPO extends PromotionPO implements Serializable{
     
     private int rank;
     private ArrayList<GiftItem> gifts;

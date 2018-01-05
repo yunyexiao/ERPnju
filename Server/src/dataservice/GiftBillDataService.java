@@ -1,5 +1,6 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import po.billpo.GiftBillPO;
@@ -9,7 +10,7 @@ import po.billpo.GiftBillPO;
  * 
  * @author ã¢Ò¶Ïö
  */
-public interface GiftBillDataService {
+public interface GiftBillDataService extends Remote{
     
     boolean add(GiftBillPO bill) throws RemoteException;
     

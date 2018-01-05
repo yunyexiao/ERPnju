@@ -23,6 +23,7 @@ import presentation.tools.DoubleField;
 import presentation.tools.InputCheck;
 import vo.CustomerVO;
 import vo.UserVO;
+import vo.billvo.BillVO;
 import vo.billvo.MarketBillVO;
 
 /**
@@ -33,6 +34,7 @@ import vo.billvo.MarketBillVO;
 public abstract class CommonSaleBillPanel extends JPanel implements BillPanelInterface {
 
 	protected UserVO user;
+	protected BillVO bill;
     protected JTextField billIdField, operatorField, customerIdField, customerNameField, remarkField;
     protected DoubleField sumField;
     protected JButton customerChooseButton, goodsChooseButton, goodsDeleteButton;
@@ -48,6 +50,7 @@ public abstract class CommonSaleBillPanel extends JPanel implements BillPanelInt
     
     public CommonSaleBillPanel(UserVO user, MarketBillVO bill){
     	this.user = user;
+    	this.bill = bill;
 		initBillPanel();
         billIdField.setText(bill.getAllId());
         operatorField.setText(userInfo.getUser(bill.getOperator()).getName());

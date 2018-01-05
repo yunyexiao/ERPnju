@@ -15,6 +15,7 @@ import presentation.PanelInterface;
 import presentation.component.InfoWindow;
 import presentation.component.MyTableModel;
 import presentation.component.TopButtonPanel;
+import presentation.tools.TableTools;
 /**
  * 处理基础数据的通用Panel组件 </br>
  * 包括商品信息、客户信息、账户信息、用户信息</br>
@@ -39,7 +40,7 @@ public abstract class DataPanel implements PanelInterface {
 		buttonPanel.addButton("修改", new ImageIcon("resource/ChangeData.png"), getUpdateListener());
 		buttonPanel.addButton("查询", new ImageIcon("resource/SearchData.png"), getSearchListener());
 		buttonPanel.addButton("删除", new ImageIcon("resource/DeleteData.png"), getDeleteListener());
-		buttonPanel.addButton("刷新", new ImageIcon("resource/Refresh.png"), e -> table.setModel(dataBL.update()));
+		buttonPanel.addButton("刷新", new ImageIcon("resource/Refresh.png"), e -> {table.setModel(dataBL.update());TableTools.autoFit(table);});
 		buttonPanel.addButton("关闭", new ImageIcon("resource/Close.png"), closeListener);
 		
 		JScrollPane srcollpane = new JScrollPane(table);
@@ -50,6 +51,7 @@ public abstract class DataPanel implements PanelInterface {
 	protected void updateTable() {
 		System.out.println("表格数据已更新");
 		table.setModel(dataBL.update());
+		TableTools.autoFit(table);
 	}
 	
 	protected ActionListener getDeleteListener() {

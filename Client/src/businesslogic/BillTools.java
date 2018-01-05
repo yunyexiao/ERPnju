@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 //import blservice.infoservice.GetCategoryInterface;
 import blservice.infoservice.GetCommodityInterface;
-import blservice.infoservice.GetUserInterface;
 import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
@@ -32,7 +31,6 @@ import vo.billvo.SalesReturnBillVO;
 public class BillTools {
 	
 	private static GetCommodityInterface commodityInfo = new CommodityBL();
-	private static GetUserInterface userInfo = new UserBL();
 
 	/**
 	 * 报溢/报损单据PO向VO的转换，其中库存数量为实时数据
@@ -47,9 +45,9 @@ public class BillTools {
 			ChangeItem item = bill.getCommodityList().get(i);
 			data[i] = new String[]{item.getCommodityId(), "", ""+item.getOriginalValue(), ""+item.getChangedValue()};
 			data[i][1] = commodityInfo.getCommodity(item.getCommodityId()).getName();
-			if (bill.getState() != ChangeBillPO.PASS) data[i][2]= ""+commodityInfo.getCommodity(item.getCommodityId()).getAmount();
+			data[i][2] = ""+item.getOriginalValue();
 		}
-		return new ChangeBillVO(bill.getDate(), bill.getTime(), bill.getId(), userInfo.getUser(bill.getOperator()).getName(), bill.getState(), bill.getFlag(), new MyTableModel(data, headers));
+		return new ChangeBillVO(bill.getDate(), bill.getTime(), bill.getId(), bill.getOperator(), bill.getState(), bill.isOver(), new MyTableModel(data, headers));
 	}
 	
 	public static PurchaseBillVO toPurchaseBillVO(PurchaseBillPO bill){
@@ -209,7 +207,7 @@ public class BillTools {
 	 * @return
 	 */
 	public static String getBillName(BillPO bill) {
-		if (bill instanceof ChangeBillPO) return ((ChangeBillPO)bill).getFlag() ? "报溢单":"报损单";
+		if (bill instanceof ChangeBillPO) return ((ChangeBillPO)bill).isOver() ? "报溢单":"报损单";
 		else if (bill instanceof SalesBillPO) return "销售单";
 		else if (bill instanceof SalesReturnBillPO) return "销售退货单";
 		else if (bill instanceof PurchaseBillPO) return "进货单";

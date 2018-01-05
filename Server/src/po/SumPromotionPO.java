@@ -1,5 +1,6 @@
 package po;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import po.billpo.GiftItem;
@@ -9,7 +10,7 @@ import po.billpo.GiftItem;
  * 
  * @author 恽叶霄
  */
-public class SumPromotionPO extends PromotionPO {
+public class SumPromotionPO extends PromotionPO implements Serializable{
     
     /** 享受该促销策略的消费总额区间的端点值 */
     private double startPrice, endPrice;

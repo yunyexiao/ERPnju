@@ -32,10 +32,10 @@ public class SQLQueryHelper {
 			Statement s=DataHelper.getInstance().createStatement();
 			String str="UPDATE "+tableName+" SET ";
 			for(int i=1;i<attributes.length;i++){
-				if(i==1)str=str+attributes[i]+"='"+values[i];
-				else str=str+"', "+attributes[i]+"='"+values[i];
+				str=str+attributes[i]+"='"+values[i]+"'";
+				if(i!=attributes.length-1) str+=",";
 			}
-			str=str+"' WHERE "+attributes[0]+"='"+values[0]+"';";
+			str=str+" WHERE "+attributes[0]+"='"+values[0]+"';";
 			if(s.executeUpdate(str)>0)return true;
 			else return false;
 		}catch(Exception e){
@@ -51,22 +51,14 @@ public class SQLQueryHelper {
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT "+attributeName+" FROM "+tableName+";");
-			while(r.next())
-			{
-				int temp=0;
-				temp=r.getInt(attributeName);
-				//temp=Integer.valueOf(r.getString("SUID"));
-				if(temp>max)max=temp;
-			}
+			while(r.next()) max++;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
 		res=max+1;
 		newId=String.format(format, res);
-		
 		return newId;
-		
 	}
 	
 	public static boolean getTrueDeleteResult(String tableName, String attributeName, String value){

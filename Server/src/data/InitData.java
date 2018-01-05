@@ -2,7 +2,8 @@ package data;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -20,23 +21,16 @@ public class InitData extends UnicastRemoteObject implements InitDataService{
 
 	@Override
 	public String[] getInitInfo() throws RemoteException {
-
-		String[] dates = null;
-		int i=0;
-		try{
-			
+		ArrayList<String> list = new ArrayList<String>();
+		try{		
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT DISTINCT InitTime FROM InitCommodity;");
-			while(r.next()){
-				dates[i]=r.getString("InitTime");
-				i++;
-			}
-			
+			while(r.next()) list.add(r.getString("InitTime"));
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		return dates;
+		return (String[]) list.toArray(new String[list.size()]);
 	}
 
 	@Override
@@ -66,10 +60,6 @@ public class InitData extends UnicastRemoteObject implements InitDataService{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT * FROM InitCommodity WHERE InitTime='"+year+"';");
 			while(r.next()){
-				//String id, String name, String type, String store, String categoryId
-				   // , long amount,long alarmNum, double inPrice, double salePrice
-				   // , double recentInPrice, double recentSalePrice, boolean isExist
-
 				CommodityPO com=new CommodityPO(
 						r.getString("ComID"),
 						r.getString("ComName"),
@@ -100,9 +90,6 @@ public class InitData extends UnicastRemoteObject implements InitDataService{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT * FROM InitCustomer WHERE InitTime='"+year+"';");
 			while(r.next()){
-				//String id, String name, String telNumber, String address
-	            //, String mail, String code,String salesman, int rank, int type, double recRange
-	            //, double receivable, double payment, boolean isExist
 				CustomerPO cus=new CustomerPO(
 						r.getString("CusID"),
 						r.getString("CusName"),
@@ -155,9 +142,8 @@ public class InitData extends UnicastRemoteObject implements InitDataService{
 
 	@Override
 	public boolean initNewOne() throws RemoteException {
-		// TODO Auto-generated method stub
 		Calendar now = Calendar.getInstance(); 
-		String today=now.get(Calendar.YEAR)+"-"+now.get(Calendar.MONTH)+"-"+now.get(Calendar.DAY_OF_MONTH);
+		String today=now.get(Calendar.YEAR)+"-"+(now.get(Calendar.MONTH)+1)+"-"+now.get(Calendar.DAY_OF_MONTH);
 		boolean res=true;
 		
 		try{
@@ -191,7 +177,7 @@ public class InitData extends UnicastRemoteObject implements InitDataService{
 		}
 		
 		AccountData acc=new AccountData();
-		ArrayList<AccountPO> apos=new ArrayList<AccountPO>();
+		ArrayList<AccountPO> apos=acc.getAllAccount();
 		for(int i=0;i<apos.size();i++){
 			boolean flag=SQLQueryHelper.add("InitAccount", today, apos.get(i).getId(), apos.get(i).getName(),
 					apos.get(i).getMoney(), apos.get(i).getExistFlag());

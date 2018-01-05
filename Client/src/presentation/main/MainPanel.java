@@ -10,6 +10,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -102,6 +103,8 @@ public class MainPanel implements PanelInterface {
 			});
 			billDeleteButton.addActionListener(e->{
 				if (table.getSelectedRow() < 0) {new InfoWindow("请选择需要删除的单据"); return;}
+				int response = JOptionPane.showConfirmDialog(null, "确认要删除这张单据？", "警告", JOptionPane.YES_NO_OPTION);
+				if (response == 1) return;
 				String info = (String) tabelModel.getValueAt(table.getSelectedRow(), 1);
 				BillVO bill = billOperationBL.getBillById(info);
 				if (bill.getState() == BillVO.SAVED) {

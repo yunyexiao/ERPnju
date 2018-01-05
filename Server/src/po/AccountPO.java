@@ -28,5 +28,11 @@ public class AccountPO implements Serializable {
 
     public double getMoney() {return money;}
     
+    public boolean subMoney(double n) {
+    	if (this.money - n < 0) return false;
+    	this.money -= n;
+    	return true;
+    }
+    
     public boolean getExistFlag() {return isExist;}
 }

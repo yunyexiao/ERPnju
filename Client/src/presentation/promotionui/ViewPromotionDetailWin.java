@@ -26,7 +26,7 @@ public class ViewPromotionDetailWin {
         this.promotion = promotion;
         frame = new JDialog();
         frame.setModal(true);
-        frame.setSize(600, 400);
+        frame.setSize(800, 400);
         frame.setLocation(300, 200);
         frame.setTitle("查看促销策略");
         double[][] size = {{200.0, -1.0}, {-1.0}};

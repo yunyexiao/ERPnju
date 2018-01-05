@@ -10,6 +10,8 @@ import java.util.Calendar;
 import po.billpo.BillPO;
 import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
+import po.billpo.ChangeBillPO;
+import po.billpo.ChangeItem;
 import po.billpo.GiftBillPO;
 import po.billpo.GiftItem;
 import po.billpo.PaymentBillPO;
@@ -26,6 +28,35 @@ public class BillDataHelper {
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 	private static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
+	public static ChangeBillPO getChangeBill(String id, boolean isOver) {
+		ArrayList<ChangeItem> changeItems=new ArrayList<ChangeItem>();
+		String billName = isOver ? "InventoryOverflowBill" : "InventoryLostBill";
+		String recordName = isOver ? "InventoryOverflowRecord" : "InventoryLostRecord";
+		String[] recordColumns = isOver ? new String[]{"IORID","IORComID","IORComQuantity","IOROverQuantity"} : 
+			new String[]{"ILRID","ILRComID","ILRComQuantity","ILRLostQuantity"};
+		String[] billColumns = isOver ? new String[] {"IOBID","IOBOperatorID","IOBCondition"} :
+			new String[]{"ILBID","ILBOperatorID","ILBCondition"};
+		try{
+			ResultSet r1 = SQLQueryHelper.getRecordByAttribute(recordName, recordColumns[0], id);
+			while(r1.next()) {	
+				ChangeItem item = new ChangeItem(r1.getString(recordColumns[1])
+						,r1.getInt(recordColumns[2]),r1.getInt(recordColumns[3]));
+				changeItems.add(item);
+			}
+			ResultSet r2 = SQLQueryHelper.getRecordByAttribute(billName, billColumns[0], id);
+			r2.next();
+			return new ChangeBillPO(
+					dateFormat.format(r2.getDate("generateTime")),
+					timeFormat.format(r2.getTime("generateTime")),
+					r2.getString(billColumns[0]).split("-")[2],
+					r2.getString(billColumns[1]),
+					r2.getInt(billColumns[2]),isOver,changeItems);
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static CashCostBillPO getCashCostBill(String id) {
 		try {
 			ArrayList<CashCostItem> items = new ArrayList<CashCostItem>();
@@ -183,6 +214,7 @@ public class BillDataHelper {
 			}
 			ResultSet r2=SQLQueryHelper.getRecordByAttribute("SalesBill", "SBID", id);
 			r2.next();
+			String promotionId = "null".equals(r2.getString("SBPromotionID")) ? null : r2.getString("SBPromotionID");
 			return new SalesBillPO(
 				dateFormat.format(r2.getDate("generateTime")),
 				timeFormat.format(r2.getTime("generateTime")),
@@ -192,7 +224,7 @@ public class BillDataHelper {
 				r2.getString("SBCustomerID"),
 				r2.getString("SBSalesmanName"),
 				r2.getString("SBRemark"),
-				r2.getString("SBPromotionID"),
+				promotionId,
 				r2.getDouble("SBBeforeDiscount"),
 				r2.getDouble("SBDiscount"),
 				r2.getDouble("SBCoupon"),
@@ -267,35 +299,28 @@ public class BillDataHelper {
 	}
 	
 	//获取单据类id,不加标识
-	public static String getNewBillId(String tableName,String idName){
-		String newId=null;
-		int num=0;
-		
+	public static String getNewBillId(String tableName, String idName){
+		int num = 0;
 		Calendar now = Calendar.getInstance();
 		int year=now.get(Calendar.YEAR), month=now.get(Calendar.MONTH),  day=now.get(Calendar.DAY_OF_MONTH);
-		String date=year+"-"+(month+1)+"-"+day;
+		String date = year+"-"+(month+1)+"-"+day;
 		
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
-			ResultSet r=s.executeQuery("SELECT "+idName+" FROM "+tableName+" WHERE generateTime>"
-					+"'"+date+"' "+"AND generateTime<DATEADD(DAY,1,"+"'"+date+"');");
-			while(r.next()){
-				num++;
-			}
-			num++;
-			
-			newId=String.format("%05d", num);
+			ResultSet r=s.executeQuery("SELECT "+idName+" FROM "+tableName+
+				" WHERE generateTime>'"+date+"' AND generateTime<DATEADD(DAY,1,'"+date+"');");
+			while(r.next()) num++;
+			return String.format("%05d", num+1);
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
-		return newId;	
 	}
 	
 	public static boolean deleteBill(String id) {
 		String[][] data = {{"XJFYD","FKD","SKD","JHD","JHTHD","XSD","XSTHD","BYD","BSD"},
-				{"CashCostBill","PaymentBill","ReceiptBill","PurchaseBill","PurchaseReturnBill","SalesBill","SalesReturnBill"},
-				{"CCBID","PBID","RBID","PBID","PRBID","SBID","SRBID"}};
+				{"CashCostBill","PaymentBill","ReceiptBill","PurchaseBill","PurchaseReturnBill","SalesBill","SalesReturnBill","InventoryOverflowBill","InventoryLostBill"},
+				{"CCBID","PBID","RBID","PBID","PRBID","SBID","SRBID","IOBID","ILBID"}};
 		String type = id.split("-")[0];
 		int num = 0;
 		for (int i = 0; i < data[0].length; i++) if (type.equals(data[0][i])) num = i;
@@ -316,11 +341,9 @@ public class BillDataHelper {
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT COUNT(*) AS num FROM "+billName+" WHERE "+idName+"='"+bill.getAllId()+"';");
-			while(r.next())
-			{
-				num=r.getInt("num");
-			}
-			if(num>0)return true;
+			r.next(); 
+			num=r.getInt("num");
+			if(num > 0) return true;
 			else return false;
 		}catch(Exception e){
 			e.printStackTrace();

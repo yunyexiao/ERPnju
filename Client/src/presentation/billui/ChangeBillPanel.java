@@ -15,7 +15,9 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import blservice.billblservice.ChangeBillBLService;
+import blservice.infoservice.GetUserInterface;
 import businesslogic.ChangeBillBL;
+import businesslogic.UserBL;
 import layout.TableLayout;
 import presentation.component.InfoAdapter;
 import presentation.component.InfoWindow;
@@ -24,17 +26,20 @@ import presentation.component.choosewindow.CommodityChooseWin;
 import presentation.tools.Timetools;
 import vo.CommodityVO;
 import vo.UserVO;
+import vo.billvo.BillVO;
 import vo.billvo.ChangeBillVO;
 
 public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 
 	private UserVO user;
+	private BillVO bill;
 	private JTable table;
 	private JButton addButton;
 	private JButton deleteButton;
 	private JTextField billIdField, operaterField;
 	private JRadioButton overButton, lostButton;
 	private ChangeBillBLService changeBillBL = new ChangeBillBL(true);
+	private GetUserInterface userInfo = new UserBL();
 	
 	/**
 	 * 新建单据界面
@@ -56,11 +61,11 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 	 */
 	public ChangeBillPanel(UserVO user, ChangeBillVO bill) {
 		this.user = user;
+		this.bill = bill;
 		initBillPanel();
 		changeBillBL = new ChangeBillBL(bill.getFlag());
 		billIdField.setText(bill.getAllId());
-		overButton.setEnabled(false);
-		lostButton.setEnabled(false);
+		operaterField.setText(userInfo.getUser(bill.getOperator()).getName());
 		if (bill.getFlag()) overButton.setSelected(true);
 		else lostButton.setSelected(true);
 		operaterField.setText(bill.getOperator());
@@ -195,11 +200,19 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 	}
 
 	public ChangeBillVO getBill() {
-		if (! isCorrectable()) {
-			return null;
+		if (! isCorrectable()) return null;
+		String[] headers = {"商品id", "商品名称", "库存数量", "实际数量"};
+		Object[][] data = new Object[table.getRowCount()][4];
+		for (int i = 0; i < table.getRowCount(); i++) {
+			for (int j = 0; j < 4; j++) {
+				data[i][j] = table.getValueAt(i, j);
+			}
 		}
-		Timetools.check();
-		return new ChangeBillVO(Timetools.getDate(), Timetools.getTime(), changeBillBL.getNewId(), user.getId(), ChangeBillVO.DRAFT, overButton.isSelected(), (MyTableModel) table.getModel());
+		return new ChangeBillVO(
+				bill == null ? Timetools.getDate() : bill.getDate(),
+				bill == null ? Timetools.getTime() : bill.getTime(),
+				bill == null ? changeBillBL.getNewId().split("-")[2] : billIdField.getText().split("-")[2],
+				user.getId(), ChangeBillVO.DRAFT, overButton.isSelected(), new MyTableModel(data, headers));
 	}
 	
 	private void setBillId(boolean isOver) {
@@ -239,7 +252,11 @@ public class ChangeBillPanel extends JPanel implements BillPanelInterface {
 
 	@Override
 	public void setEditable(boolean b) {
-		// TODO Auto-generated method stub
-		
+		MyTableModel model = (MyTableModel) table.getModel();
+		model.setEditable(new int[]{});
+		overButton.setEnabled(false);
+		lostButton.setEnabled(false);
+		addButton.setEnabled(false);
+		deleteButton.setEnabled(false);
 	}
 }

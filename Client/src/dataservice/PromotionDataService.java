@@ -1,5 +1,6 @@
 package dataservice;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -13,7 +14,7 @@ import po.SumPromotionPO;
  * 
  * @author ã¢Ò¶Ïö
  */
-public interface PromotionDataService {
+public interface PromotionDataService extends Remote{
     
     String getNewId() throws RemoteException;
     
