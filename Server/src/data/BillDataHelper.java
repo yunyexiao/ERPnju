@@ -318,9 +318,9 @@ public class BillDataHelper {
 	}
 	
 	public static boolean deleteBill(String id) {
-		String[][] data = {{"XJFYD","FKD","SKD","JHD","JHTHD","XSD","XSTHD","BYD","BSD"},
-				{"CashCostBill","PaymentBill","ReceiptBill","PurchaseBill","PurchaseReturnBill","SalesBill","SalesReturnBill","InventoryOverflowBill","InventoryLostBill"},
-				{"CCBID","PBID","RBID","PBID","PRBID","SBID","SRBID","IOBID","ILBID"}};
+		String[][] data = {{"XJFYD","FKD","SKD","JHD","JHTHD","XSD","XSTHD","BYD","BSD","SPZSD"},
+				{"CashCostBill","PaymentBill","ReceiptBill","PurchaseBill","PurchaseReturnBill","SalesBill","SalesReturnBill","InventoryOverflowBill","InventoryLostBill","InventoryGiftBill"},
+				{"CCBID","PBID","RBID","PBID","PRBID","SBID","SRBID","IOBID","ILBID","IGBID"}};
 		String type = id.split("-")[0];
 		int num = 0;
 		for (int i = 0; i < data[0].length; i++) if (type.equals(data[0][i])) num = i;

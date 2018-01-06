@@ -37,7 +37,6 @@ public class GiftBillData extends UnicastRemoteObject implements GiftBillDataSer
 
 	@Override
 	public String getNewId() throws RemoteException {
-		// TODO Auto-generated method stub
 		return BillDataHelper.getNewBillId(billName, billAttributes[0]);
 	}
 

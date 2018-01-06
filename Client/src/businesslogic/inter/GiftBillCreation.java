@@ -9,6 +9,5 @@ import presentation.component.MyTableModel;
  */
 public interface GiftBillCreation {
     
-    boolean createAndCommit(MyTableModel gifts, String salesBillId, String customerId);
-
+    boolean createAndCommit(MyTableModel gifts, String salesBillId, String operatorId, String customerId);
 }

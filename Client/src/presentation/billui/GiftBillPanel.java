@@ -8,7 +8,6 @@ import javax.swing.JTable;
 import businesslogic.CustomerBL;
 import businesslogic.UserBL;
 import layout.TableLayout;
-import presentation.PanelInterface;
 import presentation.component.IdNamePanel;
 import presentation.component.LFPanel;
 import vo.billvo.GiftBillVO;
@@ -18,11 +17,9 @@ import vo.billvo.GiftBillVO;
  * 
  * @author ã¢Ò¶Ïö
  */
-public class ViewGiftBillPanel implements PanelInterface {
+public class GiftBillPanel extends JPanel implements BillPanelInterface {
     
-    private JPanel panel;
-    
-    public ViewGiftBillPanel(GiftBillVO bill){
+    public GiftBillPanel(GiftBillVO bill){
         if(bill == null) return;
         LFPanel idPanel = new LFPanel("±àºÅ", 15),
                 timePanel = new LFPanel("Ê±¼ä", 10),
@@ -48,24 +45,31 @@ public class ViewGiftBillPanel implements PanelInterface {
                 {-1.0, -2.0, 10.0, -2.0, 10.0, -2.0, -1.0},
                 {-1.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, -1.0}
         };
-        panel = new JPanel(new TableLayout(size));
-        panel.add(idPanel, "1 1");
-        panel.add(timePanel, "3 1");
-        panel.add(operatorPanel, "5 1");
-        panel.add(customerPanel, "1 3");
-        panel.add(salesBillPanel, "3 3");
-        panel.add(new JLabel("ÔùÆ·"), "1 5");
-        panel.add(new JScrollPane(gifts), "1 7 5 7");
+        this.setLayout(new TableLayout(size));
+        this.add(idPanel, "1 1");
+        this.add(timePanel, "3 1");
+        this.add(operatorPanel, "5 1");
+        this.add(customerPanel, "1 3");
+        this.add(salesBillPanel, "3 3");
+        this.add(new JLabel("ÔùÆ·"), "1 5");
+        this.add(new JScrollPane(gifts), "1 7 5 7");
     }
 
-    @Override
-    public boolean close() {
-        return true;
-    }
+	@Override
+	public void newAction() {
+	}
 
-    @Override
-    public JPanel getPanel() {
-        return panel;
-    }
+	@Override
+	public void saveAction() {
+	}
+
+	@Override
+	public void commitAction() {
+	}
+
+	@Override
+	public void setEditable(boolean b) {
+		
+	}
 
 }

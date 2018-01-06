@@ -10,7 +10,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import blservice.billblservice.SalesBillBLService;
+import blservice.infoservice.GetCustomerInterface;
 import blservice.infoservice.GetPromotionInterface;
+import businesslogic.CustomerBL;
 import businesslogic.PromotionBL;
 import businesslogic.SalesBillBL;
 import layout.TableLayout;
@@ -30,6 +32,7 @@ import vo.billvo.SalesBillVO;
 public class SalesBillPanel extends CommonSaleBillPanel {
 	
 	private SalesBillBLService saleBillBL = new SalesBillBL();
+	private GetCustomerInterface customerInfo = new CustomerBL();
 	private DoubleField discountField, couponField, afterDiscountField;
 	private JButton sumButton;
 	private JTextArea promotionInfoArea;
@@ -94,7 +97,7 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 	protected void sumUp(){
 	    super.sumUp();
 
-	    int rank = user.getRank();
+	    int rank = customerInfo.getCustomer(customerIdField.getText()).getRank();
 	    MyTableModel goods = (MyTableModel)goodsListTable.getModel();
 	    double sum = sumField.getValue();
 	    promotion = saleBillBL.getBestPromotion(rank, goods, sum);
@@ -207,8 +210,8 @@ public class SalesBillPanel extends CommonSaleBillPanel {
 
 	@Override
 	public void saveAction() {
-		SalesBillVO bill = getBill(BillVO.COMMITED);
-        if (bill != null && saleBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已提交。");
+		SalesBillVO bill = getBill(BillVO.SAVED);
+        if (bill != null && saleBillBL.saveBill(bill)) JOptionPane.showMessageDialog(null, "单据已保存。");
 	}
 
 	@Override

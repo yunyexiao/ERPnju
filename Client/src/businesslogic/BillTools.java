@@ -9,6 +9,7 @@ import po.billpo.CashCostBillPO;
 import po.billpo.CashCostItem;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
+import po.billpo.GiftBillPO;
 import po.billpo.PaymentBillPO;
 import po.billpo.PurchaseBillPO;
 import po.billpo.PurchaseReturnBillPO;
@@ -21,6 +22,7 @@ import presentation.component.MyTableModel;
 import vo.CommodityVO;
 import vo.billvo.CashCostBillVO;
 import vo.billvo.ChangeBillVO;
+import vo.billvo.GiftBillVO;
 import vo.billvo.PaymentBillVO;
 import vo.billvo.PurchaseBillVO;
 import vo.billvo.PurchaseReturnBillVO;
@@ -201,6 +203,11 @@ public class BillTools {
                 , bill.getState(), bill.getCustomerId(), model);
         return receiptBillVO;
     }
+	
+	public static GiftBillVO toGiftBillVO(GiftBillPO bill) {
+		return new GiftBillVO(bill.getId(), bill.getDate(), bill.getTime(), bill.getOperator(),
+				bill.getState(), GiftItemTools.toModel(bill.getGifts()), bill.getSalesBillId(), bill.getCustomerId());
+	}
 	/**
 	 * 根据billPO的子类类型获得单据的中文名称
 	 * @param bill billPO对象
