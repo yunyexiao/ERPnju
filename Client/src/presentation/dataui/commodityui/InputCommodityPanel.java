@@ -59,6 +59,12 @@ class InputCommodityPanel extends JPanel{
         textFields[6].setEditable(false);
         textFields[7].setEditable(false);
         
+        if(data[4] != null){
+            textFields[4].setEditable(false);
+            textFields[8].setEditable(false);
+            textFields[9].setEditable(false);
+        }
+        
         textFields[6].addMouseListener(new MouseAdapter() {
         	public void mouseClicked(MouseEvent e) {
         		CategoryVO category = new CategoryChooseWin().getCategory();
