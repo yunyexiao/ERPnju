@@ -2,7 +2,7 @@ package presentation.driver;
 
 import javax.swing.JFrame;
 
-import presentation.billui.ViewGiftBillPanel;
+import presentation.billui.GiftBillPanel;
 import presentation.component.MyTableModel;
 import presentation.tools.StyleTools;
 import vo.billvo.BillVO;
@@ -22,7 +22,7 @@ public class GiftBillPanelDriver {
             "SPZSD-20171230-12344", "20171230", "14:12:34", "0002", 
             BillVO.PASS, gifts, "XSD-20171230-12013", "000002"
         );
-        frame.setContentPane(new ViewGiftBillPanel(bill).getPanel());
+        frame.setContentPane(new GiftBillPanel(bill));
         frame.pack();
         frame.setVisible(true);
     }
