@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
  */
 public class Rmi {
 	
-	public static boolean flag = true;
+	public static boolean flag = false;
 	/**
 	 * 获取服务器远程对象
 	 * @warning 禁止使用其他非数据层接口，否则服务器无注册对象

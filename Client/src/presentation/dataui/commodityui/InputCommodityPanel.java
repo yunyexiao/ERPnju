@@ -7,6 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import blservice.CategoryBLService;
+import businesslogic.CategoryBL;
 import layout.TableLayout;
 import presentation.component.InfoWindow;
 import presentation.component.choosewindow.CategoryChooseWin;
@@ -18,9 +20,11 @@ import vo.CommodityVO;
 class InputCommodityPanel extends JPanel{
     
     private JTextField[] textFields;
+    private CategoryBLService categoryBl;
 
     public InputCommodityPanel(String[] data) {
         super();
+        this.categoryBl = new CategoryBL();
         double[] rows = new double[25];
         rows[0] = TableLayout.FILL;
         for(int i = 0; i < 12; i++){
@@ -71,6 +75,7 @@ class InputCommodityPanel extends JPanel{
     	else if (! InputCheck.isLegal(textFields[2].getText())) new InfoWindow("商品类型非法");
     	else if (! InputCheck.isAllNumber(textFields[4].getText(), 0)) new InfoWindow("请输入正确的商品数量");
     	else if (! InputCheck.isAllNumber(textFields[5].getText(), 0)) new InfoWindow("请输入正确的商品警戒值");
+    	else if(categoryBl.hasContent(textFields[6].getText())) new InfoWindow("请选择只包含商品的分类");
     	else if (! InputCheck.isLegal(textFields[7].getText())) new InfoWindow("请选择商品分类");
     	else if (! InputCheck.isDouble(textFields[8].getText())) new InfoWindow("请输入正确的商品进货价格");
     	else if (! InputCheck.isDouble(textFields[9].getText())) new InfoWindow("请输入正确的商品销售价格");
