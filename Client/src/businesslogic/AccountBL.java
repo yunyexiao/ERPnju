@@ -52,7 +52,10 @@ public class AccountBL implements AccountBLService, GetAccountInterface {
 		try {
 			ArrayList<AccountPO> list = null;
 			if ("°´ÕËºÅËÑË÷".equals(type)) {
-				list = accountDataService.getAccountsBy("SAID", key, true);
+				list = accountDataService.getAccountsBy("AccountID", key, true);
+			} else {
+			    // search by name
+			    list = accountDataService.getAccountsBy("AccountName", key, true);
 			}
 			String[][] data = new String [list.size()][tableHeader.length];
 			for (int i = 0; i < list.size(); i++) {
