@@ -10,7 +10,6 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MyTableModel extends DefaultTableModel {
 
-	//private int[] rows = {};
 	private int[] columns = {};
 	
 	public MyTableModel(Object[][] data, Object[] columnNames) {
