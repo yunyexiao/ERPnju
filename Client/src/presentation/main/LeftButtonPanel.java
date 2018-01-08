@@ -28,7 +28,6 @@ import presentation.analysisui.ViewBusinessSituationPanel;
 import presentation.bill.BillExaminePanel;
 import presentation.billui.BillPanelHelper;
 import presentation.component.InfoAdapter;
-import presentation.component.Listener_stub;
 import presentation.dataui.accountui.AccountDataPanel;
 import presentation.dataui.categoryui.CategoryDataPanel;
 import presentation.dataui.commodityui.CommodityDataPanel;
@@ -108,7 +107,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("制定收付款单", e -> mw.changePanel(BillPanelHelper.create("ReceiptOrPaymentBill")));
 			addButton("制定现金费用单", e -> mw.changePanel(BillPanelHelper.create("CashCostBill")));
 			addButton("查看销售明细表", e -> mw.changePanel(new SalesDetailsPanel()));
-			addButton("查看经营状况表", new Listener_stub());
+			addButton("查看经营状况表", e -> mw.changePanel(new ViewBusinessSituationPanel(user, closeListener)));
 			addButton("查看经营历程表", e -> mw.changePanel(new ViewBusinessHistoryPanel(user, closeListener)));
 			addButton("期初建账", e -> mw.changePanel(new InitPanel(closeListener)));
 			addButton("查看日志", e -> mw.changePanel(new LogPanel(closeListener)));		
