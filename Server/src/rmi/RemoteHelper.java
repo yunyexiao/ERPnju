@@ -29,7 +29,7 @@ public class RemoteHelper {
 
 	public RemoteHelper() {
 		try {
-			LocateRegistry.createRegistry(8887);
+			LocateRegistry.createRegistry(6667);
 			bind(new UserData());
 			bind(new LogData());
 			bind(new CategoryData());
@@ -60,7 +60,7 @@ public class RemoteHelper {
 	private void bind(Remote remote) {
 		try {
 			System.out.println(remote.getClass().getInterfaces()[0].getName());
-			Naming.bind("rmi://localhost:8887/" + remote.getClass().getInterfaces()[0].getName(), remote);
+			Naming.bind("rmi://localhost:6667/" + remote.getClass().getInterfaces()[0].getName(), remote);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("绑定" + remote.getClass().getName() + "出现问题");
