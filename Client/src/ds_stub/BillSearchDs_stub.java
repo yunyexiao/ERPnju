@@ -188,7 +188,7 @@ public class BillSearchDs_stub implements BillSearchDataService {
         items3.add(new SalesItemsPO("000003", "", 200, 200, 40000));
         
         result.add(new SalesBillPO(
-            "2017-12-03", "11:24:51", "32100", "0002", BillPO.COMMITED
+            "2017-12-13", "11:24:51", "32100", "0002", BillPO.COMMITED
             , "000001", "peppa", "hello sussie", "12300", 50000, 1000, 1000, 48000, items3
         ));
         System.out.println("Sales Bills of state " + state + " returned from database.");
@@ -295,16 +295,15 @@ public class BillSearchDs_stub implements BillSearchDataService {
 		ArrayList<ChangeBillPO> result = new ArrayList<>();
 		ArrayList<ChangeItem> items1 = new ArrayList<>();
 		items1.add(new ChangeItem("000001", 20, 21));
-		result.add(new ChangeBillPO(
+		ArrayList<ChangeItem> items2 = new ArrayList<>();
+		items2.add(new ChangeItem("000002", 100, 90));
+		if (isOver) result.add(new ChangeBillPO(
 				"2017-12-08", "11:03:23", "00123", "0004", BillPO.COMMITED,
 				true,  items1
 				));
-    
-		ArrayList<ChangeItem> items2 = new ArrayList<>();
-		items2.add(new ChangeItem("000002", 100, 90));
-		result.add(new ChangeBillPO(
+		else result.add(new ChangeBillPO(
 				"2017-12-08", "20:06:37", "23333", "0006", BillPO.COMMITED,
-				true,  items2
+				false,  items2
 				));
 		return result;
 	}
