@@ -25,7 +25,7 @@ public class Rmi {
 		try {
             @SuppressWarnings("unchecked")
 			//修改服务器地址处
-            T r =(T) Naming.lookup("rmi://120.79.145.97:6667/" + c.getName());
+            T r =(T) Naming.lookup("rmi://"+ipAddress+":6667/" + c.getName());
             //T r =(T) Naming.lookup("rmi://127.0.0.1:6667/" + c.getName());
             //还要修改SMRMISocket中的方法
             return r;
