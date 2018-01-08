@@ -13,13 +13,13 @@ public class CommodityDs_stub implements CommodityDataService {
     
     public CommodityDs_stub() {
     	if (result.size() == 0) {
-        	result.add(new CommodityPO("000001", "·ê¿¼±Ø¹ýµÆ", "TBD", "A", "000001"
+        	result.add(new CommodityPO("000001", "·ê¿¼±Ø¹ýµÆ", "TBD", "A", "000002"
                     , 2000L, 200L, 120.0, 340.0, 120.0, 320.0, true));
-            result.add(new CommodityPO("000002", "µç´ÅÂö³åµÆ", "TDD", "A", "000003"
+            result.add(new CommodityPO("000002", "µç´ÅÂö³åµÆ", "TDD", "A", "000002"
                 , 1000L, 100L, 200.0, 350.0, 200.0, 380.0, true));
-            result.add(new CommodityPO("000003", "ºË¾ÛÄÜÉñµÆ", "TDD", "A", "000003"
+            result.add(new CommodityPO("000003", "ºË¾ÛÄÜÉñµÆ", "TDD", "A", "000004"
                 , 500L, 70L, 100.0, 350.0, 150.0, 160.0, true));
-            result.add(new CommodityPO("000004", "³¬¿Õ¼äÕÕÃ÷µÆ", "TBD", "A", "000002"
+            result.add(new CommodityPO("000004", "³¬¿Õ¼äÕÕÃ÷µÆ", "TBD", "A", "000004"
                     , 500L, 70L, 100.0, 350.0, 150.0, 160.0, true));
     	}
     }
@@ -68,8 +68,10 @@ public class CommodityDs_stub implements CommodityDataService {
 
 	@Override
 	public ArrayList<CommodityPO> getCommoditysBy(String field, String content, boolean isfuzzy) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	    ArrayList<CommodityPO> commodities = new ArrayList<>();
+	    commodities.add(result.get(0));
+	    commodities.add(result.get(3));
+		return commodities;
 	}
 
 }

@@ -2,12 +2,16 @@ package presentation.dataui.categoryui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
 import blservice.CategoryBLService;
@@ -29,6 +33,7 @@ public class CategoryDataPanel implements PanelInterface{
     	
         tree = new JTree(categoryBl.getModel());
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);//…Ë÷√µ•—°
+        tree.addMouseListener(viewCommodities(commodityBL));
         double[][] size = {{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}};
         panel = new JPanel(new TableLayout(size));
         
@@ -102,6 +107,23 @@ public class CategoryDataPanel implements PanelInterface{
     @Override
     public JPanel getPanel() {
         return panel;
+    }
+    
+    private MouseListener viewCommodities(GetCommodityInterface commodityInfo){
+        return new MouseAdapter(){
+
+            @Override
+            public void mouseClicked(MouseEvent e){
+                if(e.getClickCount() < 2)return;
+                DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+                if(model.isLeaf(node)){
+                    CategoryVO category = (CategoryVO)node.getUserObject();
+                    new ViewCommodityWin(commodityInfo, category);
+                }
+            }
+
+        };
     }
 
 }
