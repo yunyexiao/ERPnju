@@ -13,7 +13,8 @@ import java.rmi.RemoteException;
  */
 public class Rmi {
 	
-	public static boolean flag = false;
+	public static boolean flag = true;
+	public static final String ipAddress = "120.79.145.97";
 	/**
 	 * 获取服务器远程对象
 	 * @warning 禁止使用其他非数据层接口，否则服务器无注册对象
