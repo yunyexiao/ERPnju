@@ -10,8 +10,8 @@ import javax.swing.JTextField;
 
 import presentation.component.DateChooser;
 import presentation.component.InfoWindow;
-import presentation.component.MyTableModel;
 import presentation.tools.TableTools;
+import vo.MyTableModel;
 
 public abstract class BillChooseWin extends ChooseWindow {
     

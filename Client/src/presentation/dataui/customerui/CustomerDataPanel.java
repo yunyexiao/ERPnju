@@ -5,9 +5,9 @@ import java.awt.event.ActionListener;
 
 import blservice.CustomerBLService;
 import presentation.component.InfoWindow;
-import presentation.component.MyTableModel;
 import presentation.dataui.DataPanel;
 import presentation.tools.TableTools;
+import vo.MyTableModel;
 import vo.UserVO;
 
 public class CustomerDataPanel extends DataPanel{

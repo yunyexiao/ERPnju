@@ -3,7 +3,6 @@ package vo;
 import java.util.ArrayList;
 
 import po.GroupDiscountPO;
-import presentation.component.MyTableModel;
 
 /**
  * 商品组合降价的促销策略VO

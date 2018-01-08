@@ -11,9 +11,9 @@ import javax.swing.JTable;
 
 import businesslogic.CommodityBL;
 import presentation.PanelInterface;
-import presentation.component.MyTableModel;
 import presentation.component.TopButtonPanel;
 import presentation.tools.ExcelExporter;
+import vo.MyTableModel;
 
 
 public class InventoryCheckPanel implements PanelInterface {

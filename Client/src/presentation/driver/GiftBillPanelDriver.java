@@ -4,8 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import presentation.billui.BillPanelHelper;
-import presentation.component.MyTableModel;
 import presentation.tools.StyleTools;
+import vo.MyTableModel;
 import vo.billvo.BillVO;
 import vo.billvo.GiftBillVO;
 

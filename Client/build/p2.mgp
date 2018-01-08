@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PackageAnalysis>
+    <Package name="bl_stub" x="50" y="281">
+        <DependencyLink destination="blservice.infoservice"/>
+        <DependencyLink destination="blservice"/>
+    </Package>
+    <Package name="blservice" x="174" y="211"/>
+    <Package name="blservice.billblservice" x="271" y="210"/>
+    <Package name="blservice.infoservice" x="9" y="211"/>
+    <Package name="businesslogic" x="156" y="281">
+        <DependencyLink destination="blservice.infoservice"/>
+        <DependencyLink destination="ds_stub"/>
+        <DependencyLink destination="po.billpo"/>
+        <DependencyLink destination="blservice.billblservice"/>
+        <DependencyLink destination="businesslogic.inter"/>
+        <DependencyLink destination="dataservice"/>
+        <DependencyLink destination="blservice"/>
+        <DependencyLink destination="businesslogic.best_promotion"/>
+        <DependencyLink destination="po"/>
+    </Package>
+    <Package name="businesslogic.best_promotion" x="317" y="282">
+        <DependencyLink destination="businesslogic.inter"/>
+        <DependencyLink destination="businesslogic"/>
+        <DependencyLink destination="po"/>
+    </Package>
+    <Package name="businesslogic.inter" x="452" y="210">
+        <DependencyLink destination="po"/>
+    </Package>
+    <Package name="dataservice" x="42" y="359">
+        <DependencyLink destination="po.billpo"/>
+        <DependencyLink destination="po"/>
+    </Package>
+    <Package name="ds_stub" x="266" y="435">
+        <DependencyLink destination="po.billpo"/>
+        <DependencyLink destination="dataservice"/>
+        <DependencyLink destination="po"/>
+    </Package>
+    <Package name="po" x="707" y="374">
+        <DependencyLink destination="po.billpo"/>
+    </Package>
+    <Package name="po.billpo" x="707" y="338"/>
+    <Package name="presentation" x="234" y="100">
+        <DependencyLink destination="businesslogic"/>
+        <DependencyLink destination="blservice"/>
+    </Package>
+    <Package name="presentation.analysisui" x="376" y="100">
+        <DependencyLink destination="presentation"/>
+        <DependencyLink destination="presentation.billui"/>
+        <DependencyLink destination="blservice.billblservice"/>
+        <DependencyLink destination="businesslogic"/>
+        <DependencyLink destination="blservice"/>
+    </Package>
+    <Package name="presentation.bill" x="76" y="101">
+        <DependencyLink destination="presentation"/>
+        <DependencyLink destination="presentation.billui"/>
+        <DependencyLink destination="blservice.billblservice"/>
+        <DependencyLink destination="businesslogic"/>
+    </Package>
+    <Package name="presentation.billui" x="211" y="33">
+        <DependencyLink destination="blservice.infoservice"/>
+        <DependencyLink destination="presentation"/>
+        <DependencyLink destination="blservice.billblservice"/>
+        <DependencyLink destination="businesslogic"/>
+    </Package>
+    <Package name="presentation.categoryui" x="358" y="34">
+        <DependencyLink destination="presentation"/>
+        <DependencyLink destination="bl_stub"/>
+        <DependencyLink destination="blservice"/>
+    </Package>
+</PackageAnalysis>

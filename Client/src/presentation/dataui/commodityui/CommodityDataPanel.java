@@ -5,8 +5,8 @@ import java.awt.event.ActionListener;
 
 import blservice.CommodityBLService;
 import presentation.component.InfoWindow;
-import presentation.component.MyTableModel;
 import presentation.dataui.DataPanel;
+import vo.MyTableModel;
 
 
 public class CommodityDataPanel extends DataPanel {

@@ -4,7 +4,7 @@ import blservice.billblservice.BillOperationService;
 import blservice.billblservice.PurchaseBillBLService;
 import businesslogic.BillOperationBL;
 import businesslogic.PurchaseBillBL;
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 import vo.billvo.PurchaseBillVO;
 
 

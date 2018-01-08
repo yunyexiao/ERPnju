@@ -17,9 +17,9 @@ import po.UserPO;
 import po.billpo.BillPO;
 import po.billpo.GiftBillPO;
 import po.billpo.GiftItem;
-import presentation.component.MyTableModel;
 import presentation.tools.Timetools;
 import rmi.Rmi;
+import vo.MyTableModel;
 import vo.billvo.BillVO;
 
 

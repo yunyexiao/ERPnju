@@ -15,9 +15,9 @@ import po.CommodityPO;
 import po.billpo.BillPO;
 import po.billpo.ChangeBillPO;
 import po.billpo.ChangeItem;
-import presentation.component.MyTableModel;
 import presentation.tools.Timetools;
 import rmi.Rmi;
+import vo.MyTableModel;
 import vo.billvo.BillVO;
 import vo.billvo.ChangeBillVO;
 

@@ -1,6 +1,6 @@
 package blservice;
 
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 
 public interface SalesDetailsBLService {
     /**获取销售明细表*/

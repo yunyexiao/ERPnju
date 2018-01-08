@@ -1,7 +1,7 @@
 package blservice.infoservice;
 
-import presentation.component.MyTableModel;
 import vo.CommodityVO;
+import vo.MyTableModel;
 
 public interface GetCommodityInterface {
 

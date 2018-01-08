@@ -1,6 +1,6 @@
 package blservice;
 
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 
 public interface DataBLService {
 

@@ -13,9 +13,9 @@ import blservice.DataBLService;
 import layout.TableLayout;
 import presentation.PanelInterface;
 import presentation.component.InfoWindow;
-import presentation.component.MyTableModel;
 import presentation.component.TopButtonPanel;
 import presentation.tools.TableTools;
+import vo.MyTableModel;
 /**
  * 处理基础数据的通用Panel组件 </br>
  * 包括商品信息、客户信息、账户信息、用户信息</br>

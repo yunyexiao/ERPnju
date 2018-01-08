@@ -1,4 +1,4 @@
-package presentation.component;
+package vo;
 
 import java.util.Arrays;
 

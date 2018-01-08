@@ -19,9 +19,9 @@ import po.CustomerPO;
 import po.billpo.BillPO;
 import po.billpo.SalesItemsPO;
 import po.billpo.SalesReturnBillPO;
-import presentation.component.MyTableModel;
 import presentation.tools.Timetools;
 import rmi.Rmi;
+import vo.MyTableModel;
 import vo.billvo.BillVO;
 import vo.billvo.SalesReturnBillVO;
 

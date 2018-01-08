@@ -1,6 +1,6 @@
 package blservice.billblservice;
 
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 import vo.billvo.PurchaseBillVO;
 
 public interface PurchaseBillBLService extends BillCreateBLService {

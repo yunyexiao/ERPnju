@@ -25,8 +25,8 @@ import po.billpo.PurchaseReturnBillPO;
 import po.billpo.ReceiptBillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesReturnBillPO;
-import presentation.component.MyTableModel;
 import rmi.Rmi;
+import vo.MyTableModel;
 import vo.UserVO;
 
 /**

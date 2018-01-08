@@ -12,9 +12,9 @@ import javax.swing.JTextField;
 import blservice.DataBLService;
 import layout.TableLayout;
 import presentation.component.InfoWindow;
-import presentation.component.MyTableModel;
 import presentation.dataui.util.Tools;
 import presentation.tools.InputCheck;
+import vo.MyTableModel;
 
 public abstract class SearchWindow extends FatherWindow {
     

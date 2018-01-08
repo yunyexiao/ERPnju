@@ -10,7 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import presentation.component.InfoWindow;
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 
 
 @SuppressWarnings("serial")

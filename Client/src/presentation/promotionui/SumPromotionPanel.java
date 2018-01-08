@@ -7,7 +7,7 @@ import javax.swing.JScrollPane;
 
 import blservice.PromotionBLService;
 import presentation.component.InfoWindow;
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 import vo.PromotionVO;
 import vo.SumPromotionVO;
 

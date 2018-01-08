@@ -7,9 +7,9 @@ import javax.swing.JOptionPane;
 
 import blservice.AccountBLService;
 import presentation.component.InfoWindow;
-import presentation.component.MyTableModel;
 import presentation.dataui.DataPanel;
 import presentation.main.MainWindow;
+import vo.MyTableModel;
 import vo.UserVO;
 
 public class AccountDataPanel extends DataPanel{

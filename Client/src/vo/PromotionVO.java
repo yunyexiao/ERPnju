@@ -1,7 +1,6 @@
 package vo;
 
 import po.PromotionPO;
-import presentation.component.MyTableModel;
 
 /**
  * 促销策略VO的抽象父类

@@ -1,7 +1,7 @@
 package blservice;
 
-import presentation.component.MyTableModel;
 import vo.GroupDiscountVO;
+import vo.MyTableModel;
 import vo.PromotionVO;
 import vo.RankPromotionVO;
 import vo.SumPromotionVO;

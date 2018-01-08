@@ -11,9 +11,9 @@ import ds_stub.BillSearchDs_stub;
 import po.billpo.BillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
-import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.CommodityVO;
+import vo.MyTableModel;
 
 
 public class SalesDetailsBL implements SalesDetailsBLService {
