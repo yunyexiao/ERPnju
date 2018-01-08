@@ -1,4 +1,4 @@
-package presentation.bill;
+package presentation.billui;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;

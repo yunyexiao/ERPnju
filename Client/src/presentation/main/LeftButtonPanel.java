@@ -25,7 +25,7 @@ import presentation.analysisui.InventoryDynamicPanel;
 import presentation.analysisui.SalesDetailsPanel;
 import presentation.analysisui.ViewBusinessHistoryPanel;
 import presentation.analysisui.ViewBusinessSituationPanel;
-import presentation.bill.BillExaminePanel;
+import presentation.billui.BillExaminePanel;
 import presentation.billui.BillPanelHelper;
 import presentation.component.InfoAdapter;
 import presentation.dataui.accountui.AccountDataPanel;

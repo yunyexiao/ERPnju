@@ -1,10 +1,8 @@
-package presentation.bill;
+package presentation.billui;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import presentation.billui.BillPanelHelper;
-import presentation.billui.BillPanelInterface;
 import vo.billvo.BillVO;
 
 class BillViewer {
