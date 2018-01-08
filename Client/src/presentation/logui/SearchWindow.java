@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 
 import layout.TableLayout;
 import presentation.component.DateChooser;
-
 /**
  * 选择具体搜索条件的对话框窗体
  * @author 钱美缘

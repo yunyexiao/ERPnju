@@ -51,22 +51,6 @@ public class TopButtonPanel {
 		panel.add(button, (panel.getComponentCount() * 2 + 1) +" 1");
 	}
 	/**
-	 * 向Panel内增加一个选择日期的空间，使用html标签分两行显示<br/>
-	 * 没有图标。。。。。
-	 * @param text 日历按钮第一行显示的文本（不能过长）
-	 */
-	public void addCalendar(String text) {
-		DateChooser dateChooser = DateChooser.getInstance("yyyy-MM-dd");
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dt = new Date();
-		String date = sdf.format(dt);
-		JButton button = new JButton("<html><center>" + text + "</center></p><p style=\"line-height:0px\">" + date + "</p></html>");
-		button.setFont(new Font("宋体",Font.BOLD,14));
-		dateChooser.register(button);
-		dateChooserArray.add(dateChooser);
-		panel.add(button);
-	}
-	/**
 	 * 得到日期选择控件选择的日期数组
 	 * @return 选择的日期字符串（默认yyyy-MM-dd），按添加顺序排列
 	 */
