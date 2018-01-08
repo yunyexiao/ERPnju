@@ -1,7 +1,7 @@
 package presentation.dataui.userui;
 
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import blservice.UserBLService;
@@ -9,12 +9,15 @@ import presentation.component.InfoWindow;
 import presentation.dataui.DataPanelInterface;
 import vo.MyTableModel;
 
-public class UserDataPanel extends JPanel implements DataPanelInterface{
+public class UserDataPanel extends JScrollPane implements DataPanelInterface{
 	private JTable table = new JTable();
 	private UserBLService userBL;
 
     public UserDataPanel(UserBLService userBL) {
         this.userBL = userBL;
+        table.setModel(userBL.update());
+		table.getTableHeader().setReorderingAllowed(false);
+		this.setViewportView(table);
     }
 
     @Override

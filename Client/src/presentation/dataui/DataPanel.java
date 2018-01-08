@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import blservice.AccountBLService;
 import blservice.CommodityBLService;
@@ -49,7 +50,7 @@ public class DataPanel implements PanelInterface {
 		//buttonPanel.addButton("Ë¢ÐÂ", new ImageIcon("resource/Refresh.png"), e -> {table.setModel(dataBL.update());TableTools.autoFit(table);});
 		buttonPanel.addButton("¹Ø±Õ", new ImageIcon("resource/Close.png"), closeListener);
 		panel.add(buttonPanel.getPanel(), "0,0");
-		panel.add((JPanel) dataImpl, "0,1");
+		panel.add((JScrollPane)dataImpl, "0,1");
 	}
 	
 	@Override

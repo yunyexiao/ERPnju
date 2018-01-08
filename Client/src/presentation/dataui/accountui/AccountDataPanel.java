@@ -14,7 +14,7 @@ import presentation.main.MainWindow;
 import vo.MyTableModel;
 import vo.UserVO;
 
-public class AccountDataPanel extends JPanel implements DataPanelInterface{
+public class AccountDataPanel extends JScrollPane implements DataPanelInterface{
 	private JTable table = new JTable();
 	private AccountBLService accountBL;
 	private UserVO user = MainWindow.getUser();
@@ -23,8 +23,7 @@ public class AccountDataPanel extends JPanel implements DataPanelInterface{
 		this.accountBL = accountBL;
 		table.setModel(accountBL.update());
 		table.getTableHeader().setReorderingAllowed(false);
-		JScrollPane srcollpane = new JScrollPane(table);
-		this.add(srcollpane);
+		this.setViewportView(table);
 	}
 	@Override
 	public void addAction() {
