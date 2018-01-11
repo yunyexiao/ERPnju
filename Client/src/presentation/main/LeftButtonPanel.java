@@ -25,10 +25,10 @@ import presentation.analysisui.InventoryDynamicPanel;
 import presentation.analysisui.SalesDetailsPanel;
 import presentation.analysisui.ViewBusinessHistoryPanel;
 import presentation.analysisui.ViewBusinessSituationPanel;
-import presentation.bill.BillExaminePanel;
+import presentation.billui.BillExaminePanel;
 import presentation.billui.BillPanelHelper;
 import presentation.component.InfoAdapter;
-import presentation.component.Listener_stub;
+import presentation.dataui.DataPanel;
 import presentation.dataui.accountui.AccountDataPanel;
 import presentation.dataui.categoryui.CategoryDataPanel;
 import presentation.dataui.commodityui.CommodityDataPanel;
@@ -91,24 +91,24 @@ class LeftButtonPanel extends JPanel{
 		// 修改按钮处------------------------------
 		if (type == UserType.KEEPER) {
 			addButton("商品分类管理", e -> mw.changePanel(new CategoryDataPanel(new CategoryBL(), closeListener)));
-			addButton("商品管理", e -> mw.changePanel(new CommodityDataPanel(new CommodityBL(), closeListener)));
+			addButton("商品管理", e -> mw.changePanel(new DataPanel(new CommodityBL(), closeListener)));
 			addButton("库存查看", e -> mw.changePanel(new InventoryDynamicPanel()));
 			addButton("库存盘点", e -> mw.changePanel(new InventoryCheckPanel(closeListener)));
 			addButton("报溢/报损", e -> mw.changePanel(BillPanelHelper.create("ChangeBill")));
 		}
 		else if (type == UserType.SALESMAN) {
-			addButton("客户管理", e -> mw.changePanel(new CustomerDataPanel(user, new CustomerBL(), closeListener)));
+			addButton("客户管理", e -> mw.changePanel(new DataPanel(new CustomerBL(), closeListener)));
 			addButton("制定进货单", e -> mw.changePanel(BillPanelHelper.create("PurchaseBill")));
 			addButton("制定进货退货单", e -> mw.changePanel(BillPanelHelper.create("PurchaseReturnBill")));
 			addButton("制定销售单", e -> mw.changePanel(BillPanelHelper.create("SalesBill")));
 			addButton("制定销售退货单", e -> mw.changePanel(BillPanelHelper.create("SalesReturnBill")));
 		}
 		else if (type == UserType.ACCOUNTANT) {
-			addButton("账户管理", e -> mw.changePanel(new AccountDataPanel(new AccountBL(), closeListener)));
+			addButton("账户管理", e -> mw.changePanel(new DataPanel(new AccountBL(), closeListener)));
 			addButton("制定收付款单", e -> mw.changePanel(BillPanelHelper.create("ReceiptOrPaymentBill")));
 			addButton("制定现金费用单", e -> mw.changePanel(BillPanelHelper.create("CashCostBill")));
 			addButton("查看销售明细表", e -> mw.changePanel(new SalesDetailsPanel()));
-			addButton("查看经营状况表", new Listener_stub());
+			addButton("查看经营状况表", e -> mw.changePanel(new ViewBusinessSituationPanel(user, closeListener)));
 			addButton("查看经营历程表", e -> mw.changePanel(new ViewBusinessHistoryPanel(user, closeListener)));
 			addButton("期初建账", e -> mw.changePanel(new InitPanel(closeListener)));
 			addButton("查看日志", e -> mw.changePanel(new LogPanel(closeListener)));		
@@ -122,7 +122,7 @@ class LeftButtonPanel extends JPanel{
 			addButton("查看日志", e -> mw.changePanel(new LogPanel(closeListener)));		
 		}
 		else if (type == UserType.ADMIN) {
-			addButton("用户管理", e -> mw.changePanel(new UserDataPanel(new UserBL(), closeListener)));
+			addButton("用户管理", e -> mw.changePanel(new DataPanel(new UserBL(), closeListener)));
 			addButton("查看日志", e -> mw.changePanel(new LogPanel(closeListener)));		
 		}
 		addButton("退出", new CloseListener());

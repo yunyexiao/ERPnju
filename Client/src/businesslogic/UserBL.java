@@ -9,8 +9,8 @@ import businesslogic.inter.AddLogInterface;
 import dataservice.UserDataService;
 import ds_stub.UserDs_stub;
 import po.UserPO;
-import presentation.component.MyTableModel;
 import rmi.Rmi;
+import vo.MyTableModel;
 import vo.UserType;
 import vo.UserVO;
 

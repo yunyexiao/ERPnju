@@ -10,8 +10,8 @@ import ds_stub.InitDs_stub;
 import po.AccountPO;
 import po.CommodityPO;
 import po.CustomerPO;
-import presentation.component.MyTableModel;
 import rmi.Rmi;
+import vo.MyTableModel;
 
 public class InitBL implements InitBLService {
 	

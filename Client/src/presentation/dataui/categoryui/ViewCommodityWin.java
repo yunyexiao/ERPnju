@@ -10,8 +10,8 @@ import javax.swing.JTable;
 import blservice.infoservice.GetCommodityInterface;
 import layout.TableLayout;
 import presentation.component.IdNamePanel;
-import presentation.component.MyTableModel;
 import vo.CategoryVO;
+import vo.MyTableModel;
 
 /**
  * 查看一个分类下的所有商品的弹窗，在商品分类界面下双击某个叶节点分类后用于显示该分类下的所有商品。

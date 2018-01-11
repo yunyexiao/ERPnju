@@ -9,7 +9,7 @@ public class DataHelper {
 	private static String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	private static String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=ERPDB";
 	private static String userName = "sa";
-	private static String userPwd = "151099124";
+	private static String userPwd = "Orz151099124";
 
 	private DataHelper() {
 		

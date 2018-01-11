@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import blservice.infoservice.GetCommodityInterface;
 import po.billpo.GiftItem;
-import presentation.component.MyTableModel;
 import vo.CommodityVO;
+import vo.MyTableModel;
 
 /**
  * 将GiftItem 与 MyTableModel 相互转换

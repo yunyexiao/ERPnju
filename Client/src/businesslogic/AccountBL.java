@@ -9,10 +9,10 @@ import businesslogic.inter.AddLogInterface;
 import dataservice.AccountDataService;
 import ds_stub.AccountDs_stub;
 import po.AccountPO;
-import presentation.component.MyTableModel;
 import presentation.main.MainWindow;
 import rmi.Rmi;
 import vo.AccountVO;
+import vo.MyTableModel;
 
 public class AccountBL implements AccountBLService, GetAccountInterface {
 

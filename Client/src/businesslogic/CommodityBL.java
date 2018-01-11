@@ -11,9 +11,9 @@ import dataservice.CommodityDataService;
 import ds_stub.CommodityDs_stub;
 import po.CategoryPO;
 import po.CommodityPO;
-import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.CommodityVO;
+import vo.MyTableModel;
 
 /**
  * 商品模块的BL<br>

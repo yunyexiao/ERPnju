@@ -1,6 +1,6 @@
 package blservice;
 
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 
 public interface ViewBusinessSituationBLService {
 
@@ -13,8 +13,6 @@ public interface ViewBusinessSituationBLService {
 	public double getSalesIncome(String from, String to);
 	
 	public double getCommodityOverflowIncome(String from, String to);
-	
-	//成本调价收入，略迷，不知道为什么成本调价会带来收入
 	
 	public double getPurchaseAndReturnIncome(String from, String to);
 	

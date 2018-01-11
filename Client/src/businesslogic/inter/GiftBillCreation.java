@@ -1,6 +1,6 @@
 package businesslogic.inter;
 
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 
 /**
  * 用于系统自动建立商品赠送单

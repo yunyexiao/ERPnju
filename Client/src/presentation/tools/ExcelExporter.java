@@ -17,7 +17,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 
 public final class ExcelExporter {
 

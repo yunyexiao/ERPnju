@@ -2,8 +2,8 @@ package bl_stub;
 
 import blservice.CommodityBLService;
 import blservice.infoservice.GetCommodityInterface;
-import presentation.component.MyTableModel;
 import vo.CommodityVO;
+import vo.MyTableModel;
 
 
 public class CommodityBL_stub implements CommodityBLService, GetCommodityInterface {

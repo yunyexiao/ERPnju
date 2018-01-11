@@ -10,9 +10,9 @@ import businesslogic.inter.AddLogInterface;
 import dataservice.LogDataService;
 import ds_stub.LogDs_stub;
 import po.LogInfoPO;
-import presentation.component.MyTableModel;
 import presentation.main.MainWindow;
 import rmi.Rmi;
+import vo.MyTableModel;
 import vo.UserVO;
 
 public class LogBL implements LogBLService, AddLogInterface {

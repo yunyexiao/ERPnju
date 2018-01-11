@@ -9,8 +9,8 @@ import businesslogic.PromotionBL;
 import businesslogic.inter.IBestPromotion;
 import businesslogic.inter.IPromotionSearch;
 import po.GroupDiscountPO;
-import presentation.component.MyTableModel;
 import vo.GroupDiscountVO;
+import vo.MyTableModel;
 import vo.PromotionVO;
 
 

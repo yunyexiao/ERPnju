@@ -13,9 +13,9 @@ import po.billpo.PurchaseBillPO;
 import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
-import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.CommodityVO;
+import vo.MyTableModel;
 
 public class ViewBusinessSituationBL implements ViewBusinessSituationBLService{
 

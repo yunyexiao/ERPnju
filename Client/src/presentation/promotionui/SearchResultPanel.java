@@ -14,7 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import blservice.PromotionBLService;
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 import vo.PromotionVO;
 
 @SuppressWarnings("serial")

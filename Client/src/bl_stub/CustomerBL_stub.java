@@ -2,8 +2,8 @@ package bl_stub;
 
 import blservice.CustomerBLService;
 import blservice.infoservice.GetCustomerInterface;
-import presentation.component.MyTableModel;
 import vo.CustomerVO;
+import vo.MyTableModel;
 
 public class CustomerBL_stub implements CustomerBLService, GetCustomerInterface {
 

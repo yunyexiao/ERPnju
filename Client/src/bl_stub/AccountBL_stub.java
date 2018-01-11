@@ -2,8 +2,8 @@ package bl_stub;
 
 import blservice.AccountBLService;
 import blservice.infoservice.GetAccountInterface;
-import presentation.component.MyTableModel;
 import vo.AccountVO;
+import vo.MyTableModel;
 
 public class AccountBL_stub implements AccountBLService, GetAccountInterface {
 

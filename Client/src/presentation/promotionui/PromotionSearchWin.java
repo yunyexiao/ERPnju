@@ -16,10 +16,10 @@ import blservice.PromotionBLService;
 import layout.TableLayout;
 import presentation.component.DateChooser;
 import presentation.component.InfoWindow;
-import presentation.component.MyTableModel;
 import presentation.tools.IntField;
 import presentation.tools.StyleTools;
 import presentation.tools.Timetools;
+import vo.MyTableModel;
 import vo.PromotionVO;
 
 public class PromotionSearchWin {

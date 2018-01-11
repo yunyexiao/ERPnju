@@ -1,6 +1,6 @@
 package blservice.billblservice;
 
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 import vo.PromotionVO;
 import vo.billvo.SalesBillVO;
 

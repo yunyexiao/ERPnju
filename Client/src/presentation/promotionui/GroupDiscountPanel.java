@@ -19,10 +19,10 @@ import javax.swing.JTextField;
 import blservice.PromotionBLService;
 import layout.TableLayout;
 import presentation.component.InfoWindow;
-import presentation.component.MyTableModel;
 import presentation.component.choosewindow.CommodityChooseWin;
 import vo.CommodityVO;
 import vo.GroupDiscountVO;
+import vo.MyTableModel;
 import vo.PromotionVO;
 
 

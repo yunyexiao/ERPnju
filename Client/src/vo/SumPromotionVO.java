@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import businesslogic.GiftItemTools;
 import po.SumPromotionPO;
 import po.billpo.GiftItem;
-import presentation.component.MyTableModel;
 
 /**
  * 针对消费总额制定的促销策略

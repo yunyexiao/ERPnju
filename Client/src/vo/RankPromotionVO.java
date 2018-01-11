@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import businesslogic.GiftItemTools;
 import po.RankPromotionPO;
 import po.billpo.GiftItem;
-import presentation.component.MyTableModel;
 
 /**
  * 针对顾客等级的促销策略

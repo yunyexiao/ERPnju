@@ -9,9 +9,9 @@ import businesslogic.inter.AddLogInterface;
 import dataservice.CustomerDataService;
 import ds_stub.CustomerDs_stub;
 import po.CustomerPO;
-import presentation.component.MyTableModel;
 import rmi.Rmi;
 import vo.CustomerVO;
+import vo.MyTableModel;
 
 public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 	

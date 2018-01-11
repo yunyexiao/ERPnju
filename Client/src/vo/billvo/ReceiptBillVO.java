@@ -1,6 +1,6 @@
 package vo.billvo;
 
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 
 public class ReceiptBillVO extends BillVO {
 

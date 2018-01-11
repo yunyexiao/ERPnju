@@ -6,6 +6,10 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
@@ -24,6 +28,7 @@ import businesslogic.LogBL;
 import businesslogic.inter.AddLogInterface;
 import layout.TableLayout;
 import presentation.PanelInterface;
+import presentation.component.InfoWindow;
 import rmi.Rmi;
 import vo.UserVO;
 
@@ -73,6 +78,7 @@ public class MainWindow {
 		infoLabel.setBorder(BorderFactory.createLoweredBevelBorder());
 		timeLabel.setBorder(BorderFactory.createLoweredBevelBorder());
 		Timer timer = new Timer();
+		//底部显示时间的任务进程
 		TimerTask task = new TimerTask(){
 			@Override
 			public void run() {
@@ -80,7 +86,31 @@ public class MainWindow {
 				timeLabel.setText(sdf.format(new Date()) + "  ");
 			}
 		};
+		//半分钟检查一次网络连接的任务连接
+		TimerTask connectTask = new TimerTask() {
+			@Override
+			public void run() {
+				try{  
+		            URL url=new URL("http://"+Rmi.ipAddress);  
+		            URLConnection urlc=url.openConnection();  
+		            urlc.connect();  
+		            long time = urlc.getDate();  
+		            Date date = new Date(time);
+		            String stime = new SimpleDateFormat("HH:mm:ss").format(date);  
+		            String sdate = new SimpleDateFormat("yyyy-MM-dd").format(date);   
+		            Runtime run = Runtime.getRuntime();
+		            run.exec("cmd /c time "+stime);  
+		            run.exec("cmd /c date "+sdate);
+		        }catch(MalformedURLException e){  
+		            System.out.println(e.getMessage()); 
+		            new InfoWindow("请检查网络连接");
+		        }catch(IOException e){  
+		            System.out.println(e.getMessage());  
+		        }
+			}
+		};
 		timer.schedule(task, 0, 1000L);
+		timer.schedule(connectTask, 0, 30000L);
 		infoPanel.add(infoLabel, "0,0");
 		infoPanel.add(noUseLabel, "1,0");
 		infoPanel.add(timeLabel, "2,0");

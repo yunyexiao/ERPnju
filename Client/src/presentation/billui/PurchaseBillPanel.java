@@ -4,8 +4,8 @@ import javax.swing.JOptionPane;
 
 import blservice.billblservice.PurchaseBillBLService;
 import businesslogic.PurchaseBillBL;
-import presentation.component.MyTableModel;
 import presentation.tools.Timetools;
+import vo.MyTableModel;
 import vo.UserVO;
 import vo.billvo.BillVO;
 import vo.billvo.PurchaseBillVO;

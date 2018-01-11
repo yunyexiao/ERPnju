@@ -10,8 +10,8 @@ import po.billpo.PurchaseReturnBillPO;
 import po.billpo.SalesBillPO;
 import po.billpo.SalesItemsPO;
 import po.billpo.SalesReturnBillPO;
-import presentation.component.MyTableModel;
 import vo.CommodityVO;
+import vo.MyTableModel;
 
 /**
  * @author ã¢Ò¶Ïö

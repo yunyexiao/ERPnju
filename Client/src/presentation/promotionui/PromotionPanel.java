@@ -9,8 +9,8 @@ import blservice.PromotionBLService;
 import businesslogic.PromotionBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
-import presentation.component.MyTableModel;
 import presentation.component.TopButtonPanel;
+import vo.MyTableModel;
 
 
 public class PromotionPanel implements PanelInterface {

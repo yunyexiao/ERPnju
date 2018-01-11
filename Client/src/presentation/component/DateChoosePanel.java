@@ -8,10 +8,6 @@ import layout.TableLayout;
 
 
 public class DateChoosePanel extends JPanel {
-
-    /**
-     * auto-generated UID
-     */
     private static final long serialVersionUID = -5305728741044278631L;
     private JTextField dateField;
     

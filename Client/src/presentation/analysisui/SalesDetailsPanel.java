@@ -18,7 +18,6 @@ import presentation.component.DateChoosePanel;
 import presentation.component.IdNamePanel;
 import presentation.component.InfoWindow;
 import presentation.component.LFPanel;
-import presentation.component.MyTableModel;
 import presentation.component.choosewindow.CommodityChooseWin;
 import presentation.component.choosewindow.CustomerChooseWin;
 import presentation.component.choosewindow.UserChooseWin;
@@ -26,6 +25,7 @@ import presentation.tools.ExcelExporter;
 import presentation.tools.Timetools;
 import vo.CommodityVO;
 import vo.CustomerVO;
+import vo.MyTableModel;
 import vo.UserType;
 import vo.UserVO;
 

@@ -1,6 +1,6 @@
 package blservice.billblservice;
 
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 import vo.UserVO;
 
 public interface BillSearchBLService {

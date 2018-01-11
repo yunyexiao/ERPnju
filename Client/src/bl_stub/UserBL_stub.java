@@ -2,7 +2,7 @@ package bl_stub;
 
 import blservice.LoginBLService;
 import blservice.UserBLService;
-import presentation.component.MyTableModel;
+import vo.MyTableModel;
 import vo.UserType;
 import vo.UserVO;
 

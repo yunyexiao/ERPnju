@@ -15,10 +15,10 @@ import layout.TableLayout;
 import presentation.PanelInterface;
 import presentation.component.DateChoosePanel;
 import presentation.component.InfoWindow;
-import presentation.component.MyTableModel;
 import presentation.component.TopButtonPanel;
 import presentation.tools.ExcelExporter;
 import presentation.tools.Timetools;
+import vo.MyTableModel;
 import vo.UserVO;
 
 public class ViewBusinessSituationPanel implements PanelInterface {
