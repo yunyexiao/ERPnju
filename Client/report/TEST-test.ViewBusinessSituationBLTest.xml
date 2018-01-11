@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="6" failures="0" hostname="USER-20161014ME" name="test.ViewBusinessSituationBLTest" skipped="0" tests="8" time="0.079" timestamp="2018-01-11T09:01:15">
+  <properties>
+    <property name="java.vendor" value="Oracle Corporation" />
+    <property name="junit_jar" value="junit.jar" />
+    <property name="lib.dir" value="lib" />
+    <property name="sun.java.launcher" value="SUN_STANDARD" />
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers" />
+    <property name="os.name" value="Windows 10" />
+    <property name="sun.desktop" value="windows" />
+    <property name="java.vm.specification.vendor" value="Oracle Corporation" />
+    <property name="ant.home" value="D:\Ant\apache-ant-1.10.1\bin\.." />
+    <property name="jar.dir" value="build/jar" />
+    <property name="java.runtime.version" value="9.0.1+11" />
+    <property name="user.name" value="Administrator" />
+    <property name="build.dir" value="build" />
+    <property name="testsrc.dir" value="src/test" />
+    <property name="user.language" value="ja" />
+    <property name="sun.boot.library.path" value="D:\Java\jdk9.0.1\bin" />
+    <property name="ant.project.default-target" value="main" />
+    <property name="ant.project.name" value="ERPnju-Client" />
+    <property name="java.vm.compressedOopsMode" value="32-bit" />
+    <property name="java.version" value="9.0.1" />
+    <property name="user.timezone" value="" />
+    <property name="hamcrest_jar" value="org.hamcrest.core_1.3.0.v201303031735.jar" />
+    <property name="sun.arch.data.model" value="64" />
+    <property name="sun.cpu.isalist" value="amd64" />
+    <property name="sun.jnu.encoding" value="GBK" />
+    <property name="file.encoding.pkg" value="sun.io" />
+    <property name="file.separator" value="\" />
+    <property name="java.specification.name" value="Java Platform API Specification" />
+    <property name="java.class.version" value="53.0" />
+    <property name="classes.dir" value="bin" />
+    <property name="user.country" value="JP" />
+    <property name="java.home" value="D:\Java\jdk9.0.1" />
+    <property name="poi_jar" value="poi-3.17.jar" />
+    <property name="java.vm.info" value="mixed mode" />
+    <property name="main-class" value="Start" />
+    <property name="ant.file" value="F:\Hakase\Assignment\软工二\project\ERPnju\Client\build.xml" />
+    <property name="os.version" value="10.0" />
+    <property name="path.separator" value=";" />
+    <property name="java.vm.version" value="9.0.1+11" />
+    <property name="report.dir" value="report" />
+    <property name="user.variant" value="" />
+    <property name="ant.library.dir" value="D:\Ant\apache-ant-1.10.1\lib" />
+    <property name="ant.file.ERPnju-Client" value="F:\Hakase\Assignment\软工二\project\ERPnju\Client\build.xml" />
+    <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob" />
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle" />
+    <property name="awt.toolkit" value="sun.awt.windows.WToolkit" />
+    <property name="sun.stdout.encoding" value="ms936" />
+    <property name="user.script" value="" />
+    <property name="datechooser_jar" value="DataChooser.jar" />
+    <property name="user.home" value="F:\Users\Administrator" />
+    <property name="java.specification.vendor" value="Oracle Corporation" />
+    <property name="java.library.path" value="D:\Java\jdk9.0.1\bin;C:\windows\Sun\Java\bin;C:\windows\system32;C:\windows;D:\MinGW\bin;D:\Java\jdk9.0.1\bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;D:\GIT\Git\cmd;D:\GIT\Git\bin;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files (x86)\Microsoft SDKs\TypeScript\1.0\;C:\Program Files\Microsoft SQL Server\120\Tools\Binn\;D:\Ant\apache-ant-1.10.1\bin;F:\Users\Administrator\cmds;D:\Gradle\gradle-4.4.1\bin;." />
+    <property name="java.vendor.url" value="http://java.oracle.com/" />
+    <property name="java.vm.vendor" value="Oracle Corporation" />
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment" />
+    <property name="sun.java.command" value="org.apache.tools.ant.launch.Launcher -cp .;D:\Java\jdk9.0.1\lib;" />
+    <property name="java.class.path" value="D:\Ant\apache-ant-1.10.1\bin\..\lib\ant-launcher.jar;F:\Hakase\Assignment\软工二\project\ERPnju\Client\.\;D:\Java\jdk9.0.1\lib\;D:\Ant\apache-ant-1.10.1\lib\ant-antlr.jar;D:\Ant\apache-ant-1.10.1\lib\ant-apache-bcel.jar;D:\Ant\apache-ant-1.10.1\lib\ant-apache-bsf.jar;D:\Ant\apache-ant-1.10.1\lib\ant-apache-log4j.jar;D:\Ant\apache-ant-1.10.1\lib\ant-apache-oro.jar;D:\Ant\apache-ant-1.10.1\lib\ant-apache-regexp.jar;D:\Ant\apache-ant-1.10.1\lib\ant-apache-resolver.jar;D:\Ant\apache-ant-1.10.1\lib\ant-apache-xalan2.jar;D:\Ant\apache-ant-1.10.1\lib\ant-commons-logging.jar;D:\Ant\apache-ant-1.10.1\lib\ant-commons-net.jar;D:\Ant\apache-ant-1.10.1\lib\ant-jai.jar;D:\Ant\apache-ant-1.10.1\lib\ant-javamail.jar;D:\Ant\apache-ant-1.10.1\lib\ant-jdepend.jar;D:\Ant\apache-ant-1.10.1\lib\ant-jmf.jar;D:\Ant\apache-ant-1.10.1\lib\ant-jsch.jar;D:\Ant\apache-ant-1.10.1\lib\ant-junit.jar;D:\Ant\apache-ant-1.10.1\lib\ant-junit4.jar;D:\Ant\apache-ant-1.10.1\lib\ant-launcher.jar;D:\Ant\apache-ant-1.10.1\lib\ant-netrexx.jar;D:\Ant\apache-ant-1.10.1\lib\ant-swing.jar;D:\Ant\apache-ant-1.10.1\lib\ant-testutil.jar;D:\Ant\apache-ant-1.10.1\lib\ant-xz.jar;D:\Ant\apache-ant-1.10.1\lib\ant.jar" />
+    <property name="ant.version" value="Apache Ant(TM) version 1.10.1 compiled on February 2 2017" />
+    <property name="jdk.debug" value="release" />
+    <property name="ant.file.type.ERPnju-Client" value="file" />
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification" />
+    <property name="ant.file.type" value="file" />
+    <property name="java.vm.specification.version" value="9" />
+    <property name="sun.cpu.endian" value="little" />
+    <property name="sun.os.patch.level" value="" />
+    <property name="tablelayout_jar" value="TableLayout.jar" />
+    <property name="java.io.tmpdir" value="F:\Users\Administrator\AppData\Local\Temp\" />
+    <property name="java.vendor.url.bug" value="http://bugreport.java.com/bugreport/" />
+    <property name="os.arch" value="amd64" />
+    <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment" />
+    <property name="user.dir" value="F:\Hakase\Assignment\软工二\project\ERPnju\Client" />
+    <property name="line.separator" value="&#xd;&#xa;" />
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM" />
+    <property name="basedir" value="F:\Hakase\Assignment\软工二\project\ERPnju\Client" />
+    <property name="ant.java.version" value="9" />
+    <property name="ant.core.lib" value="D:\Ant\apache-ant-1.10.1\lib\ant.jar" />
+    <property name="sun.stderr.encoding" value="ms936" />
+    <property name="file.encoding" value="GBK" />
+    <property name="java.specification.version" value="9" />
+    <property name="src.dir" value="src" />
+    <property name="ant.project.invoked-targets" value="main" />
+  </properties>
+  <testcase classname="test.ViewBusinessSituationBLTest" name="testGetSalesExpense" time="0.016">
+    <error type="java.lang.NullPointerException">java.lang.NullPointerException
+	at businesslogic.ViewBusinessSituationBL.getSalesExpense(ViewBusinessSituationBL.java:108)
+	at test.ViewBusinessSituationBLTest.testGetSalesExpense(ViewBusinessSituationBLTest.java:46)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at jdk.internal.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+</error>
+  </testcase>
+  <testcase classname="test.ViewBusinessSituationBLTest" name="testGetCashCouPonIncome" time="0.0">
+    <error type="java.lang.NullPointerException">java.lang.NullPointerException
+	at businesslogic.ViewBusinessSituationBL.getCashCouPonIncome(ViewBusinessSituationBL.java:93)
+	at test.ViewBusinessSituationBLTest.testGetCashCouPonIncome(ViewBusinessSituationBLTest.java:40)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at jdk.internal.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+</error>
+  </testcase>
+  <testcase classname="test.ViewBusinessSituationBLTest" name="testGetSalesIncome" time="0.0">
+    <error type="java.lang.NullPointerException">java.lang.NullPointerException
+	at businesslogic.ViewBusinessSituationBL.getSalesIncome(ViewBusinessSituationBL.java:34)
+	at test.ViewBusinessSituationBLTest.testGetSalesIncome(ViewBusinessSituationBLTest.java:22)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at jdk.internal.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+</error>
+  </testcase>
+  <testcase classname="test.ViewBusinessSituationBLTest" name="testGetPurchaseAndReturnIncome" time="0.0">
+    <error type="java.lang.NullPointerException">java.lang.NullPointerException
+	at businesslogic.ViewBusinessSituationBL.getPurchaseAndReturnIncome(ViewBusinessSituationBL.java:70)
+	at test.ViewBusinessSituationBLTest.testGetPurchaseAndReturnIncome(ViewBusinessSituationBLTest.java:34)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at jdk.internal.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+</error>
+  </testcase>
+  <testcase classname="test.ViewBusinessSituationBLTest" name="testGetCommodityOverflowIncome" time="0.0">
+    <error type="java.lang.NullPointerException">java.lang.NullPointerException
+	at businesslogic.ViewBusinessSituationBL.getCommodityOverflowIncome(ViewBusinessSituationBL.java:49)
+	at test.ViewBusinessSituationBLTest.testGetCommodityOverflowIncome(ViewBusinessSituationBLTest.java:28)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at jdk.internal.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+</error>
+  </testcase>
+  <testcase classname="test.ViewBusinessSituationBLTest" name="testGetCommoditySentExpense" time="0.0" />
+  <testcase classname="test.ViewBusinessSituationBLTest" name="testGetProfit" time="0.016">
+    <error type="java.lang.NullPointerException">java.lang.NullPointerException
+	at businesslogic.ViewBusinessSituationBL.getSalesIncome(ViewBusinessSituationBL.java:34)
+	at businesslogic.ViewBusinessSituationBL.getProfit(ViewBusinessSituationBL.java:158)
+	at test.ViewBusinessSituationBLTest.testGetProfit(ViewBusinessSituationBLTest.java:64)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at jdk.internal.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+</error>
+  </testcase>
+  <testcase classname="test.ViewBusinessSituationBLTest" name="testGetCommodityBrokenExpense" time="0.0" />
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[java.rmi.ConnectException: Connection refused to host: 120.79.145.97; nested exception is: 
+	java.net.ConnectException: Connection timed out: connect
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
+	at java.rmi/sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:214)
+	at java.rmi/sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:200)
+	at java.rmi/sun.rmi.server.UnicastRef.newCall(UnicastRef.java:338)
+	at java.rmi/sun.rmi.registry.RegistryImpl_Stub.lookup(RegistryImpl_Stub.java:112)
+	at java.rmi/java.rmi.Naming.lookup(Naming.java:101)
+	at rmi.Rmi.getRemote(Rmi.java:28)
+	at businesslogic.ViewBusinessSituationBL.<init>(ViewBusinessSituationBL.java:26)
+	at test.ViewBusinessSituationBLTest.<clinit>(ViewBusinessSituationBLTest.java:13)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:375)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:382)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.executeInVM(JUnitTask.java:1647)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.execute(JUnitTask.java:1047)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.executeOrQueue(JUnitTask.java:2207)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.execute(JUnitTask.java:858)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:293)
+	at jdk.internal.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:435)
+	at org.apache.tools.ant.Target.performTasks(Target.java:456)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1405)
+	at org.apache.tools.ant.Project.executeTarget(Project.java:1376)
+	at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1260)
+	at org.apache.tools.ant.Main.runBuild(Main.java:857)
+	at org.apache.tools.ant.Main.startAnt(Main.java:236)
+	at org.apache.tools.ant.launch.Launcher.run(Launcher.java:287)
+	at org.apache.tools.ant.launch.Launcher.main(Launcher.java:113)
+Caused by: java.net.ConnectException: Connection timed out: connect
+	at java.base/java.net.DualStackPlainSocketImpl.connect0(Native Method)
+	at java.base/java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
+	at java.base/java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:400)
+	at java.base/java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:243)
+	at java.base/java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:225)
+	at java.base/java.net.PlainSocketImpl.connect(PlainSocketImpl.java:148)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:402)
+	at java.base/java.net.Socket.connect(Socket.java:591)
+	at java.base/java.net.Socket.connect(Socket.java:540)
+	at java.base/java.net.Socket.<init>(Socket.java:436)
+	at java.base/java.net.Socket.<init>(Socket.java:213)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createSocket(TCPDirectSocketFactory.java:40)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
+	... 31 more
+java.rmi.ConnectException: Connection refused to host: 120.79.145.97; nested exception is: 
+	java.net.ConnectException: Connection timed out: connect
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
+	at java.rmi/sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:214)
+	at java.rmi/sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:200)
+	at java.rmi/sun.rmi.server.UnicastRef.newCall(UnicastRef.java:338)
+	at java.rmi/sun.rmi.registry.RegistryImpl_Stub.lookup(RegistryImpl_Stub.java:112)
+	at java.rmi/java.rmi.Naming.lookup(Naming.java:101)
+	at rmi.Rmi.getRemote(Rmi.java:28)
+	at businesslogic.CommodityBL.<init>(CommodityBL.java:25)
+	at businesslogic.ViewBusinessSituationBL.<init>(ViewBusinessSituationBL.java:27)
+	at test.ViewBusinessSituationBLTest.<clinit>(ViewBusinessSituationBLTest.java:13)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:375)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:382)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.executeInVM(JUnitTask.java:1647)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.execute(JUnitTask.java:1047)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.executeOrQueue(JUnitTask.java:2207)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.execute(JUnitTask.java:858)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:293)
+	at jdk.internal.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:435)
+	at org.apache.tools.ant.Target.performTasks(Target.java:456)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1405)
+	at org.apache.tools.ant.Project.executeTarget(Project.java:1376)
+	at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1260)
+	at org.apache.tools.ant.Main.runBuild(Main.java:857)
+	at org.apache.tools.ant.Main.startAnt(Main.java:236)
+	at org.apache.tools.ant.launch.Launcher.run(Launcher.java:287)
+	at org.apache.tools.ant.launch.Launcher.main(Launcher.java:113)
+Caused by: java.net.ConnectException: Connection timed out: connect
+	at java.base/java.net.DualStackPlainSocketImpl.connect0(Native Method)
+	at java.base/java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
+	at java.base/java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:400)
+	at java.base/java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:243)
+	at java.base/java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:225)
+	at java.base/java.net.PlainSocketImpl.connect(PlainSocketImpl.java:148)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:402)
+	at java.base/java.net.Socket.connect(Socket.java:591)
+	at java.base/java.net.Socket.connect(Socket.java:540)
+	at java.base/java.net.Socket.<init>(Socket.java:436)
+	at java.base/java.net.Socket.<init>(Socket.java:213)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createSocket(TCPDirectSocketFactory.java:40)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
+	... 32 more
+java.rmi.ConnectException: Connection refused to host: 120.79.145.97; nested exception is: 
+	java.net.ConnectException: Connection timed out: connect
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
+	at java.rmi/sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:214)
+	at java.rmi/sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:200)
+	at java.rmi/sun.rmi.server.UnicastRef.newCall(UnicastRef.java:338)
+	at java.rmi/sun.rmi.registry.RegistryImpl_Stub.lookup(RegistryImpl_Stub.java:112)
+	at java.rmi/java.rmi.Naming.lookup(Naming.java:101)
+	at rmi.Rmi.getRemote(Rmi.java:28)
+	at businesslogic.CategoryBL.<init>(CategoryBL.java:24)
+	at businesslogic.CommodityBL.<init>(CommodityBL.java:26)
+	at businesslogic.ViewBusinessSituationBL.<init>(ViewBusinessSituationBL.java:27)
+	at test.ViewBusinessSituationBLTest.<clinit>(ViewBusinessSituationBLTest.java:13)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:375)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:382)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.executeInVM(JUnitTask.java:1647)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.execute(JUnitTask.java:1047)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.executeOrQueue(JUnitTask.java:2207)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.execute(JUnitTask.java:858)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:293)
+	at jdk.internal.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:435)
+	at org.apache.tools.ant.Target.performTasks(Target.java:456)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1405)
+	at org.apache.tools.ant.Project.executeTarget(Project.java:1376)
+	at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1260)
+	at org.apache.tools.ant.Main.runBuild(Main.java:857)
+	at org.apache.tools.ant.Main.startAnt(Main.java:236)
+	at org.apache.tools.ant.launch.Launcher.run(Launcher.java:287)
+	at org.apache.tools.ant.launch.Launcher.main(Launcher.java:113)
+Caused by: java.net.ConnectException: Connection timed out: connect
+	at java.base/java.net.DualStackPlainSocketImpl.connect0(Native Method)
+	at java.base/java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
+	at java.base/java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:400)
+	at java.base/java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:243)
+	at java.base/java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:225)
+	at java.base/java.net.PlainSocketImpl.connect(PlainSocketImpl.java:148)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:402)
+	at java.base/java.net.Socket.connect(Socket.java:591)
+	at java.base/java.net.Socket.connect(Socket.java:540)
+	at java.base/java.net.Socket.<init>(Socket.java:436)
+	at java.base/java.net.Socket.<init>(Socket.java:213)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createSocket(TCPDirectSocketFactory.java:40)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
+	... 33 more
+java.rmi.ConnectException: Connection refused to host: 120.79.145.97; nested exception is: 
+	java.net.ConnectException: Connection timed out: connect
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
+	at java.rmi/sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:214)
+	at java.rmi/sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:200)
+	at java.rmi/sun.rmi.server.UnicastRef.newCall(UnicastRef.java:338)
+	at java.rmi/sun.rmi.registry.RegistryImpl_Stub.lookup(RegistryImpl_Stub.java:112)
+	at java.rmi/java.rmi.Naming.lookup(Naming.java:101)
+	at rmi.Rmi.getRemote(Rmi.java:28)
+	at businesslogic.LogBL.<init>(LogBL.java:20)
+	at businesslogic.CategoryBL.<init>(CategoryBL.java:25)
+	at businesslogic.CommodityBL.<init>(CommodityBL.java:26)
+	at businesslogic.ViewBusinessSituationBL.<init>(ViewBusinessSituationBL.java:27)
+	at test.ViewBusinessSituationBLTest.<clinit>(ViewBusinessSituationBLTest.java:13)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:375)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:382)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.executeInVM(JUnitTask.java:1647)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.execute(JUnitTask.java:1047)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.executeOrQueue(JUnitTask.java:2207)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.execute(JUnitTask.java:858)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:293)
+	at jdk.internal.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:435)
+	at org.apache.tools.ant.Target.performTasks(Target.java:456)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1405)
+	at org.apache.tools.ant.Project.executeTarget(Project.java:1376)
+	at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1260)
+	at org.apache.tools.ant.Main.runBuild(Main.java:857)
+	at org.apache.tools.ant.Main.startAnt(Main.java:236)
+	at org.apache.tools.ant.launch.Launcher.run(Launcher.java:287)
+	at org.apache.tools.ant.launch.Launcher.main(Launcher.java:113)
+Caused by: java.net.ConnectException: Connection timed out: connect
+	at java.base/java.net.DualStackPlainSocketImpl.connect0(Native Method)
+	at java.base/java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
+	at java.base/java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:400)
+	at java.base/java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:243)
+	at java.base/java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:225)
+	at java.base/java.net.PlainSocketImpl.connect(PlainSocketImpl.java:148)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:402)
+	at java.base/java.net.Socket.connect(Socket.java:591)
+	at java.base/java.net.Socket.connect(Socket.java:540)
+	at java.base/java.net.Socket.<init>(Socket.java:436)
+	at java.base/java.net.Socket.<init>(Socket.java:213)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createSocket(TCPDirectSocketFactory.java:40)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
+	... 34 more
+java.rmi.ConnectException: Connection refused to host: 120.79.145.97; nested exception is: 
+	java.net.ConnectException: Connection timed out: connect
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
+	at java.rmi/sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:214)
+	at java.rmi/sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:200)
+	at java.rmi/sun.rmi.server.UnicastRef.newCall(UnicastRef.java:338)
+	at java.rmi/sun.rmi.registry.RegistryImpl_Stub.lookup(RegistryImpl_Stub.java:112)
+	at java.rmi/java.rmi.Naming.lookup(Naming.java:101)
+	at rmi.Rmi.getRemote(Rmi.java:28)
+	at businesslogic.LogBL.<init>(LogBL.java:20)
+	at businesslogic.CommodityBL.<init>(CommodityBL.java:27)
+	at businesslogic.ViewBusinessSituationBL.<init>(ViewBusinessSituationBL.java:27)
+	at test.ViewBusinessSituationBLTest.<clinit>(ViewBusinessSituationBLTest.java:13)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:375)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:382)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.executeInVM(JUnitTask.java:1647)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.execute(JUnitTask.java:1047)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.executeOrQueue(JUnitTask.java:2207)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.execute(JUnitTask.java:858)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:293)
+	at jdk.internal.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:435)
+	at org.apache.tools.ant.Target.performTasks(Target.java:456)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1405)
+	at org.apache.tools.ant.Project.executeTarget(Project.java:1376)
+	at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1260)
+	at org.apache.tools.ant.Main.runBuild(Main.java:857)
+	at org.apache.tools.ant.Main.startAnt(Main.java:236)
+	at org.apache.tools.ant.launch.Launcher.run(Launcher.java:287)
+	at org.apache.tools.ant.launch.Launcher.main(Launcher.java:113)
+Caused by: java.net.ConnectException: Connection timed out: connect
+	at java.base/java.net.DualStackPlainSocketImpl.connect0(Native Method)
+	at java.base/java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
+	at java.base/java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:400)
+	at java.base/java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:243)
+	at java.base/java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:225)
+	at java.base/java.net.PlainSocketImpl.connect(PlainSocketImpl.java:148)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:402)
+	at java.base/java.net.Socket.connect(Socket.java:591)
+	at java.base/java.net.Socket.connect(Socket.java:540)
+	at java.base/java.net.Socket.<init>(Socket.java:436)
+	at java.base/java.net.Socket.<init>(Socket.java:213)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createSocket(TCPDirectSocketFactory.java:40)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
+	... 33 more
+]]></system-err>
+</testsuite>

@@ -1,20 +1,23 @@
 <project name="ERPnju-Client" basedir="." default="main">
 
-    <property name="src.dir"     value="src"/>
-
-    <property name="build.dir"   value="build"/>
-    <property name="classes.dir" value="bin"/>
-    <property name="jar.dir"     value="${build.dir}/jar"/>
-    <property name="lib.dir" value="lib"/>
-    <property name="main-class"  value="Start"/>
-    <property name="tablelayout_jar" value="${lib.dir}/TableLayout.jar"/>
-    <property name="poi_jar" value="${lib.dir}/poi-3.17.jar"/>
+    <property name="src.dir"        value="src"/>
+    <property name="build.dir"      value="build"/>
+    <property name="classes.dir"    value="bin"/>
+    <property name="jar.dir"        value="${build.dir}/jar"/>
+    <property name="lib.dir"        value="lib"/>
+	<property name="testsrc.dir"       value="${src.dir}/test"/>
+    <property name="report.dir"     value="report"/>
+    <property name="main-class"     value="Start"/>
+    <property name="tablelayout_jar" value="TableLayout.jar"/>
+    <property name="poi_jar"        value="poi-3.17.jar"/>
+	<property name="datechooser_jar" value="DataChooser.jar"/>
+    <property name="junit_jar"      value="junit.jar"/>
+    <property name="hamcrest_jar"   value="org.hamcrest.core_1.3.0.v201303031735.jar"/>
 
     <path id="class.path">
-	    <pathelement path="${classes.dir}"/>
+	    <pathelement location="${classes.dir}"/>
 	    <fileset dir="${lib.dir}">
-		    <include name="TableLayout.jar"/>
-		    <include name="poi-3.17.jar"/>
+		    <include name="*.jar"/>
 	    </fileset>
     </path>
 
@@ -22,19 +25,19 @@
         <delete dir="${build.dir}"/>
     </target>
 
-    <target name="compile">
+    <target name="compile" depends="clean">
         <mkdir dir="${classes.dir}"/>
-	<javac srcdir="${src.dir}" destdir="${classes.dir}">
-		<classpath refid="class.path"/>
-	</javac>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}">
+            <classpath refid="class.path"/>
+        </javac>
     </target>
 
     <target name="jar" depends="compile">
         <mkdir dir="${jar.dir}"/>
         <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}" update="true">
             <manifest>
-		<attribute name="Main-Class" value="${main-class}"/>
-		<attribute name="Class-Path" value="../../${tablelayout_jar} ../../${poi_jar}"/>
+                <attribute name="Main-Class" value="${main-class}"/>
+                <attribute name="Class-Path" value="../../${lib.dir}/${tablelayout_jar} ../../${lib.dir}/${poi_jar} ../../${lib.dir}/${datechooser_jar} ../../${lib.dir}/${junit_jar}"/>
             </manifest>
         </jar>
     </target>
@@ -43,8 +46,19 @@
 	    <java jar="${jar.dir}/${ant.project.name}.jar" fork="true"/>
     </target>
 
-    <target name="clean-build" depends="clean,jar"/>
+	<target name="runtest" depends="jar">
+		<mkdir dir="${report.dir}"/>
+		<junit printsummary="on">
+			<classpath refid="class.path"/>
+			<formatter type="xml"/>
+			<batchtest todir="${report.dir}">
+				<fileset dir="${src.dir}">
+					<include name="test/*Test.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
+    </target>
 
-    <target name="main" depends="clean-build"/>
+    <target name="main" depends="runtest"/>
 
 </project>
