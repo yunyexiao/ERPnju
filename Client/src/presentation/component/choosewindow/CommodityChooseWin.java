@@ -25,15 +25,6 @@ public class CommodityChooseWin extends ChooseWindow {
 		setTypes(new String[]{"按编号搜索", "按名称搜索", "按分类搜索"});
 		table.setModel(commodityBL.update());
 		TableTools.autoFit(table);
-		searchTypeBox.addItemListener(e -> keyField.setEditable(searchTypeBox.getSelectedIndex()!=2));
-		keyField.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-        		CategoryVO category = new CategoryChooseWin().getCategory();
-        		if (category != null) {
-        			keyField.setText(category.getName());
-        		}
-        	}
-		});
 		
 		frame.setTitle("选择商品");
 		frame.setVisible(true);
