@@ -15,6 +15,5 @@ public interface LogBLService {
 	 * @param endTime 结束时间
 	 * @return 直接用于表格显示的TableModel
 	 */
-	public MyTableModel searchByTime(String startTime, String endTime);
-	
+	public MyTableModel searchByTime(String startTime, String endTime, String type);
 }

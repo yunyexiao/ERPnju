@@ -41,7 +41,7 @@ public class LogPanel implements PanelInterface {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String[] input = new SearchWindow().getInput();
-				table.setModel(logBL.searchByTime(input[0], input[1]));
+				table.setModel(logBL.searchByTime(input[0], input[1], input[2]));
 			}
 		}
 		
