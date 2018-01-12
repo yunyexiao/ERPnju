@@ -97,7 +97,7 @@ public class CommodityBL implements CommodityBLService, GetCommodityInterface{
     public boolean add(CommodityVO commodity) {
         try{
             if (commodityDs.add(commodity.toPO())) {
-            	addLog.add("新增商品", "新增商品的ID："+commodity.getId()+"商品名称："+commodity.getName());
+            	addLog.add("增加商品", "新增商品的ID："+commodity.getId()+"商品名称："+commodity.getName());
             	return true;
             }
             return false;

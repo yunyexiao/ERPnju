@@ -9,6 +9,7 @@ import businesslogic.inter.AddLogInterface;
 import dataservice.UserDataService;
 import ds_stub.UserDs_stub;
 import po.UserPO;
+import presentation.main.MainWindow;
 import rmi.Rmi;
 import vo.MyTableModel;
 import vo.UserType;
@@ -26,7 +27,7 @@ public class UserBL implements UserBLService, GetUserInterface{
 			, user.getUserName()
 			, UserType.getType(user.getUsertype()).getName()
 			, user.getRankName()
-			, user.getUserPwd()
+			, MainWindow.getUser().getType() == UserType.ADMIN ? user.getUserPwd() : "****"
 			, user.getUserSex()
 			, Integer.toString(user.getUserAge())
 			, user.getUserTelNumber()

@@ -103,7 +103,7 @@ public class CustomerBL implements CustomerBLService, GetCustomerInterface{
 	public boolean add(CustomerVO customer) {
 		try {
 			if (customerDataService.add(customer.toPO())) {
-            	addLog.add("新增客户", "新增客户的ID："+customer.getId()+"客户名称："+customer.getName());
+            	addLog.add("增加客户", "新增客户的ID："+customer.getId()+"客户名称："+customer.getName());
             	return true;
             }
             return false;
