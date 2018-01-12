@@ -44,7 +44,7 @@ public class GiftBillBL implements GiftBillCreation, BillOperationService, BillE
             }
             if (flag) {
             	for (CommodityPO c : commodityList) {
-            		if(c.getAmount() < c.getAlarmNum()) mailBL.saveMail("0000", UserPO.UserType.STORE_KEEPER, "编号为"+c.getId()+"的商品"+c.getName()+"库存数量不足");
+            		if(c.getAmount() < c.getAlarmNum()) mailBL.saveMail("0001", UserPO.UserType.STORE_KEEPER, "编号为"+c.getId()+"的商品"+c.getName()+"库存数量不足");
             		commodityDs.update(c);
             	}
             	bill.setState(BillPO.PASS);

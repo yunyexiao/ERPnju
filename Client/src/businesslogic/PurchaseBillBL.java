@@ -174,7 +174,7 @@ public class PurchaseBillBL implements PurchaseBillBLService, BillOperationServi
             	customerDs.update(customerPO);
             	for (CommodityPO c : commodityList) commodityDs.update(c);
             	billVO.setState(3);
-            	mailBL.saveMail("0000", billPO.getOperator(), "单据编号为"+id+"的进货单通过审核，请尽快完成商品入库操作");
+            	mailBL.saveMail("0001", billPO.getOperator(), "单据编号为"+id+"的进货单通过审核，请尽快完成商品入库操作");
                 return saveBill(billVO, "审核进货单", "通过审核的进货单单据编号为"+id);
             } else {
             	notPassBill(id);

@@ -154,7 +154,7 @@ public class PurchaseReturnBillBL implements PurchaseReturnBillBLService, BillOp
             	customerDs.update(customerPO);
             	billVO.setState(3);
             	for (CommodityPO c : commodityList) {
-            		if(c.getAmount() < c.getAlarmNum()) mailBL.saveMail("0000", UserPO.UserType.STORE_KEEPER, "编号为"+c.getId()+"的商品"+c.getName()+"库存数量不足");
+            		if(c.getAmount() < c.getAlarmNum()) mailBL.saveMail("0001", UserPO.UserType.STORE_KEEPER, "编号为"+c.getId()+"的商品"+c.getName()+"库存数量不足");
             		commodityDs.update(c);
             	}
                 return saveBill(billVO, "审核进货退货单", "通过审核的进货退货单单据编号为"+billId);

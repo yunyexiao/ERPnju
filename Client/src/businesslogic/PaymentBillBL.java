@@ -139,7 +139,7 @@ public class PaymentBillBL implements PaymentBillBLService, BillOperationService
             	for (AccountPO a : accountList) accountDataService.update(a);
             	customerDataService.update(customerPO);
             	billVO.setState(3);
-            	mailBL.saveMail("0000", billPO.getOperator(), "单据编号为"+billId+"的付款单通过审核，请尽快完成银行操作");
+            	mailBL.saveMail("0001", billPO.getOperator(), "单据编号为"+billId+"的付款单通过审核，请尽快完成银行操作");
                 return saveBill(billVO, "审核付款单", "通过审核的付款单单据编号为"+billId);
             } else {
             	notPassBill(billId);
