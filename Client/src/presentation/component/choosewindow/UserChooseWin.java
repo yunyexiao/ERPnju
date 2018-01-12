@@ -4,6 +4,7 @@ import blservice.UserBLService;
 import blservice.infoservice.GetUserInterface;
 import businesslogic.UserBL;
 import presentation.tools.TableTools;
+import vo.MyTableModel;
 import vo.UserVO;
 
 public class UserChooseWin extends ChooseWindow {
