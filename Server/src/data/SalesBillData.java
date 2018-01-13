@@ -5,8 +5,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import dataservice.SalesBillDataService;
 import po.billpo.SalesBillPO;
@@ -61,35 +59,18 @@ public class SalesBillData extends UnicastRemoteObject implements SalesBillDataS
 	public ArrayList<SalesBillPO> getBillsBy(String field, String key, boolean isFuzzy) throws RemoteException {
 		ArrayList<SalesBillPO> bills=new ArrayList<SalesBillPO>();
 		ResultSet res_Bill=null;
-		ResultSet res_Record=null;
 		try{
 			if(isFuzzy){
 				Statement s1 = DataHelper.getInstance().createStatement();
 				res_Bill = s1.executeQuery("SELECT * FROM SalesBill WHERE "+field+" LIKE '%"+key+"%';");
-			    
-			    Statement s2 = DataHelper.getInstance().createStatement();
-			    res_Record = s2.executeQuery("SELECT * FROM SalesRecord WHERE "+field+" LIKE '%"+key+"%';");
 			}
 			else {
 				res_Bill =SQLQueryHelper.getRecordByAttribute(billName, field, key);
-				res_Record =SQLQueryHelper.getRecordByAttribute(recordName, field, key);
 			}
-			
-			List<String> tempList = Arrays.asList(billAttributes);
-			if(tempList.contains(field)){
-				ArrayList<String> ids=new ArrayList<String>();
-				while(res_Record.next()){
-					boolean isAdd=true;
-					for(int i=0;i<ids.size();i++)
-						if(res_Record.getString(recordAttributes[0])==ids.get(i))isAdd=false;
-					if(isAdd)ids.add(res_Record.getString(recordAttributes[0]));
-				}
-				for(int i = 0; i < ids.size(); i++) bills.add(BillDataHelper.getSalesBill(ids.get(i)));
-			}
-			else while(res_Bill.next()) bills.add(BillDataHelper.getSalesBill(res_Bill.getString(billAttributes[0])));	
+			while(res_Bill.next()) bills.add(BillDataHelper.getSalesBill(res_Bill.getString(billAttributes[0])));
 		}catch(Exception e){
 			e.printStackTrace();
-			return null;
+			return new ArrayList<SalesBillPO>();
 		}
 		return bills;
 	}
