@@ -243,7 +243,7 @@ public class BillDataHelper {
 			while(r1.next()){	
 			    SalesItemsPO item=new SalesItemsPO(
 					r1.getString("SRRComID"),
-					r1.getString("SRRemark"),
+					r1.getString("SRRRemark"),
 					r1.getInt("SRRComQuantity"),
 					r1.getDouble("SRRPrice"),
 					r1.getDouble("SRRComSum"));
