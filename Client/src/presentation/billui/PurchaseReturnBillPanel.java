@@ -73,7 +73,7 @@ public class PurchaseReturnBillPanel extends CommonSaleBillPanel {
 		customerPanel.add(new JLabel("--"),"4,1");
 		customerPanel.add(customerNameField,"5,1");
 		customerPanel.add(customerChooseButton,"7,1");
-		customerPanel.add(new JLabel("源进货单"), "9 1");
+		//customerPanel.add(new JLabel("源进货单"), "9 1");
 		//customerPanel.add(originalPBIdField, "11 1");
 		//customerPanel.add(purchaseBillChooseButton, "13 1");
 
