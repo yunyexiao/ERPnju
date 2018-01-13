@@ -1,7 +1,7 @@
 package test;
 
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import blservice.ViewBusinessSituationBLService;
@@ -10,10 +10,10 @@ import rmi.Rmi;
 
 public class ViewBusinessSituationBLTest {
 
-	private static ViewBusinessSituationBLService bl= new ViewBusinessSituationBL();
+	private ViewBusinessSituationBLService bl= new ViewBusinessSituationBL();
 	
-	@Before
-    public void runBeforeTestMethod() {
+	@BeforeClass
+    public static void runBeforeTestMethod() {
         Rmi.flag = false;
     }
 	
