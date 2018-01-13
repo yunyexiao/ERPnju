@@ -242,11 +242,11 @@ public class BillDataHelper {
 			ResultSet r1=SQLQueryHelper.getRecordByAttribute("SalesReturnRecord", "SRRID", id);
 			while(r1.next()){	
 			    SalesItemsPO item=new SalesItemsPO(
-					r1.getString("SRComID"),
+					r1.getString("SRRComID"),
 					r1.getString("SRRemark"),
-					r1.getInt("SRComQuantity"),
-					r1.getDouble("SRPrice"),
-					r1.getDouble("SRComSum"));
+					r1.getInt("SRRComQuantity"),
+					r1.getDouble("SRRPrice"),
+					r1.getDouble("SRRComSum"));
 			    items.add(item);
 			}
 			ResultSet r2=SQLQueryHelper.getRecordByAttribute("SalesReturnBill", "SRBID", id);
