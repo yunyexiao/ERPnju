@@ -227,12 +227,12 @@ public class SalesBillBL implements SalesBillBLService, BillOperationService, Bi
 
             if (flag) {
             	for (CommodityPO c : commodityList) {
-            		if(c.getAmount() < c.getAlarmNum()) mailBL.saveMail("0000", UserPO.UserType.STORE_KEEPER, "编号为"+c.getId()+"的商品"+c.getName()+"库存数量不足");
+            		if(c.getAmount() < c.getAlarmNum()) mailBL.saveMail("0001", UserPO.UserType.STORE_KEEPER, "编号为"+c.getId()+"的商品"+c.getName()+"库存数量不足");
             		commodityDs.update(c);
             	}
             	customerDs.update(customerPO);
             	billVO.setState(3);
-            	mailBL.saveMail("0000", billPO.getOperator(), "单据编号为"+billId+"的销售单通过审核，请尽快完成商品出库操作");
+            	mailBL.saveMail("0001", billPO.getOperator(), "单据编号为"+billId+"的销售单通过审核，请尽快完成商品出库操作");
                 return saveBill(billVO, "审核销售单", "通过审核的销售单单据编号为"+billId);
             } else {
             	notPassBill(billId);

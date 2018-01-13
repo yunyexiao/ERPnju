@@ -3,6 +3,7 @@ package businesslogic;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 import blservice.LogBLService;
 import blservice.infoservice.GetUserInterface;
@@ -32,10 +33,16 @@ public class LogBL implements LogBLService, AddLogInterface {
 	}
 
 	@Override
-	public MyTableModel searchByTime(String startTime, String endTime) {
-		return listToTable(logData.getAllInfo(startTime, endTime));
+	public MyTableModel searchByTime(String startTime, String endTime, String type) {
+		ArrayList<LogInfoPO> list = logData.getAllInfo(startTime, endTime);
+		if ("全部".equals(type)) return listToTable(list);
+		Iterator<LogInfoPO> iterator = list.iterator();
+		while(iterator.hasNext()) {
+			LogInfoPO info = iterator.next();
+			if(!type.equals(info.getOperation())) iterator.remove();
+		}
+		return listToTable(list);
 	}
-
 	/**
 	 * 将日志记录列表转换为表格
 	 * @param list 从数据层获取的日志记录list

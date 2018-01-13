@@ -1,7 +1,6 @@
 package presentation.dataui.customerui;
 
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
@@ -13,7 +12,7 @@ import presentation.tools.TableTools;
 import vo.MyTableModel;
 import vo.UserVO;
 
-public class CustomerDataPanel extends JPanel implements DataPanelInterface{
+public class CustomerDataPanel extends JScrollPane implements DataPanelInterface{
 	private JTable table = new JTable();
     private CustomerBLService customerBL;
     private UserVO user = MainWindow.getUser();
@@ -23,8 +22,7 @@ public class CustomerDataPanel extends JPanel implements DataPanelInterface{
 		table.setModel(customerBL.update());
 		table.getTableHeader().setReorderingAllowed(false);
 		TableTools.autoFit(table);
-		JScrollPane srcollpane = new JScrollPane(table);
-		this.add(srcollpane);
+		this.setViewportView(table);
 	}
 
 	@Override

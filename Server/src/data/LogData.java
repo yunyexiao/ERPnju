@@ -60,7 +60,7 @@ public class LogData extends UnicastRemoteObject implements LogDataService{
 
 	private LogInfoPO getLogInfo(ResultSet r) {
 		try {
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			return new LogInfoPO(df.format(r.getTimestamp("LITime")),r.getString("LIOperatorID"),r.getString("LIOperation"),r.getString("LIDetail"));
 		} catch (SQLException e) {
 			e.printStackTrace();

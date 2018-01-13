@@ -26,7 +26,7 @@ public class MailData extends UnicastRemoteObject implements MailDataService {
 	public ArrayList<MailPO> getMailList(UserPO user) throws RemoteException {
 		ArrayList<MailPO> mails=new ArrayList<MailPO>();
 		try{
-			String sql="SELECT * FROM MailInfo WHERE MIFromID='"+user.getUserId()+"' OR MIToID='"+user.getUserId()+"';";
+			String sql="SELECT * FROM MailInfo WHERE MIToID='"+user.getUserId()+"';";
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery(sql);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -1,7 +1,6 @@
 package presentation.dataui.commodityui;
 
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
@@ -10,8 +9,7 @@ import presentation.component.InfoWindow;
 import presentation.dataui.DataPanelInterface;
 import vo.MyTableModel;
 
-
-public class CommodityDataPanel extends JPanel implements DataPanelInterface{
+public class CommodityDataPanel extends JScrollPane implements DataPanelInterface{
 	private JTable table = new JTable();
     private CommodityBLService commodityBl;
 
@@ -19,8 +17,7 @@ public class CommodityDataPanel extends JPanel implements DataPanelInterface{
         this.commodityBl = commodityBl;
         table.setModel(commodityBl.update());
 		table.getTableHeader().setReorderingAllowed(false);
-		JScrollPane srcollpane = new JScrollPane(table);
-		this.add(srcollpane);
+		this.setViewportView(table);
     }
 
     @Override

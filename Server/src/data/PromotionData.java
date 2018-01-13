@@ -76,14 +76,14 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 		if(rank==-1){
 	        sql="SELECT * FROM "+billName+","+rankProName+" WHERE "
 	        		+billAttributes[0]+"="+rankAttributes[0]+" AND "
-	        		+billAttributes[1]+">'"+from
+	        		+billAttributes[1]+">='"+from
 	        		+"' AND "+billAttributes[2]+"<DATEADD(DAY,1,"+"'"+to+"') AND "
 	        		+billAttributes[3]+"="+1;
 		}
 		else{
 	        sql="SELECT * FROM "+billName+","+rankProName+" WHERE "
 	        		+billAttributes[0]+"="+rankAttributes[0]+" AND "
-	        		+billAttributes[1]+">'"+from
+	        		+billAttributes[1]+">='"+from
 	        		+"' AND "+billAttributes[2]+"<DATEADD(DAY,1,"+"'"+to+"') AND "
 	        		+billAttributes[3]+"="+1+" AND "
 	        		+rankAttributes[1]+"="+rank;
@@ -97,14 +97,14 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 		if(rank==-1){
 	        sql="SELECT * FROM "+billName+","+rankProName+" WHERE "
 	        		+billAttributes[0]+"="+rankAttributes[0]+" AND "
-	        		+billAttributes[1]+"<'"+date
+	        		+billAttributes[1]+"<='"+date
 	        		+"' AND "+billAttributes[2]+">DATEADD(DAY,1,"+"'"+date+"') AND "
 	        		+billAttributes[3]+"="+1;
 		}
 		else{
 	        sql="SELECT * FROM "+billName+","+rankProName+" WHERE "
 	        		+billAttributes[0]+"="+rankAttributes[0]+" AND "
-	        		+billAttributes[1]+"<'"+date
+	        		+billAttributes[1]+"<='"+date
 	        		+"' AND "+billAttributes[2]+">DATEADD(DAY,1,"+"'"+date+"') AND "
 	        		+billAttributes[3]+"="+1+" AND "
 	        		+rankAttributes[1]+"="+rank;
@@ -117,7 +117,7 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 		String sql="";
         sql="SELECT * FROM "+billName+","+groupProName+" WHERE "
         		+billAttributes[0]+"="+groupAttributes[0]+" AND "
-        		+billAttributes[1]+">'"+from
+        		+billAttributes[1]+">='"+from
         		+"' AND "+billAttributes[2]+"<DATEADD(DAY,1,"+"'"+to+"') AND "
         		+billAttributes[3]+"="+2;
         return getGroupPros(sql);
@@ -128,7 +128,7 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 		String sql="";
 	        sql="SELECT * FROM "+billName+","+groupProName+" WHERE "
 	        		+billAttributes[0]+"="+groupAttributes[0]+" AND "
-	        		+billAttributes[1]+"<'"+date
+	        		+billAttributes[1]+"<='"+date
 	        		+"' AND "+billAttributes[2]+">DATEADD(DAY,1,"+"'"+date+"') AND "
 	        		+billAttributes[3]+"="+2;
 	        return getGroupPros(sql);
@@ -139,7 +139,7 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 		String sql="";
         sql="SELECT * FROM "+billName+","+sumProName+" WHERE "
         		+billAttributes[0]+"="+sumAttributes[0]+" AND "
-        		+billAttributes[1]+">'"+from
+        		+billAttributes[1]+">='"+from
         		+"' AND "+billAttributes[2]+"<DATEADD(DAY,1,"+"'"+to+"') AND "
         		+billAttributes[3]+"="+3;
 		return getSumPros(sql);
@@ -150,7 +150,7 @@ public class PromotionData extends UnicastRemoteObject implements PromotionDataS
 		String sql="";
         sql="SELECT * FROM "+billName+","+sumProName+" WHERE "
         		+billAttributes[0]+"="+sumAttributes[0]+" AND "
-        		+billAttributes[1]+"<'"+date
+        		+billAttributes[1]+"<='"+date
         		+"' AND "+billAttributes[2]+">DATEADD(DAY,1,"+"'"+date+"') AND "
         		+billAttributes[3]+"="+3;
 		return getSumPros(sql);
