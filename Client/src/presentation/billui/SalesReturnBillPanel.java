@@ -146,7 +146,7 @@ public class SalesReturnBillPanel extends CommonSaleBillPanel {
     public SalesReturnBillVO getBill(int state){
         if(!isCorrectable()) return null;
         String id = bill == null ? saleReturnBl.getNewId().split("-")[2] : getId();
-        String operater = operatorField.getText()
+        String operater = user.getId()
              , customerId = customerIdField.getText()
              , remark = remarkField.getText()
              , originalSBId = originalSBIdField.getText();
