@@ -12,15 +12,14 @@ import businesslogic.BillOperationBL;
 import presentation.billui.BillPanelHelper;
 import presentation.billui.BillPanelInterface;
 import presentation.billui.ChangeBillPanel;
-import presentation.billui.ReceiptOrPaymentBillPanel;
 import vo.billvo.BillVO;
 
-class BillViewer {
+class CopyBillViewer {
     
     private JDialog frame;
     private JPanel panel;
     
-    public BillViewer(BillVO bill, boolean isCopy) {
+    public CopyBillViewer(BillVO bill, boolean isCopy) {
     	frame = new JDialog();
         frame.setModal(true);
         frame.setTitle("查看单据具体内容");

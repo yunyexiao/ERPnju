@@ -19,6 +19,7 @@ import businesslogic.BillOperationBL;
 import businesslogic.BillSearchBL;
 import layout.TableLayout;
 import presentation.PanelInterface;
+import presentation.billui.BillViewer;
 import presentation.component.DateChoosePanel;
 import presentation.component.IdNamePanel;
 import presentation.component.InfoWindow;
@@ -67,7 +68,7 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
         	public void mouseClicked(MouseEvent e) {
         		if(e.getClickCount() == 2) {
         			int index = table.getSelectedRow();
-        	        new BillViewer(billOperationBl.getBillById(table.getValueAt(index, 0).toString()), false);
+        	        new BillViewer(billOperationBl.getBillById(table.getValueAt(index, 0).toString()));
         		}
         	}
         });
@@ -187,6 +188,6 @@ public class ViewBusinessHistoryPanel implements PanelInterface {
             new InfoWindow("请选择一张单据进行操作@_@");
             return;
         }
-        new BillViewer(billOperationBl.getBillById(table.getValueAt(index, 0).toString()), true);
+        new CopyBillViewer(billOperationBl.getBillById(table.getValueAt(index, 0).toString()), true);
     }
 }

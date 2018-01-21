@@ -58,7 +58,7 @@ public class SaleReturnBillData extends UnicastRemoteObject implements SalesRetu
 		try{
 			Statement s=DataHelper.getInstance().createStatement();
 			ResultSet r=s.executeQuery("SELECT * FROM "+billName+
-					" WHERE generateTime>'"+from+"' AND generateTime<DATEADD(DAY,1,"+"'"+to+"');");
+					" WHERE generateTime>='"+from+"' AND generateTime<DATEADD(DAY,1,"+"'"+to+"');");
 			while(r.next()) bills.add(BillDataHelper.getSalesReturnBill(r.getString(billAttributes[0])));
 			return bills;
 		}catch(Exception e){

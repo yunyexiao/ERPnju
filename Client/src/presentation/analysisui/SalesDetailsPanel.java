@@ -90,7 +90,6 @@ public class SalesDetailsPanel implements PanelInterface {
     private void initCenter(){
         table = new JTable();
         table.getTableHeader().setReorderingAllowed(false);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         JScrollPane sp = new JScrollPane(table);
         panel.add(sp, BorderLayout.CENTER);
     }

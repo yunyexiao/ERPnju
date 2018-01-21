@@ -5,7 +5,7 @@ import javax.swing.JPanel;
 
 import vo.billvo.BillVO;
 
-class BillViewer {
+public class BillViewer {
     
     private JDialog frame;
     private JPanel panel;
